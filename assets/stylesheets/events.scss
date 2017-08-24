@@ -1,0 +1,140 @@
+.set-event-modal {
+  padding-left: 40px;
+
+  .start-card {
+    width: 280px;
+    float: left;
+    padding-right: 33px;
+    border-right: 1px solid #eee;
+  }
+
+  .set-all-day {
+    font-size: 1.2em;
+    padding-bottom: 13px;
+  }
+
+  .end-card{
+    width: 300px;
+    float: right;
+  }
+
+  .modal-title-label{
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .modal-title{
+    width: 565px;
+  }
+
+  .modal-sub-title{
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-bottom: 2px;
+    padding-right: 10px;
+  }
+
+  .modal-date-time-set{
+    padding-top: 3px;
+    padding-bottom: 4px;
+    display: flex;
+    flex-direction: row;
+
+    .modal-date-area{
+      order: 1;
+    }
+
+    .modal-time-area{
+      order: 2;
+      margin-left: 4px;
+      .modal-time{
+        width: 127px;
+      }
+    }
+  }
+
+  .date-picker{
+     width: 121px;
+  }
+
+  .pika-single {
+    position: relative !important;
+
+    .pika-lendar {
+      border: 1px solid #eee;
+      padding: 14px;
+      margin: 0;
+    }
+  }
+}
+
+.event-label {
+  display: inline-block;
+  padding: 10px 0;
+}
+
+.composer-controls-event button {
+  background: $secondary;
+}
+
+.composer-add-event {
+  display: block;
+  clear: both;
+  margin-left: 15px;
+
+  .btn-composer {
+    display: block;
+  }
+
+  .event-label, .location-label {
+    display: block;
+  }
+}
+
+.form-element + span {
+  display: block;
+}
+
+.event-details .event-label {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: dark-light-diff($primary, $secondary, 90%, -65%);
+
+  .fa {
+    margin-right: 7px;
+  }
+}
+
+.events {
+  display: inline-block;
+  margin: 5px 0;
+  width: 100%;
+
+  > div {
+    display: inline-block;
+    width: 100%;
+
+    .title {
+      max-width: 80%;
+      float: left;
+    }
+
+    .date {
+      float: right;
+    }
+  }
+}
+
+.date-time-container {
+  width: 220px;
+  display: inline-block;
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+.date-time.title {
+  width: 100px;
+}

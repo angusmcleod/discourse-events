@@ -1,0 +1,48 @@
+{{#d-modal-body class="set-event-modal" id="event-modal" title=title}}
+  <div class="start-card">
+    <span class="modal-sub-title">
+      {{i18n "add_event.event_start"}}
+    </span>
+    {{input-tip validation=startDateTimeValidation}}
+	  <div class="modal-date-time-set">
+      <div class="modal-date-area">
+        <label class="input-group-label">
+          {{i18n "add_event.event_date"}}
+        </label>
+        {{date-picker value=startDate containerId="date-container-start"}}
+      </div>
+      <div class="modal-time-area">
+        <label class="input-group-label">
+          {{i18n "add_event.event_time"}}
+        </label>
+        {{input type="time" class="modal-time" value=startTime disabled=allDay}}
+      </div>
+    </div>
+    <div id="date-container-start"/>
+  </div>
+  <div class="end-card">
+    <span class="modal-sub-title">
+      {{i18n "add_event.event_end"}}
+    </span>
+    {{input-tip validation=scheduleDateTimeValidation}}
+	  <div class="modal-date-time-set">
+      <div class="modal-date-area">
+        <label class="input-group-label">
+          {{i18n "add_event.event_date"}}
+        </label>
+        {{date-picker value=endDate containerId="date-container-end"}}
+      </div>
+      <div class="modal-time-area">
+        <label class="input-group-label">
+          {{i18n "add_event.event_time"}}
+        </label>
+        {{input type="time" class="modal-time" value=endTime disabled=allDay}}
+      </div>
+    </div>
+    <div id="date-container-end"/>
+  </div>
+{{/d-modal-body}}
+
+<div class="modal-footer">
+  {{d-button action="addEvent" icon="calendar" class="btn-primary" label="add_event.event_add" disabled=notReady}}
+</div>

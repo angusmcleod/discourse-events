@@ -1,0 +1,6 @@
+{{#if event}}
+  {{d-button class="btn current-event" action="showAddEvent" translatedLabel=(event-label event) icon='calendar'}}
+  {{d-button icon="times" action="removeEvent"}}
+{{else}}
+  {{d-button label="add_event.btn_label" action="showAddEvent" icon='calendar'}}
+{{/if}}
