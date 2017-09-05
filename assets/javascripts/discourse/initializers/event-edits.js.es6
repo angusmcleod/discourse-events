@@ -2,9 +2,10 @@ import Composer from 'discourse/models/composer';
 import ComposerBody from 'discourse/components/composer-body';
 import Topic from 'discourse/models/topic';
 import TopicController from 'discourse/controllers/topic';
-import { default as computed, observes } from 'ember-addons/ember-computed-decorators';
+import { default as computed, observes, on } from 'ember-addons/ember-computed-decorators';
 import NavItem from 'discourse/models/nav-item';
 import EditCategorySettings from 'discourse/components/edit-category-settings';
+import TopicListItem from 'discourse/components/topic-list-item';
 
 export default {
   name: 'events-edits',
@@ -33,7 +34,7 @@ export default {
 
       @computed('last_read_post_number', 'highest_post_number')
       topicListItemClasses(lastRead, highest) {
-        let classes = "date-time title raw-link raw-topic-link";
+        let classes = "date-time title raw-link event-link";
         if (lastRead === this.get('highest_post_number')) {
           classes += ' visited';
         }
@@ -58,6 +59,25 @@ export default {
         }
 
         return items;
+      }
+    })
+
+    TopicListItem.reopen({
+      @on('didInsertElement')
+      setupEventLink() {
+        Ember.$('.event-link').on('click', Ember.run.bind(this, this.handleEventLabelClick));
+      },
+
+      @on('willDestroyElement')
+      teardownEventLink() {
+        Ember.$('.event-link').off('click', Ember.run.bind(this, this.handleEventLabelClick));
+      },
+
+      handleEventLabelClick(e) {
+        e.preventDefault()
+        const topic = this.get('topic');
+        this.appEvents.trigger('header:update-topic', topic);
+        DiscourseURL.routeTo(topic.get('lastReadUrl'));
       }
     })
 
