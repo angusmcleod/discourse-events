@@ -1,5 +1,5 @@
 # name: discourse-events
-# about: Tools for adding event details to topics in Discourse
+# about: Allows you to manage events in Discourse
 # version: 0.1
 # authors: Angus McLeod
 
