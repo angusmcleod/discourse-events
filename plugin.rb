@@ -4,6 +4,8 @@
 # authors: Angus McLeod
 
 register_asset 'stylesheets/events.scss'
+register_asset 'lib/jquery.timepicker.min.js'
+register_asset 'lib/jquery.timepicker.scss'
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)

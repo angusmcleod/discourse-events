@@ -1,5 +1,5 @@
 {{#d-modal-body class="set-event-modal" id="event-modal" title=title}}
-  <div class="start-card">
+  <div class="start-card date-time-card">
     <span class="modal-sub-title">
       {{i18n "add_event.event_start"}}
     </span>
@@ -15,12 +15,12 @@
         <label class="input-group-label">
           {{i18n "add_event.event_time"}}
         </label>
-        {{input type="time" class="modal-time" value=startTime disabled=allDay}}
+        <input type="text" id="start-time-picker"/>
       </div>
     </div>
     <div id="date-container-start"/>
   </div>
-  <div class="end-card">
+  <div class="end-card date-time-card">
     <span class="modal-sub-title">
       {{i18n "add_event.event_end"}}
     </span>
@@ -36,7 +36,7 @@
         <label class="input-group-label">
           {{i18n "add_event.event_time"}}
         </label>
-        {{input type="time" class="modal-time" value=endTime disabled=allDay}}
+        <input type="text" id="end-time-picker"/>
       </div>
     </div>
     <div id="date-container-end"/>

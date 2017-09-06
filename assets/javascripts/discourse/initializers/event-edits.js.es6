@@ -65,16 +65,18 @@ export default {
     TopicListItem.reopen({
       @on('didInsertElement')
       setupEventLink() {
-        Ember.$('.event-link').on('click', Ember.run.bind(this, this.handleEventLabelClick));
+        Ember.run.scheduleOnce('afterRender', this, () => {
+          this.$('.event-link').on('click', Ember.run.bind(this, this.handleEventLabelClick));
+        })
       },
 
       @on('willDestroyElement')
       teardownEventLink() {
-        Ember.$('.event-link').off('click', Ember.run.bind(this, this.handleEventLabelClick));
+        this.$('.event-link').off('click', Ember.run.bind(this, this.handleEventLabelClick));
       },
 
       handleEventLabelClick(e) {
-        e.preventDefault()
+        e.preventDefault();
         const topic = this.get('topic');
         this.appEvents.trigger('header:update-topic', topic);
         DiscourseURL.routeTo(topic.get('lastReadUrl'));

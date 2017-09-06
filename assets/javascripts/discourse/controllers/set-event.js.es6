@@ -6,14 +6,29 @@ export default Ember.Controller.extend({
   setup() {
     const event = this.get('model.event');
 
-    let start = event && event.start ? event.start : moment();
-    let end = event && event.end ? event.end : moment().add(1, 'hours');
+    const ROUNDING = 30 * 60 * 1000;
+    const nextInterval = moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
+    let start = event && event.start ? moment(event.start) : nextInterval;
+    let end = event && event.end ? moment(event.end) : nextInterval.clone().add(1, 'hours');
+    const startDate = start.format('YYYY-MM-DD');
+    const startTime = start.format('HH:mm');
+    const endDate = end.format('YYYY-MM-DD');
+    const endTime = end.format('HH:mm');
 
-    this.setProperties({
-      startDate: moment(start).format('YYYY-MM-DD'),
-      startTime: moment(start).format('HH:MM'),
-      endDate: moment(end).format('YYYY-MM-DD'),
-      endTime: moment(end).format('HH:MM')
+    this.setProperties({ startDate, startTime, endDate, endTime });
+
+    Ember.run.scheduleOnce('afterRender', this, () => {
+      const $startTimePicker = $("#start-time-picker");
+      const $endTimePicker = $("#end-time-picker");
+
+      $startTimePicker.timepicker({ timeFormat: 'H:i' });
+      $endTimePicker.timepicker({ timeFormat: 'H:i' });
+
+      $startTimePicker.timepicker('setTime', startTime);
+      $endTimePicker.timepicker('setTime', endTime);
+
+      $startTimePicker.change(() => this.set('startTime', $startTimePicker.val()));
+      $endTimePicker.change(() => this.set('endTime', $endTimePicker.val()));
     })
   },
 
