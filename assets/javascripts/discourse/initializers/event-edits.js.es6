@@ -6,6 +6,7 @@ import { default as computed, observes, on } from 'ember-addons/ember-computed-d
 import NavItem from 'discourse/models/nav-item';
 import EditCategorySettings from 'discourse/components/edit-category-settings';
 import TopicListItem from 'discourse/components/topic-list-item';
+import DiscourseURL from 'discourse/lib/url';
 
 export default {
   name: 'events-edits',
