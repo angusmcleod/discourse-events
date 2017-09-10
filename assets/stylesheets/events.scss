@@ -79,12 +79,18 @@
   }
 }
 
-.event-label {
+.composer-controls-event.show-control {
   display: inline-block;
-  padding: 10px 0;
+  margin-right: 5px;
 }
 
-.composer-controls-event button {
+.event-label {
+  display: inline-block;
+  line-height: 18px;
+  padding: 5px 0;
+}
+
+.composer-controls-event .event-label .btn:not(:hover) {
   background: $secondary;
 }
 
@@ -147,4 +153,20 @@
 
 .date-time.title {
   width: 100px;
+}
+
+.add-to-calendar {
+  position: relative;
+  display: inline-block;
+
+  .dropdown-menu {
+    top: 33px;
+    bottom: initial;
+    width: 190px;
+
+    ul {
+      list-style: none;
+      margin: 0;
+    }
+  }
 }

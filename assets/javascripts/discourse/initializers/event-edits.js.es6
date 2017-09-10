@@ -86,10 +86,7 @@ export default {
     EditCategorySettings.reopen({
       @computed('category')
       availableViews(category) {
-        let views = [
-          {name: I18n.t('filters.latest.title'), value: 'latest'},
-          {name: I18n.t('filters.top.title'),    value: 'top'},
-        ]
+        let views = this._super(...arguments);
 
         if (category.get('events_enabled')) {
           views.push(

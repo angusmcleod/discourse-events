@@ -1,0 +1,4 @@
+plugins:
+  events_add_to_calendar:
+    client: true
+    default: false

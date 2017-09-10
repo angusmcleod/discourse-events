@@ -4,5 +4,8 @@
       {{d-icon 'calendar'}}
       {{event-label model.event}}
     </div>
+    {{#if siteSettings.events_add_to_calendar}}
+      {{add-to-calendar topic=model}}
+    {{/if}}
   {{/if}}
 {{/unless}}

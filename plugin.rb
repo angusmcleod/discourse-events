@@ -91,7 +91,11 @@ after_initialize do
 
     def list_agenda
       @options[:order] = "agenda"
-      topics = create_list(:agenda, ascending: "true")
+      topics = create_list(:agenda, ascending: "true") do |topics|
+        topics.joins("INNER JOIN topic_custom_fields
+                                 ON topic_custom_fields.topic_id = topics.id
+                                 AND topic_custom_fields.name = 'event_start'")
+      end
     end
   end
 
