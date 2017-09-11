@@ -21,6 +21,7 @@ en:
     filters:
       agenda:
         title: "Agenda"
+        help: "List events in ascending chronological order according to the start datetime."
     add_to_calendar:
       label: "Add to Calendar"
       google: "Google Calendar"
