@@ -81,17 +81,11 @@
 
 .composer-controls-event.show-control {
   display: inline-block;
-  margin-right: 5px;
 }
 
-.event-label {
-  display: inline-block;
-  line-height: 18px;
-  padding: 5px 0;
-
-  .add-event {
-    border: 1px solid dark-light-diff($primary, $secondary, 90%, -60%);
-  }
+.add-event {
+  border: 1px solid dark-light-diff($primary, $secondary, 90%, -60%);
+  text-align: left;
 }
 
 .composer-controls-event .event-label .btn:not(:hover) {
@@ -120,6 +114,7 @@
   margin-top: 10px;
   padding: 6px 12px;
   background: dark-light-diff($primary, $secondary, 90%, -65%);
+  display: inline-block;
 
   .fa {
     margin-right: 7px;

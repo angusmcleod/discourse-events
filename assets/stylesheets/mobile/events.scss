@@ -1,27 +1,37 @@
-#reply-control .event-label {
-  padding: 3px 0 0;
+#reply-control .composer-controls-event {
+  display: none;
+}
 
-  button.btn {
-    padding: 4px 6px;
-    max-width: 80vw;
-    vertical-align: top;
+#reply-control .location-label {
+  margin-left: 4px;
+  padding: 0;
+}
 
-    &.no-text {
-      margin: 0;
-      position: relative;
-    }
+#reply-control button.add-event.no-text {
+  position: relative;
+  margin: 7px 0 0 0;
+
+  &:not(.btn-primary) {
+    background: $secondary;
   }
 }
 
-.composer-controls-event.show-control {
-  margin-right: 0;
+#reply-control .contents .title-input {
+  display: flex;
+
+  input#reply-title {
+    width: initial;
+    flex: 1 1 auto;
+    margin-right: 0;
+  }
 }
 
 .set-event-modal .start-card {
-  padding-bottom: 30px;
+  padding-bottom: 20px;
   border: none;
 }
 
-.location-selector+.autocomplete {
-  width: 80%;
+.set-event-modal .date-time-card {
+  padding-left: 0;
+  padding-right: 0;
 }
