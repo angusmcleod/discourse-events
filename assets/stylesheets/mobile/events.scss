@@ -1,0 +1,27 @@
+#reply-control .event-label {
+  padding: 3px 0 0;
+
+  button.btn {
+    padding: 4px 6px;
+    max-width: 80vw;
+    vertical-align: top;
+
+    &.no-text {
+      margin: 0;
+      position: relative;
+    }
+  }
+}
+
+.composer-controls-event.show-control {
+  margin-right: 0;
+}
+
+.set-event-modal .start-card {
+  padding-bottom: 30px;
+  border: none;
+}
+
+.location-selector+.autocomplete {
+  width: 80%;
+}

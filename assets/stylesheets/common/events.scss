@@ -88,6 +88,10 @@
   display: inline-block;
   line-height: 18px;
   padding: 5px 0;
+
+  .add-event {
+    border: 1px solid dark-light-diff($primary, $secondary, 90%, -60%);
+  }
 }
 
 .composer-controls-event .event-label .btn:not(:hover) {

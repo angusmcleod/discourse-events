@@ -3,7 +3,8 @@
 # version: 0.1
 # authors: Angus McLeod
 
-register_asset 'stylesheets/events.scss'
+register_asset 'stylesheets/common/events.scss'
+register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 
