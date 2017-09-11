@@ -30,7 +30,7 @@ let googleUri = function(params) {
 
   href += `&dates=${utcDateTime(params.event.start)}/${utcDateTime(params.event.end)}`;
 
-  href += `&details=${params.details || I18n.t('add_to_calendar.default_details')}`;
+  href += `&details=${params.details || I18n.t('add_to_calendar.default_details', {url: params.url})}`;
 
   if (params.location) {
     href += `&location=${params.location}`;

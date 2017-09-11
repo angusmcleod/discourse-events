@@ -1,5 +1,6 @@
 import { googleUri, icsUri } from '../lib/date-utilities';
 import { default as computed } from 'ember-addons/ember-computed-decorators';
+import { origin } from 'discourse/lib/url';
 
 export default Ember.Component.extend({
   expanded: false,
@@ -26,6 +27,7 @@ export default Ember.Component.extend({
     let params = {
       event: topic.event,
       title: topic.title,
+      url: window.location.hostname + topic.get('url')
     };
 
     if (topic.location && topic.location.geo_location) {
