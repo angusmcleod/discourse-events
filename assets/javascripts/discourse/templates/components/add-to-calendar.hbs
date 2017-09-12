@@ -1,8 +1,11 @@
-<a href {{action "expand"}} class='dropdown-header btn btn-default'
+<button {{action "expand"}} class='dropdown-header btn btn-default'
                             aria-label={{i18n 'add_to_calendar.label'}}
                             aria-expanded={{expanded}}>
-  {{i18n 'add_to_calendar.label'}}
-</a>
+  {{d-icon 'calendar-plus-o'}}
+  {{#unless site.mobileView}}
+    {{i18n 'add_to_calendar.label'}}
+  {{/unless}}
+</button>
 <section class="{{if expanded 'show'}} dropdown-menu chooser">
   <ul>
     {{#each calendarUris as |c|}}
