@@ -60,3 +60,17 @@
     }
   }
 }
+
+.topic-list-item .date-time-container {
+  margin-top: 5px;
+}
+
+.topic-list-item .right.with-event {
+  position: relative;
+
+  .topic-item-stats {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+}
