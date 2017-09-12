@@ -110,14 +110,17 @@
   display: block;
 }
 
+.event-details {
+  margin-top: 7px;
+}
+
 .event-details .event-label {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: dark-light-diff($primary, $secondary, 90%, -65%);
+  margin-top: 7px;
+  line-height: 18px;
   display: inline-block;
 
   .fa {
-    margin-right: 7px;
+    margin-right: 3px;
   }
 }
 
@@ -157,9 +160,10 @@
 .add-to-calendar {
   position: relative;
   display: inline-block;
+  margin-left: 4px;
 
   .dropdown-menu {
-    top: 33px;
+    top: 24px;
     bottom: initial;
     width: 190px;
     position: absolute;

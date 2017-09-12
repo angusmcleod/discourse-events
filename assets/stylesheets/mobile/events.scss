@@ -38,11 +38,12 @@
 
 .event-details {
   display: flex;
-  margin-top: 5px;
+  align-items: center;
 
   .event-label {
     margin-top: 0;
     margin-right: 5px;
+    flex: 1 1 auto;
   }
 
   .add-to-calendar {
@@ -50,6 +51,7 @@
 
     .fa {
       margin: 0;
+      min-width: 15px;
     }
 
     .dropdown-menu {
