@@ -7,7 +7,8 @@ en:
       event_end: End
       event_date: Date
       event_time: Time
-      event_add: Add
+      event_add: Done
+      event_clear: Clear
     category:
       enable_events: "Allow events to be added to topics in this category"
     composer:

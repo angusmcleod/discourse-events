@@ -32,16 +32,14 @@ export default Ember.Component.extend({
 
   actions: {
     showAddEvent() {
-      let controller = showModal('set-event', {
+      let controller = showModal('add-event', {
         model: {
           event: this.get('event'),
-          update: (event) => {
-            this.set('event', event)
-          }
+          update: (event) => this.set('event', event)
         }
       });
 
-      controller.send('setup');
+      controller.setup();
     },
 
     removeEvent() {

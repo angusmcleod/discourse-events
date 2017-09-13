@@ -1,4 +1,4 @@
-{{#d-modal-body class="set-event-modal" id="event-modal" title=title}}
+{{#d-modal-body class="add-event-modal" id="event-modal" title=title}}
   <div class="start-card date-time-card">
     <span class="modal-sub-title">
       {{i18n "add_event.event_start"}}
@@ -44,5 +44,6 @@
 {{/d-modal-body}}
 
 <div class="modal-footer">
-  {{d-button action="addEvent" icon="calendar" class="btn-primary" label="add_event.event_add" disabled=notReady}}
+  {{d-button action="addEvent" class="btn-primary" label="add_event.event_add" disabled=notReady}}
+  <a class="clear" {{action 'clear'}}>{{i18n 'add_event.event_clear'}}</a>
 </div>

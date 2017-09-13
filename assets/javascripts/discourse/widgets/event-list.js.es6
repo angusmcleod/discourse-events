@@ -14,8 +14,10 @@ export default createWidget('event-list', {
   },
 
   getEvents() {
-    const category = this.attrs.customCategory;
+    const category = this.attrs.category;
     const eventsCategoryId = this.attrs.eventsCategoryId;
+
+    console.log(category, eventsCategoryId)
 
     if (!category && !eventsCategoryId) {
       this.state.loading = false;
@@ -28,6 +30,7 @@ export default createWidget('event-list', {
     ajax(`/events/${categoryId}`, {type: 'GET', data: {
       period: 'upcoming'
     }}).then((events) => {
+      console.log('result', events)
       this.state.events = events;
       this.state.loading = false;
       this.scheduleRerender();
@@ -35,7 +38,7 @@ export default createWidget('event-list', {
   },
 
   html(attrs, state) {
-    const category = this.attrs.customCategory;
+    const category = this.attrs.category;
     const user = this.currentUser;
     const events = state.events;
     const loading = state.loading;

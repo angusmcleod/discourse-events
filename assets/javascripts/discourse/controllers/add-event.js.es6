@@ -48,7 +48,7 @@ export default Ember.Controller.extend({
 
   @computed('eventStart','eventEnd')
   notReady(eventStart, eventEnd) {
-    return !eventStart || !eventEnd || eventStart > eventEnd;
+    return eventStart > eventEnd;
   },
 
   resetProperties() {
@@ -61,14 +61,19 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    setup() {
-      this.setup();
+    clear() {
+      this.resetProperties();
+      this.get('model.update')(null);
     },
 
     addEvent() {
-      const event = {
+      let event = {
         start: this.get('eventStart'),
         end: this.get('eventEnd')
+      }
+
+      if (event['start'] == '' || event['end'] == '') {
+        event = null;
       }
 
       this.get('model.update')(event);

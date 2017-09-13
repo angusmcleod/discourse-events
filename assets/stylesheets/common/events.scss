@@ -1,4 +1,4 @@
-.set-event-modal {
+.add-event-modal {
   text-align: center;
 
   .date-time-card {
@@ -79,6 +79,10 @@
   }
 }
 
+.add-event-modal + .modal-footer .clear {
+  margin: 5px 10px;
+}
+
 .composer-controls-event.show-control {
   display: inline-block;
 }
@@ -90,20 +94,6 @@
 
 .composer-controls-event .event-label .btn:not(:hover) {
   background: $secondary;
-}
-
-.composer-add-event {
-  display: block;
-  clear: both;
-  margin-left: 15px;
-
-  .btn-composer {
-    display: block;
-  }
-
-  .event-label, .location-label {
-    display: block;
-  }
 }
 
 .form-element + span {
