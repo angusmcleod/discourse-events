@@ -24,6 +24,15 @@ export default {
       @observes('composer.event')
       resizeWhenEventAdded: function() {
         this.resize();
+      },
+
+      //necessary because empty inline block elements take up space.
+      @observes('composer.showEventControls')
+      applyEventInlineClass() {
+        Ember.run.scheduleOnce('afterRender', this, () => {
+          $('.composer-controls-event').toggleClass('show-control', this.get('composer.showEventControls'));
+          this.resize();
+        })
       }
     })
 
