@@ -19,7 +19,7 @@ export default {
       showEventControls(subtype, categoryEnabled, topicFirstPost) {
         return topicFirstPost && (subtype === 'event' || categoryEnabled);
       }
-    })
+    });
 
     ComposerBody.reopen({
       @observes('composer.event')
@@ -33,9 +33,9 @@ export default {
         Ember.run.scheduleOnce('afterRender', this, () => {
           $('.composer-controls-event').toggleClass('show-control', this.get('composer.showEventControls'));
           this.resize();
-        })
+        });
       }
-    })
+    });
 
     Topic.reopen({
       @computed('subtype', 'category.events_enabled')
@@ -46,12 +46,12 @@ export default {
       @computed('last_read_post_number', 'highest_post_number')
       topicListItemClasses(lastRead, highest) {
         let classes = "date-time title raw-link event-link";
-        if (lastRead === this.get('highest_post_number')) {
+        if (lastRead === highest) {
           classes += ' visited';
         }
         return classes;
       }
-    })
+    });
 
     // necessary because topic-title plugin outlet only recieves model
     TopicController.reopen({
@@ -59,7 +59,7 @@ export default {
       setEditingTopicOnModel() {
         this.set('model.editingTopic', this.get('editingTopic'));
       }
-    })
+    });
 
     NavItem.reopenClass({
       buildList(category, args) {
@@ -71,14 +71,14 @@ export default {
 
         return items;
       }
-    })
+    });
 
     TopicListItem.reopen({
       @on('didInsertElement')
       setupEventLink() {
         Ember.run.scheduleOnce('afterRender', this, () => {
           this.$('.event-link').on('click', Ember.run.bind(this, this.handleEventLabelClick));
-        })
+        });
       },
 
       @on('willDestroyElement')
@@ -92,7 +92,7 @@ export default {
         this.appEvents.trigger('header:update-topic', topic);
         DiscourseURL.routeTo(topic.get('lastReadUrl'));
       }
-    })
+    });
 
     EditCategorySettings.reopen({
       @computed('category')
@@ -102,11 +102,11 @@ export default {
         if (category.get('events_enabled')) {
           views.push(
             {name: I18n.t('filters.agenda.title'), value: 'agenda'}
-          )
+          );
         }
 
         return views;
       },
-    })
+    });
   }
-}
+};

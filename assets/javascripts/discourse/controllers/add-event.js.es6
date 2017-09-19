@@ -1,4 +1,4 @@
-import { default as computed, observes } from 'ember-addons/ember-computed-decorators';
+import { default as computed } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Controller.extend({
   title: 'add_event.modal_title',
@@ -29,7 +29,7 @@ export default Ember.Controller.extend({
 
       $startTimePicker.change(() => this.set('startTime', $startTimePicker.val()));
       $endTimePicker.change(() => this.set('endTime', $endTimePicker.val()));
-    })
+    });
   },
 
   dateTime: function(date, time) {
@@ -57,7 +57,7 @@ export default Ember.Controller.extend({
       startTime: null,
       endDate: null,
       endTime: null
-    })
+    });
   },
 
   actions: {
@@ -70,9 +70,9 @@ export default Ember.Controller.extend({
       let event = {
         start: this.get('eventStart'),
         end: this.get('eventEnd')
-      }
+      };
 
-      if (event['start'] == '' || event['end'] == '') {
+      if (event['start'] === '' || event['end'] === '') {
         event = null;
       }
 

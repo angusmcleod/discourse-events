@@ -4,13 +4,13 @@ import { h } from 'virtual-dom';
 
 export default createWidget('event-list', {
   tagName: 'div.p-list.widget-list',
-  buildKey: (attrs) => 'event-list',
+  buildKey: () => 'event-list',
 
   defaultState() {
     return {
       events: [],
       loading: true
-    }
+    };
   },
 
   getEvents() {
@@ -33,7 +33,6 @@ export default createWidget('event-list', {
 
   html(attrs, state) {
     const category = this.attrs.category;
-    const user = this.currentUser;
     const events = state.events;
     const loading = state.loading;
     let contents = [];
@@ -57,4 +56,4 @@ export default createWidget('event-list', {
 
     return contents;
   }
-})
+});

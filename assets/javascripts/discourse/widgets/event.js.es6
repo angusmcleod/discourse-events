@@ -6,12 +6,12 @@ export default createWidget('event', {
 
   html(attrs) {
     const event = attrs.event;
-    if (!event) { return };
+    if (!event) { return; };
 
     let dateTime = moment(event.start).format('MM/DD');
     return [
       h('a', { href: event.url }, h('div.title', event.title)),
       h('div.date', dateTime)
-    ]
+    ];
   }
-})
+});

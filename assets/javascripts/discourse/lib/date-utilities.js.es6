@@ -2,7 +2,7 @@ let eventLabel = function(event, args = {}) {
   let label = '';
 
   if (args['includeIcon']) {
-    label += "<i class='fa fa-calendar'></i>"
+    label += "<i class='fa fa-calendar'></i>";
   }
 
   let startFormat = args.short ? 'M-D, HH:mm' : 'MMMM Do, HH:mm';
@@ -15,7 +15,7 @@ let eventLabel = function(event, args = {}) {
   label += `<span>${dateString}</span>`;
 
   return label;
-}
+};
 
 let utcDateTime = function(dateTime) {
   return moment.parseZone(dateTime).utc().format().replace(/-|:|\.\d\d\d/g,"");
@@ -39,7 +39,7 @@ let googleUri = function(params) {
   href += "&sf=true&output=xml";
 
   return href;
-}
+};
 
 let icsUri = function(params) {
   return encodeURI(
@@ -56,6 +56,6 @@ let icsUri = function(params) {
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\n'));
-}
+};
 
 export { eventLabel, googleUri, icsUri };

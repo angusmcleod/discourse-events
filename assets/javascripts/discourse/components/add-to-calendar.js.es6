@@ -1,17 +1,16 @@
 import { googleUri, icsUri } from '../lib/date-utilities';
 import { default as computed } from 'ember-addons/ember-computed-decorators';
-import { origin } from 'discourse/lib/url';
 
 export default Ember.Component.extend({
   expanded: false,
   classNames: 'add-to-calendar',
 
   didInsertElement() {
-    Ember.$(document).on('click', Ember.run.bind(this, this.outsideClick))
+    Ember.$(document).on('click', Ember.run.bind(this, this.outsideClick));
   },
 
   willDestroyElement() {
-    Ember.$(document).off('click', Ember.run.bind(this, this.outsideClick))
+    Ember.$(document).off('click', Ember.run.bind(this, this.outsideClick));
   },
 
   outsideClick(e) {
@@ -37,7 +36,7 @@ export default Ember.Component.extend({
     return [
       { uri: googleUri(params), label: 'google' },
       { uri: icsUri(params), label: 'ics' },
-    ]
+    ];
   },
 
   actions: {
@@ -45,4 +44,4 @@ export default Ember.Component.extend({
       this.toggleProperty('expanded');
     }
   }
-})
+});

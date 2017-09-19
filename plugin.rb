@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # name: discourse-events
 # about: Allows you to manage events in Discourse
 # version: 0.1
@@ -15,7 +17,7 @@ Discourse.anonymous_filters.push(:agenda)
 
 after_initialize do
   Category.register_custom_field_type('events_enabled', :boolean)
-  add_to_serializer(:basic_category, :events_enabled) {object.custom_fields["events_enabled"]}
+  add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
 
   # event times are stored individually as seconds since epoch so that event topic lists
   # can be ordered easily within the exist topic list query structure in Discourse core.
@@ -26,24 +28,24 @@ after_initialize do
   require_dependency 'topic'
   class ::Topic
     def has_event?
-      self.custom_fields['event_start'].present? && self.custom_fields['event_end'].present?
+      custom_fields['event_start'].present? && custom_fields['event_end'].present?
     end
 
     def event
       return nil unless has_event?
 
       {
-        start: Time.at(self.custom_fields['event_start']).iso8601,
-        end: Time.at(self.custom_fields['event_end']).iso8601
+        start: Time.at(custom_fields['event_start']).iso8601,
+        end: Time.at(custom_fields['event_end']).iso8601
       }
     end
-  end  
+  end
 
-  add_to_serializer(:topic_view, :include_event?) {object.topic.has_event? }
-  add_to_serializer(:topic_view, :event) {object.topic.event}
+  add_to_serializer(:topic_view, :include_event?) { object.topic.has_event? }
+  add_to_serializer(:topic_view, :event) { object.topic.event }
 
-  TopicList.preloaded_custom_fields << "event_start" if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << "event_end" if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
 
   require_dependency 'topic_list_item_serializer'
   class ::TopicListItemSerializer
@@ -73,7 +75,7 @@ after_initialize do
     end
   end
 
-  DiscourseEvent.on(:post_created) do |post, opts, user|
+  DiscourseEvent.on(:post_created) do |post, opts, _user|
     if post.is_first_post? && opts[:event]
       topic = Topic.find(post.topic_id)
 
@@ -88,11 +90,11 @@ after_initialize do
 
   require_dependency 'topic_query'
   class ::TopicQuery
-    SORTABLE_MAPPING["agenda"] = "custom_fields.event_start"
+    SORTABLE_MAPPING['agenda'] = 'custom_fields.event_start'
 
     def list_agenda
-      @options[:order] = "agenda"
-      topics = create_list(:agenda, ascending: "true") do |topics|
+      @options[:order] = 'agenda'
+      create_list(:agenda, ascending: 'true') do |topics|
         topics.joins("INNER JOIN topic_custom_fields
                                  ON topic_custom_fields.topic_id = topics.id
                                  AND topic_custom_fields.name = 'event_start'")
@@ -100,5 +102,5 @@ after_initialize do
     end
   end
 
-  load File.expand_path("../lib/category-events.rb", __FILE__)
+  load File.expand_path('../lib/category-events.rb', __FILE__)
 end
