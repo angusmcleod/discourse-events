@@ -12,11 +12,12 @@ export default {
   name: 'events-edits',
   initialize(){
     Composer.serializeOnCreate('event');
+    Composer.serializeToTopic('event', 'topic.event');
 
     Composer.reopen({
-      @computed('currentType', 'category.events_enabled', 'topicFirstPost')
-      showEventControls(type, categoryEnabled, topicFirstPost) {
-        return topicFirstPost && (type === 'event' || categoryEnabled);
+      @computed('subtype', 'category.events_enabled', 'topicFirstPost')
+      showEventControls(subtype, categoryEnabled, topicFirstPost) {
+        return topicFirstPost && (subtype === 'event' || categoryEnabled);
       }
     })
 

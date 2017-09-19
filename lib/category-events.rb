@@ -6,7 +6,7 @@ module ::CategoryEvents
 end
 
 CategoryEvents::Engine.routes.draw do
-  get ":category_id" => "event#events_for_category"
+  get "l/:category_id" => "event#category_list"
 end
 
 Discourse::Application.routes.append do
@@ -14,9 +14,9 @@ Discourse::Application.routes.append do
 end
 
 class CategoryEvents::EventController < ApplicationController
-  def events_for_category
-    params.require[:category_id]
-    params.permit[:period]
+  def category_list
+    params.require(:category_id)
+    params.permit(:period)
 
     opts = { :category_id => params[:category_id] }
 
@@ -44,12 +44,12 @@ end
 
 module CategoryEventsHelper
   class << self
-    def events_for_category(category_id, opts = {})
+    def events_for_category(opts)
       topics = Topic.joins("INNER JOIN topic_custom_fields
                             ON topic_custom_fields.topic_id = topics.id
                             AND (topic_custom_fields.name = 'event_start'
                                 OR topic_custom_fields.name = 'event_end')")
-      topics = topics.where(category_id: category_id)
+      topics = topics.where(category_id: opts[:category_id])
       events = []
 
       topics.each do |t|

@@ -3,7 +3,7 @@ import { ajax } from 'discourse/lib/ajax';
 import { h } from 'virtual-dom';
 
 export default createWidget('event-list', {
-  tagName: 'div.p-list.event-list',
+  tagName: 'div.p-list.widget-list',
   buildKey: (attrs) => 'event-list',
 
   defaultState() {
@@ -15,22 +15,16 @@ export default createWidget('event-list', {
 
   getEvents() {
     const category = this.attrs.category;
-    const eventsCategoryId = this.attrs.eventsCategoryId;
 
-    console.log(category, eventsCategoryId)
-
-    if (!category && !eventsCategoryId) {
+    if (!category) {
       this.state.loading = false;
       this.scheduleRerender();
       return;
     }
 
-    let categoryId = eventsCategoryId || category.id;
-
-    ajax(`/events/${categoryId}`, {type: 'GET', data: {
+    ajax(`/events/l/${category.id}`, {type: 'GET', data: {
       period: 'upcoming'
     }}).then((events) => {
-      console.log('result', events)
       this.state.events = events;
       this.state.loading = false;
       this.scheduleRerender();

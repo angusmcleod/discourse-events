@@ -29,7 +29,7 @@ export default createWidget('event-list-controls', {
       draftKey: 'new_topic',
       draftSequence: 0,
       addProperties: {
-        currentType: 'event'
+        subtype: 'event'
       }
     };
 
