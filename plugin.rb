@@ -37,9 +37,9 @@ after_initialize do
         end: Time.at(self.custom_fields['event_end']).iso8601
       }
     end
-  end
+  end  
 
-  add_to_serializer(:topic_view, :include_event?) {object.topic.has_event?}
+  add_to_serializer(:topic_view, :include_event?) {object.topic.has_event? }
   add_to_serializer(:topic_view, :event) {object.topic.event}
 
   TopicList.preloaded_custom_fields << "event_start" if TopicList.respond_to? :preloaded_custom_fields

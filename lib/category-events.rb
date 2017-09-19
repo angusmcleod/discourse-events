@@ -18,7 +18,7 @@ class CategoryEvents::EventController < ApplicationController
     params.require(:category_id)
     params.permit(:period)
 
-    opts = { :category_id => params[:category_id] }
+    opts = { category_id:  params[:category_id] }
 
     if params.include?(:period)
       opts[:period] = params[:period]
