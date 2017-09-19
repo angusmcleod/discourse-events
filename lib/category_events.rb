@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 module ::CategoryEvents
   class Engine < ::Rails::Engine
-    engine_name "category_events"
+    engine_name 'category_events'
     isolate_namespace CategoryEvents
   end
 end
 
 CategoryEvents::Engine.routes.draw do
-  get "l/:category_id" => "event#category_list"
+  get 'l/:category_id' => 'event#category_list'
 end
 
 Discourse::Application.routes.append do
-  mount ::CategoryEvents::Engine, at: "events"
+  mount ::CategoryEvents::Engine, at: 'events'
 end
 
 class CategoryEvents::EventController < ApplicationController
@@ -18,11 +20,9 @@ class CategoryEvents::EventController < ApplicationController
     params.require(:category_id)
     params.permit(:period)
 
-    opts = { category_id:  params[:category_id] }
+    opts = { category_id: params[:category_id] }
 
-    if params.include?(:period)
-      opts[:period] = params[:period]
-    end
+    opts[:period] = params[:period] if params.include?(:period)
 
     events = CategoryEventsHelper.events_for_category(opts)
 
@@ -63,11 +63,9 @@ module CategoryEventsHelper
                           event_end < Time.now.iso8601
                         else
                           true
-                        end
-
-        if within_period
-          events.push(t)
         end
+
+        events.push(t) if within_period
 
         events
       end

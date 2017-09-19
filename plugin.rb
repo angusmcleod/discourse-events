@@ -102,5 +102,5 @@ after_initialize do
     end
   end
 
-  load File.expand_path('../lib/category-events.rb', __FILE__)
+  load File.expand_path('../lib/category_events.rb', __FILE__)
 end
