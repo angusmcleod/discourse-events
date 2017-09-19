@@ -11,13 +11,6 @@ describe PostsController do
   end
 
   describe 'post events' do
-    before do
-      SiteSetting.location_geocoding_provider = :nominatim
-
-      stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=en&addressdetails=1&format=json&q=10%20Downing%20Street')
-        .to_return(status: 200, body: '', headers: {})
-    end
-
     it 'works' do
       xhr :post, :create, title: title, raw: 'New event', event: event1
       expect(response).to be_success
