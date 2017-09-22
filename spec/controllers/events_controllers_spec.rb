@@ -48,7 +48,7 @@ describe TopicsController do
       'end' => '2017-09-19T19:00:00+08:00' } # 1505818800
   end
 
-  describe 'update events' do
+  describe 'when an event topic has an event' do
     let!(:user) { log_in(:user) }
     let!(:topic) do
       Fabricate(:topic, user: user, custom_fields: { event: event1 })
