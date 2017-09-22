@@ -10,7 +10,7 @@ describe PostsController do
       'end' => '2017-09-18T17:00:00+08:00' } # 1505725200
   end
 
-  describe 'post events' do
+  describe 'when creating an event topic' do
     it 'works' do
       xhr :post, :create, title: title, raw: 'New event', event: event1
       expect(response).to be_success
@@ -23,6 +23,16 @@ describe PostsController do
         topic_id: json['topic_id'],
         name: 'event_end'
       ).value).to eq('1505725200')
+    end
+  end
+
+  describe 'when an event topic has no start and end' do
+    let!(:topic) { Fabricate(:topic, user: user, custom_fields: { event_start: nil, event_end: nil }) }
+    let!(:post) { Fabricate(:post, user: user, topic: topic, post_number: 1) }
+
+    it 'allows the first post to be edited' do
+      xhr :put, :update, id: post.id, post: { raw: 'edited body', edit_reason: 'typo' }
+      expect(response).to be_success
     end
   end
 end

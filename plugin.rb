@@ -24,11 +24,14 @@ after_initialize do
   Topic.register_custom_field_type('event_start', :integer)
   Topic.register_custom_field_type('event_end', :integer)
 
+  TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
+
   # but a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
   class ::Topic
     def has_event?
-      custom_fields['event_start'].present? && custom_fields['event_end'].present?
+      self.custom_fields['event_start']&.nonzero? && self.custom_fields['event_end']&.nonzero?
     end
 
     def event
@@ -41,22 +44,29 @@ after_initialize do
     end
   end
 
-  add_to_serializer(:topic_view, :include_event?) { object.topic.has_event? }
-  add_to_serializer(:topic_view, :event) { object.topic.event }
+  require_dependency 'topic_view_serializer'
+  class ::TopicViewSerializer
+    attributes :event
 
-  TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
+    def event
+      object.topic.event
+    end
+
+    def include_event?
+      object.topic.has_event?
+    end
+  end
 
   require_dependency 'topic_list_item_serializer'
   class ::TopicListItemSerializer
     attributes :event
 
-    def include_event?
-      object.has_event?
-    end
-
     def event
       object.event
+    end
+
+    def include_event?
+      object.has_event?
     end
   end
 
@@ -64,17 +74,13 @@ after_initialize do
 
   PostRevisor.class_eval do
     track_topic_field(:event) do |tc, event|
-      if event['start']
-        event_start = event['start'].to_datetime.to_i
-        tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-        tc.topic.custom_fields['event_start'] = event_start
-      end
+      event_start = event['start'] ? event['start'].to_datetime.to_i : nil
+      tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
+      tc.topic.custom_fields['event_start'] = event_start
 
-      if event['end']
-        event_end = event['end'].to_datetime.to_i
-        tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
-        tc.topic.custom_fields['event_end'] = event_end
-      end
+      event_end = event['start'] ? event['end'].to_datetime.to_i : nil
+      tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
+      tc.topic.custom_fields['event_end'] = event_end
     end
   end
 
