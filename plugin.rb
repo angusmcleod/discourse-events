@@ -64,14 +64,17 @@ after_initialize do
 
   PostRevisor.class_eval do
     track_topic_field(:event) do |tc, event|
-      event_start = event['start'].to_datetime.to_i
-      event_end = event['end'].to_datetime.to_i
+      if event['start']
+        event_start = event['start'].to_datetime.to_i
+        tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
+        tc.topic.custom_fields['event_start'] = event_start
+      end
 
-      tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-      tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
-
-      tc.topic.custom_fields['event_start'] = event_start
-      tc.topic.custom_fields['event_end'] = event_end
+      if event['end']
+        event_end = event['end'].to_datetime.to_i
+        tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
+        tc.topic.custom_fields['event_end'] = event_end
+      end
     end
   end
 
