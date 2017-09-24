@@ -1,13 +1,15 @@
 let eventLabel = function(event, args = {}) {
-  let label = '';
+  const icon = Discourse.SiteSettings.events_event_label_icon;
+  const format = Discourse.SiteSettings.events_event_label_format;
+  const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
 
-  if (args['includeIcon']) {
-    label += "<i class='fa fa-calendar'></i>";
-  }
-
-  let startFormat = args.short ? 'M-D, HH:mm' : 'MMMM Do, HH:mm';
+  let label = `<i class='fa fa-${icon}'></i>`;
+  let startFormat = args.short ? shortFormat : format;
   let diffDay = moment(event['start']).date() !== moment(event['end']).date();
-  let endFormat = diffDay ? startFormat : 'HH:mm';
+
+  // end datetime format: if the event is shorter than a day just show the end time.
+  let formatArr = startFormat.split(',');
+  let endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
 
   let dateString = moment(event['start']).format(startFormat) + ' - '
                    + moment(event['end']).format(endFormat);
