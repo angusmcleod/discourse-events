@@ -30,7 +30,7 @@ export default Ember.Component.extend({
     };
 
     if (topic.location && topic.location.geo_location) {
-      params['location'] = topic.location.geo_location.display_name;
+      params['location'] = topic.location.geo_location.address;
     }
 
     return [
