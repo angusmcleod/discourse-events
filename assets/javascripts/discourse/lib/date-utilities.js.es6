@@ -4,17 +4,20 @@ let eventLabel = function(event, args = {}) {
   const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
 
   let label = `<i class='fa fa-${icon}'></i>`;
-  let startFormat = args.short ? shortFormat : format;
-  let diffDay = moment(event['start']).date() !== moment(event['end']).date();
 
-  // end datetime format: if the event is shorter than a day just show the end time.
-  let formatArr = startFormat.split(',');
-  let endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
+  if (!args.mobile) {
+    let startFormat = args.short ? shortFormat : format;
+    let diffDay = moment(event['start']).date() !== moment(event['end']).date();
 
-  let dateString = moment(event['start']).format(startFormat) + ' - '
-                   + moment(event['end']).format(endFormat);
+    // end datetime format: if the event is shorter than a day just show the end time.
+    let formatArr = startFormat.split(',');
+    let endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
 
-  label += `<span>${dateString}</span>`;
+    let dateString = moment(event['start']).format(startFormat) + ' - '
+                     + moment(event['end']).format(endFormat);
+
+    label += `<span>${dateString}</span>`;
+  }
 
   return label;
 };

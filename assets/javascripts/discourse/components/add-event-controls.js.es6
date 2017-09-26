@@ -22,12 +22,14 @@ export default Ember.Component.extend({
 
   @computed('event')
   valueLabel(event) {
-    return this.site.isMobileDevice ? '' : eventLabel(event);
+    return eventLabel(event, { mobile: this.site.isMobileDevice });
   },
 
   @computed()
   addLabel() {
-    return this.site.isMobileDevice ? '' : 'add_event.btn_label';
+    const icon = Discourse.SiteSettings.events_event_label_icon;
+    const iconHtml = `<i class='fa fa-${icon}'></i>`;
+    return this.site.isMobileDevice ? iconHtml : I18n.t('add_event.btn_label', { iconHtml });
   },
 
   actions: {

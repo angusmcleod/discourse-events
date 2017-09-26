@@ -7,12 +7,16 @@
   padding: 0;
 }
 
-#reply-control button.add-event.no-text {
+.mobile-view #reply-control button.add-event {
   position: relative;
   margin: 7px 0 0 0;
 
   &:not(.btn-primary) {
     background: $secondary;
+  }
+
+  .fa {
+    margin: 0;
   }
 }
 
