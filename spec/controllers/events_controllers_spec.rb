@@ -12,7 +12,7 @@ describe PostsController do
 
   describe 'when creating an event topic' do
     it 'works' do
-      xhr :post, :create, title: title, raw: 'New event', event: event1
+      post :create, params: { title: title, raw: 'New event', event: event1 }, format: :json
       expect(response).to be_success
       json = ::JSON.parse(response.body)
       expect(TopicCustomField.find_by(
@@ -31,7 +31,7 @@ describe PostsController do
     let!(:post) { Fabricate(:post, user: user, topic: topic, post_number: 1) }
 
     it 'allows the first post to be edited' do
-      xhr :put, :update, id: post.id, post: { raw: 'edited body', edit_reason: 'typo' }
+      put :update, params: { id: post.id, post: { raw: 'edited body', edit_reason: 'typo' } }, format: :json
       expect(response).to be_success
     end
   end
@@ -60,7 +60,7 @@ describe TopicsController do
     end
 
     it 'works' do
-      xhr :put, :update, topic_id: topic.id, slug: topic.title, event: event2
+      put :update, params: { topic_id: topic.id, slug: topic.title, event: event2 }, format: :json
       expect(response).to be_success
       json = ::JSON.parse(response.body)
       expect(TopicCustomField.find_by(
