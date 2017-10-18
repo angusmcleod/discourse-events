@@ -88,8 +88,9 @@ after_initialize do
     if post.is_first_post? && opts[:event]
       topic = Topic.find(post.topic_id)
 
-      event_start = opts[:event]['start']
-      event_end = opts[:event]['end']
+      event = opts[:event].is_a?(String) ? ::JSON.parse(opts[:event]) : opts[:event]
+      event_start = event['start']
+      event_end = event['end']
 
       topic.custom_fields['event_start'] = event_start.to_datetime.to_i if event_start
       topic.custom_fields['event_end'] = event_end.to_datetime.to_i if event_end
