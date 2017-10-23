@@ -1,0 +1,30 @@
+en:
+  js:
+    add_event:
+      btn_label: "{{iconHtml}} Engadir Data e Hora"
+      modal_title: Data e Hora
+      event_start: Comezo
+      event_end: Fin
+      event_date: Data
+      event_time: Hora
+      event_add: Engadir
+      event_clear: Limpar
+    category:
+      enable_events: "Permitir engadir eventos aos tópicos nesta categoría"
+    composer:
+      tip:
+        add_event: "Engadir data, hora e localización para o teu evento"
+    event_list:
+      title: '{{categoryName}} Eventos'
+      about: 'Eventos na túa area'
+      no_results: "Non hai eventos"
+      create: "Crear Evento"
+    filters:
+      agenda:
+        title: "Axenda"
+        help: "Amosar eventos en orde cronolóxico ascendente dacordo coa súa data inicial"
+    add_to_calendar:
+      label: "Engadir ao Calendario"
+      google: "Calendario de Google"
+      ics: "Arquivo .ics"
+      default_details: "Detalles do evento: {{url}}"
