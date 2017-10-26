@@ -1,0 +1,6 @@
+gl:
+  site_settings:
+    events_add_to_calendar: "Amosar un botón Engadir ao Calendario nos temas con evento"
+    events_event_label_icon: "Clase do icono da etiqueta do evento"
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> formato para etiqueta de evento."
+    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> formato para etiqueta corta de evento empregada nas listas de temas."
