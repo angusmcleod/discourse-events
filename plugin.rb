@@ -15,6 +15,19 @@ Discourse.anonymous_top_menu_items.push(:agenda)
 Discourse.filters.push(:agenda)
 Discourse.anonymous_filters.push(:agenda)
 
+DiscourseEvent.on(:locations_ready) do
+  Locations::Map.add_list_filter do |topics|
+    if SiteSetting.events_remove_past_from_map
+      topics = topics.joins("INNER JOIN topic_custom_fields
+                             ON topic_custom_fields.topic_id = topics.id
+                             AND topic_custom_fields.name = 'event_end'
+                             AND topic_custom_fields.value > '#{Time.now.to_i}'")
+    end
+
+    topics
+  end
+end
+
 after_initialize do
   Category.register_custom_field_type('events_enabled', :boolean)
   add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
