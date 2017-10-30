@@ -2,7 +2,7 @@ import { createWidget } from 'discourse/widgets/widget';
 import { getOwner } from 'discourse-common/lib/get-owner';
 
 export default createWidget('event-list-controls', {
-  tagName: 'div.event-list-controls',
+  tagName: 'div.widget-list-controls',
 
   html() {
     const user = this.currentUser;

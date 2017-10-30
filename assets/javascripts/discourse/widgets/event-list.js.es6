@@ -3,7 +3,7 @@ import { ajax } from 'discourse/lib/ajax';
 import { h } from 'virtual-dom';
 
 export default createWidget('event-list', {
-  tagName: 'div.p-list.widget-list',
+  tagName: 'div.widget-list',
   buildKey: () => 'event-list',
 
   defaultState() {
@@ -39,7 +39,7 @@ export default createWidget('event-list', {
 
     if (loading) {
       this.getEvents();
-      contents.push(h('div.spinner'));
+      contents.push(h('div.spinner.small'));
     } else {
       let listContents = [h('div.no-events', I18n.t('event_list.no_results'))];
 
