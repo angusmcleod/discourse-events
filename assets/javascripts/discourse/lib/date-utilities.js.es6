@@ -6,15 +6,16 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    let startFormat = args.short ? shortFormat : format;
-    let diffDay = moment(event['start']).date() !== moment(event['end']).date();
+    const startFormat = args.short ? shortFormat : format;
+    const diffDay = moment(event['start']).date() !== moment(event['end']).date();
 
     // end datetime format: if the event is shorter than a day just show the end time.
-    let formatArr = startFormat.split(',');
-    let endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
+    const formatArr = startFormat.split(',');
+    const endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
 
-    let dateString = moment(event['start']).format(startFormat) + ' - '
-                     + moment(event['end']).format(endFormat);
+    const start = moment(event['start']).format(startFormat);
+    const end = moment(event['end']).format(endFormat);
+    const dateString = `${start} – ${end}`;
 
     label += `<span>${dateString}</span>`;
   }
