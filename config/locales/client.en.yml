@@ -11,6 +11,7 @@ en:
       event_clear: Clear
     category:
       enable_events: "Allow events to be added to topics in this category"
+      events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category"
     composer:
       tip:
         add_event: "Add a date, time and location for your event."

@@ -16,7 +16,7 @@ Discourse.filters.push(:agenda)
 Discourse.anonymous_filters.push(:agenda)
 
 DiscourseEvent.on(:locations_ready) do
-  Locations::Map.add_list_filter do |topics|
+  Locations::Map.add_list_filter do |topics, options|
     if SiteSetting.events_remove_past_from_map
       topics = topics.joins("INNER JOIN topic_custom_fields
                              ON topic_custom_fields.topic_id = topics.id
@@ -30,7 +30,9 @@ end
 
 after_initialize do
   Category.register_custom_field_type('events_enabled', :boolean)
+  Category.register_custom_field_type('events_agenda_filter_closed', :boolean)
   add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
+  add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
 
   # event times are stored individually as seconds since epoch so that event topic lists
   # can be ordered easily within the exist topic list query structure in Discourse core.
@@ -40,7 +42,26 @@ after_initialize do
   TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
 
-  # but a combined hash with iso8601 dates is easier to work with
+  module ::CalendarEvents
+    class Engine < ::Rails::Engine
+      engine_name 'calendar_events'
+      isolate_namespace CalendarEvents
+    end
+  end
+
+  CalendarEvents::Engine.routes.draw do
+    get 'l/:category_id' => 'event#category_list'
+  end
+
+  Discourse::Application.routes.append do
+    mount ::CalendarEvents::Engine, at: 'events'
+  end
+
+  load File.expand_path('../serializers/event.rb', __FILE__)
+  load File.expand_path('../lib/list.rb', __FILE__)
+  load File.expand_path('../controllers/event.rb', __FILE__)
+
+  # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
   class ::Topic
     def has_event?
@@ -118,12 +139,27 @@ after_initialize do
     def list_agenda
       @options[:order] = 'agenda'
       create_list(:agenda, ascending: 'true') do |topics|
-        topics.joins("INNER JOIN topic_custom_fields
+        topics = topics.joins("INNER JOIN topic_custom_fields
                                  ON topic_custom_fields.topic_id = topics.id
                                  AND topic_custom_fields.name = 'event_start'")
+        CalendarEvents::List.sorted_filters.each do |filter|
+          topics = filter[:block].call(topics, @options)
+        end
+
+        topics
       end
     end
   end
 
-  load File.expand_path('../lib/category_events.rb', __FILE__)
+  CalendarEvents::List.add_filter do |topics, options|
+    if options[:category_id]
+      category = Category.find(options[:category_id])
+    end
+
+    if SiteSetting.events_agenda_filter_closed || (options[:category_id] && category.custom_fields['events_agenda_filter_closed'])
+      topics = topics.where(closed: false)
+    end
+
+    topics
+  end
 end
