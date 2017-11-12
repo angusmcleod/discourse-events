@@ -5,7 +5,7 @@ export default createWidget('event', {
   tagName: 'li.event-link',
 
   html(attrs) {
-    const event = attrs.event;
+    const event = attrs.item;
     if (!event) { return; };
 
     let dateTime = moment(event.start).format('MM/DD');
