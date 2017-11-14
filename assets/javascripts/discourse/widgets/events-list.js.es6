@@ -44,14 +44,14 @@ export default createWidget('event-list', {
       let listContents = [h('div.no-events', I18n.t('event_list.no_results'))];
 
       if (events.length > 0) {
-        listContents = events.map((event) => this.attach('event', {event}));
+        listContents = events.map((event) => this.attach('events-list-item', {event}));
       }
 
       contents.push(h('ul', listContents));
     }
 
     if (attrs.includeControls) {
-      contents.push(this.attach('event-list-controls', {category}));
+      contents.push(this.attach('events-list-controls', {category}));
     }
 
     return contents;

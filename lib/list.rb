@@ -1,10 +1,9 @@
 class CalendarEvents::List
   def self.category(opts)
-    topics = Topic.joins("INNER JOIN topic_custom_fields
+    topics = Topic.where(category_id: opts[:category_id])
+      .joins("INNER JOIN topic_custom_fields
                           ON topic_custom_fields.topic_id = topics.id
-                          AND (topic_custom_fields.name = 'event_start'
-                              OR topic_custom_fields.name = 'event_end')")
-    topics = topics.where(category_id: opts[:category_id])
+                          AND topic_custom_fields.name = 'event_start'")
     events = []
 
     topics.each do |t|
@@ -13,9 +12,9 @@ class CalendarEvents::List
 
       within_period = case opts[:period]
                       when 'upcoming'
-                        event_start >= Time.now.iso8601
+                        event_start.to_i >= Time.now.to_i
                       when 'past'
-                        event_end < Time.now.iso8601
+                        event_end.to_i < Time.now.to_i
                       else
                         true
       end
