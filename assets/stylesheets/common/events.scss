@@ -84,13 +84,18 @@
 }
 
 .composer-controls-event.show-control {
-  display: inline-block;
+  float: left;
   margin-bottom: 10px;
 }
 
 .add-event {
   border: 1px solid dark-light-diff($primary, $secondary, 90%, -60%);
   text-align: left;
+}
+
+.add-event, .add-event + button {
+  padding: 4px 8px;
+  border: none;
 }
 
 .composer-controls-event .event-label .btn:not(:hover) {
