@@ -120,23 +120,18 @@
   }
 }
 
-.events {
-  display: inline-block;
-  margin: 5px 0;
+.event-list-item {
   width: 100%;
+  display: inline-block;
+  cursor: pointer;
 
-  > div {
+  .title {
+    max-width: 80%;
     display: inline-block;
-    width: 100%;
+  }
 
-    .title {
-      max-width: 80%;
-      float: left;
-    }
-
-    .date {
-      float: right;
-    }
+  .date {
+    float: right;
   }
 }
 

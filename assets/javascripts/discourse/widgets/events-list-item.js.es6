@@ -1,8 +1,9 @@
 import { createWidget } from 'discourse/widgets/widget';
+import DiscourseURL from 'discourse/lib/url';
 import { h } from 'virtual-dom';
 
-export default createWidget('event', {
-  tagName: 'li.event-link',
+export default createWidget('event-list-item', {
+  tagName: 'li.event-list-item',
 
   html(attrs) {
     const event = attrs.item;
@@ -10,8 +11,12 @@ export default createWidget('event', {
 
     let dateTime = moment(event.start).format('MM/DD');
     return [
-      h('a', { href: event.url }, h('div.title', event.title)),
+      h('div.title', event.title),
       h('div.date', dateTime)
     ];
+  },
+
+  click() {
+    DiscourseURL.routeTo(this.attrs.item.url);
   }
 });
