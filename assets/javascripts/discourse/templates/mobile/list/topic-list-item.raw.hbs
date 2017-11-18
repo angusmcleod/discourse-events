@@ -11,6 +11,13 @@
   <div>
   {{/unless~}}
     <div class='main-link'>
+      {{#if topic.event}}
+        <div class="date-time-container">
+          <a href="{{topic.lastUnreadUrl}}" class="{{topic.topicListItemClasses}}">
+            {{event-label topic.event short="true"}}
+          </a>
+        </div>
+      {{/if}}
       {{raw "topic-status" topic=topic}}
       {{topic-link topic}}
       {{#if topic.featured_link}}
@@ -18,13 +25,6 @@
       {{/if}}
       {{#if topic.unseen}}
         <span class="badge-notification new-topic"></span>
-      {{/if}}
-      {{#if topic.event}}
-        <div class="date-time-container">
-          <a href="{{topic.lastUnreadUrl}}" class="{{topic.topicListItemClasses}}">
-            {{event-label topic.event short="true"}}
-          </a>
-        </div>
       {{/if}}
       {{~#if expandPinned}}
       {{raw "list/topic-excerpt" topic=topic}}
