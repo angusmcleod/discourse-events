@@ -4,6 +4,11 @@ class CalendarEvents::List
       .joins("INNER JOIN topic_custom_fields
                           ON topic_custom_fields.topic_id = topics.id
                           AND topic_custom_fields.name = 'event_start'")
+
+    if opts[:limit]
+      topics = topics.limit(opts[:limit])
+    end
+
     events = []
 
     topics.each do |t|
