@@ -1,0 +1,31 @@
+en:
+  js:
+    add_event:
+      btn_label: "{{iconHtml}} Datum und Uhrzeit hinzufügen"
+      modal_title: Datum and Uhrzeit
+      event_start: Beginn
+      event_end: Ende
+      event_date: Datum
+      event_time: Uhrzeit
+      event_add: Fertig
+      event_clear: Zurücksetzen
+    category:
+      enable_events: "Ermöglicht es, Events zu Themen in dieser Kategorie hinzuzufügen"
+      events_agenda_filter_closed: "Events von geschlossenen Themen aus der Agenda dieser Kategorie ausblenden."
+    composer:
+      tip:
+        add_event: "Datum, Uhrzeit und Ort zu Ihrem Event hinzufügen"
+    event_list:
+      title: '{{categoryName}} Events'
+      about: 'Events in deiner Umgebung'
+      no_results: "Keine bevorstehende Events"
+      create: "Event erstellen"
+    filters:
+      agenda:
+        title: "Agenda"
+        help: "Listet alle Events anhand ihres Startdatums in aufsteigender Reihenfolge auf."
+    add_to_calendar:
+      label: "Zu Kalender hinzufügen"
+      google: "Google Calendar"
+      ics: ".ics Datei"
+      default_details: "Event details: {{url}}"
