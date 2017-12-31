@@ -11,6 +11,9 @@ plugins:
   events_event_label_short_format:
     client: true
     default: 'M-D, HH:mm'
+  events_event_label_short_only_start:
+    client: true
+    default: false
   events_remove_past_from_agenda:
     default: false
   events_remove_past_from_map:
