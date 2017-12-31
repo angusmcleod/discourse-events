@@ -1,4 +1,4 @@
-en:
+de:
   js:
     add_event:
       btn_label: "{{iconHtml}} Datum und Uhrzeit hinzufügen"
@@ -28,4 +28,4 @@ en:
       label: "Zu Kalender hinzufügen"
       google: "Google Calendar"
       ics: ".ics Datei"
-      default_details: "Event details: {{url}}"
+      default_details: "Event Details: {{url}}"
