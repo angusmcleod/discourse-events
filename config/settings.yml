@@ -11,6 +11,8 @@ plugins:
   events_event_label_short_format:
     client: true
     default: 'M-D, HH:mm'
+  events_remove_past_from_agenda:
+    default: false
   events_remove_past_from_map:
     default: false
   events_agenda_filter_closed:
