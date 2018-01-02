@@ -7,24 +7,20 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    if (args.short && shortOnlyStart){
-      const dateString = moment(event['start']).format(shortFormat);
+    const startFormat = args.short ? shortFormat : format;
 
-      label += `<span>${dateString}</span>`;
-    } else {
-      const startFormat = args.short ? shortFormat : format;
+    let dateString =  moment(event['start']).format(startFormat);
+
+    if (!args.short || !shortOnlyStart) {
       const diffDay = moment(event['start']).date() !== moment(event['end']).date();
-
-      // end datetime format: if the event is shorter than a day just show the end time.
       const formatArr = startFormat.split(',');
       const endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
-
-      const start = moment(event['start']).format(startFormat);
       const end = moment(event['end']).format(endFormat);
-      const dateString = `${start} – ${end}`;
 
-      label += `<span>${dateString}</span>`;
+      dateString += `– ${end}`;
     }
+
+    label += `<span>${dateString}</span>`;
   }
 
   return label;

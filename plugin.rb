@@ -139,16 +139,15 @@ after_initialize do
     def list_agenda
       @options[:order] = 'agenda'
       create_list(:agenda, ascending: 'true') do |topics|
+        agenda_query = "INNER JOIN topic_custom_fields
+                        ON topic_custom_fields.topic_id = topics.id
+                        AND topic_custom_fields.name = 'event_end'"
+
         if SiteSetting.events_remove_past_from_agenda
-          topics = topics.joins("INNER JOIN topic_custom_fields
-                                 ON topic_custom_fields.topic_id = topics.id
-                                 AND topic_custom_fields.name = 'event_end'
-                                 AND topic_custom_fields.value > '#{Time.now.to_i}'")
-        else
-          topics = topics.joins("INNER JOIN topic_custom_fields
-                                 ON topic_custom_fields.topic_id = topics.id
-                                 AND topic_custom_fields.name = 'event_start'")
+          agenda_query += " AND topic_custom_fields.value > '#{Time.now.to_i}'"
         end
+
+        topics = topics.joins(agenda_query)
 
         CalendarEvents::List.sorted_filters.each do |filter|
           topics = filter[:block].call(topics, @options)
