@@ -1,0 +1,10 @@
+de:
+  site_settings:
+    events_add_to_calendar: "Zeigt einen 'Zu Kalender hinzufügen'-Button in Themen mit Event an"
+    events_event_label_icon: "Klasse des Event-Label Symbols"
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format des Event-Labels."
+    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format des kurzen Event-Labels, welches in der Themenliste verwendet wird"
+    events_event_label_short_only_start: "Zeige nur den Beginn beim kurzen Event-Label (in der Themenliste)"
+    events_remove_past_from_map: "Vergangene Events aus der Kartenansicht (erstellt durch das <a href='https://github.com/angusmcleod/discourse-locations'>Locations Plugin</a>) entfernen."
+    events_remove_past_from_agenda: "Vergangene Events aus Agendas entfernen."
+    events_agenda_filter_closed: "Geschlossene Themen in allen Agendas ausblenden."
