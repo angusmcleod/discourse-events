@@ -17,7 +17,7 @@ let eventLabel = function(event, args = {}) {
       const endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
       const end = moment(event['end']).format(endFormat);
 
-      dateString += `– ${end}`;
+      dateString += ` – ${end}`;
     }
 
     label += `<span>${dateString}</span>`;
