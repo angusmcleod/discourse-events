@@ -51,6 +51,7 @@
     .modal-time-area{
       order: 2;
       margin-left: 10px;
+
       .modal-time{
         width: 127px;
       }
@@ -143,6 +144,10 @@
     bottom: initial;
     width: 190px;
     position: absolute;
+
+    &.show {
+      display: block;
+    }
 
     ul {
       list-style: none;
