@@ -1,9 +1,8 @@
-# frozen_string_literal: true
-
 # name: discourse-events
 # about: Allows you to manage events in Discourse
 # version: 0.1
 # authors: Angus McLeod
+# url: https://github.com/angusmcleod/discourse-events
 
 register_asset 'stylesheets/common/events.scss'
 register_asset 'stylesheets/mobile/events.scss', :mobile
