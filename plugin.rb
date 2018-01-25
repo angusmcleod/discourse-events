@@ -33,6 +33,20 @@ after_initialize do
   add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
 
+  module EventsSiteSettingExtension
+    def type_hash(name)
+      if name == :top_menu && @choices[name].exclude?("agenda")
+        @choices[name].push("agenda")
+      end
+      super(name)
+    end
+  end
+
+  require_dependency 'site_settings/type_supervisor'
+  class SiteSettings::TypeSupervisor
+    prepend EventsSiteSettingExtension
+  end
+
   # event times are stored individually as seconds since epoch so that event topic lists
   # can be ordered easily within the exist topic list query structure in Discourse core.
   Topic.register_custom_field_type('event_start', :integer)
