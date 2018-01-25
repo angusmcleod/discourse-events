@@ -65,8 +65,12 @@ export default {
       buildList(category, args) {
         let items = this._super(category, args);
 
-        if (category && category.events_enabled) {
-          items.push(Discourse.NavItem.fromText('agenda', args));
+        if (category) {
+          items = items.reject((item) => item.name === 'agenda');
+
+          if (category.events_enabled) {
+            items.push(Discourse.NavItem.fromText('agenda', args));
+          }
         }
 
         return items;
