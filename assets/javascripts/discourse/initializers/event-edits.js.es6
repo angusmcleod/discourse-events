@@ -15,9 +15,9 @@ export default {
     Composer.serializeToTopic('event', 'topic.event');
 
     Composer.reopen({
-      @computed('subtype', 'category.events_enabled', 'topicFirstPost')
-      showEventControls(subtype, categoryEnabled, topicFirstPost) {
-        return topicFirstPost && (subtype === 'event' || categoryEnabled);
+      @computed('subtype', 'category.events_enabled', 'topicFirstPost', 'topic.event')
+      showEventControls(subtype, categoryEnabled, topicFirstPost, event) {
+        return topicFirstPost && (subtype === 'event' || categoryEnabled || event);
       }
     });
 
