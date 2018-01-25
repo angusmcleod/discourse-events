@@ -29,3 +29,8 @@ en:
       google: "Google Calendar"
       ics: ".ics File"
       default_details: "Event details: {{url}}"
+    topics:
+      none:
+        agenda: "There are no agenda topics."
+      bottom:
+        agenda: "There are no more agenda topics."
