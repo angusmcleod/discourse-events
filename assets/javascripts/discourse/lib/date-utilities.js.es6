@@ -1,23 +1,35 @@
 let eventLabel = function(event, args = {}) {
   const icon = Discourse.SiteSettings.events_event_label_icon;
-  const format = Discourse.SiteSettings.events_event_label_format;
+  const longFormat = Discourse.SiteSettings.events_event_label_format;
   const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
   const shortOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
+  console.log(event)
+
   if (!args.mobile) {
-    const startFormat = args.short ? shortFormat : format;
+    let start = moment(event['start']);
+    let end = moment(event['end']);
+    let allDay = false;
 
-    let dateString =  moment(event['start']).format(startFormat);
+    if (event['start'] && event['end']) {
+      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
+      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
+      allDay = startIsDayStart && endIsDayEnd;
+    }
 
-    if (!args.short || !shortOnlyStart) {
-      const diffDay = moment(event['start']).date() !== moment(event['end']).date();
-      const formatArr = startFormat.split(',');
-      const endFormat = diffDay ? startFormat : formatArr[formatArr.length - 1];
-      const end = moment(event['end']).format(endFormat);
+    let format = args.short ? shortFormat : longFormat;
+    let formatArr = format.split(',');
+    if (allDay) format = formatArr[0];
+    let dateString = start.format(format);
 
-      dateString += ` – ${end}`;
+    if (event['end'] && (!args.short || !shortOnlyStart)) {
+      const diffDay = start.date() !== end.date();
+      if (!allDay || diffDay) {
+        const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
+        dateString += ` – ${end.format(endFormat)}`;
+      }
     }
 
     label += `<span>${dateString}</span>`;

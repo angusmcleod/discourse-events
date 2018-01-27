@@ -13,13 +13,11 @@ class CalendarEvents::List
 
     topics.each do |t|
       event_start = t.custom_fields['event_start']
-      event_end = t.custom_fields['event_end']
-
       within_period = case opts[:period]
                       when 'upcoming'
                         event_start.to_i >= Time.now.to_i
                       when 'past'
-                        event_end.to_i < Time.now.to_i
+                        event_start.to_i < Time.now.to_i
                       else
                         true
       end

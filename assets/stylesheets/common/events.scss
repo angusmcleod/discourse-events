@@ -1,19 +1,29 @@
 .add-event-modal {
-  text-align: center;
+  .add-event-controls {
+    padding: 0 10px;
+    margin-bottom: 20px;
+
+    .control {
+      display: inline-block;
+      margin-right: 20px;
+    }
+  }
 
   .date-time-card {
     width: 270px;
     display: inline-block;
-    padding: 0 30px;
+    padding: 0 10px;
     text-align: left;
   }
 
   .start-card {
-    border-right: 1px solid #eee;
+    border-left: 1px solid transparent;
+    margin-right: 10px;
   }
 
   .end-card {
-    border-right: 1px solid transparent;
+    border-left: 1px solid #eee;
+    padding-left: 25px;
   }
 
   .set-all-day {
@@ -59,12 +69,12 @@
   }
 
   .ui-timepicker-input {
-    width: 119px;
+    width: 105px;
     text-align: center;
   }
 
   .date-picker{
-     width: 121px;
+     width: 110px;
   }
 
   .pika-single {

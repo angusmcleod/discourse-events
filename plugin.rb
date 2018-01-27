@@ -19,7 +19,7 @@ DiscourseEvent.on(:locations_ready) do
     if SiteSetting.events_remove_past_from_map
       topics = topics.joins("INNER JOIN topic_custom_fields
                              ON topic_custom_fields.topic_id = topics.id
-                             AND topic_custom_fields.name = 'event_end'
+                             AND topic_custom_fields.name = 'event_start'
                              AND topic_custom_fields.value > '#{Time.now.to_i}'")
     end
 
@@ -78,16 +78,16 @@ after_initialize do
   require_dependency 'topic'
   class ::Topic
     def has_event?
-      self.custom_fields['event_start']&.nonzero? && self.custom_fields['event_end']&.nonzero?
+      self.custom_fields['event_start']&.nonzero?
     end
 
     def event
       return nil unless has_event?
-
-      {
-        start: Time.at(custom_fields['event_start']).iso8601,
-        end: Time.at(custom_fields['event_end']).iso8601
-      }
+      event = { start: Time.at(custom_fields['event_start']).iso8601 }
+      if custom_fields['event_end']&.nonzero?
+        event[:end] = Time.at(custom_fields['event_end']).iso8601
+      end
+      event
     end
   end
 
@@ -125,7 +125,7 @@ after_initialize do
       tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
       tc.topic.custom_fields['event_start'] = event_start
 
-      event_end = event['start'] ? event['end'].to_datetime.to_i : nil
+      event_end = event['end'] ? event['end'].to_datetime.to_i : nil
       tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
       tc.topic.custom_fields['event_end'] = event_end
     end
@@ -153,11 +153,14 @@ after_initialize do
       @options[:order] = 'agenda'
       create_list(:agenda, ascending: 'true') do |topics|
         agenda_query = "INNER JOIN topic_custom_fields
-                        ON topic_custom_fields.topic_id = topics.id
-                        AND topic_custom_fields.name = 'event_end'"
+                                ON topic_custom_fields.topic_id = topics.id
+                                AND topic_custom_fields.name = 'event_start'"
 
         if SiteSetting.events_remove_past_from_agenda
-          agenda_query += " AND topic_custom_fields.value > '#{Time.now.to_i}'"
+          agenda_query += " AND (topics.id in (
+                                  SELECT topic_id FROM topic_custom_fields
+                                  WHERE name = 'event_end' AND value > '#{Time.now.to_i}'
+                                ) OR topic_custom_fields.value > '#{Time.now.to_i}')"
         end
 
         topics = topics.joins(agenda_query)

@@ -9,6 +9,8 @@ en:
       event_time: Time
       event_add: Done
       event_clear: Clear
+      end_enabled: "Include event end"
+      all_day: "All day"
     category:
       enable_events: "Allow events to be added to topics in this category"
       events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category"

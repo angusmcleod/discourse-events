@@ -1,4 +1,14 @@
 {{#d-modal-body class="add-event-modal" id="event-modal" title=title}}
+  <div class="add-event-controls">
+    <div class="control">
+      {{input type='checkbox' checked=endEnabled}}
+      <span>{{i18n 'add_event.end_enabled'}}</span>
+    </div>
+    <div class="control">
+      {{input type='checkbox' checked=allDay}}
+      <span>{{i18n 'add_event.all_day'}}</span>
+    </div>
+  </div>
   <div class="start-card date-time-card">
     <span class="modal-sub-title">
       {{i18n "add_event.event_start"}}
@@ -11,36 +21,42 @@
         </label>
         {{date-picker value=startDate containerId="date-container-start"}}
       </div>
-      <div class="modal-time-area">
-        <label class="input-group-label">
-          {{i18n "add_event.event_time"}}
-        </label>
-        <input type="text" id="start-time-picker"/>
-      </div>
+      {{#unless allDay}}
+        <div class="modal-time-area">
+          <label class="input-group-label">
+            {{i18n "add_event.event_time"}}
+          </label>
+          <input type="text" id="start-time-picker"/>
+        </div>
+      {{/unless}}
     </div>
     <div id="date-container-start"/>
   </div>
-  <div class="end-card date-time-card">
-    <span class="modal-sub-title">
-      {{i18n "add_event.event_end"}}
-    </span>
-    {{input-tip validation=scheduleDateTimeValidation}}
-	  <div class="modal-date-time-set">
-      <div class="modal-date-area">
-        <label class="input-group-label">
-          {{i18n "add_event.event_date"}}
-        </label>
-        {{date-picker value=endDate containerId="date-container-end"}}
+  {{#if endEnabled}}
+    <div class="end-card date-time-card">
+      <span class="modal-sub-title">
+        {{i18n "add_event.event_end"}}
+      </span>
+      {{input-tip validation=scheduleDateTimeValidation}}
+  	  <div class="modal-date-time-set">
+        <div class="modal-date-area">
+          <label class="input-group-label">
+            {{i18n "add_event.event_date"}}
+          </label>
+          {{date-picker value=endDate containerId="date-container-end"}}
+        </div>
+        {{#unless allDay}}
+          <div class="modal-time-area">
+            <label class="input-group-label">
+              {{i18n "add_event.event_time"}}
+            </label>
+            <input type="text" id="end-time-picker"/>
+          </div>
+        {{/unless}}
       </div>
-      <div class="modal-time-area">
-        <label class="input-group-label">
-          {{i18n "add_event.event_time"}}
-        </label>
-        <input type="text" id="end-time-picker"/>
-      </div>
+      <div id="date-container-end"/>
     </div>
-    <div id="date-container-end"/>
-  </div>
+  {{/if}}
 {{/d-modal-body}}
 
 <div class="modal-footer">
