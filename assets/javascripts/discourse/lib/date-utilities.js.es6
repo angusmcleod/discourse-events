@@ -6,8 +6,6 @@ let eventLabel = function(event, args = {}) {
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
-  console.log(event)
-
   if (!args.mobile) {
     let start = moment(event['start']);
     let end = moment(event['end']);
