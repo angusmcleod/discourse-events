@@ -3,6 +3,7 @@ let eventLabel = function(event, args = {}) {
   const longFormat = Discourse.SiteSettings.events_event_label_format;
   const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
   const shortOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
+  const includeTimeZone = Discourse.SiteSettings.events_event_label_include_timezone;
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
@@ -28,6 +29,10 @@ let eventLabel = function(event, args = {}) {
         const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
         dateString += ` – ${end.format(endFormat)}`;
       }
+    }
+
+    if (includeTimeZone) {
+      dateString += `, ${start.format('Z')}`;
     }
 
     label += `<span>${dateString}</span>`;
