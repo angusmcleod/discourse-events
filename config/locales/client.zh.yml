@@ -1,0 +1,38 @@
+en:
+  js:
+    add_event:
+      btn_label: "{{iconHtml}} 新增日期时间"
+      modal_title: 日期时间
+      event_start: 开始
+      event_end: 结束
+      event_date: 日期
+      event_time: 时间
+      event_add: 完成
+      event_clear: 清除
+      end_enabled: "包含事件结束"
+      all_day: "整天"
+    category:
+      enable_events: "此类别允许加入事件"
+      events_agenda_filter_closed: "在日程中过虑本类中关闭的事件"
+    composer:
+      tip:
+        add_event: "为事件指定日期时间和地点。"
+    event_list:
+      title: '{{categoryName}} 事件'
+      about: '在你的区域发生的事件'
+      no_results: "没有近期要发生的事件"
+      create: "创建事件"
+    filters:
+      agenda:
+        title: "日程"
+        help: "按开始时间先后列出事件。"
+    add_to_calendar:
+      label: "添加到日历"
+      google: "Google 日历"
+      ics: ".ics 文件"
+      default_details: "事件详情： {{url}}"
+    topics:
+      none:
+        agenda: "没有日程话题。"
+      bottom:
+        agenda: "没有更多日程条目。"
