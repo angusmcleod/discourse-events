@@ -54,7 +54,7 @@ export default Ember.Component.extend({
         classes: ''
       };
 
-      const events = eventsForDate(m, topics);
+      const events = eventsForDate(m, topics, { start: moment(start) });
       if (events.length) {
         day['events'] = events;
       }
