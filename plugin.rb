@@ -13,6 +13,10 @@ Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
 Discourse.filters.push(:agenda)
 Discourse.anonymous_filters.push(:agenda)
+Discourse.top_menu_items.push(:calendar)
+Discourse.anonymous_top_menu_items.push(:calendar)
+Discourse.filters.push(:calendar)
+Discourse.anonymous_filters.push(:calendar)
 
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
@@ -29,14 +33,19 @@ end
 
 after_initialize do
   Category.register_custom_field_type('events_enabled', :boolean)
+  Category.register_custom_field_type('events_agenda_enabled', :boolean)
+  Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_filter_closed', :boolean)
   add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
+  add_to_serializer(:basic_category, :events_agenda_enabled) { object.custom_fields['events_agenda_enabled'] }
+  add_to_serializer(:basic_category, :events_calendar_enabled) { object.custom_fields['events_calendar_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
 
   module EventsSiteSettingExtension
     def type_hash(name)
-      if name == :top_menu && @choices[name].exclude?("agenda")
-        @choices[name].push("agenda")
+      if name == :top_menu
+        @choices[name].push("agenda") if @choices[name].exclude?("agenda")
+        @choices[name].push("calendar") if @choices[name].exclude?("calendar")
       end
       super(name)
     end
@@ -169,6 +178,16 @@ after_initialize do
           topics = filter[:block].call(topics, @options)
         end
 
+        topics
+      end
+    end
+
+    def list_calendar
+      @options[:order] = 'agenda'
+      create_list(:calendar, ascending: 'true') do |topics|
+        topics = topics.joins("INNER JOIN topic_custom_fields
+                                ON topic_custom_fields.topic_id = topics.id
+                                AND topic_custom_fields.name = 'event_start'")
         topics
       end
     end

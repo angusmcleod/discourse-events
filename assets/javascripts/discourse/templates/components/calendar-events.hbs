@@ -1,0 +1,10 @@
+{{#each events as |e|}}
+  <li class="{{e.classes}}" {{action 'goToTopic' e.topicId}}>
+    {{#if e.time}}
+      <span>{{e.time}}</span>
+    {{/if}}
+    {{#if e.title}}
+      <span>{{replace-emoji e.title}}</span>
+    {{/if}}
+  </li>
+{{/each}}

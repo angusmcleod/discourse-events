@@ -7,6 +7,7 @@ import NavItem from 'discourse/models/nav-item';
 import EditCategorySettings from 'discourse/components/edit-category-settings';
 import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
+import { withPluginApi } from 'discourse/lib/plugin-api';
 
 export default {
   name: 'events-edits',
@@ -66,10 +67,13 @@ export default {
         let items = this._super(category, args);
 
         if (category) {
-          items = items.reject((item) => item.name === 'agenda');
+          items = items.reject((item) => item.name === 'agenda' || item.name === 'calendar');
 
-          if (category.events_enabled) {
+          if (category.events_agenda_enabled) {
             items.push(Discourse.NavItem.fromText('agenda', args));
+          }
+          if (category.events_calendar_enabled) {
+            items.push(Discourse.NavItem.fromText('calendar', args));
           }
         }
 
@@ -103,14 +107,59 @@ export default {
       availableViews(category) {
         let views = this._super(...arguments);
 
-        if (category.get('events_enabled')) {
-          views.push(
-            {name: I18n.t('filters.agenda.title'), value: 'agenda'}
-          );
+        if (category.get('events_agenda_enabled')) {
+          views.push({name: I18n.t('filters.agenda.title'), value: 'agenda'});
+        }
+
+        if (category.get('events_calendar_enabled')) {
+          views.push({name: I18n.t('filters.calendar.title'), value: 'calendar'});
         }
 
         return views;
       },
+    });
+
+    const calendarRoutes = [
+      `Calendar`,
+      `CalendarCategory`,
+      `CalendarParentCategory`,
+      `CalendarCategoryNone`
+    ];
+
+    calendarRoutes.forEach((route) => {
+      withPluginApi('0.8.12', api => {
+        api.modifyClass(`route:discovery.${route}`, {
+          renderTemplate() {
+            if (this.routeName.indexOf('Category') > -1) {
+              this.render('navigation/category', { outlet: 'navigation-bar' });
+            } else {
+              this.render('navigation/default', { outlet: 'navigation-bar' });
+            }
+            this.render("discovery/calendar", { outlet: "list-container", controller: 'discovery/topics' });
+          }
+        });
+      });
+    });
+
+    const categoryRoutes = [
+      'category',
+      'parentCategory',
+      'categoryNone'
+    ];
+
+    categoryRoutes.forEach(function(route){
+      withPluginApi('0.8.12', api => {
+        api.modifyClass(`route:discovery.${route}`, {
+          afterModel(model) {
+            const filter = this.filter(model.category);
+            if (filter === 'calendar' || filter === 'agenda') {
+              return this.replaceWith(`/c/${Discourse.Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
+            } else {
+              return this._super(...arguments);
+            }
+          }
+        });
+      });
     });
   }
 };

@@ -1,0 +1,22 @@
+{{#each weekdays as |w|}}
+  <div class="weekday">
+    <span>{{w}}</span>
+  </div>
+{{/each}}
+
+{{#each days as |d|}}
+  <div class='day {{d.classes}}' {{action 'setDate' d.date d.monthNum}}>
+    <div class='date'>{{d.date}}</div>
+    {{#if d.events}}
+      {{#if showEvents}}
+        <div class='events'>
+          {{calendar-events events=d.events}}
+        </div>
+      {{else}}
+        <div class='has-events'>
+          {{d-icon 'circle'}}
+        </div>
+      {{/if}}
+    {{/if}}
+  </div>
+{{/each}}

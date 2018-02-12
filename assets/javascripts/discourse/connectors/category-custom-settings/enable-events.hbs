@@ -7,6 +7,20 @@
 
 <section class='field'>
   <label>
+    {{input type="checkbox" checked=category.custom_fields.events_agenda_enabled}}
+    {{i18n 'category.enable_events_agenda'}}
+  </label>
+</section>
+
+<section class='field'>
+  <label>
+    {{input type="checkbox" checked=category.custom_fields.events_calendar_enabled}}
+    {{i18n 'category.enable_events_calendar'}}
+  </label>
+</section>
+
+<section class='field'>
+  <label>
     {{input type="checkbox" checked=category.custom_fields.events_agenda_filter_closed}}
     {{i18n 'category.events_agenda_filter_closed'}}
   </label>

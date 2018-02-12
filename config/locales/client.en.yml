@@ -13,6 +13,8 @@ en:
       all_day: "All day"
     category:
       enable_events: "Allow events to be added to topics in this category"
+      enable_events_agenda: "Show an agenda topic list in this category"
+      enable_events_calendar: "Show a calendar topic list in this category"
       events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category"
     composer:
       tip:
@@ -26,6 +28,9 @@ en:
       agenda:
         title: "Agenda"
         help: "List events in ascending chronological order according to the start datetime."
+      calendar:
+        title: "Calendar"
+        help: "Show events in a calendar"
     add_to_calendar:
       label: "Add to Calendar"
       google: "Google Calendar"
