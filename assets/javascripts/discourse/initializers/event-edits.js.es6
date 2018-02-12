@@ -11,7 +11,7 @@ import { withPluginApi } from 'discourse/lib/plugin-api';
 
 export default {
   name: 'events-edits',
-  initialize(){
+  initialize(container){
     Composer.serializeOnCreate('event');
     Composer.serializeToTopic('event', 'topic.event');
 
@@ -127,17 +127,22 @@ export default {
     ];
 
     calendarRoutes.forEach((route) => {
-      withPluginApi('0.8.12', api => {
-        api.modifyClass(`route:discovery.${route}`, {
-          renderTemplate() {
+      var route = container.lookup(`route:discovery.${route}`);
+      route.reopen({
+        renderTemplate(controller, model) {
+          // respect discourse-layouts settings
+          const settings = Discourse.SiteSettings;
+          const global = settings.layouts_list_navigation_disabled_global;
+          const catGlobal = model.category && model.category.get('layouts_list_navigation_disabled_global');
+          if (!global && !catGlobal) {
             if (this.routeName.indexOf('Category') > -1) {
               this.render('navigation/category', { outlet: 'navigation-bar' });
             } else {
               this.render('navigation/default', { outlet: 'navigation-bar' });
             }
-            this.render("discovery/calendar", { outlet: "list-container", controller: 'discovery/topics' });
           }
-        });
+          this.render("discovery/calendar", { outlet: "list-container", controller: 'discovery/topics' });
+        }
       });
     });
 
