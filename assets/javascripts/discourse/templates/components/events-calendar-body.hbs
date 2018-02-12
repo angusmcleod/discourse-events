@@ -6,7 +6,9 @@
 
 {{#each days as |d|}}
   <div class='day {{d.classes}}' {{action 'setDate' d.date d.monthNum}}>
-    <div class='date'>{{d.date}}</div>
+    <div class='date'>
+      <label>{{d.date}}</label>
+    </div>
     {{#if d.events}}
       {{#if showEvents}}
         <div class='events'>

@@ -195,16 +195,22 @@
       cursor: pointer;
       position: relative;
 
+      .date label {
+        height: 20px;
+        width: 20px;
+      }
+
       .has-events {
         position: absolute;
         bottom: 2px;
-        right: calc(50% - 4px);
+        width: 100%;
       }
     }
   }
 
   .events-below {
     margin-top: 8px;
+    margin-bottom: 15px;
 
     ul.calendar-events {
       li {
@@ -255,12 +261,10 @@
       background-color: $primary-low;
     }
 
-    &.selected .date {
-      width: 19px;
-      height: 21px;
-      border-radius: 50%;
+    &.selected .date label {
       background-color: $tertiary;
       color: $secondary;
+      border-radius: 50%;
     }
 
     .has-events {
@@ -269,8 +273,12 @@
   }
 
   .date {
-    padding: 2px 4px;
     display: inline-block;
+
+    label {
+      padding: 2px 3px;
+      margin-bottom: 0;
+    }
   }
 }
 
