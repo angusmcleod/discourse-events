@@ -205,6 +205,22 @@
 
   .events-below {
     margin-top: 8px;
+
+    ul.calendar-events {
+      li {
+        margin: 2px 0;
+        padding: 0 5px;
+        white-space: nowrap;
+        cursor: pointer;
+        height: 25px;
+        line-height: 25px;
+
+        img.emoji {
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
   }
 }
 
