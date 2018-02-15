@@ -84,34 +84,36 @@ let icsUri = function(params) {
 
 let eventsForDate = function(date, topics, args = {}) {
   return topics.reduce((filtered, t) => {
-    const start = moment(t.event.start);
-    const end = moment(t.event.end);
-    let attrs = {
-      topicId: t.id
-    };
+    if (t.event) {
+      const start = moment(t.event.start);
+      const end = moment(t.event.end);
+      let attrs = {
+        topicId: t.id
+      };
 
-    if (date.isSame(start, "day")) {
-      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
-      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
+      if (date.isSame(start, "day")) {
+        const startIsDayStart = start.hour() === 0 && start.minute() === 0;
+        const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
 
-      if ((startIsDayStart && endIsDayEnd)) {
-        attrs['classes'] = 'all-day';
-      } else {
-        attrs['time'] = moment(t.event.start).format('h:mm a');
-        if (t.event.end && !date.isSame(end, "day")) {
+        if ((startIsDayStart && endIsDayEnd)) {
           attrs['classes'] = 'all-day';
+        } else {
+          attrs['time'] = moment(t.event.start).format('h:mm a');
+          if (t.event.end && !date.isSame(end, "day")) {
+            attrs['classes'] = 'all-day';
+          }
         }
-      }
-      attrs['title'] = t.title;
-      filtered.push(attrs);
-    } else if (t.event.end && date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day")) {
-      attrs['classes'] = 'all-day';
-
-      if (args.dateEvents || (args.start && date.isSame(args.start, "day")))   {
         attrs['title'] = t.title;
-      }
+        filtered.push(attrs);
+      } else if (t.event.end && date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day")) {
+        attrs['classes'] = 'all-day';
 
-      filtered.push(attrs);
+        if (args.dateEvents || (args.start && date.isSame(args.start, "day")))   {
+          attrs['title'] = t.title;
+        }
+
+        filtered.push(attrs);
+      }
     }
 
     return filtered;
