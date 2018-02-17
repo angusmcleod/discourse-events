@@ -99,13 +99,14 @@ let eventsForDate = function(date, topics, args = {}) {
           attrs['classes'] = 'all-day';
         } else {
           attrs['time'] = moment(t.event.start).format('h:mm a');
+
           if (t.event.end && !date.isSame(end, "day")) {
             attrs['classes'] = 'all-day';
           }
         }
         attrs['title'] = t.title;
         filtered.push(attrs);
-      } else if (t.event.end && date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day")) {
+      } else if (t.event.end && (date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day"))) {
         attrs['classes'] = 'all-day';
 
         if (args.dateEvents || (args.start && date.isSame(args.start, "day")))   {
