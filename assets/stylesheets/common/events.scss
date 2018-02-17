@@ -288,7 +288,15 @@
       overflow: visible;
       border: 1px solid $primary-low;
       box-shadow: 0 2px 2px rgba(0,0,0,0.4);
-      padding-bottom: 2px;
+
+      .events {
+        padding: 3px 4px;
+
+        li {
+          height: 25px;
+          line-height: 25px;
+        }
+      }
     }
 
     .header {
@@ -337,8 +345,8 @@ ul.calendar-events {
     &.all-day {
       background-color: $tertiary;
       color: $secondary;
-      border-top: 1px solid $primary-medium;
-      border-bottom: 1px solid $primary-medium;
+      border-top: 1px solid $primary-low;
+      border-bottom: 1px solid $primary-low;
     }
 
     span {
