@@ -1,4 +1,5 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
+import { eventsForDate } from '../lib/date-utilities';
 
 const MAX_EVENTS = 3;
 
@@ -7,12 +8,13 @@ export default Ember.Component.extend({
   expanded: false,
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
+  start: Ember.computed.equal('index', 0),
 
   @on('init')
   @observes('expanded')
   setEvents() {
     const expanded = this.get('expanded');
-    const allEvents = this.get('day.events');
+    const allEvents = this.get('allEvents');
     let events = Object.assign([], allEvents);
 
     if (events.length && !expanded) {
@@ -26,6 +28,12 @@ export default Ember.Component.extend({
     }
 
     this.set("events", events);
+  },
+
+  @computed('day', 'topics.[]', 'expanded')
+  allEvents(day, topics, expanded) {
+    const start = this.get('start');
+    return eventsForDate(day, topics, { start: moment(start), expanded });
   },
 
   didInsertElement() {
@@ -51,13 +59,32 @@ export default Ember.Component.extend({
   },
 
   click() {
-    const date = this.get('day.date');
-    const month = this.get('day.monthNum');
+    const date = this.get('date');
+    const month = this.get('month');
     this.sendAction('setDate', date, month);
   },
 
-  @computed('day.classes', 'expanded')
-  classes(classes, expanded) {
+  @computed('index')
+  date() {
+    const day = this.get('day');
+    return day.date();
+  },
+
+  @computed('index')
+  month() {
+    const day = this.get('day');
+    return day.month();
+  },
+
+  @computed('day', 'date', 'month', 'expanded', 'responsive')
+  classes(day, date, month, expanded, responsive) {
+    let classes = '';
+    if (day.isSame(moment(), "day")) {
+      classes += 'today';
+    }
+    if (responsive && day.isSame(moment().month(month).date(date), "day")) {
+      classes += ' selected';
+    }
     if (expanded) {
       classes += ' expanded';
     }

@@ -1,5 +1,4 @@
 import { default as computed, on } from 'ember-addons/ember-computed-decorators';
-import { eventsForDate } from '../lib/date-utilities';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
@@ -21,8 +20,8 @@ export default Ember.Component.extend({
     return weekdays;
   },
 
-  @computed('month', 'date', 'topics.[]', 'selectDates')
-  days(month, date, topics, responsive) {
+  @computed('month')
+  days(month) {
     const firstDayMonth = moment().month(month).date(1);
     const firstDayLocale = moment().weekday(0).day();
 
@@ -48,27 +47,8 @@ export default Ember.Component.extend({
     const end = moment(start).add(dayCount, 'days');
 
     let days = [];
-    for (var m = moment(start); m.isBefore(end); m.add(1, 'days')) {
-      let day = {
-        date: m.date(),
-        monthNum: m.month(),
-        classes: ''
-      };
-
-      const events = eventsForDate(m, topics, { start: moment(start) });
-      if (events.length) {
-        day['events'] = events;
-      }
-
-      if (m.isSame(moment(), "day")) {
-        day['classes'] += 'today';
-      }
-
-      if (responsive && m.isSame(moment().month(month).date(date), "day")) {
-        day['classes'] += ' selected';
-      }
-
-      days.push(day);
+    for (var day = moment(start); day.isBefore(end); day.add(1, 'days')) {
+      days.push(moment().month(day.month()).date(day.date()));
     }
 
     return days;

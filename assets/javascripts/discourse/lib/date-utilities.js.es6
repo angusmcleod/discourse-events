@@ -122,7 +122,7 @@ let eventsForDate = function(date, topics, args = {}) {
       } else if (t.event.end && (date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day"))) {
         attrs = allDay(attrs, t);
 
-        if (args.dateEvents || (args.start && date.isSame(args.start, "day")))   {
+        if (args.dateEvents || args.expanded || (args.start && date.isSame(args.start, "day")))   {
           attrs['title'] = t.title;
         }
 
