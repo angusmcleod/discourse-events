@@ -41,3 +41,5 @@ en:
         agenda: "There are no agenda topics."
       bottom:
         agenda: "There are no more agenda topics."
+    events_calendar:
+      hidden: "{{count}} more" 

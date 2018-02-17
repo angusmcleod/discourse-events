@@ -3,6 +3,7 @@ import { eventsForDate } from '../lib/date-utilities';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
+  expanded: null,
 
   @on('init')
   setup() {
@@ -79,6 +80,10 @@ export default Ember.Component.extend({
       if (selectDates) {
         this.sendAction('setDate', date, monthNum);
       }
+    },
+
+    expand(date) {
+      this.set('expanded', date);
     }
   }
 });

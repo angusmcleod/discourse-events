@@ -82,6 +82,17 @@ let icsUri = function(params) {
     ].join('\n'));
 };
 
+let allDay = function(attrs, topic) {
+  attrs['classes'] = 'all-day';
+  attrs['allDay'] = true;
+
+  if (topic.category) {
+    attrs['listStyle'] = Ember.String.htmlSafe(`background-color: #${topic.category.color}`);
+  }
+
+  return attrs;
+};
+
 let eventsForDate = function(date, topics, args = {}) {
   return topics.reduce((filtered, t) => {
     if (t.event) {
@@ -96,18 +107,20 @@ let eventsForDate = function(date, topics, args = {}) {
         const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
 
         if ((startIsDayStart && endIsDayEnd)) {
-          attrs['classes'] = 'all-day';
+          attrs = allDay(attrs, t);
         } else {
           attrs['time'] = moment(t.event.start).format('h:mm a');
 
           if (t.event.end && !date.isSame(end, "day")) {
-            attrs['classes'] = 'all-day';
+            attrs = allDay(attrs, t);
+          } else if (t.category) {
+            attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${t.category.color}`);
           }
         }
         attrs['title'] = t.title;
         filtered.push(attrs);
       } else if (t.event.end && (date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day"))) {
-        attrs['classes'] = 'all-day';
+        attrs = allDay(attrs, t);
 
         if (args.dateEvents || (args.start && date.isSame(args.start, "day")))   {
           attrs['title'] = t.title;

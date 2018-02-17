@@ -4,21 +4,9 @@
   </div>
 {{/each}}
 
-{{#each days as |d|}}
-  <div class='day {{d.classes}}' {{action 'setDate' d.date d.monthNum}}>
-    <div class='date'>
-      <label>{{d.date}}</label>
-    </div>
-    {{#if d.events}}
-      {{#if showEvents}}
-        <div class='events'>
-          {{calendar-events events=d.events}}
-        </div>
-      {{else}}
-        <div class='has-events'>
-          {{d-icon 'circle'}}
-        </div>
-      {{/if}}
-    {{/if}}
-  </div>
+{{#each days as |day|}}
+  {{events-calendar-day day=day
+                        setDate='setDate'
+                        expand='expand'
+                        showEvents=showEvents}}
 {{/each}}

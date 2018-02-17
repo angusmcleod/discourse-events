@@ -1,5 +1,8 @@
 {{#each events as |e|}}
-  <li class="{{e.classes}}" {{action 'goToTopic' e.topicId}}>
+  <li class="{{e.classes}}" {{action 'goToTopic' e.topicId}} style="{{e.listStyle}}">
+    {{#unless e.allDay}}
+      <span style='{{e.dotStyle}}'>{{d-icon 'circle'}}</span>
+    {{/unless}}
     {{#if e.time}}
       <span>{{e.time}}</span>
     {{/if}}

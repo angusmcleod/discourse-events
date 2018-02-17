@@ -1,0 +1,30 @@
+<div class="container" style="{{containerStyle}}">
+  <div class="header">
+    <div class='date'>
+      <label>{{day.date}}</label>
+    </div>
+
+    {{#if expanded}}
+      <div class="close" {{action 'toggleExpanded'}}>{{d-icon 'times'}}</div>
+    {{/if}}
+  </div>
+
+  {{#if events}}
+    {{#if showEvents}}
+      <div class='events'>
+        {{calendar-events events=events}}
+      </div>
+      {{#if hasHidden}}
+        <div class="hidden-events">
+          {{d-button class='btn-small'
+                     translatedLabel=(i18n 'events_calendar.hidden' count=hidden)
+                     action='toggleExpanded'}}
+        </div>
+      {{/if}}
+    {{else}}
+      <div class='has-events'>
+        {{d-icon 'circle'}}
+      </div>
+    {{/if}}
+  {{/if}}
+</div>
