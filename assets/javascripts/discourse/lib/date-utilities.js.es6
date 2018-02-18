@@ -87,31 +87,37 @@ let allDay = function(attrs, topic) {
   attrs['allDay'] = true;
 
   if (topic.category) {
-    attrs['listStyle'] = Ember.String.htmlSafe(`background-color: #${topic.category.color}`);
+    attrs['listStyle'] += `background-color: #${topic.category.color};`;
   }
 
   return attrs;
 };
 
-let eventsForDate = function(date, topics, args = {}) {
-  return topics.reduce((filtered, topic, index) => {
+let allDayPrevious = false;
+
+let eventsForDay = function(day, topics, args = {}) {
+  let allDayCount = 0;
+
+  return topics.reduce((filtered, topic) => {
     if (topic.event) {
       const start = moment(topic.event.start);
       const end = moment(topic.event.end);
+      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
+      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
+      const isAllDay = startIsDayStart && endIsDayEnd;
+
       let attrs = {
-        topicId: topic.id
+        topicId: topic.id,
+        listStyle: ''
       };
 
-      if (date.isSame(start, "day")) {
-        const startIsDayStart = start.hour() === 0 && start.minute() === 0;
-        const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
-
-        if ((startIsDayStart && endIsDayEnd)) {
+      if (day.isSame(start, "day")) {
+        if (isAllDay) {
           attrs = allDay(attrs, topic);
         } else {
           attrs['time'] = moment(topic.event.start).format('h:mm a');
 
-          if (topic.event.end && !date.isSame(end, "day")) {
+          if (topic.event.end && !day.isSame(end, "day")) {
             attrs = allDay(attrs, topic);
           } else if (topic.category) {
             attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
@@ -121,21 +127,34 @@ let eventsForDate = function(date, topics, args = {}) {
         attrs['title'] = topic.title;
 
         filtered.push(attrs);
-      } else if (topic.event.end && (date.isSame(end, "day") || date.isBetween(topic.event.start, topic.event.end, "day"))) {
+      } else if (topic.event.end && (day.isSame(end, "day") || day.isBetween(topic.event.start, topic.event.end, "day"))) {
+
+        allDayCount ++;
+        if (!topic.event.allDayIndex) topic.event.allDayIndex = allDayCount;
+        if (!args.dateEvents && !allDayPrevious && (topic.event.allDayIndex !== allDayCount)) {
+          let difference = topic.event.allDayIndex - allDayCount;
+          attrs['listStyle'] += `margin-top: ${difference * 22}px;`;
+        }
+        allDayPrevious = true;
+
         attrs = allDay(attrs, topic);
 
-        if (args.dateEvents || args.expanded || (args.start && date.isSame(args.start, "day")))   {
+        if (args.dateEvents || args.expanded || args.firstDay)   {
           attrs['title'] = topic.title;
         }
 
-        filtered.push(attrs);
-      }
+        if (attrs['listStyle'].length) {
+          attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
+        }
 
-      topic.event.calendarIndex = index;
+        filtered.push(attrs);
+      } else if (isAllDay) {
+        allDayPrevious = false;
+      }
     }
 
     return filtered;
   }, []);
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDate };
+export { eventLabel, googleUri, icsUri, eventsForDay };

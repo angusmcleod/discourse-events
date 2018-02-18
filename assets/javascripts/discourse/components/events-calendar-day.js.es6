@@ -1,5 +1,5 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
-import { eventsForDate } from '../lib/date-utilities';
+import { eventsForDay } from '../lib/date-utilities';
 
 const MAX_EVENTS = 3;
 
@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   expanded: false,
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
-  start: Ember.computed.equal('index', 0),
+  firstDay: Ember.computed.equal('index', 0),
 
   @on('init')
   @observes('expanded')
@@ -32,8 +32,8 @@ export default Ember.Component.extend({
 
   @computed('day', 'topics.[]', 'expanded')
   allEvents(day, topics, expanded) {
-    const start = this.get('start');
-    return eventsForDate(day, topics, { start: moment(start), expanded });
+    const firstDay = this.get('firstDay');
+    return eventsForDay(day, topics, { firstDay, expanded });
   },
 
   didInsertElement() {

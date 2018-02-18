@@ -315,6 +315,8 @@ ul.events-calendar-events {
     cursor: pointer;
     height: 16px;
     line-height: 15px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
 
     .fa-circle {
       color: inherit;

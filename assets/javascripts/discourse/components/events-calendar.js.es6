@@ -1,5 +1,5 @@
 import { default as computed, on } from 'ember-addons/ember-computed-decorators';
-import { eventsForDate } from '../lib/date-utilities';
+import { eventsForDay } from '../lib/date-utilities';
 
 const RESPONSIVE_BREAKPOINT = 800;
 
@@ -39,10 +39,7 @@ export default Ember.Component.extend({
   @computed
   months() {
     return moment.localeData().months().map((m, i) => {
-      return {
-        id: i,
-        name: m
-      };
+      return { id: i, name: m };
     });
   },
 
@@ -53,8 +50,8 @@ export default Ember.Component.extend({
 
   @computed('currentDate', 'currentMonth', 'topics.[]')
   dateEvents(currentDate, currentMonth, topics) {
-    const m = moment().month(currentMonth);
-    return eventsForDate(m.date(currentDate), topics, { dateEvents: true });
+    const day = moment().month(currentMonth);
+    return eventsForDay(day.date(currentDate), topics, { dateEvents: true });
   },
 
   actions: {
