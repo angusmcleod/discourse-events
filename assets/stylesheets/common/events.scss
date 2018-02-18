@@ -213,27 +213,6 @@
       }
     }
   }
-
-  .events-below {
-    margin-top: 8px;
-    margin-bottom: 15px;
-
-    ul.calendar-events {
-      li {
-        margin: 2px 0;
-        padding: 0 5px;
-        white-space: nowrap;
-        cursor: pointer;
-        height: 25px;
-        line-height: 25px;
-
-        img.emoji {
-          height: 20px;
-          width: 20px;
-        }
-      }
-    }
-  }
 }
 
 .events-calendar-body {
@@ -325,7 +304,7 @@
   }
 }
 
-ul.calendar-events {
+ul.events-calendar-events {
   margin: 0;
   list-style: none;
 
@@ -356,6 +335,23 @@ ul.calendar-events {
     img.emoji {
       height: 17px;
       width: 17px;
+    }
+  }
+}
+
+.events-below {
+  margin-top: 8px;
+  margin-bottom: 15px;
+
+  ul.events-calendar-events li {
+    height: auto;
+    line-height: 20px;
+    margin: 5px 0;
+    white-space: normal;
+
+    img.emoji {
+      height: 20px;
+      width: 20px;
     }
   }
 }

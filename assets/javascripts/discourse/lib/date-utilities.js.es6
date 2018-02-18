@@ -94,12 +94,12 @@ let allDay = function(attrs, topic) {
 };
 
 let eventsForDate = function(date, topics, args = {}) {
-  return topics.reduce((filtered, t) => {
-    if (t.event) {
-      const start = moment(t.event.start);
-      const end = moment(t.event.end);
+  return topics.reduce((filtered, topic, index) => {
+    if (topic.event) {
+      const start = moment(topic.event.start);
+      const end = moment(topic.event.end);
       let attrs = {
-        topicId: t.id
+        topicId: topic.id
       };
 
       if (date.isSame(start, "day")) {
@@ -107,27 +107,31 @@ let eventsForDate = function(date, topics, args = {}) {
         const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
 
         if ((startIsDayStart && endIsDayEnd)) {
-          attrs = allDay(attrs, t);
+          attrs = allDay(attrs, topic);
         } else {
-          attrs['time'] = moment(t.event.start).format('h:mm a');
+          attrs['time'] = moment(topic.event.start).format('h:mm a');
 
-          if (t.event.end && !date.isSame(end, "day")) {
-            attrs = allDay(attrs, t);
-          } else if (t.category) {
-            attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${t.category.color}`);
+          if (topic.event.end && !date.isSame(end, "day")) {
+            attrs = allDay(attrs, topic);
+          } else if (topic.category) {
+            attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
           }
         }
-        attrs['title'] = t.title;
+
+        attrs['title'] = topic.title;
+
         filtered.push(attrs);
-      } else if (t.event.end && (date.isSame(end, "day") || date.isBetween(t.event.start, t.event.end, "day"))) {
-        attrs = allDay(attrs, t);
+      } else if (topic.event.end && (date.isSame(end, "day") || date.isBetween(topic.event.start, topic.event.end, "day"))) {
+        attrs = allDay(attrs, topic);
 
         if (args.dateEvents || args.expanded || (args.start && date.isSame(args.start, "day")))   {
-          attrs['title'] = t.title;
+          attrs['title'] = topic.title;
         }
 
         filtered.push(attrs);
       }
+
+      topic.event.calendarIndex = index;
     }
 
     return filtered;

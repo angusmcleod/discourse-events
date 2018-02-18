@@ -59,9 +59,12 @@ export default Ember.Component.extend({
   },
 
   click() {
-    const date = this.get('date');
-    const month = this.get('month');
-    this.sendAction('setDate', date, month);
+    const canSelectDate = this.get('canSelectDate');
+    if (canSelectDate) {
+      const date = this.get('date');
+      const month = this.get('month');
+      this.sendAction('selectDate', date, month);
+    }
   },
 
   @computed('index')
@@ -76,17 +79,17 @@ export default Ember.Component.extend({
     return day.month();
   },
 
-  @computed('day', 'date', 'month', 'expanded', 'responsive')
-  classes(day, date, month, expanded, responsive) {
+  @computed('day', 'currentDate', 'expanded', 'responsive')
+  classes(day, currentDate, expanded, responsive) {
     let classes = '';
     if (day.isSame(moment(), "day")) {
-      classes += 'today';
+      classes += 'today ';
     }
-    if (responsive && day.isSame(moment().month(month).date(date), "day")) {
-      classes += ' selected';
+    if (responsive && day.isSame(moment().date(currentDate), "day")) {
+      classes += 'selected ';
     }
     if (expanded) {
-      classes += ' expanded';
+      classes += 'expanded';
     }
     return classes;
   },

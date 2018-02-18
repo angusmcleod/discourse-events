@@ -1,13 +1,13 @@
 {{combo-box content=months value=month class='month-dropdown'}}
 {{events-calendar-body topics=topics
-                       month=month
-                       date=date
-                       setDate='setDate'
+                       currentMonth=currentMonth
+                       currentDate=currentDate
+                       selectDate='selectDate'
+                       canSelectDate=canSelectDate
                        showEvents=showEvents
-                       selectDates=selectDates
                        responsive=responsive}}
 {{#if eventsBelow}}
   <div class="events-below">
-    {{calendar-events events=dateEvents}}
+    {{events-calendar-events events=dateEvents}}
   </div>
 {{/if}}

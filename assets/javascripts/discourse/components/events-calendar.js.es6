@@ -6,7 +6,7 @@ const RESPONSIVE_BREAKPOINT = 800;
 export default Ember.Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
   showEvents: Ember.computed.not('eventsBelow'),
-  selectDates: Ember.computed.alias('eventsBelow'),
+  canSelectDate: Ember.computed.alias('eventsBelow'),
 
   @on('init')
   setup() {
@@ -19,8 +19,8 @@ export default Ember.Component.extend({
     });
 
     this.setProperties({
-      date: moment().date(),
-      month: moment().format('MMMM')
+      currentDate: moment().date(),
+      currentMonth: moment().month()
     });
   },
 
@@ -38,7 +38,12 @@ export default Ember.Component.extend({
 
   @computed
   months() {
-    return moment.localeData().months();
+    return moment.localeData().months().map((m, i) => {
+      return {
+        id: i,
+        name: m
+      };
+    });
   },
 
   @computed('responsive')
@@ -46,19 +51,17 @@ export default Ember.Component.extend({
     return responsive || this.site.mobileView;
   },
 
-  @computed('date', 'month', 'topics.[]')
-  dateEvents(date, month, topics) {
-    const m = moment().month(month);
-    return eventsForDate(m.date(date), topics, { dateEvents: true });
+  @computed('currentDate', 'currentMonth', 'topics.[]')
+  dateEvents(currentDate, currentMonth, topics) {
+    const m = moment().month(currentMonth);
+    return eventsForDate(m.date(currentDate), topics, { dateEvents: true });
   },
 
   actions: {
-    setDate(date, monthNum) {
-      const months = this.get('months');
-      let month = months[monthNum];
+    selectDate(date, month) {
       this.setProperties({
-        date,
-        month
+        currentDate: date,
+        currentMonth: month
       });
     }
   }

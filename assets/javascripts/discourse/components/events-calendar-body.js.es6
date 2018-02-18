@@ -20,9 +20,9 @@ export default Ember.Component.extend({
     return weekdays;
   },
 
-  @computed('month')
-  days(month) {
-    const firstDayMonth = moment().month(month).date(1);
+  @computed('currentMonth')
+  days(currentMonth) {
+    const firstDayMonth = moment().month(currentMonth).date(1);
     const firstDayLocale = moment().weekday(0).day();
 
     let start;
@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     }
 
     let dayCount = 35;
-    if ((diff + moment().month(month).daysInMonth()) > 35) dayCount = 42;
+    if ((diff + moment().month(currentMonth).daysInMonth()) > 35) dayCount = 42;
 
     const end = moment(start).add(dayCount, 'days');
 
@@ -55,11 +55,8 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    setDate(date, monthNum) {
-      const selectDates = this.get('selectDates');
-      if (selectDates) {
-        this.sendAction('setDate', date, monthNum);
-      }
+    selectDate(date, month) {
+      this.sendAction('selectDate', date, month);
     },
 
     expand(date) {
