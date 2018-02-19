@@ -1,11 +1,36 @@
 .add-event-modal {
   .add-event-controls {
     padding: 0 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 
     .control {
       display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      min-height: 30px;
       margin-right: 20px;
+
+      > span {
+        line-height: 30px;
+      }
+    }
+
+    .timezone-modal {
+      position: absolute;
+      top: 0;
+      padding: 5px;
+      height: auto;
+      background-color: $secondary;
+      box-shadow: 0 2px 2px rgba(0,0,0,0.4);
+
+      .combo-box {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .btn {
+        margin-right: 2px;
+      }
     }
   }
 
@@ -79,6 +104,7 @@
 
   .pika-single {
     position: relative !important;
+    z-index: 100;
 
     .pika-lendar {
       border: 1px solid #eee;

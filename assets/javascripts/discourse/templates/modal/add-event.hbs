@@ -8,6 +8,18 @@
       {{input type='checkbox' checked=allDay}}
       <span>{{i18n 'add_event.all_day'}}</span>
     </div>
+    {{#unless allDay}}
+      <div class="control">
+        {{d-button translatedLabel=timezoneLabel action='toggleShowTimezone'}}
+        {{#if showTimezone}}
+          <div class="timezone-modal">
+            {{combo-box value=timezone content=timezones none='add_event.no_timezone' filterable=true}}
+            {{d-button label='add_event.event_add' action='toggleShowTimezone'}}
+            {{d-button label='add_event.event_clear' action='clearTimezone'}}
+          </div>
+        {{/if}}
+      </div>
+    {{/unless}}
   </div>
   <div class="start-card date-time-card">
     <span class="modal-sub-title">

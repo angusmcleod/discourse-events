@@ -1,22 +1,59 @@
+let isAllDay = function(event) {
+  if (event['all_day']) return true;
+
+  // legacy check for events pre-addition of 'all_day' attribute
+  const start = moment(event['start']);
+  const end = moment(event['end']);
+  const startIsDayStart = start.hour() === 0 && start.minute() === 0;
+  const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
+  return startIsDayStart && endIsDayEnd;
+};
+
+let setupEvent = function(event, args = {}) {
+  let start;
+  let end;
+  let allDay;
+
+  if (event) {
+    start = moment(event['start']);
+
+    if (event['end']) {
+      end = moment(event['end']);
+      allDay = isAllDay(event);
+    }
+
+    if (event['timezone'] && (allDay || !args.displayInUserTimezone)) {
+      start = start.tz(event['timezone']);
+      if (event['end']) {
+        end = end.tz(event['timezone']);
+      }
+    }
+  }
+
+  return { start, end, allDay };
+};
+
+let timezoneLabel = function(timezone) {
+  const offset = moment.tz(timezone).format('Z');
+  let raw = timezone;
+  const nameArr = raw.split('/');
+  if (nameArr.length > 1) {
+    raw = nameArr[1];
+  }
+  let name = raw.replace('_', '');
+  return`(${offset}) ${name}`;
+};
+
 let eventLabel = function(event, args = {}) {
   const icon = Discourse.SiteSettings.events_event_label_icon;
   const longFormat = Discourse.SiteSettings.events_event_label_format;
   const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
   const shortOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
-  const includeTimeZone = Discourse.SiteSettings.events_event_label_include_timezone;
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    let start = moment(event['start']);
-    let end = moment(event['end']);
-    let allDay = false;
-
-    if (event['start'] && event['end']) {
-      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
-      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
-      allDay = startIsDayStart && endIsDayEnd;
-    }
+    const { start, end, allDay } = setupEvent(event, { displayInUserTimezone: args.displayInUserTimezone });
 
     let format = args.short ? shortFormat : longFormat;
     let formatArr = format.split(',');
@@ -31,9 +68,15 @@ let eventLabel = function(event, args = {}) {
       }
     }
 
-    if (includeTimeZone) {
-      dateString += `, ${start.format('Z')}`;
+    let timezone = null;
+    const forceTimezone = Discourse.SiteSettings.events_event_label_include_timezone;
+    if (forceTimezone) {
+      timezone = event['timezone'] || moment.tz.guess();
     }
+    if (!allDay && args.showTimezoneIfDifferent && event['timezone'] && event['timezone'] !== moment.tz.guess()) {
+      timezone = event['timezone'];
+    }
+    if (timezone) dateString += `, ${timezoneLabel(timezone)}`;
 
     label += `<span>${dateString}</span>`;
   }
@@ -47,21 +90,15 @@ let utcDateTime = function(dateTime) {
 
 let googleUri = function(params) {
   let href = "https://www.google.com/calendar/render?action=TEMPLATE";
-
   if (params.title) {
     href += `&text=${params.title.replace(/ /g,'+').replace(/[^\w+]+/g,'')}`;
   }
-
   href += `&dates=${utcDateTime(params.event.start)}/${utcDateTime(params.event.end)}`;
-
   href += `&details=${params.details || I18n.t('add_to_calendar.default_details', {url: params.url})}`;
-
   if (params.location) {
     href += `&location=${params.location}`;
   }
-
   href += "&sf=true&output=xml";
-
   return href;
 };
 
@@ -82,7 +119,7 @@ let icsUri = function(params) {
     ].join('\n'));
 };
 
-let allDay = function(attrs, topic) {
+let allDayAttrs = function(attrs, topic) {
   attrs['classes'] = 'all-day';
   attrs['allDay'] = true;
 
@@ -94,41 +131,45 @@ let allDay = function(attrs, topic) {
 };
 
 let allDayPrevious = false;
-
 let eventsForDay = function(day, topics, args = {}) {
   let allDayCount = 0;
 
   return topics.reduce((filtered, topic) => {
     if (topic.event) {
-      const start = moment(topic.event.start);
-      const end = moment(topic.event.end);
-      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
-      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
-      const isAllDay = startIsDayStart && endIsDayEnd;
+      const { start, end, allDay } = setupEvent(topic.event);
+
+      // equivalent momentjs comparisons dont work well with all-day timezone handling
+      const date = day.date();
+      const month = day.month();
+      const startDate = start.date();
+      const startMonth = start.month();
+      const startIsSame = date === startDate && month === startMonth;
+      const endIsSame = end && (date === end.date()) && (month === end.month());
+      const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
 
       let attrs = {
         topicId: topic.id,
         listStyle: ''
       };
 
-      if (day.isSame(start, "day")) {
-        if (isAllDay) {
-          attrs = allDay(attrs, topic);
+      if (startIsSame) {
+        if (allDay) {
+          attrs = allDayAttrs(attrs, topic);
         } else {
           attrs['time'] = moment(topic.event.start).format('h:mm a');
 
-          if (topic.event.end && !day.isSame(end, "day")) {
-            attrs = allDay(attrs, topic);
+          if (end && !endIsSame) {
+            attrs = allDayAttrs(attrs, topic);
           } else if (topic.category) {
             attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
           }
         }
 
+        attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
         attrs['title'] = topic.title;
 
         filtered.push(attrs);
-      } else if (topic.event.end && (day.isSame(end, "day") || day.isBetween(topic.event.start, topic.event.end, "day"))) {
-
+      } else if (endIsSame || isBetween) {
         allDayCount ++;
         if (!topic.event.allDayIndex) topic.event.allDayIndex = allDayCount;
         if (!args.dateEvents && !allDayPrevious && (topic.event.allDayIndex !== allDayCount)) {
@@ -137,24 +178,22 @@ let eventsForDay = function(day, topics, args = {}) {
         }
         allDayPrevious = true;
 
-        attrs = allDay(attrs, topic);
+        attrs = allDayAttrs(attrs, topic);
 
         if (args.dateEvents || args.expanded || args.firstDay)   {
           attrs['title'] = topic.title;
         }
 
-        if (attrs['listStyle'].length) {
-          attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
-        }
+        attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
 
         filtered.push(attrs);
-      } else if (isAllDay) {
+      } else if (allDay) {
         allDayPrevious = false;
       }
     }
 
     return filtered;
-  }, []);
+  }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay));
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay };
+export { eventLabel, googleUri, icsUri, eventsForDay, isAllDay, setupEvent, timezoneLabel };
