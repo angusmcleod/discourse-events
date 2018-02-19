@@ -48,8 +48,16 @@ export default Ember.Controller.extend({
     let s = start || this.nextInterval();
     let startDate = s.format(DATE_FORMAT);
     let startTime = s.format(TIME_FORMAT);
+    let props = { startDate, startTime, timezone };
 
-    this.setProperties({ startDate, startTime, timezone });
+    if (end) {
+      let endDate = end.format(DATE_FORMAT);
+      let endTime = end.format(TIME_FORMAT);
+      props['endDate'] = endDate;
+      props['endTime'] = endTime;
+    }
+
+    this.setProperties(props);
     this.setupTimePicker('start');
 
     if (event && event.end) {
@@ -71,17 +79,18 @@ export default Ember.Controller.extend({
   setupOnEndEnabled() {
     const endEnabled = this.get('endEnabled');
     if (endEnabled) {
-      const event = this.get('model.event');
-      const eventStart = this.get('eventStart');
-      const end = event && event.end ? moment(event.end) : moment(eventStart).add(1, 'hours');
-
-      const endDate = end.format(DATE_FORMAT);
-      this.set('endDate', endDate);
+      const endDate = this.get('endDate');
+      if (!endDate) {
+        this.set('endDate', this.get('startDate'));
+      }
 
       const allDay = this.get('allDay');
       if (!allDay) {
-        const endTime = end.format(TIME_FORMAT);
-        this.setProperties({ endDate, endTime });
+        const endTime = this.get('endTime');
+        if (!endTime) {
+          this.set('endTime', this.get('startTime'));
+        }
+
         this.setupTimePicker('end');
       }
     }
@@ -115,7 +124,8 @@ export default Ember.Controller.extend({
   notReady(startDate, startTime, endDate, endTime, endEnabled, allDay) {
     const datesInvalid = endEnabled ? moment(startDate).isAfter(moment(endDate)) : false;
     if (allDay) return datesInvalid;
-    const timesValid = endEnabled ? moment(startTime).isAfter(moment(endTime)) : false;
+
+    const timesValid = endEnabled ? moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm')) : false;
     return datesInvalid || timesValid;
   },
 
@@ -170,8 +180,6 @@ export default Ember.Controller.extend({
           event['end'] = end.month(eMonth).date(eDate).hour(eHour).minute(eMin).toISOString();
         }
       }
-
-      console.log(event);
 
       this.get('model.update')(event);
       this.resetProperties();
