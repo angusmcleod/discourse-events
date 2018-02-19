@@ -8,6 +8,7 @@ register_asset 'stylesheets/common/events.scss'
 register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
+register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -21,10 +22,13 @@ Discourse.anonymous_filters.push(:calendar)
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
     if SiteSetting.events_remove_past_from_map
-      topics = topics.joins("INNER JOIN topic_custom_fields
-                             ON topic_custom_fields.topic_id = topics.id
-                             AND topic_custom_fields.name = 'event_start'
-                             AND topic_custom_fields.value > '#{Time.now.to_i}'")
+      topics = topics.where("NOT EXISTS (SELECT * FROM topic_custom_fields
+                                         WHERE topic_id = topics.id
+                                         AND name = 'event_start')
+                             OR topics.id in (
+                                SELECT topic_id FROM topic_custom_fields
+                                WHERE (name = 'event_start' OR name = 'event_end')
+                                AND value > '#{Time.now.to_i}')")
     end
 
     topics
@@ -60,9 +64,12 @@ after_initialize do
   # can be ordered easily within the exist topic list query structure in Discourse core.
   Topic.register_custom_field_type('event_start', :integer)
   Topic.register_custom_field_type('event_end', :integer)
+  Topic.register_custom_field_type('event_all_day', :boolean)
 
   TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_all_day' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_timezone' if TopicList.respond_to? :preloaded_custom_fields
 
   module ::CalendarEvents
     class Engine < ::Rails::Engine
@@ -93,9 +100,19 @@ after_initialize do
     def event
       return nil unless has_event?
       event = { start: Time.at(custom_fields['event_start']).iso8601 }
+
       if custom_fields['event_end']&.nonzero?
         event[:end] = Time.at(custom_fields['event_end']).iso8601
       end
+
+      if custom_fields['event_timezone'].present?
+        event[:timezone] = custom_fields['event_timezone']
+      end
+
+      if custom_fields['event_all_day'].present?
+        event[:all_day] = custom_fields['event_all_day']
+      end
+
       event
     end
   end
@@ -135,8 +152,16 @@ after_initialize do
       tc.topic.custom_fields['event_start'] = event_start
 
       event_end = event['end'] ? event['end'].to_datetime.to_i : nil
-      tc.record_change('event_end', tc.topic.custom_fields['event_start'], event_start)
+      tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
       tc.topic.custom_fields['event_end'] = event_end
+
+      all_day = event['all_day'] ? event['all_day'] === 'true' : false
+      tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
+      tc.topic.custom_fields['event_all_day'] = all_day
+
+      timezone = event['timezone']
+      tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
+      tc.topic.custom_fields['event_timezone'] = timezone
     end
   end
 
@@ -147,9 +172,13 @@ after_initialize do
       event = opts[:event].is_a?(String) ? ::JSON.parse(opts[:event]) : opts[:event]
       event_start = event['start']
       event_end = event['end']
+      event_all_day = event['all_day']
+      timezone = event['timezone']
 
       topic.custom_fields['event_start'] = event_start.to_datetime.to_i if event_start
       topic.custom_fields['event_end'] = event_end.to_datetime.to_i if event_end
+      topic.custom_fields['event_all_day'] = event_all_day === 'true' if event_all_day
+      topic.custom_fields['event_timezone'] = timezone if timezone
       topic.save!
     end
   end
@@ -160,19 +189,13 @@ after_initialize do
 
     def list_agenda
       @options[:order] = 'agenda'
-      create_list(:agenda, ascending: 'true') do |topics|
-        agenda_query = "INNER JOIN topic_custom_fields
-                                ON topic_custom_fields.topic_id = topics.id
-                                AND topic_custom_fields.name = 'event_start'"
-
+      create_list(:agenda, { ascending: 'true' }, event_results) do |topics|
         if SiteSetting.events_remove_past_from_agenda
-          agenda_query += " AND (topics.id in (
+          topics = topics.where("topics.id in (
                                   SELECT topic_id FROM topic_custom_fields
                                   WHERE name = 'event_end' AND value > '#{Time.now.to_i}'
-                                ) OR topic_custom_fields.value > '#{Time.now.to_i}')"
+                                ) OR topic_custom_fields.value > '#{Time.now.to_i}'")
         end
-
-        topics = topics.joins(agenda_query)
 
         CalendarEvents::List.sorted_filters.each do |filter|
           topics = filter[:block].call(topics, @options)
@@ -184,12 +207,14 @@ after_initialize do
 
     def list_calendar
       @options[:order] = 'agenda'
-      create_list(:calendar, ascending: 'true') do |topics|
-        topics = topics.joins("INNER JOIN topic_custom_fields
-                                ON topic_custom_fields.topic_id = topics.id
-                                AND topic_custom_fields.name = 'event_start'")
-        topics
-      end
+      create_list(:calendar, { ascending: 'true' }, event_results)
+    end
+
+    def event_results(options = {})
+      default_results(options.reverse_merge(ascending: 'true'))
+        .joins("INNER JOIN topic_custom_fields
+                ON topic_custom_fields.topic_id = topics.id
+                AND topic_custom_fields.name = 'event_start'")
     end
   end
 

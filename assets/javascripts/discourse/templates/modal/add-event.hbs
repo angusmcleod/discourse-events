@@ -8,6 +8,9 @@
       {{input type='checkbox' checked=allDay}}
       <span>{{i18n 'add_event.all_day'}}</span>
     </div>
+    <div class="control">
+      {{combo-box value=timezone content=timezones filterable=true}}
+    </div>
   </div>
   <div class="start-card date-time-card">
     <span class="modal-sub-title">

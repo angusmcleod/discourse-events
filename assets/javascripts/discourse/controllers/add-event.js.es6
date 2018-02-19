@@ -1,40 +1,55 @@
 import { default as computed, observes } from 'ember-addons/ember-computed-decorators';
+import { setupEvent, timezoneLabel } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
+const TIMEZONES = moment.tz.names().reduce((names, n) => {
+  if (n.indexOf('+') === -1) {
+    const offset = moment.tz(n).format('Z');
+    const name = timezoneLabel(n);
+    names.push({
+      id: n,
+      name,
+      offset
+    });
+  }
+
+  return names;
+}, []).sort((a, b) => {
+  return parseInt(a.offset.replace(':', ''), 10) -
+         parseInt(b.offset.replace(':', ''), 10);
+});
 
 export default Ember.Controller.extend({
   title: 'add_event.modal_title',
   endEnabled: false,
   allDay: false,
+  timezones: TIMEZONES,
 
   setup() {
     const event = this.get('model.event');
+    const timezone = event && event.timezone ? event.timezone : moment.tz.guess();
+    const { start, end, allDay } = setupEvent(event);
 
-    if (event && event.start && event.end) {
-      let start = moment(event.start);
-      let end = moment(event.end);
-      const startIsDayStart = start.hour() === 0 && start.minute() === 0;
-      const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
+    if (allDay) {
+      let startDate = start.format(DATE_FORMAT);
+      let endDate = end.format(DATE_FORMAT);
+      let endEnabled = moment(endDate).isAfter(startDate, 'day');
 
-      if (startIsDayStart && endIsDayEnd) {
-        let startDate = start.format(DATE_FORMAT);
-        let endDate = end.format(DATE_FORMAT);
-        let endEnabled = moment(endDate).isAfter(startDate, 'day');
-
-        return this.setProperties({
-          allDay: true,
-          startDate,
-          endDate,
-          endEnabled
-        });
-      }
+      return this.setProperties({
+        allDay,
+        startDate,
+        endDate,
+        endEnabled,
+        timezone
+      });
     }
 
-    let start = event && event.start ? moment(event.start) : this.nextInterval();
-    let startDate = start.format(DATE_FORMAT);
-    let startTime = start.format(TIME_FORMAT);
-    this.setProperties({ startDate, startTime });
+    let s = start || this.nextInterval();
+    let startDate = s.format(DATE_FORMAT);
+    let startTime = s.format(TIME_FORMAT);
+
+    this.setProperties({ startDate, startTime, timezone });
     this.setupTimePicker('start');
 
     if (event && event.end) {
@@ -96,29 +111,12 @@ export default Ember.Controller.extend({
     return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
   },
 
-  dateTime(date, time) {
-    return moment(date + 'T' + time).format();
-  },
-
-  @computed('startDate', 'startTime', 'allDay')
-  eventStart(date, time, allDay) {
-    if (allDay) time = moment(date).startOf('day').format(TIME_FORMAT);
-    return date && time ? this.dateTime(date, time) : '';
-  },
-
-  @computed('endDate', 'endTime', 'allDay', 'endEnabled')
-  eventEnd(date, time, allDay, endEnabled) {
-    if (allDay) {
-      date = endEnabled ? date : this.get('startDate');
-      time = moment(date).endOf('day').format(TIME_FORMAT);
-    }
-    return date && time ? this.dateTime(date, time) : '';
-  },
-
-  @computed('eventStart', 'eventEnd', 'endEnabled', 'allDay')
-  notReady(eventStart, eventEnd, endEnabled, allDay) {
-    if (allDay) return moment(eventStart).isAfter(eventEnd, 'day');
-    return moment().isAfter(eventStart) || (endEnabled && eventStart > eventEnd);
+  @computed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
+  notReady(startDate, startTime, endDate, endTime, endEnabled, allDay) {
+    const datesInvalid = endEnabled ? moment(startDate).isAfter(moment(endDate)) : false;
+    if (allDay) return datesInvalid;
+    const timesValid = endEnabled ? moment(startTime).isAfter(moment(endTime)) : false;
+    return datesInvalid || timesValid;
   },
 
   resetProperties() {
@@ -139,18 +137,41 @@ export default Ember.Controller.extend({
     },
 
     addEvent() {
-      const start = this.get('eventStart');
+      const startDate = this.get('startDate');
       let event = null;
 
-      if (start && start.length > 0) {
-        event = { start };
+      if (startDate) {
+        const timezone = this.get('timezone');
+        let start = moment().tz(timezone);
+
+        const allDay = this.get('allDay');
+        const sMonth = moment(startDate).month();
+        const sDate = moment(startDate).date();
+        const startTime = this.get('startTime');
+        let sHour = allDay ? 0 : moment(startTime, 'HH:mm').hour();
+        let sMin = allDay ? 0 : moment(startTime, 'HH:mm').minute();
+
+        event = {
+          timezone,
+          all_day: allDay,
+          start: start.month(sMonth).date(sDate).hour(sHour).minute(sMin).toISOString()
+        };
 
         const endEnabled = this.get('endEnabled');
-        const allDay = this.get('allDay');
-        if (endEnabled || allDay) {
-          event['end'] = this.get('eventEnd');
-        };
+        if (endEnabled) {
+          let end = moment().tz(timezone);
+          const endDate = this.get('endDate');
+          const eMonth = moment(endDate).month();
+          const eDate = moment(endDate).date();
+          const endTime = this.get('endTime');
+          let eHour = allDay ? 0 : moment(endTime, 'HH:mm').hour();
+          let eMin = allDay ? 0 : moment(endTime, 'HH:mm').minute();
+
+          event['end'] = end.month(eMonth).date(eDate).hour(eHour).minute(eMin).toISOString();
+        }
       }
+
+      console.log(event);
 
       this.get('model.update')(event);
       this.resetProperties();

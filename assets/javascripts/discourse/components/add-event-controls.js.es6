@@ -22,7 +22,11 @@ export default Ember.Component.extend({
 
   @computed('event')
   valueLabel(event) {
-    return eventLabel(event, { mobile: this.site.isMobileDevice });
+    return eventLabel(event, {
+      mobile: this.site.isMobileDevice,
+      displayInUserTimezone: false,
+      showTimezoneIfDifferent: true
+    });
   },
 
   @computed()

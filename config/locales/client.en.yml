@@ -11,6 +11,7 @@ en:
       event_clear: Clear
       end_enabled: "Include event end"
       all_day: "All day"
+      timezone: "Timezone"
     category:
       enable_events: "Allow events to be added to topics in this category"
       enable_events_agenda: "Show an agenda topic list in this category"
@@ -42,4 +43,4 @@ en:
       bottom:
         agenda: "There are no more agenda topics."
     events_calendar:
-      hidden: "{{count}} more" 
+      hidden: "{{count}} more"
