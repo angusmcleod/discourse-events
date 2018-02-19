@@ -145,7 +145,7 @@ let eventsForDay = function(day, topics, args = {}) {
       const startMonth = start.month();
       const startIsSame = date === startDate && month === startMonth;
       const endIsSame = end && (date === end.date()) && (month === end.month());
-      const isBetween = end && (month >= startMonth) && (date > startDate) && (date < end.date());
+      const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
 
       let attrs = {
         topicId: topic.id,
