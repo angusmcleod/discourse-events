@@ -25,44 +25,45 @@ export default Ember.Controller.extend({
   endEnabled: false,
   allDay: false,
   timezones: TIMEZONES,
+  showTimezone: false,
 
   setup() {
     const event = this.get('model.event');
-    const timezone = event && event.timezone ? event.timezone : moment.tz.guess();
     const { start, end, allDay } = setupEvent(event);
+    let props = {};
 
     if (allDay) {
       let startDate = start.format(DATE_FORMAT);
       let endDate = end.format(DATE_FORMAT);
       let endEnabled = moment(endDate).isAfter(startDate, 'day');
 
-      return this.setProperties({
+      props = {
         allDay,
         startDate,
         endDate,
         endEnabled,
-        timezone
-      });
+      };
+    } else if (start) {
+      let s = start || this.nextInterval();
+      props['startDate'] = s.format(DATE_FORMAT);
+      props['startTime'] = s.format(TIME_FORMAT);
+
+      if (end) {
+        let endDate = end.format(DATE_FORMAT);
+        let endTime = end.format(TIME_FORMAT);
+        props['endDate'] = endDate;
+        props['endTime'] = endTime;
+        props['endEnabled'] = true;
+      }
     }
 
-    let s = start || this.nextInterval();
-    let startDate = s.format(DATE_FORMAT);
-    let startTime = s.format(TIME_FORMAT);
-    let props = { startDate, startTime, timezone };
-
-    if (end) {
-      let endDate = end.format(DATE_FORMAT);
-      let endTime = end.format(TIME_FORMAT);
-      props['endDate'] = endDate;
-      props['endTime'] = endTime;
+    if (start && event.timezone) {
+      props['timezone'] = event.timezone;
     }
 
     this.setProperties(props);
-    this.setupTimePicker('start');
-
-    if (event && event.end) {
-      this.set('endEnabled', true);
-    }
+    if (props['startTime']) this.setupTimePicker('start');
+    if (props['endTime'])this.setupTimePicker('end');
   },
 
   setupTimePicker(type) {
@@ -129,6 +130,12 @@ export default Ember.Controller.extend({
     return datesInvalid || timesValid;
   },
 
+  @computed('timezone')
+  timezoneLabel(timezone) {
+    const text = I18n.t('add_event.timezone');
+    return timezone ? `${text}: ${timezoneLabel(timezone)}` : text;
+  },
+
   resetProperties() {
     this.setProperties({
       startDate: null,
@@ -144,6 +151,15 @@ export default Ember.Controller.extend({
     clear() {
       this.resetProperties();
       this.get('model.update')(null);
+    },
+
+    toggleShowTimezone() {
+      this.toggleProperty('showTimezone');
+    },
+
+    clearTimezone() {
+      this.set("timezone", null);
+      this.toggleProperty('showTimezone');
     },
 
     addEvent() {

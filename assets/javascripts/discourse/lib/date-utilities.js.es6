@@ -73,7 +73,7 @@ let eventLabel = function(event, args = {}) {
     if (forceTimezone) {
       timezone = event['timezone'] || moment.tz.guess();
     }
-    if (args.showTimezoneIfDifferent && event['timezone'] && event['timezone'] !== moment.tz.guess()) {
+    if (!allDay && args.showTimezoneIfDifferent && event['timezone'] && event['timezone'] !== moment.tz.guess()) {
       timezone = event['timezone'];
     }
     if (timezone) dateString += `, ${timezoneLabel(timezone)}`;
