@@ -6,7 +6,9 @@ let isAllDay = function(event) {
   const end = moment(event['end']);
   const startIsDayStart = start.hour() === 0 && start.minute() === 0;
   const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
-  return startIsDayStart && endIsDayEnd;
+  const differentDay = (end.date() > start.date()) || (end.month() > start.month());
+
+  return (startIsDayStart && endIsDayEnd) || differentDay;
 };
 
 let setupEvent = function(event, args = {}) {
@@ -184,12 +186,12 @@ let eventsForDay = function(day, topics, args = {}) {
           topic.event.allDayPosition = allDayPosition;
         }
         allDayPosition ++;
-      } else {
-        attrs['time'] = moment(topic.event.start).format('h:mm a');
+      } else if (topic.category) {
+        attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
+      }
 
-        if (topic.category) {
-          attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
-        }
+      if (!allDay || (!topic.event['all_day'] && startIsSame)) {
+        attrs['time'] = moment(topic.event.start).format('h:mm a');
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {
@@ -227,4 +229,4 @@ let eventsForDay = function(day, topics, args = {}) {
   }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay));
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, isAllDay, setupEvent, timezoneLabel };
+export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel };

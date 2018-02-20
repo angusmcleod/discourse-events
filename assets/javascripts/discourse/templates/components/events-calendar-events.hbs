@@ -4,10 +4,10 @@
       <span style='{{e.dotStyle}}'>{{d-icon 'circle'}}</span>
     {{/unless}}
     {{#if e.time}}
-      <span>{{e.time}}</span>
+      <span class="time">{{e.time}}</span>
     {{/if}}
     {{#if e.title}}
-      <span style="{{e.titleStyle}}">{{replace-emoji e.title}}</span>
+      <span class="title" style="{{e.titleStyle}}">{{replace-emoji e.title}}</span>
     {{/if}}
   </li>
 {{/each}}

@@ -361,11 +361,15 @@ ul.events-calendar-events {
           border-radius: 4px 0 0 4px;
         }
 
-        &.multi span {
+        &.multi span.title {
           position: absolute;
           z-index: 1;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+
+        &.start span.time {
+          margin-right: 5px;
         }
 
         &.end {
