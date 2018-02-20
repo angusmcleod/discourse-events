@@ -7,7 +7,7 @@
       <span>{{e.time}}</span>
     {{/if}}
     {{#if e.title}}
-      <span>{{replace-emoji e.title}}</span>
+      <span style="{{e.titleStyle}}">{{replace-emoji e.title}}</span>
     {{/if}}
   </li>
 {{/each}}

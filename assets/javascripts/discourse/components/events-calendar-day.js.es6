@@ -29,14 +29,14 @@ export default Ember.Component.extend({
     this.set("events", events);
   },
 
-  @computed('day', 'topics.[]', 'expanded', 'firstInRow')
-  allEvents(day, topics, expanded, firstInRow) {
-    return eventsForDay(day, topics, { firstInRow, expanded });
+  @computed('day', 'topics.[]', 'expanded', 'rowIndex')
+  allEvents(day, topics, expanded, rowIndex) {
+    return eventsForDay(day, topics, { rowIndex, expanded });
   },
 
   @computed('index')
-  firstInRow(index) {
-    return (index % 7) === 0;
+  rowIndex(index) {
+    return index % 7;
   },
 
   didInsertElement() {

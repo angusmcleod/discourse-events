@@ -36,10 +36,6 @@ let setupEvent = function(event, args = {}) {
 let timezoneLabel = function(timezone) {
   const offset = moment.tz(timezone).format('Z');
   let raw = timezone;
-  const nameArr = raw.split('/');
-  if (nameArr.length > 1) {
-    raw = nameArr[1];
-  }
   let name = raw.replace('_', '');
   return`(${offset}) ${name}`;
 };
@@ -119,9 +115,25 @@ let icsUri = function(params) {
     ].join('\n'));
 };
 
-let allDayAttrs = function(attrs, topic) {
+let allDayAttrs = function(attrs, topic, startIsSame, endIsSame, isBetween) {
   attrs['classes'] = 'all-day';
   attrs['allDay'] = true;
+
+  if (startIsSame) {
+    attrs['classes'] += ' start';
+  }
+
+  if (endIsSame) {
+    attrs['classes'] += ' end';
+  }
+
+  if (isBetween) {
+    attrs['classes'] += ' is-between';
+  }
+
+  if (!endIsSame || isBetween) {
+    attrs['classes'] += ' multi';
+  }
 
   if (topic.category) {
     attrs['listStyle'] += `background-color: #${topic.category.color};`;
@@ -130,7 +142,7 @@ let allDayAttrs = function(attrs, topic) {
   return attrs;
 };
 
-let compareEventWithDay = function(day, start, end) {
+let eventCalculations = function(day, start, end) {
   // equivalent momentjs comparisons dont work well with all-day timezone handling
   const date = day.date();
   const month = day.month();
@@ -139,7 +151,9 @@ let compareEventWithDay = function(day, start, end) {
   const startIsSame = date === startDate && month === startMonth;
   const endIsSame = end && (date === end.date()) && (month === end.month());
   const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
-  return { startIsSame, endIsSame, isBetween };
+  const daysLeft = end ? (end.date() - day.date()) + 1 : 1;
+
+  return { startIsSame, endIsSame, isBetween, daysLeft };
 };
 
 let eventsForDay = function(day, topics, args = {}) {
@@ -149,7 +163,7 @@ let eventsForDay = function(day, topics, args = {}) {
 
   return events.reduce((dayEvents, topic) => {
     const { start, end, allDay } = setupEvent(topic.event);
-    const { startIsSame, endIsSame, isBetween } = compareEventWithDay(day, start, end);
+    const { startIsSame, endIsSame, isBetween, daysLeft } = eventCalculations(day, start, end);
     const onThisDay = startIsSame || endIsSame || isBetween;
 
     if (onThisDay) {
@@ -159,9 +173,9 @@ let eventsForDay = function(day, topics, args = {}) {
       };
 
       if (allDay) {
-        attrs = allDayAttrs(attrs, topic);
+        attrs = allDayAttrs(attrs, topic, startIsSame, endIsSame, isBetween);
 
-        if (!topic.event.allDayPosition) {
+        if (topic.event.allDayPosition === undefined) {
           topic.event.allDayPosition = allDayPosition;
         }
         allDayPosition ++;
@@ -173,17 +187,32 @@ let eventsForDay = function(day, topics, args = {}) {
         }
       }
 
-      if (startIsSame || fullWidth || args.firstInRow) {
+      if (startIsSame || fullWidth || args.rowIndex === 0) {
         attrs['title'] = topic.title;
+
+        if (allDay && !fullWidth) {
+          let daysInRow = daysLeft > 7 ? 7 - args.rowIndex : daysLeft;
+          attrs['titleStyle'] = Ember.String.htmlSafe(`width: calc((100%*${daysInRow}) - 12px);`);
+        }
       }
 
       attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
 
       if (allDay) {
         if (dayEvents.length < topic.event.allDayPosition && !fullWidth) {
-          dayEvents.push({ allDay: true });
+          dayEvents.push({ allDay: true, empty: true });
+          allDayPosition ++;
         }
-        dayEvents.splice(topic.event.allDayPosition, 0, attrs);
+
+        let replace = 0;
+        const emptyIndex = dayEvents.findIndex((e) => e.empty);
+        if ((startIsSame && emptyIndex > -1) || topic.event.replaceEmpty)  {
+          topic.event.allDayPosition = emptyIndex;
+          topic.event.replaceEmpty = true;
+          replace = 1;
+        }
+
+        dayEvents.splice(topic.event.allDayPosition, replace, attrs);
       } else {
         dayEvents.push(attrs);
       }
