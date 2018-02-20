@@ -355,21 +355,23 @@ ul.events-calendar-events {
       border-top: 1px solid $primary-low;
       border-bottom: 1px solid $primary-low;
 
-      &.start {
-        margin-left: 2px;
-        border-radius: 4px 0 0 4px;
-      }
+      &:not(.full-width) {
+        &.start {
+          margin-left: 2px;
+          border-radius: 4px 0 0 4px;
+        }
 
-      &.multi span {
-        position: absolute;
-        z-index: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+        &.multi span {
+          position: absolute;
+          z-index: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
 
-      &.end {
-        margin-right: 4px;
-        border-radius: 0 4px 4px 0;
+        &.end {
+          margin-right: 4px;
+          border-radius: 0 4px 4px 0;
+        }
       }
     }
 

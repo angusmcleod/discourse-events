@@ -116,7 +116,7 @@ let icsUri = function(params) {
 };
 
 let allDayAttrs = function(attrs, topic, startIsSame, endIsSame, isBetween) {
-  attrs['classes'] = 'all-day';
+  attrs['classes'] += ' all-day';
   attrs['allDay'] = true;
 
   if (startIsSame) {
@@ -169,8 +169,13 @@ let eventsForDay = function(day, topics, args = {}) {
     if (onThisDay) {
       let attrs = {
         topicId: topic.id,
+        classes: '',
         listStyle: ''
       };
+
+      if (fullWidth) {
+        attrs['classes'] += 'full-width';
+      }
 
       if (allDay) {
         attrs = allDayAttrs(attrs, topic, startIsSame, endIsSame, isBetween);
