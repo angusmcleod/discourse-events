@@ -248,11 +248,13 @@
   margin-top: 15px;
   border-bottom: 1px solid $primary-medium;
   border-left: 1px solid $primary-medium;
+  box-sizing: border-box;
 
   .day, .weekday {
-    width: calc(100%/7 - 1px);
+    width: calc(100%/7);
     border-top: 1px solid $primary-medium;
     border-right: 1px solid $primary-medium;
+    box-sizing: border-box;
   }
 
   .weekday {
@@ -266,15 +268,11 @@
 
   .day {
     height: 105px;
+    background-color: $secondary;
     transition: all 0.2s;
     position: relative;
 
-    .container {
-      background-color: $secondary;
-      height: inherit;
-    }
-
-    &.today .container {
+    &.today {
       background-color: $highlight-low;
     }
 
