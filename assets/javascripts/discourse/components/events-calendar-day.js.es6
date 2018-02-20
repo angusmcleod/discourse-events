@@ -8,7 +8,6 @@ export default Ember.Component.extend({
   expanded: false,
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
-  firstDay: Ember.computed.equal('index', 0),
 
   @on('init')
   @observes('expanded')
@@ -30,10 +29,14 @@ export default Ember.Component.extend({
     this.set("events", events);
   },
 
-  @computed('day', 'topics.[]', 'expanded')
-  allEvents(day, topics, expanded) {
-    const firstDay = this.get('firstDay');
-    return eventsForDay(day, topics, { firstDay, expanded });
+  @computed('day', 'topics.[]', 'expanded', 'firstInRow')
+  allEvents(day, topics, expanded, firstInRow) {
+    return eventsForDay(day, topics, { firstInRow, expanded });
+  },
+
+  @computed('index')
+  firstInRow(index) {
+    return (index % 7) === 0;
   },
 
   didInsertElement() {

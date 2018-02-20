@@ -130,69 +130,66 @@ let allDayAttrs = function(attrs, topic) {
   return attrs;
 };
 
-let allDayPrevious = false;
+let compareEventWithDay = function(day, start, end) {
+  // equivalent momentjs comparisons dont work well with all-day timezone handling
+  const date = day.date();
+  const month = day.month();
+  const startDate = start.date();
+  const startMonth = start.month();
+  const startIsSame = date === startDate && month === startMonth;
+  const endIsSame = end && (date === end.date()) && (month === end.month());
+  const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
+  return { startIsSame, endIsSame, isBetween };
+};
+
 let eventsForDay = function(day, topics, args = {}) {
-  let allDayCount = 0;
+  const events = topics.filter((t) => t.event);
+  const fullWidth = args.dateEvents || args.expanded;
+  let allDayPosition = 0;
 
-  return topics.reduce((filtered, topic) => {
-    if (topic.event) {
-      const { start, end, allDay } = setupEvent(topic.event);
+  return events.reduce((dayEvents, topic) => {
+    const { start, end, allDay } = setupEvent(topic.event);
+    const { startIsSame, endIsSame, isBetween } = compareEventWithDay(day, start, end);
+    const onThisDay = startIsSame || endIsSame || isBetween;
 
-      // equivalent momentjs comparisons dont work well with all-day timezone handling
-      const date = day.date();
-      const month = day.month();
-      const startDate = start.date();
-      const startMonth = start.month();
-      const startIsSame = date === startDate && month === startMonth;
-      const endIsSame = end && (date === end.date()) && (month === end.month());
-      const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
-
+    if (onThisDay) {
       let attrs = {
         topicId: topic.id,
         listStyle: ''
       };
 
-      if (startIsSame) {
-        if (allDay) {
-          attrs = allDayAttrs(attrs, topic);
-        } else {
-          attrs['time'] = moment(topic.event.start).format('h:mm a');
-
-          if (end && !endIsSame) {
-            attrs = allDayAttrs(attrs, topic);
-          } else if (topic.category) {
-            attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
-          }
-        }
-
-        attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
-        attrs['title'] = topic.title;
-
-        filtered.push(attrs);
-      } else if (endIsSame || isBetween) {
-        allDayCount ++;
-        if (!topic.event.allDayIndex) topic.event.allDayIndex = allDayCount;
-        if (!args.dateEvents && !allDayPrevious && (topic.event.allDayIndex !== allDayCount)) {
-          let difference = topic.event.allDayIndex - allDayCount;
-          attrs['listStyle'] += `margin-top: ${difference * 22}px;`;
-        }
-        allDayPrevious = true;
-
+      if (allDay) {
         attrs = allDayAttrs(attrs, topic);
 
-        if (args.dateEvents || args.expanded || args.firstDay)   {
-          attrs['title'] = topic.title;
+        if (!topic.event.allDayPosition) {
+          topic.event.allDayPosition = allDayPosition;
         }
+        allDayPosition ++;
+      } else {
+        attrs['time'] = moment(topic.event.start).format('h:mm a');
 
-        attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
+        if (topic.category) {
+          attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
+        }
+      }
 
-        filtered.push(attrs);
-      } else if (allDay) {
-        allDayPrevious = false;
+      if (startIsSame || fullWidth || args.firstInRow) {
+        attrs['title'] = topic.title;
+      }
+
+      attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
+
+      if (allDay) {
+        if (dayEvents.length < topic.event.allDayPosition && !fullWidth) {
+          dayEvents.push({ allDay: true });
+        }
+        dayEvents.splice(topic.event.allDayPosition, 0, attrs);
+      } else {
+        dayEvents.push(attrs);
       }
     }
 
-    return filtered;
+    return dayEvents;
   }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay));
 };
 
