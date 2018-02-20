@@ -44,9 +44,8 @@ export default Ember.Controller.extend({
         endEnabled,
       };
     } else if (start) {
-      let s = start || this.nextInterval();
-      props['startDate'] = s.format(DATE_FORMAT);
-      props['startTime'] = s.format(TIME_FORMAT);
+      props['startDate'] = start.format(DATE_FORMAT);
+      props['startTime'] = start.format(TIME_FORMAT);
 
       if (end) {
         let endDate = end.format(DATE_FORMAT);
@@ -55,6 +54,9 @@ export default Ember.Controller.extend({
         props['endTime'] = endTime;
         props['endEnabled'] = true;
       }
+    } else {
+      props['startDate'] = moment().format(DATE_FORMAT);
+      props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
     if (start && event.timezone) {
@@ -62,8 +64,8 @@ export default Ember.Controller.extend({
     }
 
     this.setProperties(props);
-    if (props['startTime']) this.setupTimePicker('start');
-    if (props['endTime'])this.setupTimePicker('end');
+    this.setupTimePicker('start');
+    this.setupTimePicker('end');
   },
 
   setupTimePicker(type) {
