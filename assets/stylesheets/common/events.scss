@@ -268,11 +268,14 @@
 
   .day {
     height: 105px;
-    background-color: $secondary;
     transition: all 0.2s;
     position: relative;
 
-    &.today {
+    .container {
+      background-color: $secondary;
+    }
+
+    &.today .container {
       background-color: $highlight-low;
     }
 
