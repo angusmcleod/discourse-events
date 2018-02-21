@@ -198,8 +198,11 @@ let eventsForDay = function(day, topics, args = {}) {
         attrs['title'] = topic.title;
 
         if (allDay && !fullWidth) {
-          let daysInRow = daysLeft > 7 ? 7 - args.rowIndex : daysLeft;
-          attrs['titleStyle'] = Ember.String.htmlSafe(`width: calc((100%*${daysInRow}) - 12px);`);
+          let daysInRow = daysLeft >= 7 ? 7 - args.rowIndex : daysLeft;
+          let buffer = 12;
+          if (attrs['time']) buffer += 50;
+          let tStyle = `width:calc((100%*${daysInRow}) - ${buffer}px);background-color:#${topic.category.color};`;
+          attrs['titleStyle'] = Ember.String.htmlSafe(tStyle);
         }
       }
 
