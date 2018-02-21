@@ -161,7 +161,7 @@ let eventCalculations = function(day, start, end) {
 let eventsForDay = function(day, topics, args = {}) {
   const events = topics.filter((t) => t.event);
   const fullWidth = args.dateEvents || args.expanded;
-  let allDayPosition = 0;
+  let allDayIndex = 0;
 
   return events.reduce((dayEvents, topic) => {
     const { start, end, allDay } = setupEvent(topic.event);
@@ -182,10 +182,10 @@ let eventsForDay = function(day, topics, args = {}) {
       if (allDay) {
         attrs = allDayAttrs(attrs, topic, startIsSame, endIsSame, isBetween);
 
-        if (topic.event.allDayPosition === undefined) {
-          topic.event.allDayPosition = allDayPosition;
+        if (topic.event.allDayIndex === undefined) {
+          topic.event.allDayIndex = allDayIndex;
         }
-        allDayPosition ++;
+        allDayIndex ++;
       } else if (topic.category) {
         attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
       }
@@ -206,20 +206,34 @@ let eventsForDay = function(day, topics, args = {}) {
       attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
 
       if (allDay) {
-        if (dayEvents.length < topic.event.allDayPosition && !fullWidth) {
-          dayEvents.push({ allDay: true, empty: true });
-          allDayPosition ++;
+        // Add placeholders if necessary
+        let diff = topic.event.allDayIndex - dayEvents.length;
+        if (diff > 0) {
+          for (let i=0; i<diff; ++i) {
+            dayEvents.push({ allDay: true, empty: true });
+            allDayIndex ++;
+          }
         }
 
+        // backfill when possible
         let replace = 0;
-        const emptyIndex = dayEvents.findIndex((e) => e.empty);
-        if ((startIsSame && emptyIndex > -1) || topic.event.replaceEmpty)  {
-          topic.event.allDayPosition = emptyIndex;
+        let emptyIndexes = [];
+
+        dayEvents.forEach((e, i) => {
+          if (e.empty) emptyIndexes.push(i);
+        });
+
+        if ((startIsSame && emptyIndexes.length) || topic.event.replaceEmpty)  {
+          let backfillIndex = emptyIndexes.indexOf(topic.event.allDayIndex) > -1 ?
+                              topic.event.allDayIndex : emptyIndexes[0];
+          topic.event.allDayIndex = backfillIndex;
           topic.event.replaceEmpty = true;
           replace = 1;
+          allDayIndex --;
         }
 
-        dayEvents.splice(topic.event.allDayPosition, replace, attrs);
+        // insert at calculated index;
+        dayEvents.splice(topic.event.allDayIndex, replace, attrs);
       } else {
         dayEvents.push(attrs);
       }
