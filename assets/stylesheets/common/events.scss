@@ -327,7 +327,7 @@
     }
 
     .hidden-events {
-      margin: 0 5px;
+      margin: 2px 4px;
     }
 
     .has-events {
@@ -341,7 +341,7 @@ ul.events-calendar-events {
   list-style: none;
 
   li {
-    margin: 2px 0;
+    margin: 1px 0;
     padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;
@@ -391,8 +391,8 @@ ul.events-calendar-events {
     }
 
     img.emoji {
-      height: 17px;
-      width: 17px;
+      height: 15px;
+      width: 15px;
     }
   }
 }

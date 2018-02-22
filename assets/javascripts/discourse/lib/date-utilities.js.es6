@@ -201,7 +201,7 @@ let eventsForDay = function(day, topics, args = {}) {
           let remainingInRow = 7 - args.rowIndex;
           let daysInRow = daysLeft >= remainingInRow ? remainingInRow : daysLeft;
           let buffer = 12;
-          if (attrs['time']) buffer += 50;
+          if (attrs['time']) buffer += 55;
           let tStyle = `width:calc((100%*${daysInRow}) - ${buffer}px);background-color:#${topic.category.color};`;
           attrs['titleStyle'] = Ember.String.htmlSafe(tStyle);
         }
