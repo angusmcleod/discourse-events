@@ -267,7 +267,7 @@
   }
 
   .day {
-    height: 105px;
+    height: 130px;
     transition: all 0.2s;
     position: relative;
 
@@ -328,6 +328,12 @@
 
     .hidden-events {
       margin: 2px 4px;
+
+      .btn {
+        font-size: 0.9em;
+        border-radius: 4px;
+        line-height: 1;
+      }
     }
 
     .has-events {
@@ -341,7 +347,7 @@ ul.events-calendar-events {
   list-style: none;
 
   li {
-    margin: 1px 0;
+    margin: 2px 0;
     padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;

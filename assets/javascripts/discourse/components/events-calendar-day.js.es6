@@ -1,7 +1,7 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
 import { eventsForDay } from '../lib/date-utilities';
 
-const MAX_EVENTS = 3;
+const MAX_EVENTS = 4;
 
 export default Ember.Component.extend({
   classNameBindings: [':day', 'classes'],
