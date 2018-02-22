@@ -247,7 +247,7 @@ let eventsForDay = function(day, topics, args = {}) {
     }
 
     return dayEvents;
-  }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay || b.backfill));
+  }, []);
 };
 
 export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel };
