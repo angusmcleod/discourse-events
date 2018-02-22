@@ -209,8 +209,8 @@ let eventsForDay = function(day, topics, args = {}) {
 
       attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
 
+      // Add placeholders if necessary
       if (allDay) {
-        // Add placeholders if necessary
         let diff = topic.event.allDayIndex - dayEvents.length;
         if (diff > 0) {
           for (let i=0; i<diff; ++i) {
@@ -218,33 +218,36 @@ let eventsForDay = function(day, topics, args = {}) {
             allDayIndex ++;
           }
         }
+      }
 
-        // backfill when possible
-        let replace = 0;
-        let emptyIndexes = [];
+      let insertAt = allDay ? topic.event.allDayIndex : dayEvents.length;
+      let replace = 0;
 
-        dayEvents.forEach((e, i) => {
-          if (e.empty) emptyIndexes.push(i);
-        });
-
-        if ((startIsSame && emptyIndexes.length) || topic.event.replaceEmpty)  {
-          let backfillIndex = emptyIndexes.indexOf(topic.event.allDayIndex) > -1 ?
-                              topic.event.allDayIndex : emptyIndexes[0];
-          topic.event.allDayIndex = backfillIndex;
-          topic.event.replaceEmpty = true;
-          replace = 1;
-          allDayIndex --;
+      // backfill when possible
+      let emptyIndexes = [];
+      dayEvents.forEach((e, i) => {
+        if (e.empty) emptyIndexes.push(i);
+      });
+      if ((startIsSame && emptyIndexes.length) || topic.event.backfill)  {
+        attrs['backfill'] = true;
+        let backfillIndex = emptyIndexes.indexOf(topic.event.allDayIndex) > -1 ?
+                            topic.event.allDayIndex : emptyIndexes[0];
+        if (allDay) {
+          insertAt = topic.event.allDayIndex = backfillIndex;
+          topic.event.backfill = true;
+        } else {
+          insertAt = backfillIndex;
         }
 
-        // insert at calculated index;
-        dayEvents.splice(topic.event.allDayIndex, replace, attrs);
-      } else {
-        dayEvents.push(attrs);
+        replace = 1;
+        allDayIndex --;
       }
+
+      dayEvents.splice(insertAt, replace, attrs);
     }
 
     return dayEvents;
-  }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay));
+  }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay || b.backfill));
 };
 
 export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel };
