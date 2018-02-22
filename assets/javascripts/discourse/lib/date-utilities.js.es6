@@ -198,7 +198,8 @@ let eventsForDay = function(day, topics, args = {}) {
         attrs['title'] = topic.title;
 
         if (allDay && !fullWidth) {
-          let daysInRow = daysLeft >= 7 ? 7 - args.rowIndex : daysLeft;
+          let remainingInRow = 7 - args.rowIndex;
+          let daysInRow = daysLeft >= remainingInRow ? remainingInRow : daysLeft;
           let buffer = 12;
           if (attrs['time']) buffer += 50;
           let tStyle = `width:calc((100%*${daysInRow}) - ${buffer}px);background-color:#${topic.category.color};`;
@@ -213,7 +214,7 @@ let eventsForDay = function(day, topics, args = {}) {
         let diff = topic.event.allDayIndex - dayEvents.length;
         if (diff > 0) {
           for (let i=0; i<diff; ++i) {
-            dayEvents.push({ allDay: true, empty: true });
+            dayEvents.push({ allDay: true, empty: true, classes: "empty" });
             allDayIndex ++;
           }
         }
