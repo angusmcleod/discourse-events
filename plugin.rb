@@ -183,13 +183,28 @@ after_initialize do
     end
   end
 
+  TopicQuery.add_custom_filter(:start) do |topics, query|
+    if query.options[:start] && query.options[:end]
+      range_start = query.options[:start].to_datetime.beginning_of_day.to_i
+      range_end = query.options[:end].to_datetime.end_of_day.to_i
+      topics.where("topics.id in (
+        SELECT topic_id FROM topic_custom_fields
+        WHERE (name = 'event_start' OR name = 'event_end')
+        AND value >= '#{range_start}'
+        AND value <= '#{range_end}'
+      )")
+    else
+      topics
+    end
+  end
+
   require_dependency 'topic_query'
   class ::TopicQuery
     SORTABLE_MAPPING['agenda'] = 'custom_fields.event_start'
 
     def list_agenda
       @options[:order] = 'agenda'
-      create_list(:agenda, { ascending: 'true' }, event_results) do |topics|
+      create_list(:agenda, { ascending: true }, event_results) do |topics|
         if SiteSetting.events_remove_past_from_agenda
           topics = topics.where("topics.id in (
                                   SELECT topic_id FROM topic_custom_fields
@@ -207,7 +222,7 @@ after_initialize do
 
     def list_calendar
       @options[:order] = 'agenda'
-      create_list(:calendar, { ascending: 'true' }, event_results)
+      create_list(:calendar, { ascending: true, limit: false }, event_results)
     end
 
     def event_results(options = {})

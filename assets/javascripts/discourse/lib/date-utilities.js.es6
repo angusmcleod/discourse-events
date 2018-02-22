@@ -200,7 +200,7 @@ let eventsForDay = function(day, topics, args = {}) {
         if (allDay && !fullWidth) {
           let remainingInRow = 7 - args.rowIndex;
           let daysInRow = daysLeft >= remainingInRow ? remainingInRow : daysLeft;
-          let buffer = 12;
+          let buffer = 20;
           if (attrs['time']) buffer += 55;
           let tStyle = `width:calc((100%*${daysInRow}) - ${buffer}px);background-color:#${topic.category.color};`;
           attrs['titleStyle'] = Ember.String.htmlSafe(tStyle);
@@ -247,7 +247,45 @@ let eventsForDay = function(day, topics, args = {}) {
     }
 
     return dayEvents;
-  }, []).sort((a, b) => Boolean(b.allDay) - Boolean(a.allDay || b.backfill));
+  }, []);
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel };
+let calendarDays = function(month) {
+  const firstDayMonth = moment().month(month).date(1);
+  const firstDayLocale = moment().weekday(0).day();
+
+  let start;
+  let diff;
+  if (firstDayMonth.day() >= firstDayLocale) {
+    diff = firstDayMonth.day() - firstDayLocale;
+    start = firstDayMonth.day(firstDayLocale);
+  } else {
+    if (firstDayLocale === 1) {
+      // firstDayMonth has to be 0, i.e. Sunday
+      diff = 6;
+    } else {
+      // islamic calendar starts on 6, i.e. Saturday
+      diff = firstDayMonth.day() + 1;
+    }
+    start = firstDayMonth.subtract(diff, 'days');
+  }
+
+  let count = 35;
+  if ((diff + moment().month(month).daysInMonth()) > 35) count = 42;
+
+  const end = moment(start).add(count, 'days');
+
+  return { start, end };
+};
+
+const RANGE_FORMAT = 'YYYY-MM-DD';
+
+let calendarRange = function(month) {
+  const { start, end } = calendarDays(month);
+  return {
+    start: start.format(RANGE_FORMAT),
+    end: end.format(RANGE_FORMAT)
+  };
+};
+
+export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, calendarDays, calendarRange };
