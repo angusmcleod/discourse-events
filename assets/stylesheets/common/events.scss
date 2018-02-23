@@ -327,7 +327,7 @@
     }
 
     .hidden-events {
-      margin: 2px 5px;
+      margin: 2px 4px;
 
       .btn {
         font-size: 0.9em;
@@ -348,12 +348,12 @@ ul.events-calendar-events {
 
   li {
     margin: 2px 0;
-    padding: 0 7px;
+    padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;
     cursor: pointer;
     height: 16px;
-    line-height: 16px;
+    line-height: 15px;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
 
@@ -370,7 +370,7 @@ ul.events-calendar-events {
 
       &:not(.full-width) {
         &.start {
-          margin-left: 4px;
+          margin-left: 2px;
           border-radius: 4px 0 0 4px;
         }
 

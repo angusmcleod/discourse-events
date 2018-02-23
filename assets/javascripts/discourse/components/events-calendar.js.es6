@@ -1,5 +1,5 @@
-import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
-import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
+import { default as computed, on } from 'ember-addons/ember-computed-decorators';
+import { eventsForDay } from '../lib/date-utilities';
 
 const RESPONSIVE_BREAKPOINT = 800;
 
@@ -7,8 +7,6 @@ export default Ember.Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
   showEvents: Ember.computed.not('eventsBelow'),
   canSelectDate: Ember.computed.alias('eventsBelow'),
-  routing: Ember.inject.service('-routing'),
-  queryParams: Ember.computed.alias('routing.router.currentState.routerJsState.fullQueryParams'),
 
   @on('init')
   setup() {
@@ -20,21 +18,10 @@ export default Ember.Component.extend({
       $(window).on('resize', Ember.run.bind(this, this.handleResize));
     });
 
-    let currentDate = moment().date();
-    let currentMonth = moment().month();
-
-    // get month from the date in middle of the event range
-    const queryParams = this.get('queryParams');
-    if (queryParams && queryParams.start && queryParams.end) {
-      const start = moment(queryParams.start);
-      const end = moment(queryParams.end);
-      const diff = Math.abs(start.diff(end, "days"));
-      currentMonth = start.add(diff/2, 'days').month();
-    }
-
-    let month = currentMonth;
-
-    this.setProperties({ currentDate, currentMonth, month });
+    this.setProperties({
+      currentDate: moment().date(),
+      currentMonth: moment().month()
+    });
   },
 
   @on('willDestroy')
@@ -119,12 +106,11 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    selectDate(selectedDate, selectedMonth) {
-      const month = this.get('month');
-      if (month !== selectedMonth) {
-        this.set('month', selectedMonth);
-      }
-      this.set('currentDate', selectedDate);
+    selectDate(date, month) {
+      this.setProperties({
+        currentDate: date,
+        currentMonth: month
+      });
     }
   }
 });
