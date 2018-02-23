@@ -8,6 +8,7 @@ import EditCategorySettings from 'discourse/components/edit-category-settings';
 import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
+import { calendarRange } from '../lib/date-utilities';
 
 export default {
   name: 'events-edits',
@@ -181,6 +182,11 @@ export default {
           }
         });
       });
+    });
+
+    withPluginApi('0.8.12', api => {
+      api.addDiscoveryQueryParam('end', { replace: true, refreshModel: true });
+      api.addDiscoveryQueryParam('start', { replace: true, refreshModel: true });
     });
   }
 };
