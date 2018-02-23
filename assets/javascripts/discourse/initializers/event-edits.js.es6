@@ -140,7 +140,7 @@ export default {
 
             // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
             transition.abort();
-            this.replaceWith(routeName, { queryParams: { start, end }});
+            this.transitionTo(`${transition.intent.url}?start=${start}&end=${end}`);
           }
 
           this._super(transition);

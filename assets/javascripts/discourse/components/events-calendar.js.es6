@@ -88,8 +88,16 @@ export default Ember.Component.extend({
     return router.transitionTo(routeName, {
       queryParams: { start, end }
     }).then(() => {
+      const category = this.get('category');
+      let filter = '';
+
+      if (category) {
+        filter += `c/${category.get('slug')}/l/`;
+      }
+      filter += 'calendar';
+
       this.store.findFiltered('topicList', {
-        filter: 'calendar',
+        filter,
         params: { start, end }
       }).then(list => {
         this.setProperties({
