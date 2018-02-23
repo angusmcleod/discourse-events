@@ -184,14 +184,23 @@ after_initialize do
   end
 
   TopicQuery.add_custom_filter(:start) do |topics, query|
-    if query.options[:start] && query.options[:end]
-      range_start = query.options[:start].to_datetime.beginning_of_day.to_i
-      range_end = query.options[:end].to_datetime.end_of_day.to_i
+    if query.options[:start]
       topics.where("topics.id in (
         SELECT topic_id FROM topic_custom_fields
         WHERE (name = 'event_start' OR name = 'event_end')
-        AND value >= '#{range_start}'
-        AND value <= '#{range_end}'
+        AND value >= '#{query.options[:start].to_datetime.beginning_of_day.to_i}'
+      )")
+    else
+      topics
+    end
+  end
+
+  TopicQuery.add_custom_filter(:end) do |topics, query|
+    if query.options[:end]
+      topics.where("topics.id in (
+        SELECT topic_id FROM topic_custom_fields
+        WHERE (name = 'event_start' OR name = 'event_end')
+        AND value <= '#{query.options[:end].to_datetime.end_of_day.to_i}'
       )")
     else
       topics
