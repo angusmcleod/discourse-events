@@ -129,6 +129,22 @@ export default {
     calendarRoutes.forEach((route) => {
       var route = container.lookup(`route:discovery.${route}`);
       route.reopen({
+        beforeModel(transition) {
+          const routeName = this.routeName;
+          const queryParams = this.paramsFor(routeName);
+
+          if (!queryParams.start || !queryParams.end) {
+            const month = moment().month();
+            const { start, end } = calendarRange(month);
+
+            // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
+            transition.abort();
+            this.transitionTo(`${transition.intent.url}?start=${start}&end=${end}`);
+          }
+
+          this._super(transition);
+        },
+
         renderTemplate(controller, model) {
           // respect discourse-layouts settings
           const settings = Discourse.SiteSettings;
