@@ -213,7 +213,7 @@ after_initialize do
 
     def list_agenda
       @options[:order] = 'agenda'
-      create_list(:agenda, { ascending: true }, event_results) do |topics|
+      create_list(:agenda, {}, event_results) do |topics|
         if SiteSetting.events_remove_past_from_agenda
           topics = topics.where("topics.id in (
                                   SELECT topic_id FROM topic_custom_fields
@@ -231,7 +231,7 @@ after_initialize do
 
     def list_calendar
       @options[:order] = 'agenda'
-      create_list(:calendar, { ascending: true, limit: false }, event_results)
+      create_list(:calendar, {}, event_results(limit: false))
     end
 
     def event_results(options = {})
