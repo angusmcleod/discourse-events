@@ -71,24 +71,7 @@ after_initialize do
   TopicList.preloaded_custom_fields << 'event_all_day' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_timezone' if TopicList.respond_to? :preloaded_custom_fields
 
-  module ::CalendarEvents
-    class Engine < ::Rails::Engine
-      engine_name 'calendar_events'
-      isolate_namespace CalendarEvents
-    end
-  end
-
-  CalendarEvents::Engine.routes.draw do
-    get 'l/:category_id' => 'event#category_list'
-  end
-
-  Discourse::Application.routes.append do
-    mount ::CalendarEvents::Engine, at: 'events'
-  end
-
-  load File.expand_path('../serializers/event.rb', __FILE__)
-  load File.expand_path('../lib/list.rb', __FILE__)
-  load File.expand_path('../controllers/event.rb', __FILE__)
+  load File.expand_path('../lib/calendar_events.rb', __FILE__)
 
   # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
@@ -213,6 +196,7 @@ after_initialize do
 
     def list_agenda
       @options[:order] = 'agenda'
+      @options[:list] = 'agenda'
       create_list(:agenda, {}, event_results) do |topics|
         if SiteSetting.events_remove_past_from_agenda
           topics = topics.where("topics.id in (
@@ -221,8 +205,11 @@ after_initialize do
                                 ) OR topic_custom_fields.value > '#{Time.now.to_i}'")
         end
 
-        CalendarEvents::List.sorted_filters.each do |filter|
-          topics = filter[:block].call(topics, @options)
+        if SiteSetting.events_agenda_filter_closed ||
+          (options[:category_id] &&
+          CategoryCustomField.where(category_id: options[:category_id], name: 'events_agenda_filter_closed')
+                             .pluck(:value))
+          topics = topics.where(closed: false)
         end
 
         topics
@@ -231,26 +218,21 @@ after_initialize do
 
     def list_calendar
       @options[:order] = 'agenda'
+      @options[:list] = 'calendar'
       create_list(:calendar, {}, event_results(limit: false))
     end
 
     def event_results(options = {})
-      default_results(options.reverse_merge(ascending: 'true'))
+      topics = default_results(options.reverse_merge(ascending: 'true'))
         .joins("INNER JOIN topic_custom_fields
                 ON topic_custom_fields.topic_id = topics.id
                 AND topic_custom_fields.name = 'event_start'")
-    end
-  end
 
-  CalendarEvents::List.add_filter do |topics, options|
-    if options[:category_id]
-      category = Category.find(options[:category_id])
-    end
+      CalendarEvents::List.sorted_filters.each do |filter|
+        topics = filter[:block].call(topics, @options)
+      end
 
-    if SiteSetting.events_agenda_filter_closed || (options[:category_id] && category.custom_fields['events_agenda_filter_closed'])
-      topics = topics.where(closed: false)
+      topics
     end
-
-    topics
   end
 end
