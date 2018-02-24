@@ -192,24 +192,21 @@ after_initialize do
 
   require_dependency 'topic_query'
   class ::TopicQuery
-    SORTABLE_MAPPING['agenda'] = 'custom_fields.event_start'
+    SORTABLE_MAPPING['event'] = 'custom_fields.event_start'
 
     def list_agenda
-      @options[:order] = 'agenda'
+      @options[:order] = 'event'
       @options[:list] = 'agenda'
-      create_list(:agenda, {}, event_results) do |topics|
+      opts = {}
+      opts[:status] = 'open' if SiteSetting.events_agenda_filter_closed
+
+      create_list(:agenda, {}, event_results(opts)) do |topics|
         if SiteSetting.events_remove_past_from_agenda
           topics = topics.where("topics.id in (
-                                  SELECT topic_id FROM topic_custom_fields
-                                  WHERE name = 'event_end' AND value > '#{Time.now.to_i}'
-                                ) OR topic_custom_fields.value > '#{Time.now.to_i}'")
-        end
-
-        if SiteSetting.events_agenda_filter_closed ||
-          (options[:category_id] &&
-          CategoryCustomField.where(category_id: options[:category_id], name: 'events_agenda_filter_closed')
-                             .pluck(:value))
-          topics = topics.where(closed: false)
+            SELECT topic_id FROM topic_custom_fields
+            WHERE (name = 'event_start' OR name ='event_end')
+            AND value > '#{Time.now.to_i}'
+          )")
         end
 
         topics
@@ -217,7 +214,7 @@ after_initialize do
     end
 
     def list_calendar
-      @options[:order] = 'agenda'
+      @options[:order] = 'event'
       @options[:list] = 'calendar'
       create_list(:calendar, {}, event_results(limit: false))
     end
