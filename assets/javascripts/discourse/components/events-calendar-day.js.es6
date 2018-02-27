@@ -82,13 +82,13 @@ export default Ember.Component.extend({
     return day.month();
   },
 
-  @computed('day', 'currentDate', 'expanded', 'responsive')
-  classes(day, currentDate, expanded, responsive) {
+  @computed('day', 'currentDate', 'currentMonth', 'expanded', 'responsive')
+  classes(day, currentDate, currentMonth, expanded, responsive) {
     let classes = '';
     if (day.isSame(moment(), "day")) {
       classes += 'today ';
     }
-    if (responsive && day.isSame(moment().date(currentDate), "day")) {
+    if (responsive && day.isSame(moment().month(currentMonth).date(currentDate), "day")) {
       classes += 'selected ';
     }
     if (expanded) {
