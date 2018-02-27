@@ -232,4 +232,31 @@ after_initialize do
       topics
     end
   end
+
+  class ::ListController
+    def calendar_feed
+      discourse_expires_in 1.minute
+
+      @title = "#{SiteSetting.title} - #{I18n.t("rss_description.calendar")}"
+      @link = "#{Discourse.base_url}/calendar"
+      @atom_link = "#{Discourse.base_url}/calendar.rss"
+      @description = I18n.t("rss_description.calendar")
+      options = { start: params[:start], end: params[:end] }
+      @topic_list = TopicQuery.new(nil, options).list_calendar
+
+      render 'list', formats: [:rss]
+    end
+
+    def agenda_feed
+      discourse_expires_in 1.minute
+
+      @title = "#{SiteSetting.title} - #{I18n.t("rss_description.agenda")}"
+      @link = "#{Discourse.base_url}/agenda"
+      @atom_link = "#{Discourse.base_url}/agenda.rss"
+      @description = I18n.t("rss_description.agenda")
+      @topic_list = TopicQuery.new(nil, {}).list_agenda
+
+      render 'list', formats: [:rss]
+    end
+  end
 end
