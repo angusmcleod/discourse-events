@@ -1,38 +1,40 @@
 let isAllDay = function(event) {
-  if (event['all_day']) return true;
+  if (event['all_day'] === true || event['all_day'] === 'true') return true;
 
   // legacy check for events pre-addition of 'all_day' attribute
   const start = moment(event['start']);
   const end = moment(event['end']);
   const startIsDayStart = start.hour() === 0 && start.minute() === 0;
   const endIsDayEnd = end.hour() === 23 && end.minute() === 59;
-  const differentDay = (end.date() > start.date()) || (end.month() > start.month());
 
-  return (startIsDayStart && endIsDayEnd) || differentDay;
+  return startIsDayStart && endIsDayEnd;
 };
 
 let setupEvent = function(event, args = {}) {
   let start;
   let end;
   let allDay;
+  let multiDay;
 
   if (event) {
     start = moment(event['start']);
+    allDay = isAllDay(event);
 
     if (event['end']) {
       end = moment(event['end']);
-      allDay = isAllDay(event);
+      multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
     if (event['timezone'] && (allDay || !args.displayInUserTimezone)) {
       start = start.tz(event['timezone']);
+
       if (event['end']) {
         end = end.tz(event['timezone']);
       }
     }
   }
 
-  return { start, end, allDay };
+  return { start, end, allDay, multiDay };
 };
 
 let timezoneLabel = function(timezone) {
@@ -82,39 +84,58 @@ let eventLabel = function(event, args = {}) {
   return label;
 };
 
-let utcDateTime = function(dateTime) {
-  return moment.parseZone(dateTime).utc().format().replace(/-|:|\.\d\d\d/g,"");
+let uriDateTimes = function(event) {
+  let format = event.all_day ? "YYYYMMDD" : "YYYYMMDDTHHmmss";
+  let rawStart = event.start;
+  let start = moment(rawStart).local().format(format);
+  let rawEnd = moment(event.end).add(1, 'days') || moment(event.start).add(1, 'days');
+  let end = moment(rawEnd).local().format(format);
+  return { start, end };
 };
 
 let googleUri = function(params) {
   let href = "https://www.google.com/calendar/render?action=TEMPLATE";
+
   if (params.title) {
     href += `&text=${params.title.replace(/ /g,'+').replace(/[^\w+]+/g,'')}`;
   }
-  href += `&dates=${utcDateTime(params.event.start)}/${utcDateTime(params.event.end)}`;
-  href += `&details=${params.details || I18n.t('add_to_calendar.default_details', {url: params.url})}`;
+
+  let { start, end } = uriDateTimes(params.event);
+  href += `&dates=${start}/${end}`;
+
+  href += `&details=${params.details || I18n.t('add_to_calendar.default_details', { url: params.url })}`;
+
   if (params.location) {
     href += `&location=${params.location}`;
   }
+
   href += "&sf=true&output=xml";
+
   return href;
 };
 
 let icsUri = function(params) {
+  let url = document.URL;
+  let title = params.title;
+  let details = params.details || '';
+  let location = params.location || '';
+  let { start, end } = uriDateTimes(params.event);
+
   return encodeURI(
     'data:text/calendar;charset=utf8,' + [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'BEGIN:VEVENT',
-      'URL:' + document.URL,
-      'DTSTART:' + (utcDateTime(params.event.start) || ''),
-      'DTEND:' + (utcDateTime(params.event.end) || ''),
-      'SUMMARY:' + (params.title || ''),
-      'DESCRIPTION:' + (params.details || ''),
-      'LOCATION:' + (params.location || ''),
+      'URL:' + url,
+      'DTSTART:' + start,
+      'DTEND:' + end,
+      'SUMMARY:' + title,
+      'DESCRIPTION:' + details,
+      'LOCATION:' + location,
       'END:VEVENT',
       'END:VCALENDAR'
-    ].join('\n'));
+    ].join('\n')
+  );
 };
 
 let allDayAttrs = function(attrs, topic, startIsSame, endIsSame, isBetween) {
@@ -161,10 +182,10 @@ let eventCalculations = function(day, start, end) {
 let eventsForDay = function(day, topics, args = {}) {
   const events = topics.filter((t) => t.event);
   const fullWidth = args.dateEvents || args.expanded;
-  let allDayIndex = 0;
+  let blockIndex = 0;
 
   return events.reduce((dayEvents, topic) => {
-    const { start, end, allDay } = setupEvent(topic.event);
+    const { start, end, allDay, multiDay } = setupEvent(topic.event);
     const { startIsSame, endIsSame, isBetween, daysLeft } = eventCalculations(day, start, end);
     const onThisDay = startIsSame || endIsSame || isBetween;
 
@@ -179,25 +200,27 @@ let eventsForDay = function(day, topics, args = {}) {
         attrs['classes'] += 'full-width';
       }
 
-      if (allDay) {
+      const blockStyle = allDay || multiDay;
+
+      if (blockStyle) {
         attrs = allDayAttrs(attrs, topic, startIsSame, endIsSame, isBetween);
 
-        if (topic.event.allDayIndex === undefined) {
-          topic.event.allDayIndex = allDayIndex;
+        if (topic.event.blockIndex === undefined) {
+          topic.event.blockIndex = blockIndex;
         }
-        allDayIndex ++;
+        blockIndex ++;
       } else if (topic.category) {
         attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
       }
 
-      if (!allDay || (!topic.event['all_day'] && startIsSame)) {
+      if (!allDay || (multiDay && startIsSame)) {
         attrs['time'] = moment(topic.event.start).format('h:mm a');
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {
         attrs['title'] = topic.title;
 
-        if (allDay && !fullWidth) {
+        if (multiDay && !fullWidth) {
           let remainingInRow = 7 - args.rowIndex;
           let daysInRow = daysLeft >= remainingInRow ? remainingInRow : daysLeft;
           let buffer = 20;
@@ -210,17 +233,17 @@ let eventsForDay = function(day, topics, args = {}) {
       attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
 
       // Add placeholders if necessary
-      if (allDay) {
-        let diff = topic.event.allDayIndex - dayEvents.length;
+      if (blockStyle) {
+        let diff = topic.event.blockIndex - dayEvents.length;
         if (diff > 0) {
           for (let i=0; i<diff; ++i) {
             dayEvents.push({ allDay: true, empty: true, classes: "empty" });
-            allDayIndex ++;
+            blockIndex ++;
           }
         }
       }
 
-      let insertAt = allDay ? topic.event.allDayIndex : dayEvents.length;
+      let insertAt = blockStyle ? topic.event.blockIndex : dayEvents.length;
       let replace = 0;
 
       // backfill when possible
@@ -230,17 +253,17 @@ let eventsForDay = function(day, topics, args = {}) {
       });
       if ((startIsSame && emptyIndexes.length) || topic.event.backfill)  {
         attrs['backfill'] = true;
-        let backfillIndex = emptyIndexes.indexOf(topic.event.allDayIndex) > -1 ?
-                            topic.event.allDayIndex : emptyIndexes[0];
-        if (allDay) {
-          insertAt = topic.event.allDayIndex = backfillIndex;
+        let backfillIndex = emptyIndexes.indexOf(topic.event.blockIndex) > -1 ?
+                            topic.event.blockIndex : emptyIndexes[0];
+        if (blockStyle) {
+          insertAt = topic.event.blockIndex = backfillIndex;
           topic.event.backfill = true;
         } else {
           insertAt = backfillIndex;
         }
 
         replace = 1;
-        allDayIndex --;
+        blockIndex --;
       }
 
       dayEvents.splice(insertAt, replace, attrs);

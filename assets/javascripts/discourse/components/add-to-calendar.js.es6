@@ -19,7 +19,7 @@ export default Ember.Component.extend({
     }
   },
 
-  @computed()
+  @computed('topic.event')
   calendarUris() {
     const topic = this.get('topic');
 

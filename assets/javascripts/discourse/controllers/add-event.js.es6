@@ -34,7 +34,7 @@ export default Ember.Controller.extend({
 
     if (allDay) {
       let startDate = start.format(DATE_FORMAT);
-      let endDate = end.format(DATE_FORMAT);
+      let endDate = end ? end.format(DATE_FORMAT) : startDate;
       let endEnabled = moment(endDate).isAfter(startDate, 'day');
 
       props = {
