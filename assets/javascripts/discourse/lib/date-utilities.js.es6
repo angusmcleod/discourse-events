@@ -97,7 +97,7 @@ let googleUri = function(params) {
   let href = "https://www.google.com/calendar/render?action=TEMPLATE";
 
   if (params.title) {
-    href += `&text=${params.title.replace(/ /g,'+').replace(/[^\w+]+/g,'')}`;
+    href += `&text=${encodeURIComponent(params.title)}`;
   }
 
   let { start, end } = uriDateTimes(params.event);
