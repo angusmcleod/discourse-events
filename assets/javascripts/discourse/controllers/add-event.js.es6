@@ -124,12 +124,11 @@ export default Ember.Controller.extend({
   },
 
   @computed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
-  notReady(startDate, startTime, endDate, endTime, endEnabled, allDay) {
-    const datesInvalid = endEnabled ? moment(startDate).isAfter(moment(endDate)) : false;
-    if (allDay) return datesInvalid;
-
-    const timesValid = endEnabled ? moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm')) : false;
-    return datesInvalid || timesValid;
+  notReady(startDate, startTime, endDate, endTime, endEnabled) {
+    if (!endEnabled) return false;
+    if (moment(endDate).isAfter(moment(startDate), 'day')) return false;
+    if (moment(endDate).isBefore(moment(startDate), 'day')) return true;
+    return moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm'));
   },
 
   @computed('timezone')
