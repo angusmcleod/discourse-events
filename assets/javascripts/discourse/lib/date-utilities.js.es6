@@ -169,12 +169,28 @@ let eventCalculations = function(day, start, end) {
   // equivalent momentjs comparisons dont work well with all-day timezone handling
   const date = day.date();
   const month = day.month();
+  const year = day.year();
   const startDate = start.date();
   const startMonth = start.month();
-  const startIsSame = date === startDate && month === startMonth;
-  const endIsSame = end && (date === end.date()) && (month === end.month());
-  const isBetween = end && (month === startMonth || month === end.month()) && (date > startDate) && (date < end.date());
-  const daysLeft = end ? (end.date() - day.date()) + 1 : 1;
+  const startYear = start.year();
+
+  const startIsSame = (date === startDate) && (month === startMonth) && (year === startYear);
+  let endIsSame = false;
+  let isBetween = false;
+  let daysLeft = 1;
+
+  if (end) {
+    const endDate = end.date();
+    const endMonth = end.month();
+    const endYear = end.year();
+    endIsSame = end && (date === endDate) && (month === endMonth) && (year === endYear);
+
+    const startIsBefore = (year > startYear) || ((year === startYear) && ((month > startMonth) || (month === startMonth && date > startDate)));
+    const endIsAfter = (year < endYear) || ((year === endYear) && ((month < endMonth) || (month === endMonth && date < endDate)));
+    isBetween = startIsBefore && endIsAfter;
+
+    daysLeft = endDate - date + 1;
+  }
 
   return { startIsSame, endIsSame, isBetween, daysLeft };
 };
@@ -213,7 +229,7 @@ let eventsForDay = function(day, topics, args = {}) {
         attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
       }
 
-      if (!allDay || (multiDay && startIsSame)) {
+      if ((!allDay && !multiDay) || (multiDay && startIsSame)) {
         attrs['time'] = moment(topic.event.start).format('h:mm a');
       }
 
