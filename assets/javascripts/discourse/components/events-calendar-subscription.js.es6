@@ -8,14 +8,14 @@ export default DropdownSelectBoxComponent.extend({
   @computed
   content() {
     const baseUrl = window.location.host + window.location.pathname;
-
+    const timeZone = moment.tz.guess();
     return [
       {
-        id: `webcal://${baseUrl}.ics`,
+        id: `webcal://${baseUrl}.ics?time_zone=${timeZone}`,
         name: I18n.t('events_calendar.ical')
       },
       {
-        id: `${baseUrl}.rss`,
+        id: `${baseUrl}.rss?time_zone=${timeZone}`,
         name: I18n.t('events_calendar.rss')
       }
     ];

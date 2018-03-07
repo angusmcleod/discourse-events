@@ -291,8 +291,12 @@ after_initialize do
       @topic_list = TopicQuery.new(nil, list_opts).list_calendar
 
       @topic_list.topics.each do |t|
-        event_start = t.event[:start].to_datetime
-        event_end = t.event[:end].present? ? t.event[:end].to_datetime : event_start
+        event_start_utc = t.event[:start].to_datetime
+        event_end_utc = t.event[:end].present? ? t.event[:end].to_datetime : event_start_utc
+
+        time_zone = params[:time_zone] ? params[:time_zone] : t.event[:event_timezone]
+        event_start = event_start_utc.in_time_zone(time_zone)
+        event_end = event_end_utc.in_time_zone(time_zone)
 
         cal.event do |e|
           e.dtstart = event_start
