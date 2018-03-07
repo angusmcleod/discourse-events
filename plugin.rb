@@ -235,8 +235,6 @@ after_initialize do
     end
   end
 
-  ::
-
   ListController.class_eval do
     skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
 
