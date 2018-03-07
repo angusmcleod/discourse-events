@@ -11,5 +11,7 @@ en:
     events_event_label_include_timezone: "Include timezone in event label."
 
   rss_description:
-    agenda: "Events agenda"
-    calendar: "Events calendar"
+    events: "Events"
+
+  webcal_description:
+    events: "Events"

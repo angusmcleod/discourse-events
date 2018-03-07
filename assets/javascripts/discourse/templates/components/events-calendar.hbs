@@ -1,4 +1,9 @@
-{{combo-box content=months value=month class='month-dropdown'}}
+<div class="header">
+  {{combo-box content=months value=month class='month-dropdown'}}
+  {{#if currentUser}}
+    {{events-calendar-subscription none='events_calendar.subscribe' headerIcon='rss' category=category}}
+  {{/if}}
+</div>
 {{events-calendar-body days=days
                        topics=topics
                        currentMonth=currentMonth

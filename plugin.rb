@@ -10,6 +10,8 @@ register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
+gem 'icalendar', '2.4.1'
+
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
 Discourse.filters.push(:agenda)
@@ -233,30 +235,87 @@ after_initialize do
     end
   end
 
-  class ::ListController
+  ::
+
+  ListController.class_eval do
+    skip_before_action :ensure_logged_in, if: [:calendar_ics, :agenda_ics]
+
     def calendar_feed
-      discourse_expires_in 1.minute
-
-      @title = "#{SiteSetting.title} - #{I18n.t("rss_description.calendar")}"
-      @link = "#{Discourse.base_url}/calendar"
-      @atom_link = "#{Discourse.base_url}/calendar.rss"
-      @description = I18n.t("rss_description.calendar")
-      options = { start: params[:start], end: params[:end] }
-      @topic_list = TopicQuery.new(nil, options).list_calendar
-
-      render 'list', formats: [:rss]
+      set_category if params[:category]
+      self.send('event_feed', name: 'calendar', start: params[:start], end: params[:end])
     end
 
     def agenda_feed
+      set_category if params[:category]
+      self.send('event_feed', name: 'agenda')
+    end
+
+    def calendar_ics
+      set_category if params[:category]
+      self.send('event_ics', name: 'calendar')
+    end
+
+    def agenda_ics
+      set_category if params[:category]
+      self.send('event_ics', name: 'agenda')
+    end
+
+    def event_feed(opts = {})
       discourse_expires_in 1.minute
 
-      @title = "#{SiteSetting.title} - #{I18n.t("rss_description.agenda")}"
-      @link = "#{Discourse.base_url}/agenda"
-      @atom_link = "#{Discourse.base_url}/agenda.rss"
-      @description = I18n.t("rss_description.agenda")
-      @topic_list = TopicQuery.new(nil, {}).list_agenda
+      title_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
+      base_url = @category ? @category.url : Discourse.base_url
+      list_opts = {}
+      list_opts[:category] = @category.id if @category
+
+      @title = "#{title_prefix} #{I18n.t("rss_description.events")}"
+      @link = "#{base_url}/#{opts[:name]}"
+      @atom_link = "#{base_url}/#{opts[:name]}.rss"
+      @description = I18n.t("rss_description.events")
+      @topic_list = TopicQuery.new(nil, list_opts).list_agenda
 
       render 'list', formats: [:rss]
     end
+
+    def event_ics(opts = {})
+      name_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
+      base_url = @category ? @category.url : Discourse.base_url
+
+      calendar_name = "#{name_prefix} #{I18n.t("webcal_description.events")}"
+      calendar_url = "#{base_url}/calendar"
+      list_opts = {}
+      list_opts[:category] = @category.id if @category
+
+      cal = Icalendar::Calendar.new
+      cal.x_wr_calname = calendar_name
+      @topic_list = TopicQuery.new(nil, list_opts).list_calendar
+
+      @topic_list.topics.each do |t|
+        event_start = t.event[:start].to_datetime
+        event_end = t.event[:end].present? ? t.event[:end].to_datetime : event_start
+
+        cal.event do |e|
+          e.dtstart = event_start
+          e.dtend = event_end
+          e.summary = t.title
+          e.description = t.excerpt
+          e.url = calendar_url
+        end
+      end
+
+      cal.publish
+
+      render plain: cal.to_ical, formats: [:ics] unless performed?
+    end
+  end
+
+  Discourse::Application.routes.prepend do
+    get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
+    get "agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
+    get "c/:category/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
+    get "c/:category/l/agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
+
+    get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
+    get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
   end
 end

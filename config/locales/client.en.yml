@@ -45,3 +45,6 @@ en:
         agenda: "There are no more agenda topics."
     events_calendar:
       hidden: "{{count}} more"
+      subscribe: "Subscribe"
+      ical: "iCal"
+      rss: "RSS"
