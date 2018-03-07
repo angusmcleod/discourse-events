@@ -238,7 +238,7 @@ after_initialize do
   ::
 
   ListController.class_eval do
-    skip_before_action :ensure_logged_in, if: [:calendar_ics, :agenda_ics]
+    skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
 
     def calendar_feed
       set_category if params[:category]
@@ -291,19 +291,21 @@ after_initialize do
       @topic_list = TopicQuery.new(nil, list_opts).list_calendar
 
       @topic_list.topics.each do |t|
-        event_start_utc = t.event[:start].to_datetime
-        event_end_utc = t.event[:end].present? ? t.event[:end].to_datetime : event_start_utc
+        if t.event && t.event[:start]
+          event_start_utc = t.event[:start].to_datetime
+          event_end_utc = t.event[:end].present? ? t.event[:end].to_datetime : event_start_utc
 
-        time_zone = params[:time_zone] ? params[:time_zone] : t.event[:event_timezone]
-        event_start = event_start_utc.in_time_zone(time_zone)
-        event_end = event_end_utc.in_time_zone(time_zone)
+          time_zone = params[:time_zone] ? params[:time_zone] : t.event[:event_timezone]
+          event_start = event_start_utc.in_time_zone(time_zone)
+          event_end = event_end_utc.in_time_zone(time_zone)
 
-        cal.event do |e|
-          e.dtstart = event_start
-          e.dtend = event_end
-          e.summary = t.title
-          e.description = t.excerpt
-          e.url = calendar_url
+          cal.event do |e|
+            e.dtstart = event_start
+            e.dtend = event_end
+            e.summary = t.title
+            e.description = t.excerpt
+            e.url = calendar_url
+          end
         end
       end
 
