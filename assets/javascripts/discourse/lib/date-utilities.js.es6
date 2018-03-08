@@ -289,8 +289,8 @@ let eventsForDay = function(day, topics, args = {}) {
   }, []);
 };
 
-let calendarDays = function(month) {
-  const firstDayMonth = moment().month(month).date(1);
+let calendarDays = function(month, year) {
+  const firstDayMonth = moment().year(year).month(month).date(1);
   const firstDayLocale = moment().weekday(0).day();
 
   let start;
@@ -310,7 +310,7 @@ let calendarDays = function(month) {
   }
 
   let count = 35;
-  if ((diff + moment().month(month).daysInMonth()) > 35) count = 42;
+  if ((diff + moment().year(year).month(month).daysInMonth()) > 35) count = 42;
 
   const end = moment(start).add(count, 'days');
 
@@ -319,8 +319,8 @@ let calendarDays = function(month) {
 
 const RANGE_FORMAT = 'YYYY-MM-DD';
 
-let calendarRange = function(month) {
-  const { start, end } = calendarDays(month);
+let calendarRange = function(month, year) {
+  const { start, end } = calendarDays(month, year);
   return {
     start: start.format(RANGE_FORMAT),
     end: end.format(RANGE_FORMAT)

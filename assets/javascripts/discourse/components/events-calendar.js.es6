@@ -2,6 +2,11 @@ import { default as computed, on, observes } from 'ember-addons/ember-computed-d
 import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
 
 const RESPONSIVE_BREAKPOINT = 800;
+const YEARS = [
+  2017,
+  2018,
+  2019
+];
 
 export default Ember.Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
@@ -9,6 +14,7 @@ export default Ember.Component.extend({
   canSelectDate: Ember.computed.alias('eventsBelow'),
   routing: Ember.inject.service('-routing'),
   queryParams: Ember.computed.alias('routing.router.currentState.routerJsState.fullQueryParams'),
+  years: YEARS,
 
   @on('init')
   setup() {
@@ -22,19 +28,23 @@ export default Ember.Component.extend({
 
     let currentDate = moment().date();
     let currentMonth = moment().month();
+    let currentYear = moment().year();
 
-    // get month from the date in middle of the event range
+    // get month and year from the date in middle of the event range
     const queryParams = this.get('queryParams');
     if (queryParams && queryParams.start && queryParams.end) {
       const start = moment(queryParams.start);
       const end = moment(queryParams.end);
       const diff = Math.abs(start.diff(end, "days"));
-      currentMonth = start.add(diff/2, 'days').month();
+      const middleDay = start.add(diff/2, 'days');
+      currentMonth = middleDay.month();
+      currentYear = middleDay.year();
     }
 
     let month = currentMonth;
+    let year = currentYear;
 
-    this.setProperties({ currentDate, currentMonth, month });
+    this.setProperties({ currentDate, currentMonth, currentYear, month, year });
   },
 
   @on('willDestroy')
@@ -56,20 +66,25 @@ export default Ember.Component.extend({
     });
   },
 
+  @computed
+  showFullTitle() {
+    return !this.site.mobileView;
+  },
+
   @computed('responsive')
   eventsBelow(responsive) {
     return responsive || this.site.mobileView;
   },
 
-  @computed('currentDate', 'currentMonth', 'topics.[]')
-  dateEvents(currentDate, currentMonth, topics) {
-    const day = moment().month(currentMonth);
+  @computed('currentDate', 'currentMonth', 'currentYear', 'topics.[]')
+  dateEvents(currentDate, currentMonth, currentYear, topics) {
+    const day = moment().year(currentYear).month(currentMonth);
     return eventsForDay(day.date(currentDate), topics, { dateEvents: true });
   },
 
-  @computed('currentMonth')
-  days(currentMonth) {
-    const { start, end } = calendarDays(currentMonth);
+  @computed('currentMonth', 'currentYear')
+  days(currentMonth, currentYear) {
+    const { start, end } = calendarDays(currentMonth, currentYear);
     let days = [];
     for (var day = moment(start); day.isBefore(end); day.add(1, 'days')) {
       days.push(moment().month(day.month()).date(day.date()));
@@ -77,8 +92,13 @@ export default Ember.Component.extend({
     return days;
   },
 
-  transitionToMonth(month) {
-    const { start, end } = calendarRange(month);
+  @computed('category')
+  showSubscription(category) {
+    return !category || !category.read_restricted;
+  },
+
+  transitionToMonth(month, year) {
+    const { start, end } = calendarRange(month, year);
     const router = this.get('routing.router');
 
     if (this.get('loading')) return;
@@ -102,18 +122,21 @@ export default Ember.Component.extend({
         this.setProperties({
           topics: list.topics,
           currentMonth: month,
+          currentYear: year,
           loading: false
         });
       });
     });
   },
 
-  @observes('month')
+  @observes('month', 'year')
   getNewTopics() {
     const currentMonth = this.get('currentMonth');
+    const currentYear = this.get('currentYear');
     const month = this.get('month');
-    if (currentMonth !== month) {
-      this.transitionToMonth(month);
+    const year = this.get('year');
+    if (currentMonth !== month || currentYear !== year) {
+      this.transitionToMonth(month, year);
     }
   },
 
@@ -124,6 +147,44 @@ export default Ember.Component.extend({
         this.set('month', selectedMonth);
       }
       this.set('currentDate', selectedDate);
+    },
+
+    today() {
+      this.setProperties({
+        month: moment().month(),
+        year: moment().year(),
+        currentDate: moment().date()
+      });
+    },
+
+    monthPrevious() {
+      let currentMonth = this.get('currentMonth');
+      let year = this.get('currentYear');
+      let month;
+
+      if (currentMonth === 0) {
+        month = 11;
+        year = year - 1;
+      } else {
+        month = currentMonth - 1;
+      }
+
+      this.setProperties({ month, year });
+    },
+
+    monthNext() {
+      let currentMonth = this.get('currentMonth');
+      let year = this.get('currentYear');
+      let month;
+
+      if (currentMonth === 11) {
+        month = 0;
+        year = year + 1;
+      } else {
+        month = currentMonth + 1;
+      }
+
+      this.setProperties({ month, year });
     }
   }
 });

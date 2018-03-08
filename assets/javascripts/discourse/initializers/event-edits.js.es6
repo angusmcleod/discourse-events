@@ -136,7 +136,8 @@ export default {
 
           if (!queryParams.start || !queryParams.end) {
             const month = moment().month();
-            const { start, end } = calendarRange(month);
+            const year = moment().year();
+            const { start, end } = calendarRange(month, year);
 
             // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
             transition.abort();
