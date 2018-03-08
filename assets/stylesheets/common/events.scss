@@ -201,10 +201,12 @@
   .select-kit-body {
     width: 380px;
     max-width: 90vw;
+    padding: 5px 0;
 
     .events-calendar-subscription-row {
       cursor: initial;
       display: flex;
+      padding: 5px;
 
       &.is-highlighted {
         background-color: initial;
