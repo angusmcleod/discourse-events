@@ -3,9 +3,9 @@ import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [
-  2017,
-  2018,
-  2019
+  moment().subtract(1, 'year').year(),
+  moment().year(),
+  moment().add(1, 'year').year()
 ];
 
 export default Ember.Component.extend({
