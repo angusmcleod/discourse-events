@@ -2,7 +2,7 @@ import { default as computed, on } from 'ember-addons/ember-computed-decorators'
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
-  expanded: null,
+  expandedDate: 0,
 
   @on('init')
   setup() {
@@ -25,8 +25,8 @@ export default Ember.Component.extend({
       this.sendAction('selectDate', date, month);
     },
 
-    expand(date) {
-      this.set('expanded', date);
+    setExpandedDate(date) {
+      this.set('expandedDate', date);
     }
   }
 });

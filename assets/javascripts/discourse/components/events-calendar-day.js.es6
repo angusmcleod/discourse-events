@@ -5,9 +5,13 @@ const MAX_EVENTS = 4;
 
 export default Ember.Component.extend({
   classNameBindings: [':day', 'classes'],
-  expanded: false,
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
+
+  @computed('date', 'expandedDate')
+  expanded(date, expandedDate) {
+    return date === expandedDate;
+  },
 
   @on('init')
   @observes('expanded')
@@ -58,7 +62,9 @@ export default Ember.Component.extend({
   },
 
   clickOutside() {
-    this.set('expanded', false);
+    if (this.get('expanded')) {
+      this.get('setExpandedDate')(null);
+    }
   },
 
   click() {
@@ -121,11 +127,5 @@ export default Ember.Component.extend({
     }
 
     return Ember.String.htmlSafe(style);
-  },
-
-  actions: {
-    toggleExpanded() {
-      this.toggleProperty('expanded');
-    }
   }
 });
