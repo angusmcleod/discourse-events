@@ -261,6 +261,8 @@ after_initialize do
     def event_feed(opts = {})
       discourse_expires_in 1.minute
 
+      guardian.ensure_can_see!(@category) if @category
+
       title_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
       base_url = @category ? @category.url : Discourse.base_url
       list_opts = {}
@@ -276,6 +278,8 @@ after_initialize do
     end
 
     def event_ics(opts = {})
+      guardian.ensure_can_see!(@category) if @category
+
       name_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
       base_url = @category ? @category.url : Discourse.base_url
 
