@@ -5,6 +5,15 @@
   </label>
 </section>
 
+{{#if category.custom_fields.events_enabled}}
+  <section class='field min-trust'>
+    <label>
+      {{i18n 'category.events_min_trust_to_create'}}
+      {{input type="number" value=category.custom_fields.events_min_trust_to_create}}
+    </label>
+  </section>
+{{/if}}
+
 <section class='field'>
   <label>
     {{input type="checkbox" checked=category.custom_fields.events_agenda_enabled}}

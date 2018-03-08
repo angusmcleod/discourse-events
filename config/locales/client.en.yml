@@ -18,6 +18,7 @@ en:
       enable_events_agenda: "Show an agenda topic list in this category"
       enable_events_calendar: "Show a calendar topic list in this category"
       events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category"
+      events_min_trust_to_create: "Min trust to create event in this category"
     composer:
       tip:
         add_event: "Add a date, time and location for your event."

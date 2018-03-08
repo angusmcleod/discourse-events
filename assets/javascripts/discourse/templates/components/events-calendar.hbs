@@ -9,7 +9,10 @@
     {{/unless}}
   </div>
   {{#if showSubscription}}
-    {{events-calendar-subscription showFullTitle=showFullTitle none='events_calendar.subscribe' headerIcon='rss' category=category}}
+    {{events-calendar-subscription showFullTitle=showFullTitle
+                                   none='events_calendar.subscribe'
+                                   headerIcon='rss'
+                                   category=category}}
   {{/if}}
 </div>
 {{events-calendar-body days=days
