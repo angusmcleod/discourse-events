@@ -88,7 +88,8 @@ let uriDateTimes = function(event) {
   let format = event.all_day ? "YYYYMMDD" : "YYYYMMDDTHHmmss";
   let rawStart = event.start;
   let start = moment(rawStart).local().format(format);
-  let rawEnd = moment(event.end).add(1, 'days') || moment(event.start).add(1, 'days');
+  let rawEnd = moment(event.end || event.start);
+  if (event.all_day) rawEnd = moment(rawEnd).add(1, 'days');
   let end = moment(rawEnd).local().format(format);
   return { start, end };
 };
