@@ -1,4 +1,4 @@
-import { default as computed, on } from 'ember-addons/ember-computed-decorators';
+import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
@@ -13,11 +13,16 @@ export default Ember.Component.extend({
   @computed('responsive')
   weekdays(responsive) {
     let data = moment.localeData();
-    let weekdays = responsive ? Object.assign([],data.weekdaysMin()) : Object.assign([],data.weekdays());
+    let weekdays = responsive ? Object.assign([], data.weekdaysMin()) : Object.assign([], data.weekdays());
     let firstDay = moment().weekday(0).day();
     let beforeFirst = weekdays.splice(0, firstDay);
     weekdays.push(...beforeFirst);
     return weekdays;
+  },
+
+  @observes('currentMonth')
+  resetExpandedDate() {
+    this.set('expandedDate', null);
   },
 
   actions: {
