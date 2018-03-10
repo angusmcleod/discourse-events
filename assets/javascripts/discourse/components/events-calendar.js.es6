@@ -1,5 +1,6 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
 import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
+import Category from 'discourse/models/category';
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [
@@ -111,7 +112,7 @@ export default Ember.Component.extend({
       let filter = '';
 
       if (category) {
-        filter += `c/${category.get('slug')}/l/`;
+        filter += `c/${Category.slugFor(category)}/l/`;
       }
       filter += 'calendar';
 
