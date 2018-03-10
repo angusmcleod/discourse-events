@@ -17,9 +17,15 @@ export default {
     Composer.serializeToTopic('event', 'topic.event');
 
     Composer.reopen({
-      @computed('subtype', 'category.events_enabled', 'topicFirstPost', 'topic.event')
-      showEventControls(subtype, categoryEnabled, topicFirstPost, event) {
-        return topicFirstPost && (subtype === 'event' || categoryEnabled || event);
+      @computed('subtype', 'category.events_enabled', 'topicFirstPost', 'topic.event', 'canCreateEvent')
+      showEventControls(subtype, categoryEnabled, topicFirstPost, event, canCreateEvent) {
+        return topicFirstPost && (subtype === 'event' || categoryEnabled || event) && canCreateEvent;
+      },
+
+      @computed('category.events_min_trust_to_create')
+      canCreateEvent(minTrust) {
+        const user = Discourse.User.current();
+        return user.trust_level >= minTrust;
       }
     });
 
@@ -40,9 +46,15 @@ export default {
     });
 
     Topic.reopen({
-      @computed('subtype', 'category.events_enabled')
-      showEventControls(subtype, categoryEnabled) {
-        return subtype === 'event' || categoryEnabled;
+      @computed('subtype', 'category.events_enabled', 'canCreateEvent')
+      showEventControls(subtype, categoryEnabled, canCreateEvent) {
+        return (subtype === 'event' || categoryEnabled) && canCreateEvent;
+      },
+
+      @computed('category.events_min_trust_to_create')
+      canCreateEvent(minTrust) {
+        const user = Discourse.User.current();
+        return user.trust_level >= minTrust;
       },
 
       @computed('last_read_post_number', 'highest_post_number')
@@ -136,7 +148,8 @@ export default {
 
           if (!queryParams.start || !queryParams.end) {
             const month = moment().month();
-            const { start, end } = calendarRange(month);
+            const year = moment().year();
+            const { start, end } = calendarRange(month, year);
 
             // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
             transition.abort();

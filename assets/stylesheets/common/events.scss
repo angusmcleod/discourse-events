@@ -191,16 +191,22 @@
   }
 }
 
+.navigation {
+  display: inline-block;
+}
+
 .select-kit.events-calendar-subscription {
   float: right;
 
   .select-kit-body {
     width: 380px;
     max-width: 90vw;
+    padding: 5px 0;
 
     .events-calendar-subscription-row {
       cursor: initial;
       display: flex;
+      padding: 5px;
 
       &.is-highlighted {
         background-color: initial;
@@ -220,11 +226,26 @@
   }
 }
 
+.select-kit.month-dropdown, .select-kit.year-dropdown {
+  width: 150px;
+  min-width: 150px;
+  height: 28px;
+  vertical-align: top;
+
+  .select-kit-header {
+    line-height: 1.3;
+  }
+}
+
 .events-calendar.responsive {
-  .month-dropdown {
+  .month-dropdown, .year-dropdown {
     width: 110px;
     min-width: 110px;
     height: 30px;
+
+    .select-kit-header {
+      line-height: 1.35;
+    }
 
     &:not(.is-expanded) .select-kit-header {
       width: inherit;
@@ -453,4 +474,8 @@ ul.events-calendar-events {
       width: 20px;
     }
   }
+}
+
+.edit-category-modal .enable-events .min-trust input {
+  width: 50px;
 }

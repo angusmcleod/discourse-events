@@ -1,7 +1,18 @@
 <div class="header">
-  {{combo-box content=months value=month class='month-dropdown'}}
-  {{#if currentUser}}
-    {{events-calendar-subscription none='events_calendar.subscribe' headerIcon='rss' category=category}}
+  <div class="navigation">
+    {{d-button label='events_calendar.today' action='today'}}
+    {{d-button icon='chevron-left' action='monthPrevious'}}
+    {{d-button icon='chevron-right' action='monthNext'}}
+    {{combo-box content=months value=month class='month-dropdown'}}
+    {{#unless site.mobileView}}
+      {{combo-box content=years value=year class='year-dropdown'}}
+    {{/unless}}
+  </div>
+  {{#if showSubscription}}
+    {{events-calendar-subscription showFullTitle=showFullTitle
+                                   none='events_calendar.subscribe'
+                                   headerIcon='rss'
+                                   category=category}}
   {{/if}}
 </div>
 {{events-calendar-body days=days

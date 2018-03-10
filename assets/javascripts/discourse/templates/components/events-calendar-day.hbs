@@ -5,7 +5,7 @@
     </div>
 
     {{#if expanded}}
-      <div class="close" {{action 'toggleExpanded'}}>{{d-icon 'times'}}</div>
+      <div class="close" {{action setExpandedDate null}}>{{d-icon 'times'}}</div>
     {{/if}}
   </div>
 
@@ -18,7 +18,8 @@
         <div class="hidden-events">
           {{d-button class='btn-small'
                      translatedLabel=(i18n 'events_calendar.hidden' count=hidden)
-                     action='toggleExpanded'}}
+                     action=setExpandedDate
+                     actionParam=date}}
         </div>
       {{/if}}
     {{else}}

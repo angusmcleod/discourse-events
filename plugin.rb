@@ -42,10 +42,22 @@ after_initialize do
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_filter_closed', :boolean)
+  Category.register_custom_field_type('events_min_trust_to_create', :integer)
   add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_enabled) { object.custom_fields['events_agenda_enabled'] }
   add_to_serializer(:basic_category, :events_calendar_enabled) { object.custom_fields['events_calendar_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
+  add_to_serializer(:basic_category, :events_min_trust_to_create) { object.events_min_trust_to_create }
+
+  class ::Category
+    def events_min_trust_to_create
+      if self.custom_fields['events_min_trust_to_create'].present?
+        self.custom_fields['events_min_trust_to_create'].to_i
+      else
+        0
+      end
+    end
+  end
 
   module EventsSiteSettingExtension
     def type_hash(name)
@@ -132,27 +144,32 @@ after_initialize do
 
   PostRevisor.class_eval do
     track_topic_field(:event) do |tc, event|
-      event_start = event['start'] ? event['start'].to_datetime.to_i : nil
-      tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-      tc.topic.custom_fields['event_start'] = event_start
+      if tc.guardian.can_edit_event?(tc.topic.category)
+        event_start = event['start'] ? event['start'].to_datetime.to_i : nil
+        tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
+        tc.topic.custom_fields['event_start'] = event_start
 
-      event_end = event['end'] ? event['end'].to_datetime.to_i : nil
-      tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
-      tc.topic.custom_fields['event_end'] = event_end
+        event_end = event['end'] ? event['end'].to_datetime.to_i : nil
+        tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
+        tc.topic.custom_fields['event_end'] = event_end
 
-      all_day = event['all_day'] ? event['all_day'] === 'true' : false
-      tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
-      tc.topic.custom_fields['event_all_day'] = all_day
+        all_day = event['all_day'] ? event['all_day'] === 'true' : false
+        tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
+        tc.topic.custom_fields['event_all_day'] = all_day
 
-      timezone = event['timezone']
-      tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
-      tc.topic.custom_fields['event_timezone'] = timezone
+        timezone = event['timezone']
+        tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
+        tc.topic.custom_fields['event_timezone'] = timezone
+      end
     end
   end
 
-  DiscourseEvent.on(:post_created) do |post, opts, _user|
+  DiscourseEvent.on(:post_created) do |post, opts, user|
     if post.is_first_post? && opts[:event]
       topic = Topic.find(post.topic_id)
+
+      guardian = Guardian.new(user)
+      guardian.ensure_can_create_event!(topic.category)
 
       event = opts[:event].is_a?(String) ? ::JSON.parse(opts[:event]) : opts[:event]
       event_start = event['start']
@@ -190,6 +207,23 @@ after_initialize do
     else
       topics
     end
+  end
+
+  module EventsGuardian
+    def can_create_event?(category)
+      can_create_topic_on_category?(category) &&
+      (is_staff? ||
+      (user && user.trust_level >= category.events_min_trust_to_create))
+    end
+
+    def can_edit_event?(category)
+      can_create_event?(category)
+    end
+  end
+
+  require_dependency 'guardian'
+  class ::Guardian
+    include EventsGuardian
   end
 
   require_dependency 'topic_query'
