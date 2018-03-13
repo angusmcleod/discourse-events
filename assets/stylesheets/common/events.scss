@@ -133,6 +133,20 @@
   }
 }
 
+#reply-control .with-tags .title-and-category.show-event-controls {
+  .category-input {
+    flex: 1 0 20%;
+  }
+
+  .mini-tag-chooser {
+    flex: 1 1 20%;
+  }
+
+  .composer-controls-event {
+    margin-left: 10px;
+  }
+}
+
 .add-event {
   text-align: left;
 }
