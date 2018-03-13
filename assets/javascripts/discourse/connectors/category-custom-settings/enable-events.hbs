@@ -5,14 +5,12 @@
   </label>
 </section>
 
-{{#if category.custom_fields.events_enabled}}
-  <section class='field min-trust'>
-    <label>
-      {{i18n 'category.events_min_trust_to_create'}}
-      {{input type="number" value=category.custom_fields.events_min_trust_to_create}}
-    </label>
-  </section>
-{{/if}}
+<section class='field min-trust'>
+  <label>
+    {{i18n 'category.events_min_trust_to_create'}}
+    {{input type="number" value=category.custom_fields.events_min_trust_to_create}}
+  </label>
+</section>
 
 <section class='field'>
   <label>
@@ -25,5 +23,12 @@
   <label>
     {{input type="checkbox" checked=category.custom_fields.events_calendar_enabled}}
     {{i18n 'category.enable_events_calendar'}}
+  </label>
+</section>
+
+<section class='field'>
+  <label>
+    {{input type="checkbox" checked=category.custom_fields.events_event_label_no_text}}
+    {{i18n 'category.events_event_label_no_text'}}
   </label>
 </section>

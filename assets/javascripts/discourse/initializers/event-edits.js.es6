@@ -39,7 +39,11 @@ export default {
       @observes('composer.showEventControls')
       applyEventInlineClass() {
         Ember.run.scheduleOnce('afterRender', this, () => {
-          $('.composer-controls-event').toggleClass('show-control', Boolean(this.get('composer.showEventControls')));
+          const showEventControls = this.get('composer.showEventControls');
+          $('.composer-fields .title-and-category').toggleClass('show-event-controls', showEventControls);
+          if (showEventControls) {
+            $('.composer-controls-event').appendTo('.title-and-category.with-preview');
+          }
           this.resize();
         });
       }

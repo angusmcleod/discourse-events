@@ -120,10 +120,17 @@
   margin: 5px 10px;
 }
 
-.composer-controls-event.show-control {
-  float: left;
-  margin-bottom: 10px;
-  margin-right: 10px;
+#reply-control .composer-fields .title-and-category.show-event-controls {
+  align-items: flex-start;
+
+  .category-input {
+    flex: 1 0 30%;
+    margin: 0 10px 5px;
+
+    .select-kit {
+      min-width: 200px;
+    }
+  }
 }
 
 .add-event {
@@ -131,8 +138,9 @@
 }
 
 .add-event, .add-event + button {
-  padding: 6px 10px;
+  padding: 5px 10px;
   border: 1px solid $primary-medium;
+  line-height: 17px;
 }
 
 .composer-controls-event .event-label .btn:not(:hover) {

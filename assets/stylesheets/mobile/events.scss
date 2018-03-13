@@ -10,6 +10,7 @@
 .mobile-view #reply-control button.add-event {
   position: relative;
   margin-left: 4px;
+  line-height: 19px;
 
   &:not(.btn-primary) {
     background: $secondary;

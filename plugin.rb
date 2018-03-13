@@ -47,6 +47,7 @@ after_initialize do
   add_to_serializer(:basic_category, :events_agenda_enabled) { object.custom_fields['events_agenda_enabled'] }
   add_to_serializer(:basic_category, :events_calendar_enabled) { object.custom_fields['events_calendar_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
+  add_to_serializer(:basic_category, :events_event_label_no_text) { object.custom_fields['events_event_label_no_text'] }
   add_to_serializer(:basic_category, :events_min_trust_to_create) { object.events_min_trust_to_create }
 
   class ::Category

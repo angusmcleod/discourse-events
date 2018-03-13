@@ -2,5 +2,16 @@
   {{d-button class=valueClasses action="showAddEvent" translatedLabel=valueLabel}}
   {{d-button icon="times" action="removeEvent" class="remove"}}
 {{else}}
-  {{d-button class="add-event" translatedLabel=addLabel action="showAddEvent" title='add_event.btn_label'}}
+  {{#if iconOnly}}
+    {{d-button class="add-event"
+               icon=siteSettings.events_event_label_icon
+               action="showAddEvent"
+               title='add_event.btn_label'}}
+  {{else}}
+    {{d-button class="add-event"
+               icon=siteSettings.events_event_label_icon
+               label='add_event.btn_label'
+               action="showAddEvent"
+               title='add_event.btn_label'}}
+  {{/if}}
 {{/if}}

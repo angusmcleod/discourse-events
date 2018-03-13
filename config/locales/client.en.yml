@@ -1,7 +1,7 @@
 en:
   js:
     add_event:
-      btn_label: "{{iconHtml}} Add Date and Time"
+      btn_label: "Add Date and Time"
       modal_title: Date and Time
       event_start: Start
       event_end: End
@@ -19,6 +19,7 @@ en:
       enable_events_calendar: "Show a calendar topic list in this category"
       events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category"
       events_min_trust_to_create: "Min trust to create event in this category"
+      events_event_label_no_text: "No text on add event buttons in this category."
     composer:
       tip:
         add_event: "Add a date, time and location for your event."

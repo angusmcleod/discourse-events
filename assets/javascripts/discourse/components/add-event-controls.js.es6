@@ -36,6 +36,13 @@ export default Ember.Component.extend({
     return this.site.isMobileDevice ? iconHtml : I18n.t('add_event.btn_label', { iconHtml });
   },
 
+  @computed('category')
+  iconOnly(category) {
+    return this.site.mobileView ||
+           Discourse.SiteSettings.events_event_label_no_text ||
+           category && category.get('events_event_label_no_text');
+  },
+
   actions: {
     showAddEvent() {
       let controller = showModal('add-event', {
