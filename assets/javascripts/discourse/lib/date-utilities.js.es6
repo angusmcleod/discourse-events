@@ -230,7 +230,7 @@ let eventsForDay = function(day, topics, args = {}) {
         attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
       }
 
-      if ((!allDay && !multiDay) || (multiDay && startIsSame)) {
+      if (!allDay && (!multiDay || startIsSame)) {
         attrs['time'] = moment(topic.event.start).format('h:mm a');
       }
 
