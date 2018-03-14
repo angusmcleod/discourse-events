@@ -88,7 +88,7 @@ export default Ember.Component.extend({
     const { start, end } = calendarDays(currentMonth, currentYear);
     let days = [];
     for (var day = moment(start); day.isBefore(end); day.add(1, 'days')) {
-      days.push(moment().month(day.month()).date(day.date()));
+      days.push(moment().year(day.year()).month(day.month()).date(day.date()));
     }
     return days;
   },
