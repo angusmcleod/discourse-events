@@ -260,7 +260,8 @@ after_initialize do
       topics = default_results(options.reverse_merge(ascending: 'true'))
         .joins("INNER JOIN topic_custom_fields
                 ON topic_custom_fields.topic_id = topics.id
-                AND topic_custom_fields.name = 'event_start'")
+                AND topic_custom_fields.name = 'event_start'
+                AND topic_custom_fields.value <> ''")
 
       CalendarEvents::List.sorted_filters.each do |filter|
         topics = filter[:block].call(topics, @options)
