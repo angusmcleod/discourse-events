@@ -237,7 +237,7 @@ let eventsForDay = function(day, topics, args = {}) {
       if (startIsSame || fullWidth || args.rowIndex === 0) {
         attrs['title'] = topic.title;
 
-        if (multiDay && !fullWidth) {
+        if ((multiDay || allDay) && !fullWidth) {
           let remainingInRow = 7 - args.rowIndex;
           let daysInRow = daysLeft >= remainingInRow ? remainingInRow : daysLeft;
           let buffer = 20;
