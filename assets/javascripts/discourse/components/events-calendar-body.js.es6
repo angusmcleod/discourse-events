@@ -1,4 +1,5 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
+import { firstDayOfWeek } from '../lib/date-utilities';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
@@ -13,8 +14,8 @@ export default Ember.Component.extend({
   @computed('responsive')
   weekdays(responsive) {
     let data = moment.localeData();
-    let weekdays = responsive ? Object.assign([], data.weekdaysMin()) : Object.assign([], data.weekdays());
-    let firstDay = moment().weekday(0).day();
+    let weekdays = Object.assign([], responsive ? data.weekdaysMin() : data.weekdays());
+    let firstDay = firstDayOfWeek();
     let beforeFirst = weekdays.splice(0, firstDay);
     weekdays.push(...beforeFirst);
     return weekdays;

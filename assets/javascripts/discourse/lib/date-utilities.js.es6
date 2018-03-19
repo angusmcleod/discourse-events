@@ -290,17 +290,24 @@ let eventsForDay = function(day, topics, args = {}) {
   }, []);
 };
 
+const allowedFirstDays = [6, 0, 1]; // Saturday, Sunday, Monday
+let firstDayOfWeek = function() {
+  const user = Discourse.User.current();
+  return user && allowedFirstDays.indexOf(user.calendar_first_day_week) > -1 ?
+         user.calendar_first_day_week : moment().weekday(0).day();
+};
+
 let calendarDays = function(month, year) {
   const firstDayMonth = moment().year(year).month(month).date(1);
-  const firstDayLocale = moment().weekday(0).day();
+  const firstDayWeek = firstDayOfWeek();
 
   let start;
   let diff;
-  if (firstDayMonth.day() >= firstDayLocale) {
-    diff = firstDayMonth.day() - firstDayLocale;
-    start = firstDayMonth.day(firstDayLocale);
+  if (firstDayMonth.day() >= firstDayWeek) {
+    diff = firstDayMonth.day() - firstDayWeek;
+    start = firstDayMonth.day(firstDayWeek);
   } else {
-    if (firstDayLocale === 1) {
+    if (firstDayWeek === 1) {
       // firstDayMonth has to be 0, i.e. Sunday
       diff = 6;
     } else {
@@ -328,4 +335,4 @@ let calendarRange = function(month, year) {
   };
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, calendarDays, calendarRange };
+export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange };

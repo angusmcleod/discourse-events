@@ -51,3 +51,7 @@ en:
       subscribe: "Subscribe"
       ical: "iCal"
       rss: "RSS"
+    user:
+      events_calendar:
+        label: "Calendar"
+        first_day_week: "Start week on"

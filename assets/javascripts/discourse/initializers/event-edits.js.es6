@@ -204,6 +204,15 @@ export default {
     withPluginApi('0.8.12', api => {
       api.addDiscoveryQueryParam('end', { replace: true, refreshModel: true });
       api.addDiscoveryQueryParam('start', { replace: true, refreshModel: true });
+
+      api.modifyClass('controller:preferences/interface', {
+        @computed("makeThemeDefault")
+        saveAttrNames(makeDefault) {
+          let attrs = this._super(makeDefault);
+          attrs.push('custom_fields');
+          return attrs;
+        },
+      });
     });
   }
 };
