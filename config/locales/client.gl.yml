@@ -1,7 +1,7 @@
 gl:
   js:
     add_event:
-      btn_label: "{{iconHtml}} Engadir Data e Hora"
+      btn_label: "Engadir Data e Hora"
       modal_title: Data e Hora
       event_start: Comezo
       event_end: Fin

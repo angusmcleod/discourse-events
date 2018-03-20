@@ -1,7 +1,7 @@
 en:
   js:
     add_event:
-      btn_label: "{{iconHtml}} 新增日期时间"
+      btn_label: "新增日期时间"
       modal_title: 日期时间
       event_start: 开始
       event_end: 结束
