@@ -365,4 +365,12 @@ after_initialize do
     get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
     get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
   end
+
+  Rails.configuration.paths['app/views'].unshift(Rails.root.join('plugins', 'discourse-events', 'app/views'))
+
+  class UserNotifications::UserNotificationRenderer
+    def datetime(string)
+      string.to_datetime
+    end
+  end
 end
