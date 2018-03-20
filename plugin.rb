@@ -333,16 +333,11 @@ after_initialize do
 
       @topic_list.topics.each do |t|
         if t.event && t.event[:start]
-          event_start_utc = t.event[:start].to_datetime
-          event_end_utc = t.event[:end].present? ? t.event[:end].to_datetime : event_start_utc
-
-          time_zone = params[:time_zone] ? params[:time_zone] : t.event[:event_timezone]
-          event_start = event_start_utc.in_time_zone(time_zone)
-          event_end = event_end_utc.in_time_zone(time_zone)
+          localized_event = CalendarEvents::Helper.localize_event(t.event, params[:time_zone])
 
           cal.event do |e|
-            e.dtstart = event_start
-            e.dtend = event_end
+            e.dtstart = localized_event[:start]
+            e.dtend = localized_event[:end]
             e.summary = t.title
             e.description = t.excerpt
             e.url = calendar_url
@@ -419,11 +414,12 @@ after_initialize do
       body = super
 
       if @opts[:event]
-        event = @opts[:event]
-        event_str = "&#128197; #{I18n.l(event[:start].to_datetime, format: :long)}"
+        localized_event = CalendarEvents::Helper.localize_event(@opts[:event])
 
-        if event[:end]
-          event_str << " — #{I18n.l(event[:end].to_datetime, format: :long)}"
+        event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
+
+        if localized_event[:end]
+          event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
         end
 
         if invite_template
@@ -466,8 +462,12 @@ after_initialize do
   end
 
   class UserNotifications::UserNotificationRenderer
-    def datetime(str)
-      str.to_datetime
+    def localized_event(event)
+      if event
+        @event ||= CalendarEvents::Helper.localize_event(event)
+      else
+        nil
+      end
     end
   end
 end
