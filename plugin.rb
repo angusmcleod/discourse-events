@@ -368,9 +368,106 @@ after_initialize do
 
   Rails.configuration.paths['app/views'].unshift(Rails.root.join('plugins', 'discourse-events', 'app/views'))
 
+  module UserNotificationsEventExtension
+    protected def send_notification_email(opts)
+      post = opts[:post]
+      if post && post.topic.event
+        @event = post.topic.event
+      end
+      super(opts)
+    end
+  end
+
+  module InviteMailerEventExtension
+    def send_invite(invite)
+      topic = invite.topics.order(:created_at).first
+      if topic && topic.event
+        @event = topic.event
+      end
+      super(invite)
+    end
+  end
+
+  module BuildEmailHelperExtension
+    def build_email(*builder_args)
+      if builder_args[1] && @event
+        builder_args[1][:event] = @event
+      end
+      super(*builder_args)
+    end
+  end
+
+  require_dependency 'user_notifications'
+  class ::UserNotifications
+    prepend UserNotificationsEventExtension
+    prepend BuildEmailHelperExtension
+  end
+
+  require_dependency 'invite_mailer'
+  class ::InviteMailer
+    prepend InviteMailerEventExtension
+    prepend BuildEmailHelperExtension
+  end
+
+  module MessageBuilderExtension
+    def html_part
+      return if @opts[:event] && invite_template
+      super
+    end
+
+    def body
+      body = super
+
+      if @opts[:event]
+        event = @opts[:event]
+        event_str = "&#128197; #{I18n.l(event[:start].to_datetime, format: :long)}"
+
+        if event[:end]
+          event_str << " — #{I18n.l(event[:end].to_datetime, format: :long)}"
+        end
+
+        if invite_template
+          topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")
+          topic_type_sub = I18n.t('event_email.topic_type_sub')
+
+          body.gsub!(topic_type_match, topic_type_sub)
+
+          pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
+
+          body = %{
+            #{pre_str}
+            >
+            > #{event_str}
+            #{post_str}
+          }
+        else
+          body = "#{event_str}\n\n#{body}"
+        end
+      end
+
+      body
+    end
+
+    def invite_template
+      invite_notification || invite_mailer
+    end
+
+    def invite_notification
+      @opts[:template] === "user_notifications.user_invited_to_topic"
+    end
+
+    def invite_mailer
+      @opts[:template] === "invite_mailer" || @opts[:template] === "custom_invite_mailer"
+    end
+  end
+
+  class Email::MessageBuilder
+    prepend MessageBuilderExtension
+  end
+
   class UserNotifications::UserNotificationRenderer
-    def datetime(string)
-      string.to_datetime
+    def datetime(str)
+      str.to_datetime
     end
   end
 end

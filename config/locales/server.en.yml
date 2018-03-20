@@ -16,3 +16,7 @@ en:
 
   webcal_description:
     events: "Events"
+
+  event_email:
+    topic_type_match: "a discussion"
+    topic_type_sub: "an event"
