@@ -406,7 +406,10 @@ after_initialize do
 
   module MessageBuilderExtension
     def html_part
+      ## We need to force plaintext for all invites for now (non-user invites are already plaintext)
+      ## as there's no straightfoward way to get the event in the invite template without significant overriding
       return if @opts[:event] && invite_template
+
       super
     end
 
@@ -414,13 +417,16 @@ after_initialize do
       body = super
 
       if @opts[:event]
-        localized_event = CalendarEvents::Helper.localize_event(@opts[:event])
+        event = @opts[:event]
+        localized_event = CalendarEvents::Helper.localize_event(event)
 
         event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
 
         if localized_event[:end]
           event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
         end
+
+        event_str << "  (GMT+#{localized_event[:offset]}) #{localized_event[:timezone]}"
 
         if invite_template
           topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")

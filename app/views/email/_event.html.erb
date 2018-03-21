@@ -3,4 +3,5 @@
 <% if event[:end] %>
 — <%= l event[:end], format: :long %>
 <% end %>
+<%= "  (GMT+#{event[:offset]}) #{event[:timezone]}".html_safe %>
 <hr>
