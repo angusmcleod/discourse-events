@@ -21,6 +21,8 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
+load File.expand_path('../models/events_default_timezone_site_setting.rb', __FILE__)
+
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
     if SiteSetting.events_remove_past_from_map
@@ -38,6 +40,8 @@ DiscourseEvent.on(:locations_ready) do
 end
 
 after_initialize do
+  add_to_serializer(:site, :event_timezones) { EventsDefaultTimezoneSiteSetting.values }
+
   Category.register_custom_field_type('events_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
@@ -406,9 +410,16 @@ after_initialize do
 
   module MessageBuilderExtension
     def html_part
-      ## We need to force plaintext for all invites for now (non-user invites are already plaintext)
-      ## as there's no straightfoward way to get the event in the invite template without significant overriding
-      return if @opts[:event] && invite_template
+      if @opts[:html_override] && @opts[:event] && invite_notification
+        html = substitute_topic_type(@opts[:html_override])
+        event_str = build_event_string
+
+        doc = Nokogiri::HTML::fragment(html)
+
+        doc.at_css('blockquote').css("p:eq(1)").after("<div style='padding-left:1em;'>#{event_str}</div>")
+
+        @opts[:html_override] = doc.to_s
+      end
 
       super
     end
@@ -417,22 +428,10 @@ after_initialize do
       body = super
 
       if @opts[:event]
-        event = @opts[:event]
-        localized_event = CalendarEvents::Helper.localize_event(event)
-
-        event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
-
-        if localized_event[:end]
-          event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
-        end
-
-        event_str << "  (GMT+#{localized_event[:offset]}) #{localized_event[:timezone]}"
+        event_str = build_event_string
 
         if invite_template
-          topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")
-          topic_type_sub = I18n.t('event_email.topic_type_sub')
-
-          body.gsub!(topic_type_match, topic_type_sub)
+          body = substitute_topic_type(body)
 
           pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
 
@@ -461,6 +460,33 @@ after_initialize do
     def invite_mailer
       @opts[:template] === "invite_mailer" || @opts[:template] === "custom_invite_mailer"
     end
+
+    def build_event_string
+      event = @opts[:event]
+
+      return '' if !event
+
+      localized_event = CalendarEvents::Helper.localize_event(event)
+
+      event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
+
+      if localized_event[:end]
+        event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
+      end
+
+      event_str << " #{CalendarEvents::Helper.timezone_label(event)}"
+
+      event_str
+    end
+
+    def substitute_topic_type(text)
+      topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")
+      topic_type_sub = I18n.t('event_email.topic_type_sub')
+
+      text.gsub!(topic_type_match, topic_type_sub)
+
+      text
+    end
   end
 
   class Email::MessageBuilder
@@ -474,6 +500,10 @@ after_initialize do
       else
         nil
       end
+    end
+
+    def timezone_label(event)
+      CalendarEvents::Helper.timezone_label(event)
     end
   end
 end

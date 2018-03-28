@@ -2,11 +2,15 @@
 
   <div class='header-instructions'>%{header_instructions}</div>
 
-  <%-# Start event additions -%>
+  <%-# start of event additions -%>
   <% if localized_event(post.topic.event).present? %>
-    <%= render partial: 'email/event', locals: { event: localized_event(post.topic.event) } %>
+    <%= render partial: 'email/event', locals: {
+      event: localized_event(post.topic.event),
+      title: post.topic.fancy_title,
+      url: post.topic.url
+    } %>
   <% end %>
-  <%-# End event additions -%>
+  <%-# end of event additions -%>
 
   <%- if SiteSetting.private_email? %>
     <p><%= t('system_messages.contents_hidden') %></p>

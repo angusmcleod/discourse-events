@@ -10,6 +10,7 @@ en:
     events_remove_past_from_agenda: "Remove past events from agendas."
     events_agenda_filter_closed: "Remove closed topics from agendas."
     events_event_label_include_timezone: "Include timezone in event label."
+    events_default_timezone: "Default timezone for events."
 
   rss_description:
     events: "Events"

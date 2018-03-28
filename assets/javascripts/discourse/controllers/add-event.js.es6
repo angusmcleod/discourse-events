@@ -3,28 +3,11 @@ import { setupEvent, timezoneLabel } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
-const TIMEZONES = moment.tz.names().reduce((names, n) => {
-  if (n.indexOf('+') === -1) {
-    const offset = moment.tz(n).format('Z');
-    const name = timezoneLabel(n);
-    names.push({
-      id: n,
-      name,
-      offset
-    });
-  }
-
-  return names;
-}, []).sort((a, b) => {
-  return parseInt(a.offset.replace(':', ''), 10) -
-         parseInt(b.offset.replace(':', ''), 10);
-});
 
 export default Ember.Controller.extend({
   title: 'add_event.modal_title',
   endEnabled: false,
   allDay: false,
-  timezones: TIMEZONES,
   showTimezone: false,
 
   setup() {
@@ -121,6 +104,11 @@ export default Ember.Controller.extend({
   nextInterval() {
     const ROUNDING = 30 * 60 * 1000;
     return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
+  },
+
+  @computed
+  timezones() {
+    return this.site.event_timezones;
   },
 
   @computed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
