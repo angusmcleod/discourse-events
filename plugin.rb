@@ -410,15 +410,23 @@ after_initialize do
 
   module MessageBuilderExtension
     def html_part
-      if @opts[:html_override] && @opts[:event] && invite_notification
-        html = substitute_topic_type(@opts[:html_override])
+      if @opts[:event] && invite_template
         event_str = build_event_string
+        event_html = "<div style='padding-left:1em;'>#{event_str}</div>"
 
-        doc = Nokogiri::HTML::fragment(html)
+        if html = @opts[:html_override]
+          html = substitute_topic_type(@opts[:html_override])
 
-        doc.at_css('blockquote').css("p:eq(1)").after("<div style='padding-left:1em;'>#{event_str}</div>")
+          doc = Nokogiri::HTML::fragment(html)
 
-        @opts[:html_override] = doc.to_s
+          doc.at_css('blockquote').css("p:eq(1)").after(event_html)
+
+          @opts[:html_override] = doc.to_s
+        else
+          doc = Nokogiri::HTML::fragment(PrettyText.cook(body))
+          doc.at_css('blockquote:eq(1) p:eq(2)').replace(event_html)
+          @opts[:html_override] = doc.to_s
+        end
       end
 
       super
@@ -435,7 +443,7 @@ after_initialize do
 
           pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
 
-          body = "#{pre_str}\n>\n> #{event_str}\n#{post_str}}"
+          body = "#{pre_str}\n>\n> #{event_str}\n#{post_str}"
         else
           body = "#{event_str}\n\n#{body}"
         end
