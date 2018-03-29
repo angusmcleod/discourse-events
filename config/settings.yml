@@ -26,3 +26,7 @@ plugins:
   events_event_label_include_timezone:
     client: true
     default: false
+  events_default_timezone:
+    default: 'Etc/UTC'
+    client: true
+    enum: 'EventsDefaultTimezoneSiteSetting'

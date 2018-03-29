@@ -21,6 +21,8 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
+load File.expand_path('../models/events_default_timezone_site_setting.rb', __FILE__)
+
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
     if SiteSetting.events_remove_past_from_map
@@ -38,6 +40,8 @@ DiscourseEvent.on(:locations_ready) do
 end
 
 after_initialize do
+  add_to_serializer(:site, :event_timezones) { EventsDefaultTimezoneSiteSetting.values }
+
   Category.register_custom_field_type('events_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
@@ -333,16 +337,11 @@ after_initialize do
 
       @topic_list.topics.each do |t|
         if t.event && t.event[:start]
-          event_start_utc = t.event[:start].to_datetime
-          event_end_utc = t.event[:end].present? ? t.event[:end].to_datetime : event_start_utc
-
-          time_zone = params[:time_zone] ? params[:time_zone] : t.event[:event_timezone]
-          event_start = event_start_utc.in_time_zone(time_zone)
-          event_end = event_end_utc.in_time_zone(time_zone)
+          localized_event = CalendarEvents::Helper.localize_event(t.event, params[:time_zone])
 
           cal.event do |e|
-            e.dtstart = event_start
-            e.dtend = event_end
+            e.dtstart = localized_event[:start]
+            e.dtend = localized_event[:end]
             e.summary = t.title
             e.description = t.excerpt
             e.url = calendar_url
@@ -364,5 +363,150 @@ after_initialize do
 
     get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
     get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
+  end
+
+  Rails.configuration.paths['app/views'].unshift(Rails.root.join('plugins', 'discourse-events', 'app/views'))
+
+  module UserNotificationsEventExtension
+    protected def send_notification_email(opts)
+      post = opts[:post]
+      if post && post.topic.event
+        @event = post.topic.event
+      end
+      super(opts)
+    end
+  end
+
+  module InviteMailerEventExtension
+    def send_invite(invite)
+      topic = invite.topics.order(:created_at).first
+      if topic && topic.event
+        @event = topic.event
+      end
+      super(invite)
+    end
+  end
+
+  module BuildEmailHelperExtension
+    def build_email(*builder_args)
+      if builder_args[1] && @event
+        builder_args[1][:event] = @event
+      end
+      super(*builder_args)
+    end
+  end
+
+  require_dependency 'user_notifications'
+  class ::UserNotifications
+    prepend UserNotificationsEventExtension
+    prepend BuildEmailHelperExtension
+  end
+
+  require_dependency 'invite_mailer'
+  class ::InviteMailer
+    prepend InviteMailerEventExtension
+    prepend BuildEmailHelperExtension
+  end
+
+  module MessageBuilderExtension
+    def html_part
+      if @opts[:event] && invite_template
+        event_str = build_event_string
+        event_html = "<div style='padding-left:1em;'>#{event_str}</div>"
+
+        if html = @opts[:html_override]
+          html = substitute_topic_type(@opts[:html_override])
+
+          doc = Nokogiri::HTML::fragment(html)
+
+          doc.at_css('blockquote').css("p:eq(1)").after(event_html)
+
+          @opts[:html_override] = doc.to_s
+        else
+          doc = Nokogiri::HTML::fragment(PrettyText.cook(body))
+          doc.at_css('blockquote:eq(1) p:eq(2)').replace(event_html)
+          @opts[:html_override] = doc.to_s
+        end
+      end
+
+      super
+    end
+
+    def body
+      body = super
+
+      if @opts[:event]
+        event_str = build_event_string
+
+        if invite_template
+          body = substitute_topic_type(body)
+
+          pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
+
+          body = "#{pre_str}\n>\n> #{event_str}\n#{post_str}"
+        else
+          body = "#{event_str}\n\n#{body}"
+        end
+      end
+
+      body
+    end
+
+    def invite_template
+      invite_notification || invite_mailer
+    end
+
+    def invite_notification
+      @opts[:template] === "user_notifications.user_invited_to_topic"
+    end
+
+    def invite_mailer
+      @opts[:template] === "invite_mailer" || @opts[:template] === "custom_invite_mailer"
+    end
+
+    def build_event_string
+      event = @opts[:event]
+
+      return '' if !event
+
+      localized_event = CalendarEvents::Helper.localize_event(event)
+
+      event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
+
+      if localized_event[:end]
+        event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
+      end
+
+      event_str << " #{CalendarEvents::Helper.timezone_label(event)}"
+
+      event_str
+    end
+
+    def substitute_topic_type(text)
+      topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")
+      topic_type_sub = I18n.t('event_email.topic_type_sub')
+
+      text.gsub!(topic_type_match, topic_type_sub)
+
+      text
+    end
+  end
+
+  class Email::MessageBuilder
+    prepend MessageBuilderExtension
+  end
+
+  class UserNotifications::UserNotificationRenderer
+    def localized_event(event)
+      if event
+        @event ||= CalendarEvents::Helper.localize_event(event)
+      else
+        nil
+      end
+    end
+
+    def timezone_label(event)
+      CalendarEvents::Helper.timezone_label(event)
+    end
   end
 end
