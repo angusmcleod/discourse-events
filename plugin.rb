@@ -435,12 +435,7 @@ after_initialize do
 
           pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
 
-          body = %{
-            #{pre_str}
-            >
-            > #{event_str}
-            #{post_str}
-          }
+          body = "#{pre_str}\n>\n> #{event_str}\n#{post_str}}"
         else
           body = "#{event_str}\n\n#{body}"
         end
