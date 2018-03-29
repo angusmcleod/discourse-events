@@ -477,7 +477,7 @@ after_initialize do
         event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
       end
 
-      event_str << " #{CalendarEvents::Helper.timezone_label(event)}"
+      event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
 
       event_str
     end

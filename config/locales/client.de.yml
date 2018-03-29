@@ -1,7 +1,7 @@
 de:
   js:
     add_event:
-      btn_label: "{{iconHtml}} Datum und Uhrzeit hinzufügen"
+      btn_label: "Datum und Uhrzeit hinzufügen"
       modal_title: Datum and Uhrzeit
       event_start: Beginn
       event_end: Ende
