@@ -37,9 +37,17 @@ let setupEvent = function(event, args = {}) {
   return { start, end, allDay, multiDay };
 };
 
-let timezoneLabel = function(timezone) {
-  const offset = moment.tz(timezone).format('Z');
-  let raw = timezone;
+let timezoneLabel = function(tz) {
+  const timezones = Discourse.Site.currentProp('event_timezones');
+
+  if (timezones) {
+    const standard = timezones.find(tzObj => tzObj.value === tz);
+    if (standard) return standard.name;
+  }
+
+  // fallback to IANA name if zone is not part of the Rails standard set. 
+  const offset = moment.tz(tz).format('Z');
+  let raw = tz;
   let name = raw.replace('_', '');
   return`(${offset}) ${name}`;
 };

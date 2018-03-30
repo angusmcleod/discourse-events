@@ -19,3 +19,47 @@ class CalendarEvents::List
     @sorted_filters.sort_by! { |h| -h[:priority] }
   end
 end
+
+class CalendarEvents::Helper
+  def self.localize_event(event, timezone = nil)
+    event_start = event[:start].to_datetime
+    event_end = event[:end].present? ? event[:end].to_datetime : event_start
+
+    event_timezone = SiteSetting.events_default_timezone
+    event_timezone = event[:timezone] if event[:timezone].present?
+    event_timezone = timezone if timezone.present?
+
+    localized_event_start = event_start.in_time_zone(event_timezone)
+    localized_event_end = event_end.in_time_zone(event_timezone)
+
+    {
+      start: localized_event_start,
+      end: localized_event_end,
+      timezone: event_timezone,
+      offset: timezone_offset(event_timezone)
+    }
+  end
+
+  def self.timezone_offset(timezone)
+    Time.now.in_time_zone(timezone).utc_offset / 1.hour
+  end
+
+  def self.timezone_label(event)
+    return '' if !event[:timezone]
+
+    standard_tz = EventsDefaultTimezoneSiteSetting.values.select do |tz|
+      tz[:value] === event[:timezone]
+    end
+
+    if standard_tz.first
+      label = standard_tz.first[:name]
+    else
+      event_offset = event[:offset].present? ? event[:offset].to_i : 0
+      offset_prefix = "GMT"
+      offset = event_offset < 0 ? event_offset : "+ #{event_offset}"
+      label = " (#{offset_prefix}#{offset}) #{localized_event[:timezone]}"
+    end
+
+    label
+  end
+end

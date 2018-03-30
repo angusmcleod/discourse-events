@@ -1,0 +1,19 @@
+<span>&#128197;</span>
+<span itemscope itemtype="http://schema.org/Event" style="display:inline-block">
+  <% if title %>
+    <div itemprop="name" content="<%= title %>" style="display:none"><%= title %></div>
+  <% end %>
+  <% if url %>
+    <a itemprop="url" href="<%= url %>" style="display:none"><%= url %></a>
+  <% end %>
+  <div itemprop="startDate" content="<%= event[:start] %>" style="display:inline-block">
+    <%= l event[:start], format: :long %>
+  </div>
+  <% if event[:end] %>
+    <div itemprop="endDate" content="<%= event[:end] %>" style="display:inline-block">
+      — <%= l event[:end], format: :long %>
+    </div>
+  <% end %>
+</span>
+<span><%= timezone_label event %></span>
+<hr>
