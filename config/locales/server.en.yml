@@ -11,6 +11,8 @@ en:
     events_agenda_filter_closed: "Remove closed topics from agendas."
     events_event_label_include_timezone: "Include timezone in event label."
     events_default_timezone: "Default timezone for events."
+    events_hamburger_menu_calendar_link: "Add a link to the site calendar to the hamburger menu."
+    events_hamburger_menu_agenda_link: "Add a link to the site agenda to the hamburger menu."
 
   rss_description:
     events: "Events"

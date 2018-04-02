@@ -12,7 +12,9 @@ import { calendarRange } from '../lib/date-utilities';
 
 export default {
   name: 'events-edits',
-  initialize(container){
+  initialize(container) {
+    const siteSettings = container.lookup('site-settings:main');
+
     Composer.serializeOnCreate('event');
     Composer.serializeToTopic('event', 'topic.event');
 
@@ -165,8 +167,7 @@ export default {
 
         renderTemplate(controller, model) {
           // respect discourse-layouts settings
-          const settings = Discourse.SiteSettings;
-          const global = settings.layouts_list_navigation_disabled_global;
+          const global = siteSettings.layouts_list_navigation_disabled_global;
           const catGlobal = model.category && model.category.get('layouts_list_navigation_disabled_global');
           if (!global && !catGlobal) {
             if (this.routeName.indexOf('Category') > -1) {
@@ -213,6 +214,26 @@ export default {
           return attrs;
         },
       });
+
+      if (siteSettings.events_hamburger_menu_calendar_link) {
+        api.decorateWidget('hamburger-menu:generalLinks', helper => {
+          return {
+            route: 'discovery.calendar',
+            className: 'calendar-link',
+            label: 'filters.calendar.title'
+          }
+        })
+      }
+
+      if (siteSettings.events_hamburger_menu_agenda_link) {
+        api.decorateWidget('hamburger-menu:generalLinks', helper => {
+          return {
+            route: 'discovery.agenda',
+            className: 'agenda-link',
+            label: 'filters.agenda.title'
+          }
+        })
+      }
     });
   }
 };
