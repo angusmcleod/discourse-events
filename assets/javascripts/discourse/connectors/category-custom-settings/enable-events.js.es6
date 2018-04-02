@@ -4,14 +4,23 @@ export default {
       attrs.category.custom_fields = {};
     }
 
-    const siteEnabled = Discourse.SiteSettings.events_enabled;
-    const categorySetting = attrs.category.custom_fields.events_enabled;
-    let eventsEnabled = categorySetting !== undefined ? categorySetting : siteEnabled;
-    component.set('eventsEnabled', eventsEnabled);
+    const settingValueToggle = function(name) {
+      const settings = Discourse.SiteSettings;
+      const siteEnabled = settings[name];
+      const categorySetting = attrs.category.custom_fields[name];
+      const property = name.camelize();
+      const value = categorySetting !== undefined ? categorySetting : siteEnabled;
 
-    component.addObserver('eventsEnabled', () => {
-      if (this._state === 'destroying') return;
-      attrs.category.custom_fields.events_enabled = component.get('eventsEnabled');
-    })
+      component.set(property, value);
+
+      component.addObserver(property, function() {
+        if (this._state === 'destroying') return;
+        attrs.category.custom_fields[name] = component.get(property);
+      })
+    }
+
+    settingValueToggle('events_enabled');
+    settingValueToggle('events_agenda_enabled');
+    settingValueToggle('events_calendar_enabled');
   }
 };

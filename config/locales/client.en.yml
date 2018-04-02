@@ -15,11 +15,10 @@ en:
       no_timezone: "Select a timezone"
     category:
       enable_events: "Allow events to be added to topics in this category (overrides site setting)."
-      enable_events_agenda: "Show an agenda topic list in this category."
-      enable_events_calendar: "Show a calendar topic list in this category."
-      events_agenda_filter_closed: "Filter closed event topics from the Agenda in this category."
+      enable_events_agenda: "Show an agenda topic list in this category (overrides site setting)."
+      enable_events_calendar: "Show a calendar topic list in this category (overrides site setting)."
       events_min_trust_to_create: "Min trust to create event in this category (overrides site setting)."
-      events_event_label_no_text: "No text on add event buttons in this category."
+      events_event_label_no_text: "No text on add event buttons in this category (overrides site setting)."
     composer:
       tip:
         add_event: "Add a date, time and location for your event."

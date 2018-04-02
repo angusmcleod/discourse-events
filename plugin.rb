@@ -45,13 +45,11 @@ after_initialize do
   Category.register_custom_field_type('events_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
-  Category.register_custom_field_type('events_agenda_filter_closed', :boolean)
   Category.register_custom_field_type('events_min_trust_to_create', :integer)
   add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
-  add_to_serializer(:basic_category, :events_agenda_enabled) { object.custom_fields['events_agenda_enabled'] }
-  add_to_serializer(:basic_category, :events_calendar_enabled) { object.custom_fields['events_calendar_enabled'] }
-  add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
   add_to_serializer(:basic_category, :events_event_label_no_text) { object.custom_fields['events_event_label_no_text'] }
+  add_to_serializer(:basic_category, :events_agenda_enabled) { object.events_agenda_enabled }
+  add_to_serializer(:basic_category, :events_calendar_enabled) { object.events_calendar_enabled }
   add_to_serializer(:basic_category, :events_min_trust_to_create) { object.events_min_trust_to_create }
 
   class ::Category
@@ -68,6 +66,22 @@ after_initialize do
         self.custom_fields['events_enabled']
       else
         SiteSetting.events_enabled
+      end
+    end
+
+    def events_agenda_enabled
+      if self.custom_fields['events_agenda_enabled'] != nil
+        self.custom_fields['events_agenda_enabled']
+      else
+        SiteSetting.events_agenda_enabled
+      end
+    end
+
+    def events_calendar_enabled
+      if self.custom_fields['events_calendar_enabled'] != nil
+        self.custom_fields['events_calendar_enabled']
+      else
+        SiteSetting.events_calendar_enabled
       end
     end
   end
