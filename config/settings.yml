@@ -30,3 +30,9 @@ plugins:
     default: 'Etc/UTC'
     client: true
     enum: 'EventsDefaultTimezoneSiteSetting'
+  events_hamburger_menu_calendar_link:
+    default: false
+    client: true
+  events_hamburger_menu_agenda_link:
+    default: false
+    client: true
