@@ -59,7 +59,7 @@ after_initialize do
       if self.custom_fields['events_min_trust_to_create'].present?
         self.custom_fields['events_min_trust_to_create'].to_i
       else
-        0
+        SiteSetting.events_min_trust_to_create
       end
     end
   end

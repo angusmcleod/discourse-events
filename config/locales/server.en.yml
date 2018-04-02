@@ -13,6 +13,7 @@ en:
     events_default_timezone: "Default timezone for events."
     events_hamburger_menu_calendar_link: "Add a link to the site calendar to the hamburger menu."
     events_hamburger_menu_agenda_link: "Add a link to the site agenda to the hamburger menu."
+    events_min_trust_to_create: "Min trust to create event"
 
   rss_description:
     events: "Events"
