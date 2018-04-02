@@ -25,6 +25,7 @@ export default Ember.Component.extend({
     Ember.run.scheduleOnce('afterRender', () => {
       this.handleResize();
       $(window).on('resize', Ember.run.bind(this, this.handleResize));
+      $('body').addClass('calendar');
     });
 
     let currentDate = moment().date();
@@ -51,6 +52,7 @@ export default Ember.Component.extend({
   @on('willDestroy')
   teardown() {
     $(window).off('resize', Ember.run.bind(this, this.handleResize));
+    $('body').removeClass('calendar');
   },
 
   handleResize() {

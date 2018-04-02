@@ -83,3 +83,7 @@
     bottom: 0;
   }
 }
+
+body.calendar {
+  -webkit-tap-highlight-color: transparent;
+}
