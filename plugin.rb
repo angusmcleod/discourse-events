@@ -47,7 +47,7 @@ after_initialize do
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_filter_closed', :boolean)
   Category.register_custom_field_type('events_min_trust_to_create', :integer)
-  add_to_serializer(:basic_category, :events_enabled) { object.custom_fields['events_enabled'] }
+  add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
   add_to_serializer(:basic_category, :events_agenda_enabled) { object.custom_fields['events_agenda_enabled'] }
   add_to_serializer(:basic_category, :events_calendar_enabled) { object.custom_fields['events_calendar_enabled'] }
   add_to_serializer(:basic_category, :events_agenda_filter_closed) { object.custom_fields['events_agenda_filter_closed'] }
@@ -60,6 +60,14 @@ after_initialize do
         self.custom_fields['events_min_trust_to_create'].to_i
       else
         SiteSetting.events_min_trust_to_create
+      end
+    end
+
+    def events_enabled
+      if self.custom_fields['events_enabled'] != nil
+        self.custom_fields['events_enabled']
+      else
+        SiteSetting.events_enabled
       end
     end
   end
@@ -219,6 +227,7 @@ after_initialize do
 
   module EventsGuardian
     def can_create_event?(category)
+      category.events_enabled &&
       can_create_topic_on_category?(category) &&
       (is_staff? ||
       (user && user.trust_level >= category.events_min_trust_to_create))

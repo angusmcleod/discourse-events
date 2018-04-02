@@ -1,5 +1,6 @@
 en:
   site_settings:
+    events_enabled: "Allow events to be added to topics in all categories."
     events_add_to_calendar: "Show an Add to Calendar button in event topics."
     events_event_label_icon: "Class of the event label icon."
     events_event_label_no_text: "No text on all add event buttons."

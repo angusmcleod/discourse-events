@@ -1,4 +1,7 @@
 plugins:
+  events_enabled:
+    default: false
+    client: true
   events_add_to_calendar:
     client: true
     default: false
