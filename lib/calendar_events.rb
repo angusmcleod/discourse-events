@@ -57,7 +57,7 @@ class CalendarEvents::Helper
       event_offset = event[:offset].present? ? event[:offset].to_i : 0
       offset_prefix = "GMT"
       offset = event_offset < 0 ? event_offset : "+ #{event_offset}"
-      label = " (#{offset_prefix}#{offset}) #{localized_event[:timezone]}"
+      label = " (#{offset_prefix}#{offset}) #{event[:timezone]}"
     end
 
     label
