@@ -421,66 +421,62 @@ ul.events-calendar-events {
 
   li {
     margin: 2px 0;
-    padding: 0 7px;
-    white-space: nowrap;
-    cursor: pointer;
-    height: 16px;
-    line-height: 16px;
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
     position: relative;
 
-    &.selected {
-      box-shadow: shadow("focus");
-    }
-
     .event {
+      padding: 0 7px;
+      height: 16px;
+      line-height: 16px;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      white-space: nowrap;
       overflow: hidden;
+      cursor: pointer;
 
       span {
         font-size: 0.9em;
       }
-    }
 
-    .fa-circle {
-      color: inherit;
-      font-size: 0.8em;
-    }
+      .fa-circle {
+        color: inherit;
+        font-size: 0.8em;
+      }
 
-    &.all-day {
-      background-color: $tertiary;
-      color: $secondary;
-      border-top: 1px solid $primary-low;
-      border-bottom: 1px solid $primary-low;
+      &.all-day {
+        background-color: $tertiary;
+        color: $secondary;
+        border-top: 1px solid $primary-low;
+        border-bottom: 1px solid $primary-low;
 
-      &:not(.full-width) {
-        &.start {
-          margin-left: 4px;
-          border-radius: 4px 0 0 4px;
-        }
+        &:not(.full-width) {
+          &.start {
+            margin-left: 4px;
+            border-radius: 4px 0 0 4px;
+          }
 
-        &.multi span.title {
-          position: absolute;
-          z-index: 1;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+          &.multi span.title {
+            position: absolute;
+            z-index: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
 
-        &.start span.time {
-          margin-right: 5px;
-          float: left;
-        }
+          &.start span.time {
+            margin-right: 5px;
+            float: left;
+          }
 
-        &.end {
-          margin-right: 4px;
-          border-radius: 0 4px 4px 0;
+          &.end {
+            margin-right: 4px;
+            border-radius: 0 4px 4px 0;
+          }
         }
       }
-    }
 
-    img.emoji {
-      height: 15px;
-      width: 15px;
+      img.emoji {
+        height: 15px;
+        width: 15px;
+      }
     }
   }
 }
@@ -495,7 +491,6 @@ ul.events-calendar-events {
   box-shadow: shadow('card');
   border: 1px solid $primary-low;
   padding: 15px;
-  white-space: normal;
   border-radius: 4px;
 
   .topic-link {

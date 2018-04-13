@@ -2,7 +2,6 @@ import DiscourseURL from 'discourse/lib/url';
 
 export default Ember.Component.extend({
   tagName: 'li',
-  classNameBindings: ['showEventCard:selected'],
 
   actions: {
     selectEvent(url) {
