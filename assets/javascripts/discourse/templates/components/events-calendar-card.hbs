@@ -1,16 +1,20 @@
 <a class="topic-link" {{action "goToTopic"}}>
   {{topic.title}}
 </a>
+
 <a class="close" {{action "close"}}>
   {{d-icon 'times'}}
 </a>
+
 <div class="topic-meta">
   {{category-link topic.category}}
   {{discourse-tags topic mode="list"}}
 </div>
+
 <div class="topic-event event-label" {{action "goToTopic"}}>
   {{event-label topic.event}}
 </div>
+
 <div class="topic-excerpt" {{action "goToTopic"}}>
   {{topic.excerpt}}
 </div>
