@@ -494,18 +494,25 @@ ul.events-calendar-events {
   border-radius: 4px;
 
   .topic-link {
-    font-size: 1.2em;
+    font-size: 1.3em;
   }
 
   .topic-meta {
-    margin-top: 10px;
+    margin-top: 6px;
     width: 100%;
     display: flex;
     flex-flow: wrap;
+    align-items: center;
+  }
+
+  .topic-event {
+    margin-top: 6px;
+    cursor: pointer;
   }
 
   .topic-excerpt {
-    margin-top: 10px;
+    margin-top: 8px;
+    cursor: pointer;
     line-height: 1.4;
     display: inline-block;
     width: 100%;

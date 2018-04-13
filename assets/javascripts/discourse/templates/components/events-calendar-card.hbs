@@ -7,10 +7,9 @@
 <div class="topic-meta">
   {{category-link topic.category}}
   {{discourse-tags topic mode="list"}}
-
-  <div class="event-label" {{action "goToTopic"}}>
-    {{event-label topic.event}}
-  </div>
+</div>
+<div class="topic-event event-label" {{action "goToTopic"}}>
+  {{event-label topic.event}}
 </div>
 <div class="topic-excerpt" {{action "goToTopic"}}>
   {{topic.excerpt}}
