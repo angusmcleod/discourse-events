@@ -26,14 +26,16 @@ let setupEvent = function(event, args = {}) {
       multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
-    let timezone = event['timezone'];
-
-    const displayInDefaultTimezone = Discourse.SiteSettings.events_event_label_default_timezone;
     const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+    let timezone;
 
-    if (displayInDefaultTimezone && defaultTimezone) {
+    if (defaultTimezone) {
       displayInTimezone = true;
       timezone = defaultTimezone;
+    }
+
+    if (event['timezone']) {
+      timezone = event['timezone'];
     }
 
     if (timezone && (allDay || displayInTimezone)) {
@@ -56,7 +58,7 @@ let timezoneLabel = function(tz) {
     if (standard) return standard.name;
   }
 
-  // fallback to IANA name if zone is not part of the Rails standard set. 
+  // fallback to IANA name if zone is not part of the Rails standard set.
   const offset = moment.tz(tz).format('Z');
   let raw = tz;
   let name = raw.replace('_', '');
@@ -87,15 +89,12 @@ let eventLabel = function(event, args = {}) {
       }
     }
 
-    let timezone = null;
-    const forceTimezone = Discourse.SiteSettings.events_event_label_include_timezone;
-    if (forceTimezone) {
-      timezone = event['timezone'] || moment.tz.guess();
+    const defaultTimezoneSetting = Discourse.SiteSettings.events_default_timezone;
+    let defaultTimezone = defaultTimezoneSetting || moment.tz.guess();
+
+    if (!allDay && event['timezone'] && event['timezone'] !== defaultTimezone) {
+      dateString += `, ${timezoneLabel(event['timezone'])}`;
     }
-    if (!allDay && args.showTimezoneIfDifferent && event['timezone'] && event['timezone'] !== moment.tz.guess()) {
-      timezone = event['timezone'];
-    }
-    if (timezone) dateString += `, ${timezoneLabel(timezone)}`;
 
     label += `<span>${dateString}</span>`;
   }
