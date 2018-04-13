@@ -45,7 +45,7 @@ let timezoneLabel = function(tz) {
     if (standard) return standard.name;
   }
 
-  // fallback to IANA name if zone is not part of the Rails standard set. 
+  // fallback to IANA name if zone is not part of the Rails standard set.
   const offset = moment.tz(tz).format('Z');
   let raw = tz;
   let name = raw.replace('_', '');
@@ -216,13 +216,13 @@ let eventsForDay = function(day, topics, args = {}) {
 
     if (onThisDay) {
       let attrs = {
-        topicId: topic.id,
-        classes: '',
+        topic,
+        classes: 'event',
         listStyle: ''
       };
 
       if (fullWidth) {
-        attrs['classes'] += 'full-width';
+        attrs['classes'] += ' full-width';
       }
 
       const blockStyle = allDay || multiDay;
