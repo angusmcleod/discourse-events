@@ -10,6 +10,21 @@ let isAllDay = function(event) {
   return startIsDayStart && endIsDayEnd;
 };
 
+let getTimezone = function(event) {
+  let timezone = moment.tz.guess();
+
+  const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+  if (defaultTimezone) {
+    timezone = defaultTimezone;
+  }
+
+  if (event['timezone']) {
+    timezone = event['timezone'];
+  }
+
+  return timezone;
+}
+
 let setupEvent = function(event, args = {}) {
   let start;
   let end;
@@ -25,11 +40,13 @@ let setupEvent = function(event, args = {}) {
       multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
-    if (event['timezone'] && (allDay || !args.displayInUserTimezone)) {
-      start = start.tz(event['timezone']);
+    const timezone = getTimezone(event);
+
+    if (timezone) {
+      start = start.tz(timezone);
 
       if (event['end']) {
-        end = end.tz(event['timezone']);
+        end = end.tz(timezone);
       }
     }
   }
@@ -61,7 +78,7 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    const { start, end, allDay } = setupEvent(event, { displayInUserTimezone: args.displayInUserTimezone });
+    const { start, end, allDay, multiDay } = setupEvent(event);
 
     let format = args.short ? shortFormat : longFormat;
     let formatArr = format.split(',');
@@ -76,15 +93,12 @@ let eventLabel = function(event, args = {}) {
       }
     }
 
-    let timezone = null;
-    const forceTimezone = Discourse.SiteSettings.events_event_label_include_timezone;
-    if (forceTimezone) {
-      timezone = event['timezone'] || moment.tz.guess();
+    const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+    const standardTimezone = defaultTimezone || moment.tz.guess();
+
+    if (!allDay && event['timezone'] && event['timezone'] !== standardTimezone) {
+      dateString += `, ${timezoneLabel(event['timezone'])}`;
     }
-    if (!allDay && args.showTimezoneIfDifferent && event['timezone'] && event['timezone'] !== moment.tz.guess()) {
-      timezone = event['timezone'];
-    }
-    if (timezone) dateString += `, ${timezoneLabel(timezone)}`;
 
     label += `<span>${dateString}</span>`;
   }
@@ -239,7 +253,7 @@ let eventsForDay = function(day, topics, args = {}) {
       }
 
       if (!allDay && (!multiDay || startIsSame)) {
-        attrs['time'] = moment(topic.event.start).format('h:mm a');
+        attrs['time'] = start.format('h:mm a');
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {
@@ -343,4 +357,4 @@ let calendarRange = function(month, year) {
   };
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange };
+export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };

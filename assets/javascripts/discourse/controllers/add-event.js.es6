@@ -1,5 +1,5 @@
 import { default as computed, observes } from 'ember-addons/ember-computed-decorators';
-import { setupEvent, timezoneLabel } from '../lib/date-utilities';
+import { setupEvent, timezoneLabel, getTimezone } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
@@ -42,8 +42,8 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
-    if (start && event.timezone) {
-      props['timezone'] = event.timezone;
+    if (start) {
+      props['timezone'] = getTimezone(event);
     }
 
     this.setProperties(props);
@@ -119,12 +119,6 @@ export default Ember.Controller.extend({
     return moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm'));
   },
 
-  @computed('timezone')
-  timezoneLabel(timezone) {
-    const text = I18n.t('add_event.timezone');
-    return timezone ? `${text}: ${timezoneLabel(timezone)}` : text;
-  },
-
   resetProperties() {
     this.setProperties({
       startDate: null,
@@ -142,10 +136,6 @@ export default Ember.Controller.extend({
       this.get('model.update')(null);
     },
 
-    toggleShowTimezone() {
-      this.toggleProperty('showTimezone');
-    },
-
     clearTimezone() {
       this.set("timezone", null);
       this.toggleProperty('showTimezone');
@@ -159,7 +149,7 @@ export default Ember.Controller.extend({
         let start = moment();
 
         const timezone = this.get('timezone');
-        if (timezone) start.tz(timezone);
+        start.tz(timezone);
 
         const allDay = this.get('allDay');
         const sYear = moment(startDate).year();

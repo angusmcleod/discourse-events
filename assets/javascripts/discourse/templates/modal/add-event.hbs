@@ -10,14 +10,7 @@
     </div>
     {{#unless allDay}}
       <div class="control">
-        {{d-button translatedLabel=timezoneLabel action='toggleShowTimezone'}}
-        {{#if showTimezone}}
-          <div class="timezone-modal">
-            {{combo-box value=timezone valueAttribute="value" content=timezones none='add_event.no_timezone' filterable=true}}
-            {{d-button label='add_event.event_add' action='toggleShowTimezone'}}
-            {{d-button label='add_event.event_clear' action='clearTimezone'}}
-          </div>
-        {{/if}}
+        {{combo-box value=timezone valueAttribute="value" content=timezones none='add_event.no_timezone' filterable=true}}
       </div>
     {{/unless}}
   </div>

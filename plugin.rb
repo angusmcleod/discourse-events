@@ -520,7 +520,9 @@ after_initialize do
         event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
       end
 
-      event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
+      if SiteSetting.events_emails_include_timezones
+        event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
+      end
 
       event_str
     end
