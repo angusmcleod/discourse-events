@@ -499,6 +499,7 @@ ul.events-calendar-events {
 
   .topic-meta {
     margin-top: 10px;
+    width: 100%;
     display: flex;
     flex-flow: wrap;
   }
@@ -506,6 +507,8 @@ ul.events-calendar-events {
   .topic-excerpt {
     margin-top: 10px;
     line-height: 1.4;
+    display: inline-block;
+    width: 100%;
   }
 }
 
