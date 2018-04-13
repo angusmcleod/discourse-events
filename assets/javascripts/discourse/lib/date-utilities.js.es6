@@ -15,6 +15,7 @@ let setupEvent = function(event, args = {}) {
   let end;
   let allDay;
   let multiDay;
+  let displayInTimezone = args.displayInTimezone
 
   if (event) {
     start = moment(event['start']);
@@ -25,11 +26,21 @@ let setupEvent = function(event, args = {}) {
       multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
-    if (event['timezone'] && (allDay || !args.displayInUserTimezone)) {
-      start = start.tz(event['timezone']);
+    let timezone = event['timezone'];
+
+    const displayInDefaultTimezone = Discourse.SiteSettings.events_event_label_default_timezone;
+    const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+
+    if (displayInDefaultTimezone && defaultTimezone) {
+      displayInTimezone = true;
+      timezone = defaultTimezone;
+    }
+
+    if (timezone && (allDay || displayInTimezone)) {
+      start = start.tz(timezone);
 
       if (event['end']) {
-        end = end.tz(event['timezone']);
+        end = end.tz(timezone);
       }
     }
   }
@@ -61,7 +72,7 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    const { start, end, allDay } = setupEvent(event, { displayInUserTimezone: args.displayInUserTimezone });
+    const { start, end, allDay } = setupEvent(event, { displayInTimezone: args.displayInTimezone });
 
     let format = args.short ? shortFormat : longFormat;
     let formatArr = format.split(',');
@@ -239,7 +250,7 @@ let eventsForDay = function(day, topics, args = {}) {
       }
 
       if (!allDay && (!multiDay || startIsSame)) {
-        attrs['time'] = moment(topic.event.start).format('h:mm a');
+        attrs['time'] = start.format('h:mm a');
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {
