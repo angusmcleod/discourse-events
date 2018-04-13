@@ -36,6 +36,8 @@ plugins:
     default: 'Etc/UTC'
     client: true
     enum: 'EventsDefaultTimezoneSiteSetting'
+  events_emails_include_timezones:
+    default: true
   events_hamburger_menu_calendar_link:
     default: false
     client: true

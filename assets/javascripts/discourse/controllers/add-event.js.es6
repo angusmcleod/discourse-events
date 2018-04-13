@@ -1,5 +1,5 @@
 import { default as computed, observes } from 'ember-addons/ember-computed-decorators';
-import { setupEvent, timezoneLabel } from '../lib/date-utilities';
+import { setupEvent, timezoneLabel, getTimezone } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
@@ -42,14 +42,8 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
-    const usersTimezone = moment.tz.guess();
-    const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
-
-    if (usersTimezone) props['timezone'] = usersTimezone;
-    if (defaultTimezone) props['timezone'] = defaultTimezone;
-
-    if (start && event.timezone) {
-      props['timezone'] = event.timezone;
+    if (start) {
+      props['timezone'] = getTimezone(event);
     }
 
     this.setProperties(props);

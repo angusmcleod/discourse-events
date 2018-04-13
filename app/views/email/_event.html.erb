@@ -15,5 +15,7 @@
     </div>
   <% end %>
 </span>
-<span><%= timezone_label event %></span>
+<% if SiteSetting.events_emails_include_timezones %>
+  <span><%= timezone_label event %></span>
+<% end %>
 <hr>
