@@ -422,10 +422,11 @@ ul.events-calendar-events {
   li {
     margin: 2px 0;
     position: relative;
+    height: 16px;
 
     .event {
       padding: 0 7px;
-      height: 16px;
+      height: inherit;
       line-height: 16px;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
