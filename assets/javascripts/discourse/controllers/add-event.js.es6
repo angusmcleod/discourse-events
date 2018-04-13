@@ -42,6 +42,12 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
+    const usersTimezone = moment.tz.guess();
+    const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+
+    if (usersTimezone) props['timezone'] = usersTimezone;
+    if (defaultTimezone) props['timezone'] = defaultTimezone;
+
     if (start && event.timezone) {
       props['timezone'] = event.timezone;
     }
@@ -119,12 +125,6 @@ export default Ember.Controller.extend({
     return moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm'));
   },
 
-  @computed('timezone')
-  timezoneLabel(timezone) {
-    const text = I18n.t('add_event.timezone');
-    return timezone ? `${text}: ${timezoneLabel(timezone)}` : text;
-  },
-
   resetProperties() {
     this.setProperties({
       startDate: null,
@@ -142,10 +142,6 @@ export default Ember.Controller.extend({
       this.get('model.update')(null);
     },
 
-    toggleShowTimezone() {
-      this.toggleProperty('showTimezone');
-    },
-
     clearTimezone() {
       this.set("timezone", null);
       this.toggleProperty('showTimezone');
@@ -159,7 +155,7 @@ export default Ember.Controller.extend({
         let start = moment();
 
         const timezone = this.get('timezone');
-        if (timezone) start.tz(timezone);
+        start.tz(timezone);
 
         const allDay = this.get('allDay');
         const sYear = moment(startDate).year();
