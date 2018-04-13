@@ -15,6 +15,7 @@ let setupEvent = function(event, args = {}) {
   let end;
   let allDay;
   let multiDay;
+  let displayInTimezone = args.displayInTimezone
 
   if (event) {
     start = moment(event['start']);
@@ -41,7 +42,7 @@ let setupEvent = function(event, args = {}) {
       start = start.tz(timezone);
 
       if (event['end']) {
-        end = end.tz(event['timezone']);
+        end = end.tz(timezone);
       }
     }
   }
@@ -73,7 +74,7 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    const { start, end, allDay } = setupEvent(event, { displayInUserTimezone: args.displayInUserTimezone });
+    const { start, end, allDay } = setupEvent(event, { displayInTimezone: args.displayInTimezone });
 
     let format = args.short ? shortFormat : longFormat;
     let formatArr = format.split(',');
@@ -225,13 +226,13 @@ let eventsForDay = function(day, topics, args = {}) {
 
     if (onThisDay) {
       let attrs = {
-        topic,
-        classes: 'event',
+        topicId: topic.id,
+        classes: '',
         listStyle: ''
       };
 
       if (fullWidth) {
-        attrs['classes'] += ' full-width';
+        attrs['classes'] += 'full-width';
       }
 
       const blockStyle = allDay || multiDay;
@@ -248,7 +249,7 @@ let eventsForDay = function(day, topics, args = {}) {
       }
 
       if (!allDay && (!multiDay || startIsSame)) {
-        attrs['time'] = moment(topic.event.start).format('h:mm a');
+        attrs['time'] = start.format('h:mm a');
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {

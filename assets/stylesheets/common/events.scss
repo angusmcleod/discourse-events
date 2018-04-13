@@ -173,10 +173,10 @@
   margin-top: 7px;
   line-height: 18px;
   display: inline-block;
-}
 
-.event-label .fa {
-  margin-right: 7px;
+  .fa {
+    margin-right: 7px;
+  }
 }
 
 .date-time-container {
@@ -421,111 +421,60 @@ ul.events-calendar-events {
 
   li {
     margin: 2px 0;
-    position: relative;
+    padding: 0 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
     height: 16px;
+    line-height: 16px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
 
-    .event {
-      padding: 0 7px;
-      height: inherit;
-      line-height: 16px;
-      border-top: 1px solid transparent;
-      border-bottom: 1px solid transparent;
-      white-space: nowrap;
-      overflow: hidden;
-      cursor: pointer;
+    .fa-circle {
+      color: inherit;
+      font-size: 0.8em;
+    }
 
-      span {
-        font-size: 0.9em;
-      }
+    &.all-day {
+      background-color: $tertiary;
+      color: $secondary;
+      border-top: 1px solid $primary-low;
+      border-bottom: 1px solid $primary-low;
 
-      .fa-circle {
-        color: inherit;
-        font-size: 0.8em;
-      }
+      &:not(.full-width) {
+        &.start {
+          margin-left: 4px;
+          border-radius: 4px 0 0 4px;
+        }
 
-      &.all-day {
-        background-color: $tertiary;
-        color: $secondary;
-        border-top: 1px solid $primary-low;
-        border-bottom: 1px solid $primary-low;
+        &.multi span.title {
+          position: absolute;
+          z-index: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
 
-        &:not(.full-width) {
-          &.start {
-            margin-left: 4px;
-            border-radius: 4px 0 0 4px;
-          }
+        &.start span.time {
+          margin-right: 5px;
+          float: left;
+        }
 
-          &.multi span.title {
-            position: absolute;
-            z-index: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          &.start span.time {
-            margin-right: 5px;
-            float: left;
-          }
-
-          &.end {
-            margin-right: 4px;
-            border-radius: 0 4px 4px 0;
-          }
+        &.end {
+          margin-right: 4px;
+          border-radius: 0 4px 4px 0;
         }
       }
+    }
 
-      img.emoji {
-        height: 15px;
-        width: 15px;
-      }
+    span {
+      font-size: 0.9em;
+    }
+
+    img.emoji {
+      height: 15px;
+      width: 15px;
     }
   }
-}
-
-.events-calendar-card {
-  position: absolute;
-  top: -15px;
-  left: -390px;
-  width: 350px;
-  z-index: 997;
-  background-color: $secondary;
-  box-shadow: shadow('card');
-  border: 1px solid $primary-low;
-  padding: 15px;
-  border-radius: 4px;
-
-  .topic-link {
-    font-size: 1.3em;
-  }
-
-  .topic-meta {
-    margin-top: 6px;
-    width: 100%;
-    display: flex;
-    flex-flow: wrap;
-    align-items: center;
-  }
-
-  .topic-event {
-    margin-top: 6px;
-    width: 100%;
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  .topic-excerpt {
-    padding-top: 8px;
-    cursor: pointer;
-    line-height: 1.4;
-    width: 100%;
-    word-wrap: break-word;
-  }
-}
-
-.events-calendar-events .events-calendar-card .close {
-  position: absolute;
-  right: 5px;
-  top: 5px;
 }
 
 .events-below {
