@@ -257,6 +257,22 @@ after_initialize do
     include EventsGuardian
   end
 
+  require_dependency 'topic'
+  class ::Topic
+    attr_accessor :include_excerpt
+  end
+
+  module ListableTopicSerializerExtension
+    def include_excerpt?
+      super || object.include_excerpt
+    end
+  end
+
+  require_dependency 'listable_topic_serializer'
+  class ::ListableTopicSerializer
+    prepend ListableTopicSerializerExtension
+  end
+
   require_dependency 'topic_query'
   class ::TopicQuery
     SORTABLE_MAPPING['event'] = 'custom_fields.event_start'
@@ -283,7 +299,7 @@ after_initialize do
     def list_calendar
       @options[:order] = 'event'
       @options[:list] = 'calendar'
-      create_list(:calendar, {}, event_results(limit: false))
+      create_list(:calendar, {}, event_results(limit: false, include_excerpt: true))
     end
 
     def event_results(options = {})
@@ -295,6 +311,10 @@ after_initialize do
 
       CalendarEvents::List.sorted_filters.each do |filter|
         topics = filter[:block].call(topics, @options)
+      end
+
+      if options[:include_excerpt]
+        topics.each { |t| t.include_excerpt = true }
       end
 
       topics

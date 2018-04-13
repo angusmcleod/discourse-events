@@ -1,13 +1,3 @@
-{{#each events as |e|}}
-  <li class="{{e.classes}}" {{action 'goToTopic' e.topicId}} style="{{e.listStyle}}" data-topic-id="{{e.topicId}}">
-    {{#unless e.allDay}}
-      <span style='{{e.dotStyle}}'>{{d-icon 'circle'}}</span>
-    {{/unless}}
-    {{#if e.time}}
-      <span class="time">{{e.time}}</span>
-    {{/if}}
-    {{#if e.title}}
-      <span class="title" style="{{e.titleStyle}}">{{replace-emoji e.title}}</span>
-    {{/if}}
-  </li>
+{{#each events as |event|}}
+  {{events-calendar-event event=event}}
 {{/each}}
