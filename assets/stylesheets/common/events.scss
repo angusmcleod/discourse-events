@@ -289,12 +289,12 @@
 
     .day {
       height: 38px;
-      padding-top: 2px;
       cursor: pointer;
       position: relative;
 
       .header {
         text-align: center;
+        margin-top: 2px;
       }
 
       .date label {
@@ -350,6 +350,12 @@
 
     &.today .container {
       background-color: $highlight-low;
+      height: 100%;
+    }
+
+    &.different-month .container {
+      background-color: rgba($primary-low, .5);
+      color: rgba($primary, .5);
       height: 100%;
     }
 

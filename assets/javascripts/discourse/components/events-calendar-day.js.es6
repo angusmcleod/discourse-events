@@ -4,13 +4,18 @@ import { eventsForDay } from '../lib/date-utilities';
 const MAX_EVENTS = 4;
 
 export default Ember.Component.extend({
-  classNameBindings: [':day', 'classes'],
+  classNameBindings: [':day', 'classes', 'differentMonth'],
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
 
   @computed('date', 'expandedDate')
   expanded(date, expandedDate) {
     return date === expandedDate;
+  },
+
+  @computed('month', 'currentMonth')
+  differentMonth(month, currentMonth) {
+    return month !== currentMonth
   },
 
   @on('init')
