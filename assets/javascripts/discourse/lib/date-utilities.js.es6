@@ -10,7 +10,7 @@ let isAllDay = function(event) {
   return startIsDayStart && endIsDayEnd;
 };
 
-let getTimezone = function(event) {
+let getTimezone = function(event = null) {
   let timezone = moment.tz.guess();
 
   const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
@@ -18,7 +18,7 @@ let getTimezone = function(event) {
     timezone = defaultTimezone;
   }
 
-  if (event['timezone']) {
+  if (event && event['timezone']) {
     timezone = event['timezone'];
   }
 

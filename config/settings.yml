@@ -33,7 +33,7 @@ plugins:
   events_agenda_filter_closed:
     default: false
   events_default_timezone:
-    default: 'Etc/UTC'
+    default: ''
     client: true
     enum: 'EventsDefaultTimezoneSiteSetting'
   events_emails_include_timezones:

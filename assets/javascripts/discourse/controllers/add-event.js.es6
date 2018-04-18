@@ -42,9 +42,7 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
-    if (start) {
-      props['timezone'] = getTimezone(event);
-    }
+    props['timezone'] = getTimezone(event);
 
     this.setProperties(props);
     this.setupTimePicker('start');
