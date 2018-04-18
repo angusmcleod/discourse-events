@@ -234,6 +234,19 @@ export default {
           }
         })
       }
+
+      const user = api.getCurrentUser();
+      if (user && user.admin) {
+        api.modifyClass('model:site-setting', {
+          allowsNone: function() {
+            if (this.get('setting') === 'events_default_timezone') {
+              return 'site_settings.events_default_timezone_placeholder';
+            } else {
+              this._super();
+            }
+          }.property('valid_values')
+        })
+      }
     });
   }
 };
