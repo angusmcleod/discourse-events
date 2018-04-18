@@ -87,6 +87,7 @@ let eventLabel = function(event, args = {}) {
 
     if (event['end'] && (!args.short || !shortOnlyStart)) {
       const diffDay = start.date() !== end.date();
+
       if (!allDay || diffDay) {
         const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
         dateString += ` – ${end.format(endFormat)}`;
@@ -253,7 +254,8 @@ let eventsForDay = function(day, topics, args = {}) {
       }
 
       if (!allDay && (!multiDay || startIsSame)) {
-        attrs['time'] = start.format('h:mm a');
+        const timeFormat = Discourse.SiteSettings.events_event_time_calendar_format;
+        attrs['time'] = start.format(timeFormat);
       }
 
       if (startIsSame || fullWidth || args.rowIndex === 0) {
