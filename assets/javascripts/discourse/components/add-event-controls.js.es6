@@ -6,11 +6,7 @@ export default Ember.Component.extend({
   classNames: ['event-label'],
 
   didInsertElement() {
-    if (this.site.isMobileDevice) {
-      const $controls = this.$();
-      $controls.detach();
-      $controls.insertAfter($('#reply-control .title-input input'));
-    }
+    $('.title-and-category').toggleClass('event-add-no-text', this.get("iconOnly"));
   },
 
   @computed()
@@ -39,7 +35,7 @@ export default Ember.Component.extend({
   iconOnly(category) {
     return this.site.mobileView ||
            Discourse.SiteSettings.events_event_label_no_text ||
-           category && category.get('events_event_label_no_text');
+           Boolean(category && category.get('events_event_label_no_text'));
   },
 
   actions: {

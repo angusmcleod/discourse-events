@@ -1,0 +1,42 @@
+#reply-control .composer-fields .title-and-category.show-event-controls {
+  align-items: flex-start;
+
+  &.event-add-no-text {
+    flex-wrap: initial;
+
+    .title-input {
+      margin-right: 5px;
+    }
+
+    &>div:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  .category-input {
+    flex: 1 0 30%;
+    margin: 0 10px 5px;
+
+    .select-kit {
+      min-width: 200px;
+    }
+  }
+}
+
+#reply-control .with-tags .title-and-category.show-event-controls {
+  .category-input {
+    flex: 1 0 20%;
+  }
+
+  .mini-tag-chooser {
+    flex: 1 1 20%;
+  }
+
+  .composer-controls-event {
+    margin-left: 10px;
+  }
+}
+
+.composer-controls-event {
+  margin-right: 5px;
+}

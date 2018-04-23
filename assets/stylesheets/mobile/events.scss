@@ -1,16 +1,13 @@
-#reply-control .composer-controls-event {
-  display: none;
+#reply-control .title-and-category {
+  align-items: start;
 }
 
-#reply-control .location-label {
-  margin-left: 4px;
-  padding: 0;
-}
-
-.mobile-view #reply-control button.add-event {
+#reply-control button.add-event.no-text {
   position: relative;
   margin-left: 4px;
   line-height: 19px;
+  height: 31px;
+  padding: 5px 10px;
 
   &:not(.btn-primary) {
     background: $secondary;

@@ -37,15 +37,19 @@ export default {
         this.resize();
       },
 
-      //necessary because empty inline block elements take up space.
       @observes('composer.showEventControls')
       applyEventInlineClass() {
         Ember.run.scheduleOnce('afterRender', this, () => {
           const showEventControls = this.get('composer.showEventControls');
-          $('.composer-fields .title-and-category').toggleClass('show-event-controls', showEventControls);
+          const $container = $('.composer-fields .title-and-category');
+
+          $container.toggleClass('show-event-controls', Boolean(showEventControls));
+
           if (showEventControls) {
-            $('.composer-controls-event').appendTo('.title-and-category.with-preview');
+            const $anchor = this.site.mobileView ? $container.find('.title-input') : $container;
+            $('.composer-controls-event').appendTo($anchor);
           }
+
           this.resize();
         });
       }

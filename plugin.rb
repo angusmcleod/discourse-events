@@ -5,6 +5,7 @@
 # url: https://github.com/angusmcleod/discourse-events
 
 register_asset 'stylesheets/common/events.scss'
+register_asset 'stylesheets/desktop/events.scss', :desktop
 register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'

@@ -120,44 +120,21 @@
   margin: 5px 10px;
 }
 
-#reply-control .composer-fields .title-and-category.show-event-controls {
-  align-items: flex-start;
-
-  .category-input {
-    flex: 1 0 30%;
-    margin: 0 10px 5px;
-
-    .select-kit {
-      min-width: 200px;
-    }
-  }
-}
-
-#reply-control .with-tags .title-and-category.show-event-controls {
-  .category-input {
-    flex: 1 0 20%;
-  }
-
-  .mini-tag-chooser {
-    flex: 1 1 20%;
-  }
-
-  .composer-controls-event {
-    margin-left: 10px;
-  }
-}
-
 .add-event {
   text-align: left;
+  height: 29px;
+  padding: 6px 10px;
+
+  &.no-text {
+    width: 35px;
+  }
 }
 
 .add-event, .add-event + button {
-  padding: 5px 10px;
   border: 1px solid $primary-medium;
-  line-height: 17px;
 }
 
-.composer-controls-event .event-label .btn:not(:hover) {
+.composer-controls-event .btn:not(:hover) {
   background: $secondary;
 }
 
