@@ -19,9 +19,6 @@ en:
       enable_events_calendar: "Show a calendar topic list in this category (overrides site setting)."
       events_min_trust_to_create: "Min trust to create event in this category (overrides site setting)."
       events_event_label_no_text: "No text on add event buttons in this category (overrides site setting)."
-    composer:
-      tip:
-        add_event: "Add a date, time and location for your event."
     event_list:
       title: '{{categoryName}} Events'
       about: 'Events in your area'
