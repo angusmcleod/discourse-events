@@ -1,0 +1,33 @@
+fr:
+  js:
+    add_event:
+      btn_label: "Ajoutez la date et l'heure"
+      modal_title: Date et heure
+      event_start: Début
+      event_end: Fin
+      event_date: Date
+      event_time: Heure
+      event_add: Terminer
+      event_clear: Effacer
+      end_enabled: "Se termine le"
+      all_day: "Toute la journée"
+      timezone: "Fuseau horaire"
+      no_timezone: "Sélectionner un fuseau horaire"
+    event_list:
+      about: 'Évènement dans votre zone'
+      no_results: "Aucun évènement à venir"
+      create: "Créer un évènement"
+    filters:
+      calendar:
+        title: "Calendrier"
+    add_to_calendar:
+      label: "Ajouter au calendrier"
+      ics: "Fichier .ics"
+    events_calendar:
+      today: "Aujourd'hui"
+    user:
+      events_calendar:
+        label: "Calendrier"
+        first_day_week: "La semaine commence le"
+    site_settings:
+      events_default_timezone_placeholder: "Sélectionner un fuseau horaire"
