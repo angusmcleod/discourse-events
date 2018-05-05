@@ -1,0 +1,23 @@
+{{#if currentUser}}
+  <button class='btn btn-small btn-text {{goingClasses}}' {{action 'going'}}>
+    {{#if goingSaving}}
+      {{loading-spinner size='small'}}
+    {{else}}
+      {{d-icon 'check'}}
+    {{/if}}
+    <span class="d-button-label">
+      {{i18n 'event_rsvp.going.label'}}
+    </span>
+  </button>
+{{/if}}
+<div class="event-rsvp-details">
+  {{#if currentUser}}
+    <a {{action 'openModal'}}>
+      <span>{{eventGoingTotal}}</span>
+      <span>{{i18n 'event_rsvp.going.label'}}</span>
+    </a>
+  {{else}}
+    <span>{{eventGoingTotal}}</span>
+    <span>{{i18n 'event_rsvp.going.label'}}</span>
+  {{/if}}
+</div>

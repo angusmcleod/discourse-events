@@ -6,5 +6,8 @@
     {{#if siteSettings.events_add_to_calendar}}
       {{add-to-calendar topic=model}}
     {{/if}}
+    {{#if siteSettings.events_rsvp}}
+      {{event-rsvp topic=model}}
+    {{/if}}
   {{/if}}
 {{/unless}}

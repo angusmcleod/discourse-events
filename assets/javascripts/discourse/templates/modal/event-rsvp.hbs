@@ -1,0 +1,35 @@
+{{#d-modal-body class="event-rsvp-modal" title='event_rsvp.modal.title'}}
+  <div class="header">
+    <ul class="types nav nav-pills">
+      <li class='{{goingNavClass}}'>
+        <a {{action 'setType' 'going'}}>
+          {{i18n 'event_rsvp.going.label'}}
+        </a>
+      </li>
+    </ul>
+    <span class="filter">
+      {{input value=filter placeholder=(i18n 'event_rsvp.modal.filter')}}
+    </span>
+  </div>
+  <div class="list">
+    {{#if loadingList}}
+      {{loading-spinner size='small'}}
+    {{else}}
+      <ul>
+        {{#each filteredList as |user|}}
+          <li>
+            {{#user-info user=user}}
+              {{#if user.can_send_private_message_to_user}}
+                {{d-button class='btn compose-pm'
+                           action="composePrivateMessage"
+                           actionParam=user
+                           icon="envelope"
+                           label='user.private_message'}}
+              {{/if}}
+            {{/user-info}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </div>
+{{/d-modal-body}}

@@ -51,6 +51,13 @@ en:
       events_calendar:
         label: "Calendar"
         first_day_week: "Start week on"
+    event_rsvp:
+      modal:
+        title: "Guests"
+        filter: "Filter"
+      going:
+        label: "Going"
+
 
     site_settings:
       events_default_timezone_placeholder: "Select a Timezone"

@@ -49,3 +49,6 @@ plugins:
     client: true
   events_min_trust_to_create:
     default: 0
+  events_rsvp:
+    default: false
+    client: true

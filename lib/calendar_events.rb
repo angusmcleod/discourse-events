@@ -5,6 +5,11 @@ module ::CalendarEvents
   end
 end
 
+CalendarEvents::Engine.routes.draw do
+  post '/rsvp/add' => 'rsvp#add'
+  post '/rsvp/remove' => 'rsvp#remove'
+end
+
 class CalendarEvents::List
   def self.sorted_filters
     @sorted_filters ||= []

@@ -112,8 +112,10 @@ after_initialize do
   TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_all_day' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_timezone' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_going' if TopicList.respond_to? :preloaded_custom_fields
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
+  load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
 
   # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
@@ -140,11 +142,19 @@ after_initialize do
 
       event
     end
+
+    def event_going
+      if self.custom_fields['event_going']
+        self.custom_fields['event_going'].split(',')
+      else
+        []
+      end
+    end
   end
 
   require_dependency 'topic_view_serializer'
   class ::TopicViewSerializer
-    attributes :event
+    attributes :event, :event_going
 
     def event
       object.topic.event
@@ -153,11 +163,19 @@ after_initialize do
     def include_event?
       object.topic.has_event?
     end
+
+    def event_going
+      object.topic.event_going
+    end
+
+    def include_event_going?
+      include_event?
+    end
   end
 
   require_dependency 'topic_list_item_serializer'
   class ::TopicListItemSerializer
-    attributes :event
+    attributes :event, :event_going_total
 
     def event
       object.event
@@ -165,6 +183,14 @@ after_initialize do
 
     def include_event?
       object.has_event?
+    end
+
+    def event_going_total
+      object.event_going.length
+    end
+
+    def include_event_going_total?
+      include_event?
     end
   end
 
@@ -407,6 +433,8 @@ after_initialize do
 
     get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
     get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
+
+    mount ::CalendarEvents::Engine, at: '/calendar-events'
   end
 
   Rails.configuration.paths['app/views'].unshift(Rails.root.join('plugins', 'discourse-events', 'app/views'))

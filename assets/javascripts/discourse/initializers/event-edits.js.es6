@@ -122,6 +122,13 @@ export default {
         const topic = this.get('topic');
         this.appEvents.trigger('header:update-topic', topic);
         DiscourseURL.routeTo(topic.get('lastReadUrl'));
+      },
+
+      @on('didInsertElement')
+      moveRsvp() {
+        Ember.run.scheduleOnce('afterRender', () => {
+          this.$('.topic-list-event-rsvp').insertAfter(this.$('.link-top-line'));
+        })
       }
     });
 
@@ -251,6 +258,32 @@ export default {
           }.property('valid_values')
         })
       }
+
+      api.modifyClass('controller:topic', {
+        @observes('model.id')
+        subscribeCalendarEvents() {
+          this.unsubscribeCalendarEvents();
+
+          this.messageBus.subscribe(`/calendar-events/${this.get('model.id')}`, data => {
+            const topic = this.get('model');
+            const currentUser = this.get('currentUser');
+
+            if (data.current_user_id === currentUser.id) return;
+
+            switch (data.type) {
+              case "rsvp": {
+                let prop = Object.keys(data).filter((p) => p.indexOf('event_') > -1);
+                this.set(`model.${prop}`, data[prop]);
+                this.notifyPropertyChange(`model.${prop}`);
+              }
+            }
+          })
+        },
+
+        unsubscribeCalendarEvents() {
+          this.messageBus.unsubscribe(`/calendar-events/${this.get('model.id')}`);
+        }
+      })
     });
   }
 };
