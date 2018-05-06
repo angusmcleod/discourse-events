@@ -63,7 +63,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
   def check_if_rsvp_enabled
     unless SiteSetting.events_rsvp && @topic.event_rsvp
-      raise I18n.t('event_rsvp.error.not_enabled')
+      raise I18n.t('event_rsvp.errors.not_enabled')
     end
   end
 
