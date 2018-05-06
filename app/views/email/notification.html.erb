@@ -7,7 +7,8 @@
     <%= render partial: 'email/event', locals: {
       event: localized_event(post.topic.event),
       title: post.topic.fancy_title,
-      url: post.topic.url
+      url: post.topic.url,
+      topic_id: post.topic.id
     } %>
   <% end %>
   <%-# end of event additions -%>

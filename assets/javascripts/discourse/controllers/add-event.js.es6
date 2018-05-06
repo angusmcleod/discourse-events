@@ -44,6 +44,14 @@ export default Ember.Controller.extend({
 
     props['timezone'] = getTimezone(event);
 
+    if (event && event.rsvp) {
+      props['rsvpEnabled'] = true;
+
+      if (event && event.going_max) {
+        props['goingMax'] = event.going_max;
+      }
+    }
+
     this.setProperties(props);
     this.setupTimePicker('start');
     this.setupTimePicker('end');
@@ -124,7 +132,9 @@ export default Ember.Controller.extend({
       endDate: null,
       endTime: null,
       endEnabled: false,
-      allDay: false
+      allDay: false,
+      rsvpEnabled: false,
+      goingMax: null
     });
   },
 
@@ -177,6 +187,15 @@ export default Ember.Controller.extend({
           let eMin = allDay ? 0 : moment(endTime, 'HH:mm').minute();
 
           event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).toISOString();
+        }
+      }
+
+      if (this.get('rsvpEnabled')) {
+        event['rsvp'] = true;
+
+        let goingMax = this.get('goingMax');
+        if (goingMax) {
+          event['going_max'] = goingMax;
         }
       }
 

@@ -1,10 +1,12 @@
 {{#if context.topic.event}}
   {{#if context.siteSettings.events_rsvp}}
-    <div class="topic-list-event-rsvp">
-      <a href="{{context.topic.lastUnreadUrl}}" class="{{context.topic.topicListItemClasses}}">
-        <span>{{context.topic.event_going_total}}</span>
-        <span>{{i18n 'event_rsvp.going.label'}}</span>
-      </a>
-    </div>
+    {{#if context.topic.event.rsvp}}
+      <div class="topic-list-event-rsvp">
+        <a href="{{context.topic.lastUnreadUrl}}" class="{{context.topic.topicListItemClasses}}">
+          <span>{{context.topic.event_going_total}}</span>
+          <span>{{i18n 'event_rsvp.going.label'}}</span>
+        </a>
+      </div>
+    {{/if}}
   {{/if}}
 {{/if}}

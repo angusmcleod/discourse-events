@@ -1,11 +1,16 @@
 class CalendarEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
+  before_action :check_if_rsvp_enabled
 
   def add
     prop = "event_#{rsvp_params[:type]}".freeze
 
     list = @topic.send(prop) || []
+
+    if @topic.event_going_max && list.length >= @topic.event_going_max
+      raise I18n.t('event_rsvp.errors.going_max')
+    end
 
     list.push(rsvp_params[:username])
 
@@ -53,6 +58,12 @@ class CalendarEvents::RsvpController < ApplicationController
       @topic = topic
     else
       raise Discourse::NotFound.new
+    end
+  end
+
+  def check_if_rsvp_enabled
+    unless SiteSetting.events_rsvp && @topic.event_rsvp
+      raise I18n.t('event_rsvp.error.not_enabled')
     end
   end
 

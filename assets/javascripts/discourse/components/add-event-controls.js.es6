@@ -20,7 +20,8 @@ export default Ember.Component.extend({
   valueLabel(event) {
     return eventLabel(event, {
       mobile: this.site.isMobileDevice,
-      displayInTimezone: false
+      displayInTimezone: false,
+      showRsvp: true
     });
   },
 

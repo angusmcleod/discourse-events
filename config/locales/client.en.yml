@@ -13,6 +13,10 @@ en:
       all_day: "All day"
       timezone: "Timezone"
       no_timezone: "Select a timezone"
+      rsvp_enabled: "Rsvp enabled"
+      rsvp_enabled_label: "Rsvp"
+      going_max: "Maximum number of guests"
+      going_max_label: "{{goingMax}} Guests"
     category:
       enable_events: "Allow events to be added to topics in this category (overrides site setting)."
       enable_events_agenda: "Show an agenda topic list in this category (overrides site setting)."
@@ -57,7 +61,9 @@ en:
         filter: "Filter"
       going:
         label: "Going"
-
+        max_reached: "Booked out"
+        one_spot_left: "1 spot left"
+        x_spots_left: "{{spotsLeft}} spots left"
 
     site_settings:
       events_default_timezone_placeholder: "Select a Timezone"

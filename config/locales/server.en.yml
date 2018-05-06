@@ -29,3 +29,8 @@ en:
   event_email:
     topic_type_match: "a discussion"
     topic_type_sub: "an event"
+
+  event_rsvp:
+    errors:
+      not_enabled: "Event rsvp not enabled"
+      going_max: "Maximum guest limit for this event has been reached."

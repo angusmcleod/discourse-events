@@ -1,4 +1,4 @@
-{{#if currentUser}}
+{{#if canGo}}
   <button class='btn btn-small btn-text {{goingClasses}}' {{action 'going'}}>
     {{#if goingSaving}}
       {{loading-spinner size='small'}}
@@ -13,11 +13,16 @@
 <div class="event-rsvp-details">
   {{#if currentUser}}
     <a {{action 'openModal'}}>
-      <span>{{eventGoingTotal}}</span>
+      <span>{{goingTotal}}</span>
       <span>{{i18n 'event_rsvp.going.label'}}</span>
     </a>
   {{else}}
-    <span>{{eventGoingTotal}}</span>
+    <span>{{goingTotal}}</span>
     <span>{{i18n 'event_rsvp.going.label'}}</span>
+  {{/if}}
+  {{#if goingMessage}}
+    <span class="going-message">
+      {{goingMessage}}
+    </span>
   {{/if}}
 </div>

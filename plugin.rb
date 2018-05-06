@@ -107,12 +107,16 @@ after_initialize do
   Topic.register_custom_field_type('event_start', :integer)
   Topic.register_custom_field_type('event_end', :integer)
   Topic.register_custom_field_type('event_all_day', :boolean)
+  Topic.register_custom_field_type('event_rsvp', :boolean)
+  Topic.register_custom_field_type('event_going_max', :integer)
 
   TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_all_day' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_timezone' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_rsvp' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_going' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_going_max' if TopicList.respond_to? :preloaded_custom_fields
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
   load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
@@ -140,6 +144,16 @@ after_initialize do
         event[:all_day] = custom_fields['event_all_day']
       end
 
+      if event_rsvp
+        event[:rsvp] = event_rsvp
+
+        puts "HERE IS THE GOING MAX: #{event_going_max}"
+
+        if event_going_max
+          event[:going_max] = event_going_max
+        end
+      end
+
       event
     end
 
@@ -148,6 +162,22 @@ after_initialize do
         self.custom_fields['event_going'].split(',')
       else
         []
+      end
+    end
+
+    def event_rsvp
+      if self.custom_fields['event_rsvp'] != nil
+        self.custom_fields['event_rsvp']
+      else
+        false
+      end
+    end
+
+    def event_going_max
+      if self.custom_fields['event_going_max'] > 0
+        self.custom_fields['event_going_max'].to_i
+      else
+        nil
       end
     end
   end
@@ -217,6 +247,16 @@ after_initialize do
         timezone = event['timezone']
         tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
         tc.topic.custom_fields['event_timezone'] = timezone
+
+        rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
+        tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
+        tc.topic.custom_fields['event_rsvp'] = rsvp
+
+        if rsvp
+          going_max = event['going_max'] ? event['going_max'].to_i : nil
+          tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
+          tc.topic.custom_fields['event_going_max'] = going_max
+        end
       end
     end
   end
@@ -233,11 +273,15 @@ after_initialize do
       event_end = event['end']
       event_all_day = event['all_day']
       timezone = event['timezone']
+      rsvp = event['rsvp']
+      going_max = event['going_max']
 
       topic.custom_fields['event_start'] = event_start.to_datetime.to_i if event_start
       topic.custom_fields['event_end'] = event_end.to_datetime.to_i if event_end
       topic.custom_fields['event_all_day'] = event_all_day === 'true' if event_all_day
       topic.custom_fields['event_timezone'] = timezone if timezone
+      topic.custom_fields['event_rsvp'] = rsvp if rsvp
+      topic.custom_fields['event_going_max'] = going_max if going_max
       topic.save!
     end
   end

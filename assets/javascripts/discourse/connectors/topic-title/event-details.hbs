@@ -6,7 +6,7 @@
     {{#if siteSettings.events_add_to_calendar}}
       {{add-to-calendar topic=model}}
     {{/if}}
-    {{#if siteSettings.events_rsvp}}
+    {{#if showRsvp}}
       {{event-rsvp topic=model}}
     {{/if}}
   {{/if}}

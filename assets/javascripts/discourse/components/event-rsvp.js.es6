@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   },
 
   @computed('topic.event_going')
-  eventGoingTotal(eventGoing) {
+  goingTotal(eventGoing) {
     return eventGoing.length;
   },
 
@@ -26,6 +26,39 @@ export default Ember.Component.extend({
     }
 
     return classes;
+  },
+
+  @computed('currentUser', 'eventFull')
+  canGo(currentUser, eventFull) {
+    return currentUser && !eventFull;
+  },
+
+  hasMax: Ember.computed.notEmpty('topic.event.going_max'),
+
+  @computed('goingTotal', 'topic.event.going_max')
+  spotsLeft(goingTotal, goingMax) {
+    return Number(goingMax) - Number(goingTotal);
+  },
+
+  eventFull: Ember.computed.equal('spotsLeft', 0),
+
+  @computed('hasMax', 'eventFull')
+  goingMessage(hasMax, full) {
+    if (hasMax) {
+      if (full) {
+        return I18n.t('event_rsvp.going.max_reached');
+      } else {
+        const spotsLeft = this.get('spotsLeft');
+
+        if (spotsLeft === 1) {
+          return I18n.t('event_rsvp.going.one_spot_left');
+        } else {
+          return I18n.t('event_rsvp.going.x_spots_left', { spotsLeft });
+        }
+      }
+    }
+
+    return false;
   },
 
   updateTopic(username, action, type) {
