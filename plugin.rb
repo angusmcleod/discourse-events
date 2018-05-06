@@ -174,7 +174,7 @@ after_initialize do
     end
 
     def event_going_max
-      if self.custom_fields['event_going_max'] > 0
+      if self.custom_fields['event_going_max'].to_i > 0
         self.custom_fields['event_going_max'].to_i
       else
         nil
