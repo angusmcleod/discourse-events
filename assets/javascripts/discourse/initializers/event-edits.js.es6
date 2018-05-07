@@ -37,7 +37,7 @@ export default {
         this.resize();
       },
 
-      @observes('composer.showEventControls')
+      @observes('composer.showEventControls', 'composer.composeState')
       applyEventInlineClass() {
         Ember.run.scheduleOnce('afterRender', this, () => {
           const showEventControls = this.get('composer.showEventControls');

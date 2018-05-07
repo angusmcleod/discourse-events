@@ -2,12 +2,6 @@
   align-items: flex-start;
 
   &.event-add-no-text {
-    flex-wrap: initial;
-
-    .title-input {
-      margin-right: 5px;
-    }
-
     &>div:last-of-type {
       margin-right: 0;
     }
@@ -15,28 +9,56 @@
 
   .category-input {
     flex: 1 0 30%;
-    margin: 0 10px 5px;
 
     .select-kit {
       min-width: 200px;
     }
   }
+
+  .add-event, .add-event + button {
+
+  }
 }
 
-#reply-control .with-tags .title-and-category.show-event-controls {
+#reply-control .reply-area.with-tags .title-and-category.show-event-controls {
   .category-input {
     flex: 1 0 20%;
   }
 
   .mini-tag-chooser {
     flex: 1 1 20%;
-  }
-
-  .composer-controls-event {
-    margin-left: 10px;
+    margin-right: 5px;
   }
 }
 
-.composer-controls-event {
-  margin-right: 5px;
+#reply-control .reply-area:not(.with-tags) .title-and-category.show-event-controls {
+  .category-input {
+    margin-right: 5px;
+  }
+}
+
+.composer-controls-event .event-label {
+  display: flex;
+
+  button {
+    padding: 5px 10px;
+    min-height: 29px;
+    min-width: 35px;
+    text-align: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+    &.no-text {
+      max-height: 29px;
+      text-align: center;
+
+      .fa {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.composer-controls-event .btn:not(:hover) {
+  background: $secondary;
 }

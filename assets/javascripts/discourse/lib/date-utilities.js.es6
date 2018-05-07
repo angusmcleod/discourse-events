@@ -102,16 +102,16 @@ let eventLabel = function(event, args = {}) {
     }
 
     label += `<span>${dateString}</span>`;
-  }
 
-  if (args.showRsvp) {
-    if (event.rsvp) {
-      label += '<span class="dot">&middot;</span>'
-      label += `<span class="rsvp">${I18n.t('add_event.rsvp_enabled_label')}</span>`
-
-      if (event.going_max) {
+    if (args.showRsvp) {
+      if (event.rsvp) {
         label += '<span class="dot">&middot;</span>'
-        label += `<span class="going-max">${I18n.t('add_event.going_max_label', { goingMax: event.going_max })}</span>`
+        label += `<span class="rsvp">${I18n.t('add_event.rsvp_enabled_label')}</span>`
+
+        if (event.going_max) {
+          label += '<span class="dot">&middot;</span>'
+          label += `<span class="going-max">${I18n.t('add_event.going_max_label', { goingMax: event.going_max })}</span>`
+        }
       }
     }
   }

@@ -2,7 +2,7 @@
   align-items: start;
 }
 
-#reply-control button.add-event.no-text {
+#reply-control button.add-event {
   position: relative;
   margin-left: 4px;
   line-height: 19px;
@@ -18,13 +18,13 @@
   }
 }
 
-#reply-control .contents .title-input {
+#reply-control .show-event-controls .title-input {
   display: flex;
+  flex-flow: wrap;
 
   input#reply-title {
     width: initial;
     flex: 1 1 auto;
-    margin-right: 0;
   }
 }
 
@@ -39,11 +39,9 @@
 }
 
 .event-details {
-  display: flex;
   align-items: center;
 
   .event-label {
-    margin-top: 0;
     margin-right: 5px;
     flex: 1 1 auto;
   }

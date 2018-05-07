@@ -147,8 +147,6 @@ after_initialize do
       if event_rsvp
         event[:rsvp] = event_rsvp
 
-        puts "HERE IS THE GOING MAX: #{event_going_max}"
-
         if event_going_max
           event[:going_max] = event_going_max
         end
