@@ -11,14 +11,16 @@
   </button>
 {{/if}}
 <div class="event-rsvp-details">
-  {{#if currentUser}}
-    <a {{action 'openModal'}}>
+  {{#if hasGuests}}
+    {{#if currentUser}}
+      <a {{action 'openModal'}}>
+        <span>{{goingTotal}}</span>
+        <span>{{i18n 'event_rsvp.going.label'}}</span>
+      </a>
+    {{else}}
       <span>{{goingTotal}}</span>
       <span>{{i18n 'event_rsvp.going.label'}}</span>
-    </a>
-  {{else}}
-    <span>{{goingTotal}}</span>
-    <span>{{i18n 'event_rsvp.going.label'}}</span>
+    {{/if}}
   {{/if}}
   {{#if goingMessage}}
     <span class="going-message">

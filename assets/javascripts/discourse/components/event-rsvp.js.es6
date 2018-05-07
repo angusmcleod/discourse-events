@@ -33,6 +33,8 @@ export default Ember.Component.extend({
     return currentUser && !eventFull;
   },
 
+  hasGuests: Ember.computed.gt('goingTotal', 0),
+
   hasMax: Ember.computed.notEmpty('topic.event.going_max'),
 
   @computed('goingTotal', 'topic.event.going_max')
