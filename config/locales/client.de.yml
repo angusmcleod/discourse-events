@@ -2,30 +2,71 @@ de:
   js:
     add_event:
       btn_label: "Datum und Uhrzeit hinzufügen"
-      modal_title: Datum and Uhrzeit
-      event_start: Beginn
-      event_end: Ende
-      event_date: Datum
-      event_time: Uhrzeit
-      event_add: Fertig
-      event_clear: Zurücksetzen
+      modal_title: "Datum and Uhrzeit"
+      event_start: "Beginn"
+      event_end: "Ende"
+      event_date: "Datum"
+      event_time: "Uhrzeit"
+      event_add: "Fertig"
+      event_clear: "Zurücksetzen"
+      end_enabled: "Ende hinzufügen"
+      all_day: "Ganztägig"
+      timezone: "Zeitzone"
+      no_timezone: "Zeitzone festlegen"
+      rsvp_enabled: "Gästeliste aktivieren"
+      rsvp_enabled_label: "Gästeliste"
+      going_max: "Maximale Anzahl an Gästen"
+      going_max_label: "{{goingMax}} Gäste"
     category:
-      enable_events: "Ermöglicht es, Events zu Themen in dieser Kategorie hinzuzufügen"
-      events_agenda_filter_closed: "Events von geschlossenen Themen aus der Agenda dieser Kategorie ausblenden."
+      enable_events: "Erlaube, Events zu Themen dieser Kategorie hinzuzufügen (überschreibt site setting)."
+      enable_events_agenda: "Agenda Liste in dieser Kategorie anzeigen (überschreibt site setting)."
+      enable_events_calendar: "Kalender für diese Kategorie anzeigen (überschreibt site setting)."
+      events_min_trust_to_create: "Minimale Vertrauensstufe, um Events in dieser Kategorie zu erstellen (überschreibt site setting)."
+      events_event_label_no_text: "Text auf Event hinzufügen Button ausblenden (überschreibt site setting)."
+    event_list:
+      title: '{{categoryName}} Veranstaltungen'
+      about: 'Veranstaltungen in deiner Umgebung'
+      no_results: "Keine anstehenden Veranstaltungen"
+      create: "Veranstaltung erstellen"
     composer:
       tip:
         add_event: "Datum, Uhrzeit und Ort zu Ihrem Event hinzufügen"
-    event_list:
-      title: '{{categoryName}} Events'
-      about: 'Events in deiner Umgebung'
-      no_results: "Keine bevorstehende Events"
-      create: "Event erstellen"
     filters:
       agenda:
         title: "Agenda"
-        help: "Listet alle Events anhand ihres Startdatums in aufsteigender Reihenfolge auf."
+        help: "Listet alle Veranstaltungen anhand ihres Startdatums in aufsteigender Reihenfolge auf."
+      calendar:
+        title: "Kalender"
+        help: "Veranstaltungen in Kalender anzeigen"
     add_to_calendar:
       label: "Zu Kalender hinzufügen"
       google: "Google Calendar"
       ics: ".ics Datei"
       default_details: "Event Details: {{url}}"
+    topics:
+      none:
+        agenda: "Es gibt keine Agenda-Themen."
+      bottom:
+        agenda: "Keine weiteren Agenda-Themen."
+    events_calendar:
+      today: "Heute"
+      hidden: "{{count}} weitere"
+      subscribe: "Abonnieren"
+      ical: "iCal"
+      rss: "RSS"
+    user:
+      events_calendar:
+        label: "Kalender"
+        first_day_week: "Erster Wochentag"
+    event_rsvp:
+      modal:
+        title: "Gäste"
+        filter: "Filter"
+      going:
+        label: "Teilnehmen"
+        max_reached: "Gästeliste voll"
+        one_spot_left: "1 Platz frei"
+        x_spots_left: "{{spotsLeft}} Plätze frei"
+
+    site_settings:
+      events_default_timezone_placeholder: "Zeitzone festlegen"

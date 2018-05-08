@@ -1,10 +1,36 @@
 de:
   site_settings:
-    events_add_to_calendar: "Zeigt einen 'Zu Kalender hinzufügen'-Button in Themen mit Event an"
-    events_event_label_icon: "Klasse des Event-Label Symbols"
-    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format des Event-Labels."
-    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format des kurzen Event-Labels, welches in der Themenliste verwendet wird"
-    events_event_label_short_only_start: "Zeige nur den Beginn beim kurzen Event-Label (in der Themenliste)"
-    events_remove_past_from_map: "Vergangene Events aus der Kartenansicht (erstellt durch das <a href='https://github.com/angusmcleod/discourse-locations'>Locations Plugin</a>) entfernen."
-    events_remove_past_from_agenda: "Vergangene Events aus Agendas entfernen."
-    events_agenda_filter_closed: "Geschlossene Themen in allen Agendas ausblenden."
+    events_enabled: "Veranstaltungen können in allen Kategorien hinzugefügt werden."
+    events_agenda_enabled: "Agenda Liste in allen Kategorien anzeigen."
+    events_calendar_enabled: "Kalender in allen Kategorien anzeigen."
+    events_add_to_calendar: "Button Zum Kalender hinzufügen in Veranstaltungsthemen anzeigen."
+    events_event_label_icon: "Veranstaltungs Icon CSS Klasse"
+    events_event_label_no_text: "Keinen Text auf den Datum und Uhrzeit hinzufügen Button."
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format für Datum/Uhrzeit."
+    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Kurzformat für Datum/Uhrzeit in Themenlisten."
+    events_event_label_short_only_start: "Zeige nur den Beginn im Kurzformat (in Themenlisten)."
+    events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Zeit-Format im Kalender."
+    events_remove_past_from_map: "Vergangene Veranstaltungen in der Karte im <a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a> ausblenden."
+    events_remove_past_from_agenda: "Vergangene Veranstaltungen in Agendas ausblenden."
+    events_agenda_filter_closed: "Geschlossene Themen in Agendas ausblenden."
+    events_default_timezone: "Standard Zeitzone für Veranstaltungen."
+    events_emails_include_timezones: "Veranstaltungs-Zeitzone in Emails anzeigen."
+    events_hamburger_menu_calendar_link: "Im Hamburger Menü Link zum Kalender (alle Kategorien) hinzufügen."
+    events_hamburger_menu_agenda_link: "Im Hamburger Menü Link zur Agenda (alle Kategorien) hinzufügen."
+    events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen zu erstellen."
+    events_rsvp: "Gästeliste aktivieren"
+
+  rss_description:
+    events: "Veranstaltungen"
+
+  webcal_description:
+    events: "Veranstaltungen"
+
+  event_email:
+    topic_type_match: "eine Unterhaltung"
+    topic_type_sub: "eine Veranstaltung"
+
+  event_rsvp:
+    errors:
+      not_enabled: "Gästeliste nicht aktiviert"
+      going_max: "Die maximale Anzahl an Gästen wurde erreicht."
