@@ -62,17 +62,19 @@
       <div id="date-container-end"/>
     </div>
   {{/if}}
-  <div class="rsvp">
-    {{input type='checkbox' checked=rsvpEnabled}}
-    <span>{{i18n 'add_event.rsvp_enabled'}}</span>
+  {{#if siteSettings.events_rsvp}}
+    <div class="rsvp">
+      {{input type='checkbox' checked=rsvpEnabled}}
+      <span>{{i18n 'add_event.rsvp_enabled'}}</span>
 
-    {{#if rsvpEnabled}}
-      <div class="going-max">
-        <span>{{i18n 'add_event.going_max'}}</span>
-        {{input type='number' value=goingMax}}
-      </div>
-    {{/if}}
-  </div>
+      {{#if rsvpEnabled}}
+        <div class="going-max">
+          <span>{{i18n 'add_event.going_max'}}</span>
+          {{input type='number' value=goingMax}}
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
 {{/d-modal-body}}
 
 <div class="modal-footer">
