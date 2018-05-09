@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   @computed('responsive')
   weekdays(responsive) {
     let data = moment.localeData();
-    let weekdays = Object.assign([], responsive ? data.weekdaysMin() : data.weekdays());
+    let weekdays = $.extend([], responsive ? data.weekdaysMin() : data.weekdays());
     let firstDay = firstDayOfWeek();
     let beforeFirst = weekdays.splice(0, firstDay);
     weekdays.push(...beforeFirst);

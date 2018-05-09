@@ -30,12 +30,12 @@ export default Ember.Component.extend({
       }
 
       if (offsetTop > (windowHeight / 2)) {
-        css = Object.assign(css, {
+        css = $.extend(css, {
           bottom: "-15px",
           top: "initial"
         });
       } else {
-        css = Object.assign(css, {
+        css = $.extend(css, {
           top: "-15px",
           bottom: "initial"
         });

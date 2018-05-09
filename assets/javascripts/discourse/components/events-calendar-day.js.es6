@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   setEvents() {
     const expanded = this.get('expanded');
     const allEvents = this.get('allEvents');
-    let events = Object.assign([], allEvents);
+    let events = $.extend([], allEvents);
 
     if (events.length && !expanded) {
       let hidden = events.splice(MAX_EVENTS);
