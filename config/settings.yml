@@ -41,6 +41,12 @@ plugins:
     enum: 'EventsDefaultTimezoneSiteSetting'
   events_emails_include_timezones:
     default: true
+  events_timezone_format:
+    default: ''
+    client: true
+  events_timezone_rails_format:
+    default: true
+    client: true
   events_hamburger_menu_calendar_link:
     default: false
     client: true

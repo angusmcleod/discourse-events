@@ -114,7 +114,12 @@ export default Ember.Controller.extend({
 
   @computed
   timezones() {
-    return this.site.event_timezones;
+    return this.site.event_timezones.map((tz) => {
+      return {
+        value: tz.value,
+        name: timezoneLabel(tz.value)
+      }
+    });
   },
 
   @computed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')

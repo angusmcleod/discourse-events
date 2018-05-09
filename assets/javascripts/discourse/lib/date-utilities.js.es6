@@ -55,14 +55,25 @@ let setupEvent = function(event, args = {}) {
 };
 
 let timezoneLabel = function(tz) {
-  const timezones = Discourse.Site.currentProp('event_timezones');
+  const siteSettings = Discourse.SiteSettings;
 
-  if (timezones) {
+  // if there is a custom moment.js format use that
+  const formatSetting = siteSettings.events_timezone_format;
+  if (formatSetting) {
+    return moment.tz(tz).format(formatSetting);
+  }
+
+  // if the Rails format setting is enabled,
+  // and the zone has a Rails standard format, use that
+  const timezones = Discourse.Site.currentProp('event_timezones');
+  const railsFormatSetting = siteSettings.events_timezone_rails_format;
+  if (timezones && railsFormatSetting) {
     const standard = timezones.find(tzObj => tzObj.value === tz);
     if (standard) return standard.name;
   }
 
-  // fallback to IANA name if zone is not part of the Rails standard set.
+  // fallback to IANA name if there is no custom format and
+  // Rails format is disabled or zone is not part of the Rails standard set.
   const offset = moment.tz(tz).format('Z');
   let raw = tz;
   let name = raw.replace('_', '');
