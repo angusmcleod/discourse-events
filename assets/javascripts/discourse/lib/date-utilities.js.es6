@@ -236,7 +236,7 @@ let eventCalculations = function(day, start, end) {
     const endIsAfter = (year < endYear) || ((year === endYear) && ((month < endMonth) || (month === endMonth && date < endDate)));
     isBetween = startIsBefore && endIsAfter;
 
-    daysLeft = endDate - date + 1;
+    daysLeft = month === endMonth ? endDate - date + 1 : moment(end).diff(moment(day), 'days');
   }
 
   return { startIsSame, endIsSame, isBetween, daysLeft };
