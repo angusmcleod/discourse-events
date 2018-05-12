@@ -8,7 +8,9 @@ export default Ember.Component.extend({
   @on('init')
   setup() {
     const excerpt = this.get('topic.excerpt');
+    const title = this.get('topic.title');
     cookAsync(excerpt).then((cooked) => this.set('cookedExcerpt', cooked));
+    cookAsync(title).then((cooked) => this.set('cookedTitle', cooked));
   },
 
   didInsertElement() {
