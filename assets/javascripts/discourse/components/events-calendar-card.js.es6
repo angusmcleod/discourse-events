@@ -1,10 +1,19 @@
 import DiscourseURL from 'discourse/lib/url';
+import { cookAsync } from 'discourse/lib/text';
+import { on } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-card',
 
+  @on('init')
+  setup() {
+    const excerpt = this.get('topic.excerpt');
+    cookAsync(excerpt).then((cooked) => this.set('cookedExcerpt', cooked));
+  },
+
   didInsertElement() {
     this.set('clickHandler', Ember.run.bind(this, this.documentClick));
+
     Ember.run.next(() => {
       Ember.$(document).on('mousedown', this.get('clickHandler'));
     });
