@@ -154,6 +154,10 @@
   display: block;
 }
 
+.event-label .fa {
+  margin-right: 7px;
+}
+
 .event-details {
   display: flex;
   flex-flow: wrap;
@@ -163,10 +167,6 @@
     margin-right: 10px;
     line-height: 18px;
     display: inline-block;
-
-    .fa {
-      margin-right: 7px;
-    }
   }
 
   .event-rsvp {
