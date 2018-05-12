@@ -525,6 +525,10 @@ ul.events-calendar-events {
     line-height: 1.4;
     width: 100%;
     word-wrap: break-word;
+
+    p {
+      margin: 0;
+    }
   }
 }
 
