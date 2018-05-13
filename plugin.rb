@@ -390,6 +390,8 @@ after_initialize do
     end
   end
 
+  require 'icalendar/tzinfo'
+
   ListController.class_eval do
     skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
 
@@ -443,17 +445,24 @@ after_initialize do
       list_opts = {}
       list_opts[:category] = @category.id if @category
 
+      tzid = params[:time_zone]
+      tz = TZInfo::Timezone.get tzid
+
       cal = Icalendar::Calendar.new
       cal.x_wr_calname = calendar_name
+      cal.x_wr_timezone = tzid
+
       @topic_list = TopicQuery.new(nil, list_opts).list_calendar
 
       @topic_list.topics.each do |t|
         if t.event && t.event[:start]
-          localized_event = CalendarEvents::Helper.localize_event(t.event, params[:time_zone])
+          event = CalendarEvents::Helper.localize_event(t.event, tzid)
+          timezone = tz.ical_timezone event[:start]
+          cal.add_timezone timezone
 
           cal.event do |e|
-            e.dtstart = localized_event[:start]
-            e.dtend = localized_event[:end]
+            e.dtstart = Icalendar::Values::DateTime.new event[:start], 'tzid' => tzid
+            e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
             e.summary = t.title
             e.description = t.excerpt
             e.url = calendar_url
