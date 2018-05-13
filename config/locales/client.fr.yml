@@ -30,4 +30,4 @@ fr:
         label: "Calendrier"
         first_day_week: "La semaine commence le"
     site_settings:
-      events_default_timezone_placeholder: "Sélectionner un fuseau horaire"
+      events_timezone_default_placeholder: "Sélectionner un fuseau horaire"

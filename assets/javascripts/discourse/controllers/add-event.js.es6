@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
   setup() {
     const event = this.get('model.event');
-    const { start, end, allDay } = setupEvent(event);
+    const { start, end, allDay } = setupEvent(event, { useEventTimezone: true });
     let props = {};
 
     if (allDay) {
@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
-    props['timezone'] = getTimezone(event);
+    props['timezone'] = getTimezone(event, { useEventTimezone: true });
 
     if (event && event.rsvp) {
       props['rsvpEnabled'] = true;

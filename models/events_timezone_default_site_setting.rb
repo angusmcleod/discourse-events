@@ -1,6 +1,6 @@
 require_dependency 'enum_site_setting'
 
-class EventsDefaultTimezoneSiteSetting < EnumSiteSetting
+class EventsTimezoneDefaultSiteSetting < EnumSiteSetting
   def self.valid_value?(val)
     return true if val == ""
     values.any? { |v| v[:value].to_s == val.to_s }

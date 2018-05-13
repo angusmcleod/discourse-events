@@ -30,7 +30,7 @@ class CalendarEvents::Helper
     event_start = event[:start].to_datetime
     event_end = event[:end].present? ? event[:end].to_datetime : event_start
 
-    event_timezone = SiteSetting.events_default_timezone
+    event_timezone = SiteSetting.events_timezone_default
     event_timezone = event[:timezone] if event[:timezone].present?
     event_timezone = timezone if timezone.present?
 
@@ -52,7 +52,7 @@ class CalendarEvents::Helper
   def self.timezone_label(event)
     return '' if !event[:timezone]
 
-    standard_tz = EventsDefaultTimezoneSiteSetting.values.select do |tz|
+    standard_tz = EventsTimezoneDefaultSiteSetting.values.select do |tz|
       tz[:value] === event[:timezone]
     end
 

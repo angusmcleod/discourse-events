@@ -35,11 +35,14 @@ plugins:
     default: false
   events_agenda_filter_closed:
     default: false
-  events_default_timezone:
+  events_timezone_default:
     default: ''
     client: true
-    enum: 'EventsDefaultTimezoneSiteSetting'
-  events_emails_include_timezones:
+    enum: 'EventsTimezoneDefaultSiteSetting'
+  events_timezone_event:
+    default: true
+    client: true
+  events_timezone_include_in_email:
     default: true
   events_timezone_format:
     default: ''

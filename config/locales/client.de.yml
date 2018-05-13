@@ -69,4 +69,4 @@ de:
         x_spots_left: "{{spotsLeft}} Plätze frei"
 
     site_settings:
-      events_default_timezone_placeholder: "Zeitzone festlegen"
+      events_timezone_default_placeholder: "Zeitzone festlegen"

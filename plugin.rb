@@ -22,7 +22,7 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
-load File.expand_path('../models/events_default_timezone_site_setting.rb', __FILE__)
+load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
 
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
@@ -41,7 +41,7 @@ DiscourseEvent.on(:locations_ready) do
 end
 
 after_initialize do
-  add_to_serializer(:site, :event_timezones) { EventsDefaultTimezoneSiteSetting.values }
+  add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
 
   Category.register_custom_field_type('events_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
@@ -600,7 +600,7 @@ after_initialize do
         event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
       end
 
-      if SiteSetting.events_emails_include_timezones
+      if SiteSetting.events_timezone_include_in_email
         event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
       end
 

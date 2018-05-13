@@ -250,8 +250,8 @@ export default {
       if (user && user.admin) {
         api.modifyClass('model:site-setting', {
           allowsNone: function() {
-            if (this.get('setting') === 'events_default_timezone') {
-              return 'site_settings.events_default_timezone_placeholder';
+            if (this.get('setting') === 'events_timezone_default') {
+              return 'site_settings.events_timezone_default_placeholder';
             } else {
               this._super();
             }

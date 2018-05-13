@@ -10,15 +10,16 @@ let isAllDay = function(event) {
   return startIsDayStart && endIsDayEnd;
 };
 
-let getTimezone = function(event = null) {
+let getTimezone = function(event = null, args = {}) {
   let timezone = moment.tz.guess();
 
-  const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+  const defaultTimezone = Discourse.SiteSettings.events_timezone_default;
   if (defaultTimezone) {
     timezone = defaultTimezone;
   }
 
-  if (event && event['timezone']) {
+  const displayEvent = Discourse.SiteSettings.events_timezone_display_event;
+  if ((args.useEventTimezone || displayEvent) && event && event['timezone']) {
     timezone = event['timezone'];
   }
 
@@ -40,7 +41,7 @@ let setupEvent = function(event, args = {}) {
       multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
-    const timezone = getTimezone(event);
+    const timezone = getTimezone(event, args);
 
     if (timezone) {
       start = start.tz(timezone);
@@ -89,7 +90,7 @@ let eventLabel = function(event, args = {}) {
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    const { start, end, allDay, multiDay } = setupEvent(event);
+    const { start, end, allDay, multiDay } = setupEvent(event, args);
 
     let format = args.short ? shortFormat : longFormat;
     let formatArr = format.split(',');
@@ -105,11 +106,11 @@ let eventLabel = function(event, args = {}) {
       }
     }
 
-    const defaultTimezone = Discourse.SiteSettings.events_default_timezone;
+    const defaultTimezone = Discourse.SiteSettings.events_timezone_default;
     const standardTimezone = defaultTimezone || moment.tz.guess();
 
     if (!allDay && event['timezone'] && event['timezone'] !== standardTimezone) {
-      dateString += `, ${timezoneLabel(event['timezone'])}`;
+      dateString += `, ${timezoneLabel(getTimezone(event, args))}`;
     }
 
     label += `<span>${dateString}</span>`;

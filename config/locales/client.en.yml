@@ -66,4 +66,4 @@ en:
         x_spots_left: "{{spotsLeft}} spots left"
 
     site_settings:
-      events_default_timezone_placeholder: "Select a Timezone"
+      events_timezone_default_placeholder: "Select a Timezone"
