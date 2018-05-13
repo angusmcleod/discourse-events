@@ -18,8 +18,8 @@ let getTimezone = function(event = null, args = {}) {
     timezone = defaultTimezone;
   }
 
-  const displayEvent = Discourse.SiteSettings.events_timezone_display_event;
-  if ((args.useEventTimezone || displayEvent) && event && event['timezone']) {
+  const eventTimezone = Discourse.SiteSettings.events_timezone_event;
+  if ((args.useEventTimezone || eventTimezone) && event && event['timezone']) {
     timezone = event['timezone'];
   }
 
