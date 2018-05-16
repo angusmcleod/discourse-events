@@ -5,8 +5,8 @@ export default Ember.Component.extend({
 
   actions: {
     selectEvent(url) {
-      const mobile = this.site.mobileView;
-      if (mobile) {
+      const responsive = this.get('responsive');
+      if (responsive) {
         DiscourseURL.routeTo(url);
       } else {
         this.toggleProperty('showEventCard');
