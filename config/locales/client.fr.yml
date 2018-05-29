@@ -13,21 +13,38 @@ fr:
       all_day: "Toute la journée"
       timezone: "Fuseau horaire"
       no_timezone: "Sélectionner un fuseau horaire"
+      rsvp_enabled: "Rsvp activé"
+      going_max: "Nombre maximal de participants"
+      going_max_label: "{{goingMax}} participants"
     event_list:
+      title: '{{categoryName}} Évènements'
       about: 'Évènement dans votre zone'
       no_results: "Aucun évènement à venir"
       create: "Créer un évènement"
     filters:
+      agenda:
+        help: "Liste des évènements dans un ordre chronologique depuis le début"
       calendar:
         title: "Calendrier"
+        help: "Voir les évènements dans un calendrier"
     add_to_calendar:
       label: "Ajouter au calendrier"
+      google: "Google Agenda"
       ics: "Fichier .ics"
+      default_details: "Détails de l'èvnement: {{url}}"
     events_calendar:
       today: "Aujourd'hui"
+      hidden: "{{count}} de plus"
+      subscribe: "S'abonner"
     user:
       events_calendar:
         label: "Calendrier"
         first_day_week: "La semaine commence le"
-    site_settings:
-      events_timezone_default_placeholder: "Sélectionner un fuseau horaire"
+    event_rsvp:
+      modal:
+        title: "Participants"
+        filter: "Filtre"
+      going:
+        label: "J'y vais"
+        one_spot_left: "1 place disponible"
+        x_spots_left: "{{spotsLeft}} places disponibles"

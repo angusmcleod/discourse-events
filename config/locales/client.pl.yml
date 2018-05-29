@@ -1,0 +1,72 @@
+pl:
+  js:
+    add_event:
+      btn_label: "Dodaj datę i godzinę"
+      modal_title: Data i godzina
+      event_start: Start
+      event_end: Koniec
+      event_date: Data
+      event_time: Godzina
+      event_add: Gotowe
+      event_clear: Wyczyść
+      end_enabled: "Ustaw koniec"
+      all_day: "Całodzienne"
+      timezone: "Strefa czasowa"
+      no_timezone: "Wybierz strefę czasową"
+      rsvp_enabled: "Włącz Rsvp"
+      rsvp_enabled_label: "Rsvp"
+      going_max: "Maksymalna liczba zapisanych"
+      going_max_label: "{{goingMax}} zapisanych"
+    category:
+      enable_events: "Zezwól na dodawanie wydarzeń do tematów w tej kategorii (nadpisuje ustawienia forum)."
+      enable_events_agenda: "Wyświetlaj agendę dla tej kategorii (nadpisuje ustawienia forum)."
+      enable_events_calendar: "Wyświetlaj kalendarz dla tej kategorii (nadpisuje ustawienia forum)."
+      events_min_trust_to_create: "Minimalny poziom zaufania wymagany przy dodawaniu wydarzeń do tematów w tej kategorii (nadpisuje ustawienia forum)."
+      events_event_label_no_text: "Nie wyświetlaj tekstu na przyciskach dodawania wydarzenia (nadpisuje ustawienia forum)."
+      require_event: "Wymagaj dodania wydarzenia do wszystkich tematów w tej kategorii."
+    composer:
+      error:
+        event_missing: "Tematy w tej kategorii muszą mieć przypisane wydarzenie."
+    event_list:
+      title: '{{categoryName}} wydarzenia'
+      about: 'Wydarzenia w Twojej okolicy'
+      no_results: "Brak nadchodzących wydarzeń"
+      create: "Utwórz wydarzenie"
+    filters:
+      agenda:
+        title: "Agenda"
+        help: "Wyświetlaj wydarzenia chronologicznie na podstawie daty ich rozpoczęcia."
+      calendar:
+        title: "Kalendarz"
+        help: "Wyświetl wydarzenia w kalendarzu"
+    add_to_calendar:
+      label: "Dodaj do kalendarza"
+      google: "Kalendarz Google"
+      ics: "plik .ics"
+      default_details: "Szczegóły wydarzenia: {{url}}"
+    topics:
+      none:
+        agenda: "Brak tematów w agendzie."
+      bottom:
+        agenda: "Nie ma więcej tematów w agendzie."
+    events_calendar:
+      today: "Dzisiaj"
+      hidden: "{{count}} więcej"
+      subscribe: "Subskrybuj"
+      ical: "iCal"
+      rss: "RSS"
+    user:
+      events_calendar:
+        label: "Kalendarz"
+        first_day_week: "Pierwszy dzień tygodnia"
+    event_rsvp:
+      modal:
+        title: "Zapisani"
+        filter: "Filtruj"
+      going:
+        label: "Wybieram się"
+        max_reached: "Brak wolnych miejsc"
+        one_spot_left: "Jedno wolne miejsce"
+        x_spots_left: "{{spotsLeft}} wolnych miejsc"
+    site_settings:
+      events_timezone_default_placeholder: "Wybierz strefę czasową"

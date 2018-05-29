@@ -1,0 +1,35 @@
+pl:
+  site_settings:
+    events_enabled: "Zezwalaj na dodawanie wydarzeń do tematów we wszystkich kategoriach."
+    events_agenda_enabled: "Wyświetlaj agendę we wszystkich kategoriach."
+    events_calendar_enabled: "Wyświetlaj kalendarz we wszystkich kategoriach."
+    events_add_to_calendar: "Wyświetlaj przycisk \"Dodaj do kalendarza\" w tematach z wydarzeniami."
+    events_event_label_icon: "Klasa ikony w etykiecie wydarzenia."
+    events_event_label_no_text: "Nie wyświetlaj tekstu na przyciskach dodawania wydarzenia."
+    events_event_label_format: "Format daty <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> w etykiecie wydarzenia."
+    events_event_label_short_format: "Krótki format daty <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> używany na liście tematów."
+    events_event_label_short_only_start: "Wyświetlaj jedynie datę początkową na krótkiej etykiecie wydarzenia (używanej na liście tematów)."
+    events_event_time_calendar_format: "Format daty <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> używany w kalendarzu."
+    events_remove_past_from_map: "Ukrywaj minione wydarzenia z listy wydarzeń na mapie (<a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a>)"
+    events_remove_past_from_agenda: "Ukrywaj minione wydarzenia w agendzie."
+    events_agenda_filter_closed: "Ukrywaj zamknięte tematy w agendzie."
+    events_timezone_default: "Strefa czasowa używana przy wyświetlaniu daty i godziny wydarzenia."
+    events_timezone_event: "Jeśli wydarzenie ma zmienioną strefę czasową, używaj jej przy wyświetlaniu daty i godziny. "
+    events_timezone_include_in_email: "Wyświetlaj strefę czasową wydarzenia w mailach ze szczegółami wydarzenia."
+    events_timezone_format: "Używaj <a href='https://momentjs.com/docs/#/displaying/format/'>formatowania Moment.js</a> przy wyświetlaniu stref czasowych w etykietach wydarzeń. Nadpisuje ustawienie dotyczące formatowania Rails."
+    events_timezone_rails_format: "Używaj <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>formatowania Rails</a> przy wyświetlaniu stref czasowych w etykietach wydarzeń."
+    events_hamburger_menu_calendar_link: "Wyświetlaj link do globalnego kalendarza w menu głównym."
+    events_hamburger_menu_agenda_link: "Wyświetlaj link do globalnej agendy w menu głównym."
+    events_min_trust_to_create: "Minimalny poziom zaufania wymagany przy tworzeniu wydarzenia."
+    events_rsvp: "Zezwalaj na ustawianie Rsvp dla wydarzeń."
+  rss_description:
+    events: "Wydarzenia"
+  webcal_description:
+    events: "Wydarzenia"
+  event_email:
+    topic_type_match: "dyskusja"
+    topic_type_sub: "wydarzenie"
+  event_rsvp:
+    errors:
+      not_enabled: "Rsvp wydarzenia wyłączone."
+      going_max: "Maksymalna ilość zapisanych na to wydarzenie osób została osiągnięta."
