@@ -655,3 +655,13 @@ ul.events-calendar-events {
   font-size: 0.9em;
   margin-top: 4px;
 }
+
+.composer-controls-event {
+  position: relative;
+
+  .popup-tip {
+    left: 0;
+    right: initial;
+    min-width: 300px;
+  }
+}

@@ -9,6 +9,7 @@ import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
 import { calendarRange } from '../lib/date-utilities';
+import InputValidation from 'discourse/models/input-validation';
 
 export default {
   name: 'events-edits',
@@ -283,6 +284,28 @@ export default {
         unsubscribeCalendarEvents() {
           this.messageBus.unsubscribe(`/calendar-events/${this.get('model.id')}`);
         }
+      })
+
+      api.modifyClass('controller:composer', {
+        @computed('model.event', 'model.category.events_required', 'lastValidatedAt')
+        eventValidation(event, eventsRequired, lastValidatedAt) {
+          if (eventsRequired && !event) {
+            return InputValidation.create({
+              failed: true,
+              reason: I18n.t('composer.error.event_missing'),
+              lastShownAt: lastValidatedAt
+            });
+          }
+        },
+
+        // overriding cantSubmitPost on the model is more fragile
+        save(opts) {
+          if (!this.get('eventValidation')) {
+            this._super(...arguments);
+          } else {
+            this.set('lastValidatedAt', Date.now());
+          }
+        },
       })
     });
   }
