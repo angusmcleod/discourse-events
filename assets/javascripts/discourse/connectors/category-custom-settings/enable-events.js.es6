@@ -22,6 +22,7 @@ export default {
     settingValueToggle('events_enabled');
     settingValueToggle('events_agenda_enabled');
     settingValueToggle('events_calendar_enabled');
+    settingValueToggle('events_event_label_no_text');
     settingValueToggle('events_required');
   }
 };
