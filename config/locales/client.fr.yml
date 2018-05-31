@@ -1,7 +1,7 @@
 fr:
   js:
     add_event:
-      btn_label: "Ajoutez la date et l'heure"
+      btn_label: "Ajouter la date et l'heure"
       modal_title: Date et heure
       event_start: Début
       event_end: Fin
@@ -13,25 +13,25 @@ fr:
       all_day: "Toute la journée"
       timezone: "Fuseau horaire"
       no_timezone: "Sélectionner un fuseau horaire"
-      rsvp_enabled: "Rsvp activé"
+      rsvp_enabled: "RSVP activé"
       going_max: "Nombre maximal de participants"
       going_max_label: "{{goingMax}} participants"
     event_list:
-      title: '{{categoryName}} Évènements'
-      about: 'Évènement dans votre zone'
-      no_results: "Aucun évènement à venir"
-      create: "Créer un évènement"
+      title: '{{categoryName}} Événements'
+      about: 'Événement dans votre zone'
+      no_results: "Aucun événement à venir"
+      create: "Créer un événement"
     filters:
       agenda:
-        help: "Liste des évènements dans un ordre chronologique depuis le début"
+        help: "Liste tous les événements dans l'ordre chronologique"
       calendar:
         title: "Calendrier"
-        help: "Voir les évènements dans un calendrier"
+        help: "Voir les événements dans un calendrier"
     add_to_calendar:
       label: "Ajouter au calendrier"
       google: "Google Agenda"
       ics: "Fichier .ics"
-      default_details: "Détails de l'èvnement: {{url}}"
+      default_details: "Détails de l'événement : {{url}}"
     events_calendar:
       today: "Aujourd'hui"
       hidden: "{{count}} de plus"
