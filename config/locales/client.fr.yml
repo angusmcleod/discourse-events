@@ -31,7 +31,7 @@ fr:
       label: "Ajouter au calendrier"
       google: "Google Agenda"
       ics: "Fichier .ics"
-      default_details: "Détails de l'èvénement : {{url}}"
+      default_details: "Détails de l'événement : {{url}}"
     events_calendar:
       today: "Aujourd'hui"
       hidden: "{{count}} de plus"
