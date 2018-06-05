@@ -359,26 +359,29 @@ after_initialize do
     def list_agenda
       @options[:order] = 'event'
       @options[:list] = 'agenda'
-      opts = {}
+
+      opts = {
+        remove_past: SiteSetting.events_remove_past_from_agenda
+      }
+
       opts[:status] = 'open' if SiteSetting.events_agenda_filter_closed
 
-      create_list(:agenda, {}, event_results(opts)) do |topics|
-        if SiteSetting.events_remove_past_from_agenda
-          topics = topics.where("topics.id in (
-            SELECT topic_id FROM topic_custom_fields
-            WHERE (name = 'event_start' OR name ='event_end')
-            AND value > '#{Time.now.to_i}'
-          )")
-        end
-
-        topics
-      end
+      create_list(:agenda, {}, event_results(opts))
     end
 
     def list_calendar
       @options[:order] = 'event'
       @options[:list] = 'calendar'
-      create_list(:calendar, {}, event_results(limit: false, include_excerpt: true))
+
+      opts = {
+        limit: false,
+        include_excerpt: true,
+        remove_past: SiteSetting.events_remove_past_from_calendar
+      }
+
+      opts[:status] = 'open' if SiteSetting.events_calendar_filter_closed
+
+      create_list(:calendar, {}, event_results(opts))
     end
 
     def event_results(options = {})
@@ -390,6 +393,14 @@ after_initialize do
 
       CalendarEvents::List.sorted_filters.each do |filter|
         topics = filter[:block].call(topics, @options)
+      end
+
+      if options[:remove_past]
+        topics = topics.where("topics.id in (
+          SELECT topic_id FROM topic_custom_fields
+          WHERE (name = 'event_start' OR name ='event_end')
+          AND value > '#{Time.now.to_i}'
+        )")
       end
 
       if options[:include_excerpt]

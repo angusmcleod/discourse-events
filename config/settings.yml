@@ -33,7 +33,11 @@ plugins:
     default: false
   events_remove_past_from_map:
     default: false
+  events_remove_past_from_calendar:
+    default: false
   events_agenda_filter_closed:
+    default: false
+  events_calendar_filter_closed:
     default: false
   events_timezone_default:
     default: ''
