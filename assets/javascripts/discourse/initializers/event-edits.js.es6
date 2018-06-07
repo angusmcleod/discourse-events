@@ -171,7 +171,7 @@ export default {
 
             // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
             transition.abort();
-            this.transitionTo(`${transition.intent.url}?start=${start}&end=${end}`);
+            this.replaceWith(`${transition.intent.url}?start=${start}&end=${end}`);
           }
 
           this._super(transition);
@@ -202,9 +202,10 @@ export default {
     categoryRoutes.forEach(function(route){
       withPluginApi('0.8.12', api => {
         api.modifyClass(`route:discovery.${route}`, {
-          afterModel(model) {
+          afterModel(model, transition) {
             const filter = this.filter(model.category);
             if (filter === 'calendar' || filter === 'agenda') {
+              transition.abort();
               return this.replaceWith(`/c/${Discourse.Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
             } else {
               return this._super(...arguments);
