@@ -9,7 +9,7 @@ class EventsTimezoneDefaultSiteSetting < EnumSiteSetting
   def self.values
     @values ||= self.timezones.map do |k, v|
       {
-        name: ActiveSupport::TimeZone.new(k).to_s,
+        name: "(GMT#{Time.now.in_time_zone(v).formatted_offset}) #{k}",
         value: v
       }
     end
