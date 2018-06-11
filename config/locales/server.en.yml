@@ -16,7 +16,7 @@ en:
     events_agenda_filter_closed: "Remove closed topics from agendas."
     events_calendar_filter_closed: "Remove closed topics from calendars."
     events_timezone_default: "Default timezone. If not set, default timezone is user's timezone."
-    events_timezone_display: "Timezone used to diplay event times in."
+    events_timezone_display: "Timezone used to display event times in."
     events_timezone_display_default: "Default timezone."
     events_timezone_display_event: "Event timezone, if set."
     events_timezone_display_different: "Event timezone, if set and different from default timezone."
