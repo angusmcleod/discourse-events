@@ -10,20 +10,40 @@ let isAllDay = function(event) {
   return startIsDayStart && endIsDayEnd;
 };
 
+let getDefaultTimezone = function() {
+  const setting = Discourse.SiteSettings.events_timezone_default;
+  const user = moment.tz.guess();
+  return setting ? setting : user;
+}
+
 let getTimezone = function(event = null, args = {}) {
-  let timezone = moment.tz.guess();
+  let timezone = getDefaultTimezone();
 
-  const defaultTimezone = Discourse.SiteSettings.events_timezone_default;
-  if (defaultTimezone) {
-    timezone = defaultTimezone;
-  }
+  if (event && event['timezone']) {
+    const display = Discourse.SiteSettings.events_timezone_display;
 
-  const eventTimezone = Discourse.SiteSettings.events_timezone_event;
-  if ((args.useEventTimezone || eventTimezone) && event && event['timezone']) {
-    timezone = event['timezone'];
+    if (args.useEventTimezone ||
+        display === 'event' ||
+        (display === 'different' && event['timezone'] !== timezone)) {
+      timezone = event['timezone'];
+    }
   }
 
   return timezone;
+}
+
+let includeTimezone = function(event = null, args = {}) {
+  if (!event) return false;
+
+  if (args.useEventTimezone && event['timezone']) return true;
+
+  const includeInTopicList = Discourse.SiteSettings.events_timezone_include_in_topic_list;
+  if (args.list === 'true') return includeInTopicList;
+
+  const includeInTopic = Discourse.SiteSettings.events_timezone_include_in_topic;
+  if (args.topic === 'true') return includeInTopic;
+
+  return false;
 }
 
 let setupEvent = function(event, args = {}) {
@@ -31,6 +51,7 @@ let setupEvent = function(event, args = {}) {
   let end;
   let allDay;
   let multiDay;
+  let timezone;
 
   if (event) {
     start = moment(event['start']);
@@ -41,18 +62,20 @@ let setupEvent = function(event, args = {}) {
       multiDay = (end.date() > start.date()) || (end.month() > start.month());
     }
 
-    const timezone = getTimezone(event, args);
+    if (!allDay) {
+      timezone = getTimezone(event, args);
 
-    if (timezone) {
-      start = start.tz(timezone);
+      if (timezone) {
+        start = start.tz(timezone);
 
-      if (event['end']) {
-        end = end.tz(timezone);
+        if (event['end']) {
+          end = end.tz(timezone);
+        }
       }
     }
   }
 
-  return { start, end, allDay, multiDay };
+  return { start, end, allDay, multiDay, timezone };
 };
 
 let timezoneLabel = function(tz) {
@@ -83,21 +106,21 @@ let timezoneLabel = function(tz) {
 
 let eventLabel = function(event, args = {}) {
   const icon = Discourse.SiteSettings.events_event_label_icon;
-  const longFormat = Discourse.SiteSettings.events_event_label_format;
-  const shortFormat = Discourse.SiteSettings.events_event_label_short_format;
-  const shortOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
+  const standardFormat = Discourse.SiteSettings.events_event_label_format;
+  const listFormat = Discourse.SiteSettings.events_event_label_short_format;
+  const listOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
   if (!args.mobile) {
-    const { start, end, allDay, multiDay } = setupEvent(event, args);
+    const { start, end, allDay, multiDay, timezone } = setupEvent(event, args);
 
-    let format = args.short ? shortFormat : longFormat;
+    let format = args.list ? listFormat : standardFormat;
     let formatArr = format.split(',');
     if (allDay) format = formatArr[0];
     let dateString = start.format(format);
 
-    if (event['end'] && (!args.short || !shortOnlyStart)) {
+    if (event['end'] && (!args.list || !listOnlyStart)) {
       const diffDay = start.date() !== end.date();
 
       if (!allDay || diffDay) {
@@ -106,11 +129,8 @@ let eventLabel = function(event, args = {}) {
       }
     }
 
-    const defaultTimezone = Discourse.SiteSettings.events_timezone_default;
-    const standardTimezone = defaultTimezone || moment.tz.guess();
-
-    if (!allDay && event['timezone'] && event['timezone'] !== standardTimezone) {
-      dateString += `, ${timezoneLabel(getTimezone(event, args))}`;
+    if (timezone && includeTimezone(event, args)) {
+      dateString += `, ${timezoneLabel(timezone)}`;
     }
 
     label += `<span>${dateString}</span>`;

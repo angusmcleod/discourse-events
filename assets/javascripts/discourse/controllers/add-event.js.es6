@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
   setup() {
     const event = this.get('model.event');
-    const { start, end, allDay } = setupEvent(event, { useEventTimezone: true });
+    const { start, end, allDay, multiDay, timezone } = setupEvent(event, { useEventTimezone: true });
     let props = {};
 
     if (allDay) {
@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
 
-    props['timezone'] = getTimezone(event, { useEventTimezone: true });
+    props['timezone'] = timezone;
 
     if (event && event.rsvp) {
       props['rsvpEnabled'] = true;
@@ -203,6 +203,8 @@ export default Ember.Controller.extend({
           event['going_max'] = goingMax;
         }
       }
+
+      console.log(event);
 
       this.get('model.update')(event);
       this.resetProperties();

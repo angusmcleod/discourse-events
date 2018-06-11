@@ -23,6 +23,7 @@ Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
 load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
+load File.expand_path('../models/events_timezone_display_site_setting.rb', __FILE__)
 
 DiscourseEvent.on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|

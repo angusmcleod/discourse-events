@@ -43,7 +43,14 @@ plugins:
     default: ''
     client: true
     enum: 'EventsTimezoneDefaultSiteSetting'
-  events_timezone_event:
+  events_timezone_display:
+    client: true
+    default: 'default'
+    enum: "EventsTimezoneDisplaySiteSetting"
+  events_timezone_include_in_topic:
+    default: true
+    client: true
+  events_timezone_include_in_topic_list:
     default: true
     client: true
   events_timezone_include_in_email:
