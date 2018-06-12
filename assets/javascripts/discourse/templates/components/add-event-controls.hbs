@@ -1,6 +1,6 @@
 {{#if event}}
   {{d-button class=valueClasses action="showAddEvent" translatedLabel=valueLabel}}
-  {{#unless site.mobileView}}
+  {{#unless noText}}
     {{d-button icon="times" action="removeEvent" class="remove"}}
   {{/unless}}
 {{else}}

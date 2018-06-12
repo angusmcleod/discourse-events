@@ -9,32 +9,32 @@ export default Ember.Component.extend({
     $('.title-and-category').toggleClass('event-add-no-text', this.get("iconOnly"));
   },
 
-  @computed()
-  valueClasses() {
+  @computed('noText')
+  valueClasses(noText) {
     let classes = "add-event";
-    if (this.site.isMobileDevice) classes += " btn-primary";
+    if (noText) classes += " btn-primary";
     return classes;
   },
 
   @computed('event')
   valueLabel(event) {
     return eventLabel(event, {
-      mobile: this.site.isMobileDevice,
+      noText: this.get('noText'),
       useEventTimezone: true,
       showRsvp: true
     });
   },
 
-  @computed()
-  addLabel() {
+  @computed('noText')
+  addLabel(noText) {
     const icon = Discourse.SiteSettings.events_event_label_icon;
     const iconHtml = `<i class='fa fa-${icon}'></i>`;
-    return this.site.isMobileDevice ? iconHtml : I18n.t('add_event.btn_label', { iconHtml });
+    return noText ? iconHtml : I18n.t('add_event.btn_label', { iconHtml });
   },
 
-  @computed('category')
-  iconOnly(category) {
-    return this.site.mobileView ||
+  @computed('category', 'noText')
+  iconOnly(category, noText) {
+    return noText ||
            Discourse.SiteSettings.events_event_label_no_text ||
            Boolean(category && category.get('events_event_label_no_text'));
   },

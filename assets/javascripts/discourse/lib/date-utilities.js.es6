@@ -112,7 +112,7 @@ let eventLabel = function(event, args = {}) {
 
   let label = `<i class='fa fa-${icon}'></i>`;
 
-  if (!args.mobile) {
+  if (!args.noText) {
     const { start, end, allDay, multiDay, timezone } = setupEvent(event, args);
 
     let format = args.list ? listFormat : standardFormat;
