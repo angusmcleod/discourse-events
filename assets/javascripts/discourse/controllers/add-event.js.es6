@@ -204,8 +204,6 @@ export default Ember.Controller.extend({
         }
       }
 
-      console.log(event);
-
       this.get('model.update')(event);
       this.resetProperties();
       this.send("closeModal");
