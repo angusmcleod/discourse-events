@@ -320,7 +320,7 @@
   box-sizing: border-box;
 
   .day, .weekday {
-    width: calc(100%/7);
+    width: calc(99.9999%/7);
     border-top: 1px solid $primary-medium;
     border-right: 1px solid $primary-medium;
     box-sizing: border-box;
