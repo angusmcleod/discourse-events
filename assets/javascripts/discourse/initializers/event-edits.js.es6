@@ -10,6 +10,7 @@ import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
 import { calendarRange } from '../lib/date-utilities';
 import InputValidation from 'discourse/models/input-validation';
+import { CREATE_TOPIC } from "discourse/models/composer";
 
 export default {
   name: 'events-edits',
@@ -288,9 +289,9 @@ export default {
       })
 
       api.modifyClass('controller:composer', {
-        @computed('model.event', 'model.category.events_required', 'lastValidatedAt')
-        eventValidation(event, eventsRequired, lastValidatedAt) {
-          if (eventsRequired && !event) {
+        @computed('model.action', 'model.event', 'model.category.events_required', 'lastValidatedAt')
+        eventValidation(action, event, eventsRequired, lastValidatedAt) {
+          if (action === CREATE_TOPIC && eventsRequired && !event) {
             return InputValidation.create({
               failed: true,
               reason: I18n.t('composer.error.event_missing'),
