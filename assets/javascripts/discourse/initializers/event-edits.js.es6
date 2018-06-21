@@ -127,9 +127,26 @@ export default {
       },
 
       @on('didInsertElement')
-      moveRsvp() {
+      moveElements() {
+        const topic = this.get('topic');
+
         Ember.run.scheduleOnce('afterRender', () => {
-          this.$('.topic-list-event-rsvp').insertAfter(this.$('.link-top-line'));
+          const $linkTopLine = this.$('.link-top-line');
+          let rowBelowTitle = false;
+
+          if (topic.event && topic.event.rsvp) {
+            this.$('.topic-list-event-rsvp').insertAfter($linkTopLine);
+            rowBelowTitle = true;
+          }
+
+          if (Discourse.SiteSettings.events_event_label_short_after_title) {
+            this.$('.date-time-container').insertAfter($linkTopLine);
+            rowBelowTitle = true;
+          }
+
+          if (rowBelowTitle) {
+            this.$('.main-link').addClass('row-below-title');
+          }
         })
       }
     });

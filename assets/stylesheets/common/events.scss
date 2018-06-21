@@ -651,6 +651,17 @@ ul.events-calendar-events {
   }
 }
 
+.main-link.row-below-title {
+  .link-top-line {
+    display: block;
+  }
+
+  > .date-time-container, > .topic-list-event-rsvp, > .discourse-tags {
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+
 .topic-list-event-rsvp {
   font-size: 0.9em;
   margin-top: 4px;

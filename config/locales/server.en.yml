@@ -9,6 +9,7 @@ en:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format for event label."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format for topic list event labels."
     events_event_label_short_only_start: "Show only start date in topic list event labels."
+    events_event_label_short_after_title: "Insert the event label after the topic title in the topic list."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format of time in calendar entry."
     events_remove_past_from_map: "Remove past events from the map topic list in the <a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a>."
     events_remove_past_from_agenda: "Remove past events from agendas."
