@@ -7,11 +7,11 @@
     <a itemprop="url" href="<%= url %>" style="display:none"><%= url %></a>
   <% end %>
   <div itemprop="startDate" content="<%= event[:start] %>" style="display:inline-block">
-    <%= l event[:start], format: :long %>
+    <%= l event[:start], format: event[:format] %>
   </div>
   <% if event[:end] %>
     <div itemprop="endDate" content="<%= event[:end] %>" style="display:inline-block">
-      — <%= l event[:end], format: :long %>
+      — <%= l event[:end], format: event[:format] %>
     </div>
   <% end %>
   <% if SiteSetting.events_rsvp %>
@@ -24,7 +24,7 @@
     </div>
   <% end %>
 </span>
-<% if SiteSetting.events_timezone_include_in_email %>
+<% if event[:timezone] && SiteSetting.events_timezone_include_in_email %>
   <span><%= timezone_label event %></span>
 <% end %>
 <hr>

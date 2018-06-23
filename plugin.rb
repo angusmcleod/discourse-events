@@ -616,13 +616,13 @@ after_initialize do
 
       localized_event = CalendarEvents::Helper.localize_event(event)
 
-      event_str = "&#128197; #{I18n.l(localized_event[:start], format: :long)}"
+      event_str = "&#128197; #{I18n.l(localized_event[:start], format: localized_event[:format])}"
 
       if localized_event[:end]
-        event_str << " — #{I18n.l(localized_event[:end], format: :long)}"
+        event_str << " — #{I18n.l(localized_event[:end], format: localized_event[:format])}"
       end
 
-      if SiteSetting.events_timezone_include_in_email
+      if localized_event[:timezone] && SiteSetting.events_timezone_include_in_email
         event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
       end
 
