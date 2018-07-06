@@ -482,9 +482,17 @@ after_initialize do
           timezone = tz.ical_timezone event[:start]
           cal.add_timezone timezone
 
+          ## to do: check if working later
+          if event[:format] == :date_only
+            event[:start] = event[:start].to_date
+            event[:end] = event[:end].to_date if event[:end]
+          end
+
           cal.event do |e|
             e.dtstart = Icalendar::Values::DateTime.new event[:start], 'tzid' => tzid
-            e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
+            if event[:end]
+              e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
+            end
             e.summary = t.title
             e.description = t.excerpt
             e.url = calendar_url
