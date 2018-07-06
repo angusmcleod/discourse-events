@@ -28,7 +28,7 @@ end
 class CalendarEvents::Helper
   def self.localize_event(event, timezone = nil)
     event_start = event[:start].to_datetime
-    event_end = event[:end].present? ? event[:end].to_datetime : event_start
+    event_end = event[:end].present? ? event[:end].to_datetime : nil
     format = event[:all_day] ? :date_only : :long
 
     event_timezone = SiteSetting.events_timezone_default
@@ -37,7 +37,10 @@ class CalendarEvents::Helper
 
     if event_timezone.present?
       event_start = event_start.in_time_zone(event_timezone)
-      event_end = event_end.in_time_zone(event_timezone)
+
+      if event_end
+        event_end = event_end.in_time_zone(event_timezone)
+      end
     end
 
     result = {
