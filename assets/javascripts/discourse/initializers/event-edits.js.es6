@@ -8,9 +8,10 @@ import EditCategorySettings from 'discourse/components/edit-category-settings';
 import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
-import { calendarRange } from '../lib/date-utilities';
+import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
 import InputValidation from 'discourse/models/input-validation';
 import { CREATE_TOPIC } from "discourse/models/composer";
+import loadScript from "discourse/lib/load-script";
 
 export default {
   name: 'events-edits',
@@ -325,7 +326,47 @@ export default {
             this.set('lastValidatedAt', Date.now());
           }
         },
-      })
+      });
+
+      api.modifyClass('component:date-picker', {
+        @on("didInsertElement")
+        _loadDatePicker() {
+          const input = this.$(".date-picker")[0];
+          const container = $("#" + this.get("containerId"))[0];
+
+          loadScript("/javascripts/pikaday.js").then(() => {
+            Ember.run.next(() => {
+              let default_opts = {
+                field: input,
+                container: container || this.$()[0],
+                bound: container === undefined,
+                format: "YYYY-MM-DD",
+                firstDay: firstDayOfWeek(),
+                i18n: {
+                  previousMonth: I18n.t("dates.previous_month"),
+                  nextMonth: I18n.t("dates.next_month"),
+                  months: moment.months(),
+                  weekdays: moment.weekdays(),
+                  weekdaysShort: moment.weekdaysShort()
+                },
+                onSelect: date => {
+                  const formattedDate = moment(date).format("YYYY-MM-DD");
+
+                  if (this.attrs.onSelect) {
+                    this.attrs.onSelect(formattedDate);
+                  }
+
+                  if (!this.element || this.isDestroying || this.isDestroyed) return;
+
+                  this.set("value", formattedDate);
+                }
+              };
+
+              this._picker = new Pikaday(_.merge(default_opts, this._opts()));
+            });
+          });
+        }
+      });
     });
   }
 };
