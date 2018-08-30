@@ -30,7 +30,7 @@ export default {
       @computed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
         const user = Discourse.User.current();
-        return user.trust_level >= minTrust;
+        return user.staff || user.trust_level >= minTrust;
       }
     });
 
@@ -67,7 +67,7 @@ export default {
       @computed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
         const user = Discourse.User.current();
-        return user.trust_level >= minTrust;
+        return user.staff || user.trust_level >= minTrust;
       },
 
       @computed('last_read_post_number', 'highest_post_number')
