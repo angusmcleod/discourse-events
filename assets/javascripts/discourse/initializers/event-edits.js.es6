@@ -148,7 +148,7 @@ export default {
           if (rowBelowTitle) {
             this.$('.main-link').addClass('row-below-title');
           }
-        })
+        });
       }
     });
 
@@ -253,8 +253,8 @@ export default {
             route: 'discovery.calendar',
             className: 'calendar-link',
             label: 'filters.calendar.title'
-          }
-        })
+          };
+        });
       }
 
       if (siteSettings.events_hamburger_menu_agenda_link) {
@@ -263,8 +263,8 @@ export default {
             route: 'discovery.agenda',
             className: 'agenda-link',
             label: 'filters.agenda.title'
-          }
-        })
+          };
+        });
       }
 
       const user = api.getCurrentUser();
@@ -277,7 +277,7 @@ export default {
               this._super();
             }
           }.property('valid_values')
-        })
+        });
       }
 
       api.modifyClass('controller:topic', {
@@ -298,13 +298,13 @@ export default {
                 this.notifyPropertyChange(`model.${prop}`);
               }
             }
-          })
+          });
         },
 
         unsubscribeCalendarEvents() {
           this.messageBus.unsubscribe(`/calendar-events/${this.get('model.id')}`);
         }
-      })
+      });
 
       api.modifyClass('controller:composer', {
         @computed('model.action', 'model.event', 'model.category.events_required', 'lastValidatedAt')
