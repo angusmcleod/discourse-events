@@ -235,6 +235,7 @@ after_initialize do
 
   User.register_custom_field_type('calendar_first_day_week', :integer)
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
+  register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
   PostRevisor.track_topic_field(:event)
 
