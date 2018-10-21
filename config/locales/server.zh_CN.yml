@@ -1,0 +1,13 @@
+zh_CN:
+  site_settings:
+    events_enabled: "允许将事件添加到所有分类。"
+    events_agenda_enabled: "在所有分类内显示日程主题列表。"
+    events_calendar_enabled: "在所有分类内显示日历主题列表。"
+    events_add_to_calendar: "在日程主题内显示“加入日历”按钮。"
+    events_event_label_icon: "事件标签图标的 class。"
+    events_event_label_no_text: "不在“添加事件”按钮上显示文字。"
+    events_event_label_format: "事件标签的 <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> 格式。"
+    events_event_label_short_format: "主题列表中事件标签的 <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> 格式。"
+    events_timezone_display_default: "默认时区。"
+    events_timezone_display_event: "事件时区，若给出。"
+    events_timezone_display_different: "事件时区，若给出且和默认不同。"

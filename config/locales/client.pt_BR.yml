@@ -1,0 +1,72 @@
+pt_BR:
+  js:
+    add_event:
+      btn_label: "Adicionar data e horário"
+      modal_title: Data e Horário
+      event_start: Início
+      event_end: Fim
+      event_date: Data
+      event_time: Horário
+      event_add: Concluir
+      event_clear: Limpar
+      end_enabled: "Incluir fim do evento"
+      all_day: "O dia todo"
+      timezone: "Fuso Horário"
+      no_timezone: "Selecione um fuso horário"
+      rsvp_enabled: "Confirmação de presença ativado."
+      rsvp_enabled_label: "Confirmação de presença"
+      going_max: "Número máximo de convidados"
+      going_max_label: "{{goingMax}} Convidados"
+    category:
+      enable_events: "Permitir que eventos sejam adicionados a tópicos nesta categoria (substitui a configuração padrão o site)."
+      enable_events_agenda: "Mostrar uma lista de tópicos com agendas nesta categoria (substitui a configuração padrão o site)."
+      enable_events_calendar: "Mostrar uma lista com tópicos de calendário nesta categoria (substitui a configuração padrão o site)."
+      events_min_trust_to_create: "Nível minimo de confiança para criar eventos nesta categoria (substitui a configuração padrão o site)."
+      events_event_label_no_text: "Sem texto nos botões de adicionar evento nesta categoria (substitui a configuração padrão o site)."
+      require_event: "Todos os tópicos nesta categoria devem ter um evento."
+    composer:
+      error:
+        event_missing: "Tópicos nesta categoria devem ter um evento."
+    event_list:
+      title: '{{categoryName}} Eventos'
+      about: 'Eventos na sua região'
+      no_results: "Nenhum evento futuro"
+      create: "Criar evento"
+    filters:
+      agenda:
+        title: "Agenda"
+        help: "Listar eventos em ordem cronológica ascendente de acordo com o horário de inicio. "
+      calendar:
+        title: "Calendário "
+        help: "Mostrar eventos no calendário"
+    add_to_calendar:
+      label: "Adicionar ao calendário"
+      google: "Calendário do Google"
+      ics: "Arquivo .ics"
+      default_details: "Detalhes do evento: {{url}}"
+    topics:
+      none:
+        agenda: "Não há tópicos com agendas."
+      bottom:
+        agenda: "Não há mais tópicos com agendas."
+    events_calendar:
+      today: "Hoje"
+      hidden: "{{count}} mais"
+      subscribe: "Assinar"
+      ical: "iCal"
+      rss: "RSS"
+    user:
+      events_calendar:
+        label: "Calendário "
+        first_day_week: "Começar a semana no"
+    event_rsvp:
+      modal:
+        title: "Convidados"
+        filter: "Filtrar"
+      going:
+        label: "Confirmar"
+        max_reached: "Sem vagas"
+        one_spot_left: "1 vaga restante"
+        x_spots_left: "{{spotsLeft}}  vagas restantes"
+    site_settings:
+      events_timezone_default_placeholder: "Selecione um fuso horário"

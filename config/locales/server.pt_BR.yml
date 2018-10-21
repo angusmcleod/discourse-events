@@ -1,0 +1,41 @@
+pt_BR:
+  site_settings:
+    events_enabled: "Permitir que eventos sejam adicionados a tópicos em todas as categorias."
+    events_agenda_enabled: "Mostrar uma lista de tópicos com agenda em todas as categorias."
+    events_calendar_enabled: "Mostrar uma lista de tópicos com calendário em todas as categorias."
+    events_add_to_calendar: "Mostrar um botão de adicionar calendário nos tópicos com eventos."
+    events_event_label_icon: "Classe do ícone do rótulo do evento."
+    events_event_label_no_text: "Sem texto nos botões de adicionar eventos."
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato para rótulos de eventos."
+    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato de rótulo para listas de eventos."
+    events_event_label_short_only_start: "Mostrar apenas data de início no rótulo dos eventos na lista de tópicos. "
+    events_event_label_short_after_title: "Inserir rótulo dos eventos depois do título."
+    events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato da data no calendário."
+    events_remove_past_from_map: "Remover eventos passados do mapa no <a href='https://github.com/angusmcleod/discourse-locations'></a>."
+    events_remove_past_from_agenda: "Remover eventos passados da agenda."
+    events_remove_past_from_calendar: "Remover eventos passados do calendário."
+    events_agenda_filter_closed: "Remover tópicos fechados da agenda."
+    events_calendar_filter_closed: "Remover tópicos fechados do calendário."
+    events_timezone_default: "Fuso horário padrão. Se não definido, será o fuso horário do usuário."
+    events_timezone_display: "Fuso horário usado para mostrar o horário dos eventos."
+    events_timezone_display_default: "Fuso horário padrão."
+    events_timezone_display_event: "Fuso horário do evento, se definido."
+    events_timezone_display_different: "Fuso horário do evento, se definido e diferente do padrão."
+    events_timezone_include_in_topic: "Adicione o fuso horário ao rótulo do evento no tópico."
+    events_timezone_include_in_topic_list: "Adicione o fuso horário aos rótulos de evento na lista de tópicos."
+    events_timezone_include_in_email: "Adicionar fuso horário no rotulo nos emails."
+    events_timezone_format: "<a href='https://momentjs.com/docs/#/displaying/format/'></a> formato de fuso horários para rótulos de eventos. Substitui o formato Rails."
+    events_timezone_rails_format: "Usar o <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'></a> para fuso horários no rótulo dos eventos."
+    events_min_trust_to_create: "Confiança mínima para criar um evento."
+    events_rsvp: "Ativar confirmação de presença."
+  rss_description:
+    events: "Eventos"
+  webcal_description:
+    events: "Eventos"
+  event_email:
+    topic_type_match: "uma discussão"
+    topic_type_sub: "um evento"
+  event_rsvp:
+    errors:
+      not_enabled: "Confirmação de presença não está ativo"
+      going_max: "O numero máximo de participantes para este evento foi atingido."
