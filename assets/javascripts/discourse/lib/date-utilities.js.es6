@@ -115,22 +115,26 @@ let eventLabel = function(event, args = {}) {
   if (!args.noText) {
     const { start, end, allDay, multiDay, timezone } = setupEvent(event, args);
 
+    let dateString = '';
     let format = args.list ? listFormat : standardFormat;
-    let formatArr = format.split(',');
-    if (allDay) format = formatArr[0];
-    let dateString = start.format(format);
 
-    if (event['end'] && (!args.list || !listOnlyStart)) {
-      const diffDay = start.date() !== end.date();
+    if (format) {
+      let formatArr = format.split(',');
+      if (allDay) format = formatArr[0];
+      dateString = start.format(format);
 
-      if (!allDay || diffDay) {
-        const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
-        dateString += ` – ${end.format(endFormat)}`;
+      if (event['end'] && (!args.list || !listOnlyStart)) {
+        const diffDay = start.date() !== end.date();
+
+        if (!allDay || diffDay) {
+          const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
+          dateString += ` – ${end.format(endFormat)}`;
+        }
       }
-    }
 
-    if (timezone && includeTimezone(event, args)) {
-      dateString += `, ${timezoneLabel(timezone)}`;
+      if (timezone && includeTimezone(event, args)) {
+        dateString += `, ${timezoneLabel(timezone)}`;
+      }
     }
 
     label += `<span>${dateString}</span>`;
