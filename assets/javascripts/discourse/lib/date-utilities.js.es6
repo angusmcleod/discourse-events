@@ -109,14 +109,17 @@ let eventLabel = function(event, args = {}) {
   const standardFormat = Discourse.SiteSettings.events_event_label_format;
   const listFormat = Discourse.SiteSettings.events_event_label_short_format;
   const listOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
+  let format = args.list ? listFormat : standardFormat;
 
-  let label = `<i class='fa fa-${icon}'></i>`;
+  let iconClass =  `fa fa-${icon}`;
+  if (!format) iconClass += ' no-date';
+  let label = `<i class='${iconClass}'></i>`;
 
   if (!args.noText) {
     const { start, end, allDay, multiDay, timezone } = setupEvent(event, args);
 
     let dateString = '';
-    let format = args.list ? listFormat : standardFormat;
+    let dateClass = 'date';
 
     if (format) {
       let formatArr = format.split(',');
@@ -135,9 +138,11 @@ let eventLabel = function(event, args = {}) {
       if (timezone && includeTimezone(event, args)) {
         dateString += `, ${timezoneLabel(timezone)}`;
       }
+    } else {
+      dateClass += ' no-date';
     }
 
-    label += `<span>${dateString}</span>`;
+    label += `<span class="${dateClass}">${dateString}</span>`;
 
     if (args.showRsvp) {
       if (event.rsvp) {
