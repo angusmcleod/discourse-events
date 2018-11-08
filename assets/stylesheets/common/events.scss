@@ -177,15 +177,15 @@
 .date-time-container {
   display: inline-block;
 
-  i {
-    margin-right: 10px;
+  .d-icon {
+    margin-right: 7px;
   }
 }
 
 .date-time.title {
   width: 100px;
 
-  i.no-date {
+  .d-icon.no-date {
     margin: 0;
   }
 
@@ -199,6 +199,10 @@
   display: inline-block;
   margin-right: 10px;
   margin-top: 6px;
+
+  .dropdown-header {
+    min-height: initial;
+  }
 
   .dropdown-menu {
     top: 24px;
@@ -580,6 +584,7 @@ ul.events-calendar-events {
   align-items: center;
 
   button {
+    min-height: initial;
     margin-right: 7px;
   }
 
