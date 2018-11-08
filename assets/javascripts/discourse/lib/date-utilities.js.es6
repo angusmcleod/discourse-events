@@ -1,3 +1,5 @@
+import { renderIcon } from "discourse-common/lib/icon-library";
+
 let isAllDay = function(event) {
   if (event['all_day'] === true || event['all_day'] === 'true') return true;
 
@@ -111,9 +113,9 @@ let eventLabel = function(event, args = {}) {
   const listOnlyStart = Discourse.SiteSettings.events_event_label_short_only_start;
   let format = args.list ? listFormat : standardFormat;
 
-  let iconClass =  `fa fa-${icon}`;
-  if (!format) iconClass += ' no-date';
-  let label = `<i class='${iconClass}'></i>`;
+  let iconClass = '';
+  if (!format) iconClass += 'no-date';
+  let label = renderIcon("string", icon, { class: iconClass });
 
   if (!args.noText) {
     const { start, end, allDay, multiDay, timezone } = setupEvent(event, args);
