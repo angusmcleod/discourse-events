@@ -511,10 +511,14 @@ after_initialize do
     get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
     get "agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
     get "c/:category/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
+    get "c/:parent_category/:category/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
     get "c/:category/l/agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
+    get "c/:parent_category/:category/l/agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
 
     get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
+    get "c/:parent_category/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
     get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
+    get "c/:parent_category/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
   end
