@@ -4,7 +4,7 @@ en:
     events_agenda_enabled: "Show an agenda topic list in all categories."
     events_calendar_enabled: "Show a calendar topic list in all categories."
     events_add_to_calendar: "Show an Add to Calendar button in event topics."
-    events_event_label_icon: "Class of the event label icon."
+    events_event_label_icon: "FontAwesome class of the event label icon. You might have to add this icon to the `svg icon subset` site setting as well. "
     events_event_label_no_text: "No text on add event buttons."
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format for event label."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format for topic list event labels."
