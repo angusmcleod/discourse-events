@@ -25,13 +25,6 @@ export default Ember.Component.extend({
     });
   },
 
-  @computed('noText')
-  addLabel(noText) {
-    const icon = Discourse.SiteSettings.events_event_label_icon;
-    const iconHtml = `<i class='fa fa-${icon}'></i>`;
-    return noText ? iconHtml : I18n.t('add_event.btn_label', { iconHtml });
-  },
-
   @computed('category', 'noText')
   iconOnly(category, noText) {
     return noText ||
