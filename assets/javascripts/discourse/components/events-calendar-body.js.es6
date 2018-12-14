@@ -3,7 +3,7 @@ import { firstDayOfWeek } from '../lib/date-utilities';
 
 export default Ember.Component.extend({
   classNames: 'events-calendar-body',
-  expandedDate: 0,
+  expandedDate: 0.0,
 
   @on('init')
   setup() {
@@ -32,7 +32,8 @@ export default Ember.Component.extend({
     },
 
     setExpandedDate(date) {
-      this.set('expandedDate', date);
+      const month = this.get('currentMonth');
+      this.set('expandedDate', month + '.' + date);
     }
   }
 });

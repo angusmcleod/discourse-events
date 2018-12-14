@@ -8,9 +8,9 @@ export default Ember.Component.extend({
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
 
-  @computed('date', 'expandedDate')
-  expanded(date, expandedDate) {
-    return date === expandedDate;
+  @computed('date', 'month', 'expandedDate')
+  expanded(date, month, expandedDate) {
+    return `${month}.${date}` === expandedDate;
   },
 
   @computed('month', 'currentMonth')
