@@ -1,0 +1,43 @@
+fr:
+  site_settings:
+    events_enabled: "Autoriser l'ajout d'événements à des sujets de toutes les catégories."
+    events_agenda_enabled: "Afficher une liste de sujets de l'ordre du jour dans toutes les catégories."
+    events_calendar_enabled: "Afficher une liste de sujets de calendrier dans toutes les catégories."
+    events_add_to_calendar: "Afficher un bouton Ajouter au calendrier dans les rubriques de l'événement."
+    events_event_label_icon: "Classe FontAwesome de l'icône d'étiquette d'événement. Vous devrez peut-être également ajouter cette icône au paramètre de site `svg icon subset`."
+    events_event_label_no_text: "Aucun texte sur les boutons d'ajout d'événement."
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format pour l'étiquette de l'événement."
+    events_event_label_short_format: "Format <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> pour les étiquettes d'événements de liste de sujets."
+    events_event_label_short_only_start: "N'afficher que la date de début dans les étiquettes d'événements de liste de sujets."
+    events_event_label_short_after_title: "Insérez l'étiquette de l'événement après le titre de la rubrique dans la liste des rubriques."
+    events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format de l'heure dans l'entrée du calendrier."
+    events_remove_past_from_map: "Supprimez les événements passés de la liste des sujets de carte dans le <a href='https://github.com/angusmcleod/discourse-locations'>plug-in locations</a>."
+    events_remove_past_from_agenda: "Supprimer les événements passés de l'ordre du jour."
+    events_remove_past_from_calendar: "Supprimer les événements passés des calendriers."
+    events_agenda_filter_closed: "Supprimer les sujets fermés de l'ordre du jour."
+    events_calendar_filter_closed: "Supprimer les sujets fermés des calendriers."
+    events_timezone_default: "Fuseau horaire par défaut. S'il n'est pas défini, le fuseau horaire par défaut est le fuseau horaire de l'utilisateur."
+    events_timezone_display: "Le fuseau horaire utilisé pour afficher les heures des événements dans."
+    events_timezone_display_default: "Fuseau horaire par défaut."
+    events_timezone_display_event: "Fuseau horaire de l'événement, si défini."
+    events_timezone_display_different: "Fuseau horaire de l'événement, s'il est défini et différent du fuseau horaire par défaut."
+    events_timezone_include_in_topic: "Ajouter un fuseau horaire aux étiquettes d'événements dans la rubrique."
+    events_timezone_include_in_topic_list: "Ajouter un fuseau horaire aux étiquettes d'événements dans la liste des sujets."
+    events_timezone_include_in_email: "Ajouter un fuseau horaire aux étiquettes d'événements dans les courriels."
+    events_timezone_format: "Format <a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> pour les fuseaux horaires ajoutés aux étiquettes des événements. Remplace le réglage du format Rails."
+    events_timezone_rails_format: "Utilisez le format <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails</a> pour les fuseaux horaires ajoutés aux étiquettes d’événement."
+    events_hamburger_menu_calendar_link: "Ajoutez un lien au calendrier du site dans le menu des hamburgers."
+    events_hamburger_menu_agenda_link: "Ajoutez un lien vers l'agenda du site au menu des hamburgers."
+    events_min_trust_to_create: "Min confiance pour créer un événement."
+    events_rsvp: "Activer l'événement RSVP."
+  rss_description:
+    events: "Événements"
+  webcal_description:
+    events: "Événements"
+  event_email:
+    topic_type_match: "une discussion"
+    topic_type_sub: "un événement"
+  event_rsvp:
+    errors:
+      not_enabled: "Evénement rsvp non activé"
+      going_max: "Le nombre maximum d'invités pour cet événement a été atteint."

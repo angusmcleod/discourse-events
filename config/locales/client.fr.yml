@@ -1,7 +1,7 @@
 fr:
   js:
     add_event:
-      btn_label: "Ajouter la date et l'heure"
+      btn_label: "Ajoutez la date et l'heure"
       modal_title: Date et heure
       event_start: Début
       event_end: Fin
@@ -13,29 +13,48 @@ fr:
       all_day: "Toute la journée"
       timezone: "Fuseau horaire"
       no_timezone: "Sélectionner un fuseau horaire"
-      rsvp_enabled: "RSVP activé"
+      rsvp_enabled: "Rsvp activé"
+      rsvp_enabled_label: "RSVP"
       going_max: "Nombre maximal de participants"
       going_max_label: "{{goingMax}} participants"
+    category:
+      enable_events: "Permettre aux évènements d'être ajoutés aux sujets dans cette catégorie (surpasse les paramètres du site)."
+      enable_events_agenda: "Afficher une liste de sujets agenda dans cette catégorie (outrepasse les paramètres du site)"
+      enable_events_calendar: "Afficher une liste de sujets d’agenda dans cette catégorie (remplace le paramètre de site)."
+      events_min_trust_to_create: "Confiance minimale pour créer un événement dans cette catégorie (remplace le paramètre de site)."
+      events_event_label_no_text: "Aucun texte sur l'ajout de boutons d'événement dans cette catégorie (remplace le paramétrage du site)."
+      require_event: "Tous les sujets de cette catégorie doivent avoir un événement."
+    composer:
+      error:
+        event_missing: "Les sujets de cette catégorie doivent avoir un événement."
     event_list:
-      title: '{{categoryName}} Événements'
-      about: 'Événement dans votre zone'
-      no_results: "Aucun événement à venir"
-      create: "Créer un événement"
+      title: '{{categoryName}} Évènements'
+      about: 'Évènement dans votre zone'
+      no_results: "Aucun évènement à venir"
+      create: "Créer un évènement"
     filters:
       agenda:
-        help: "Liste tous les événements dans l'ordre chronologique"
+        title: "Ordre du jour"
+        help: "Liste des évènements dans un ordre chronologique depuis le début"
       calendar:
         title: "Calendrier"
-        help: "Voir les événements dans un calendrier"
+        help: "Voir les évènements dans un calendrier"
     add_to_calendar:
       label: "Ajouter au calendrier"
       google: "Google Agenda"
       ics: "Fichier .ics"
-      default_details: "Détails de l'événement : {{url}}"
+      default_details: "Détails de l'èvnement: {{url}}"
+    topics:
+      none:
+        agenda: "Il n'y a pas de sujets à l'ordre du jour."
+      bottom:
+        agenda: "Il n'y a plus de sujets à l'ordre du jour."
     events_calendar:
       today: "Aujourd'hui"
       hidden: "{{count}} de plus"
       subscribe: "S'abonner"
+      ical: "iCal"
+      rss: "RSS"
     user:
       events_calendar:
         label: "Calendrier"
@@ -46,5 +65,8 @@ fr:
         filter: "Filtre"
       going:
         label: "J'y vais"
+        max_reached: "Réservé"
         one_spot_left: "1 place disponible"
         x_spots_left: "{{spotsLeft}} places disponibles"
+    site_settings:
+      events_timezone_default_placeholder: "Sélectionnez un fuseau horaire"
