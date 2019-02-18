@@ -496,7 +496,7 @@ after_initialize do
             end
             e.summary = t.title
             e.description = t.excerpt
-            e.url = calendar_url
+            e.url = t.url
           end
         end
       end
