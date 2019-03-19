@@ -22,6 +22,8 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
+register_svg_icon "rss" if respond_to?(:register_svg_icon)
+
 load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
 load File.expand_path('../models/events_timezone_display_site_setting.rb', __FILE__)
 
@@ -49,12 +51,18 @@ after_initialize do
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_min_trust_to_create', :integer)
   Category.register_custom_field_type('events_required', :boolean)
-  add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
-  add_to_serializer(:basic_category, :events_event_label_no_text) { object.custom_fields['events_event_label_no_text'] }
-  add_to_serializer(:basic_category, :events_agenda_enabled) { object.events_agenda_enabled }
-  add_to_serializer(:basic_category, :events_calendar_enabled) { object.events_calendar_enabled }
-  add_to_serializer(:basic_category, :events_min_trust_to_create) { object.events_min_trust_to_create }
-  add_to_serializer(:basic_category, :events_required) { object.events_required }
+
+  [
+    "events_enabled",
+    "events_event_label_no_text",
+    "events_agenda_enabled",
+    "events_calendar_enabled",
+    "events_min_trust_to_create",
+    "events_required"
+  ].each do |key|
+    Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
+    add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
+  end
 
   class ::Category
     def events_min_trust_to_create
@@ -92,6 +100,14 @@ after_initialize do
     def events_required
       if self.custom_fields['events_required'] != nil
         self.custom_fields['events_required']
+      else
+        false
+      end
+    end
+
+    def events_event_label_no_text
+      if self.custom_fields['events_event_label_no_text'] != nil
+        self.custom_fields['events_event_label_no_text']
       else
         false
       end
@@ -496,7 +512,7 @@ after_initialize do
             end
             e.summary = t.title
             e.description = t.excerpt
-            e.url = calendar_url
+            e.url = t.url
           end
         end
       end
