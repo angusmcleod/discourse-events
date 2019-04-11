@@ -491,7 +491,7 @@ after_initialize do
       cal.x_wr_calname = calendar_name
       cal.x_wr_timezone = tzid
 
-      @topic_list = TopicQuery.new(nil, list_opts).list_calendar
+      @topic_list = TopicQuery.new(current_user, list_opts).list_calendar
 
       @topic_list.topics.each do |t|
         if t.event && t.event[:start]
