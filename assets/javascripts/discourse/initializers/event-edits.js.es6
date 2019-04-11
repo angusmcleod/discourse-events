@@ -187,13 +187,24 @@ export default {
             const month = moment().month();
             const year = moment().year();
             const { start, end } = calendarRange(month, year);
-
-            // abort is necessary here because of https://github.com/emberjs/ember.js/issues/12169
-            transition.abort();
-            this.replaceWith(`${transition.intent.url}?start=${start}&end=${end}`);
+            this.setProperties({ start, end });
           }
 
           this._super(transition);
+        },
+
+        setupController(controller, model) {
+          const start = this.get('start');
+          const end = this.get('end');
+
+          if (start || end) {
+            let initialDateRange = {};
+            if (start) initialDateRange['start'] = start;
+            if (end) initialDateRange['end'] = end;
+            this.controllerFor("discovery/topics").setProperties({ initialDateRange });
+          }
+
+          this._super(controller, model);
         },
 
         renderTemplate(controller, model) {

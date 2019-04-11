@@ -33,10 +33,16 @@ export default Ember.Component.extend({
     let currentYear = moment().year();
 
     // get month and year from the date in middle of the event range
+    const initialDateRange = this.get('initialDateRange');
     const queryParams = this.get('queryParams');
-    if (queryParams && queryParams.start && queryParams.end) {
-      const start = moment(queryParams.start);
-      const end = moment(queryParams.end);
+    let dateRange = {};
+    if (initialDateRange) dateRange = initialDateRange;
+    if (queryParams.start) dateRange.start = queryParams.start;
+    if (queryParams.end) dateRange.end = queryParams.end;
+
+    if (dateRange.start && dateRange.end) {
+      const start = moment(dateRange.start);
+      const end = moment(dateRange.end);
       const diff = Math.abs(start.diff(end, "days"));
       const middleDay = start.add(diff/2, 'days');
       currentMonth = middleDay.month();
