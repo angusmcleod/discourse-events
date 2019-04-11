@@ -235,7 +235,6 @@ export default {
           afterModel(model, transition) {
             const filter = this.filter(model.category);
             if (filter === 'calendar' || filter === 'agenda') {
-              transition.abort();
               return this.replaceWith(`/c/${Discourse.Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
             } else {
               return this._super(...arguments);
