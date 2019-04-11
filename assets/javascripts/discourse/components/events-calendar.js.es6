@@ -97,7 +97,7 @@ export default Ember.Component.extend({
 
   @computed('category')
   showSubscription(category) {
-    return !category || !category.read_restricted;
+    return true // !category || !category.read_restricted;
   },
 
   transitionToMonth(month, year) {
