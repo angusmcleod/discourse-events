@@ -177,6 +177,10 @@ after_initialize do
         if event_going_max
           event[:going_max] = event_going_max
         end
+
+        if event_going
+          event[:going] = event_going
+        end
       end
 
       event
@@ -282,6 +286,10 @@ after_initialize do
           going_max = event['going_max'] ? event['going_max'].to_i : nil
           tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
           tc.topic.custom_fields['event_going_max'] = going_max
+
+          going = event['going'] ? event['going'].join(',') : ''
+          tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
+          tc.topic.custom_fields['event_going'] = going
         end
       end
     end
@@ -301,6 +309,7 @@ after_initialize do
       timezone = event['timezone']
       rsvp = event['rsvp']
       going_max = event['going_max']
+      going = event['going']
 
       topic.custom_fields['event_start'] = event_start.to_datetime.to_i if event_start
       topic.custom_fields['event_end'] = event_end.to_datetime.to_i if event_end
@@ -308,6 +317,8 @@ after_initialize do
       topic.custom_fields['event_timezone'] = timezone if timezone
       topic.custom_fields['event_rsvp'] = rsvp if rsvp
       topic.custom_fields['event_going_max'] = going_max if going_max
+      topic.custom_fields['event_going'] = going if going
+
       topic.save!
     end
   end

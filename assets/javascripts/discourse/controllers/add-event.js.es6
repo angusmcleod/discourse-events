@@ -47,8 +47,12 @@ export default Ember.Controller.extend({
     if (event && event.rsvp) {
       props['rsvpEnabled'] = true;
 
-      if (event && event.going_max) {
+      if (event.going_max) {
         props['goingMax'] = event.going_max;
+      }
+
+      if (event.going) {
+        props['usersGoing'] = event.going.join(',');
       }
     }
 
@@ -201,6 +205,11 @@ export default Ember.Controller.extend({
         let goingMax = this.get('goingMax');
         if (goingMax) {
           event['going_max'] = goingMax;
+        }
+
+        let usersGoing = this.get('usersGoing');
+        if (usersGoing) {
+          event['going'] = usersGoing.split(',')
         }
       }
 

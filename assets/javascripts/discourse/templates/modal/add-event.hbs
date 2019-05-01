@@ -72,6 +72,11 @@
           <span>{{i18n 'add_event.going_max'}}</span>
           {{input type='number' value=goingMax}}
         </div>
+
+        <div class="going-list">
+          <span>{{i18n 'add_event.going'}}</span>
+          {{user-selector usernames=usersGoing class="user-selector"}}
+        </div>
       {{/if}}
     </div>
   {{/if}}

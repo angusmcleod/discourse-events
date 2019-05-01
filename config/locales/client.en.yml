@@ -15,6 +15,7 @@ en:
       no_timezone: "Select a timezone"
       rsvp_enabled: "Rsvp enabled"
       rsvp_enabled_label: "Rsvp"
+      going: "Guest list"
       going_max: "Maximum number of guests"
       going_max_label: "{{goingMax}} Guests"
     category:
