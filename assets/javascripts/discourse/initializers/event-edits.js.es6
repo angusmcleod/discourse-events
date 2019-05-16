@@ -72,7 +72,7 @@ export default {
 
       @computed('last_read_post_number', 'highest_post_number')
       topicListItemClasses(lastRead, highest) {
-        let classes = "date-time title raw-link event-link";
+        let classes = "date-time title raw-link event-link raw-topic-link";
         if (lastRead === highest) {
           classes += ' visited';
         }
@@ -123,8 +123,9 @@ export default {
       handleEventLabelClick(e) {
         e.preventDefault();
         const topic = this.get('topic');
+        const href = $(e.target).attr("href")
         this.appEvents.trigger('header:update-topic', topic);
-        DiscourseURL.routeTo(topic.get('lastReadUrl'));
+        DiscourseURL.routeTo(href);
       },
 
       @on('didInsertElement')
