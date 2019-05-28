@@ -1,11 +1,13 @@
 {{#unless model.editingTopic}}
   {{#if model.event}}
-    <div class="event-label">
-      {{event-label model.event topic="true"}}
+    <div class="event-date-mobile">
+      <div class="event-label">
+        {{event-label model.event topic="true"}}
+      </div>
+      {{#if siteSettings.events_add_to_calendar}}
+        {{add-to-calendar topic=model}}
+      {{/if}}
     </div>
-    {{#if siteSettings.events_add_to_calendar}}
-      {{add-to-calendar topic=model}}
-    {{/if}}
     {{#if showRsvp}}
       {{event-rsvp topic=model}}
     {{/if}}
