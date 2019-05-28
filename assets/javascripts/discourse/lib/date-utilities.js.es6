@@ -129,7 +129,7 @@ let eventLabel = function(event, args = {}) {
       dateString = start.format(format);
 
       if (event['end'] && (!args.list || !listOnlyStart)) {
-        const diffDay = start.date() !== end.date();
+        const diffDay = start.month() !== end.month() || start.date() !== end.date();
 
         if (!allDay || diffDay) {
           const endFormat = (diffDay || allDay) ? format : formatArr[formatArr.length - 1];
