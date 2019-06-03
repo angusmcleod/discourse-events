@@ -6,7 +6,7 @@ export default {
     const buffered = this.get('buffered');
     const user = Discourse.User.current();
     const showEventControls = (category) => {
-      return category.events_enabled && (
+      return category && category.events_enabled && (
         user.staff ||
         user.trust_level >= category.events_min_trust_to_create
       );
