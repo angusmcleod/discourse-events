@@ -530,7 +530,7 @@ after_initialize do
 
       cal.publish
 
-      render plain: cal.to_ical, formats: [:ics] unless performed?
+      render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
     end
   end
 
