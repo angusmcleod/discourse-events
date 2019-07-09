@@ -44,6 +44,8 @@ DiscourseEvent.on(:locations_ready) do
 end
 
 after_initialize do
+  TopicTimer.types[:event_reminder] = 101
+
   add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
 
   Category.register_custom_field_type('events_enabled', :boolean)
@@ -147,6 +149,8 @@ after_initialize do
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
   load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
+  load File.expand_path('../jobs/update_event_reminders.rb', __FILE__)
+  load File.expand_path('../jobs/topic_event_reminder.rb', __FILE__)
 
   # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
@@ -209,6 +213,102 @@ after_initialize do
         nil
       end
     end
+
+    def delete_event_reminder(user=nil)
+      options = { status_type: TopicTimer.types[:event_reminder] }
+      options.merge!(user: user) if user
+      all_reminders = self.topic_timers.where(options)
+      all_reminders.each do |reminder|
+        Jobs.cancel_scheduled_job(:topic_event_reminder, topic_timer_id: reminder.id)
+      end
+      all_reminders.delete_all
+      nil
+    end
+
+    def set_or_create_event_reminder(time, user)
+      return delete_event_reminder(user) if time.blank?
+
+      topic_timer_options = {
+        topic: self,
+        public_type: false,
+        user: user
+      }
+
+      topic_timer = TopicTimer.find_or_initialize_by(topic_timer_options)
+      topic_timer.status_type = TopicTimer.types[:event_reminder]
+
+      time_now = Time.zone.now
+      utc = Time.find_zone("UTC")
+      is_float = (Float(time) rescue nil)
+
+      if is_float
+        num_hours = time.to_f
+        topic_timer.execute_at = num_hours.hours.from_now if num_hours > 0
+      else
+        timestamp = utc.parse(time)
+        raise Discourse::InvalidParameters unless timestamp
+        # a timestamp in client's time zone, like "2015-5-27 12:00"
+        topic_timer.execute_at = timestamp
+        topic_timer.errors.add(:execute_at, :invalid) if timestamp < utc.now
+      end
+
+      if topic_timer.execute_at
+        topic_timer.user = user
+
+        if self.persisted?
+          topic_timer.save!
+        else
+          self.topic_timers << topic_timer
+        end
+
+        topic_timer
+      end
+    end
+  end
+
+  require_dependency 'topic_custom_field'
+  class ::TopicCustomField
+    after_commit :update_event_reminders, if: :event_reminder_trigger
+
+    def event_reminder_trigger
+      name == 'event_rsvp' || name == 'event_start'
+    end
+
+    def update_event_reminders
+      Jobs.enqueue(:update_event_reminders, topic_id: topic_id)
+    end
+  end
+
+  require_dependency 'site_setting'
+  class ::SiteSetting
+    after_commit :update_event_reminders, if: :event_reminder_trigger
+
+    def event_reminder_trigger
+      name == 'events_rsvp' || name == 'events_enabled' || name == 'events_reminders_enabled'
+    end
+
+    def update_event_reminders
+      Jobs.enqueue(:update_event_reminders)
+    end
+  end
+
+  require_dependency 'topic_timer'
+  class ::TopicTimer
+    def self.public_types
+      @_public_types ||= types.except(:reminder, :event_reminder)
+    end
+
+    def self.private_types
+      @_private_types ||= types.only(:reminder, :event_reminder)
+    end
+
+    def cancel_auto_event_reminder_job
+      Jobs.cancel_scheduled_job(:topic_event_reminder, topic_timer_id: id)
+    end
+
+    def schedule_auto_event_reminder_job(time)
+      Jobs.enqueue_at(time, :topic_event_reminder, topic_timer_id: id)
+    end
   end
 
   require_dependency 'topic_view_serializer'
@@ -257,40 +357,54 @@ after_initialize do
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
-  PostRevisor.track_topic_field(:event)
+  PostRevisor.track_topic_field(:event) do |tc, event|
+    if tc.guardian.can_edit_event?(tc.topic.category)
+      event_start = event['start'] ? event['start'].to_datetime.to_i : nil
+      tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
+      tc.topic.custom_fields['event_start'] = event_start
 
-  PostRevisor.class_eval do
-    track_topic_field(:event) do |tc, event|
-      if tc.guardian.can_edit_event?(tc.topic.category)
-        event_start = event['start'] ? event['start'].to_datetime.to_i : nil
-        tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-        tc.topic.custom_fields['event_start'] = event_start
+      event_end = event['end'] ? event['end'].to_datetime.to_i : nil
+      tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
+      tc.topic.custom_fields['event_end'] = event_end
 
-        event_end = event['end'] ? event['end'].to_datetime.to_i : nil
-        tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
-        tc.topic.custom_fields['event_end'] = event_end
+      all_day = event['all_day'] ? event['all_day'] === 'true' : false
+      tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
+      tc.topic.custom_fields['event_all_day'] = all_day
 
-        all_day = event['all_day'] ? event['all_day'] === 'true' : false
-        tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
-        tc.topic.custom_fields['event_all_day'] = all_day
+      timezone = event['timezone']
+      tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
+      tc.topic.custom_fields['event_timezone'] = timezone
 
-        timezone = event['timezone']
-        tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
-        tc.topic.custom_fields['event_timezone'] = timezone
+      rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
+      tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
+      tc.topic.custom_fields['event_rsvp'] = rsvp
 
-        rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
-        tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
-        tc.topic.custom_fields['event_rsvp'] = rsvp
+      if rsvp
+        going_max = event['going_max'] ? event['going_max'].to_i : nil
+        tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
+        tc.topic.custom_fields['event_going_max'] = going_max
 
-        if rsvp
-          going_max = event['going_max'] ? event['going_max'].to_i : nil
-          tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
-          tc.topic.custom_fields['event_going_max'] = going_max
+        going = event['going'] ? event['going'].join(',') : ''
+        tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
+        tc.topic.custom_fields['event_going'] = going
 
-          going = event['going'] ? event['going'].join(',') : ''
-          tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
-          tc.topic.custom_fields['event_going'] = going
+        if tc.diff['event_going']
+          old = tc.diff['event_going'].first.split(',')
+          new = tc.diff['event_going'].last.split(',')
+          opts = { topic_id: tc.topic.id }
+
+          if removed = old - new
+            opts[:removed_usernames] = removed
+          end
+
+          if added = new - old
+            opts[:added_usernames] = added
+          end
+
+          Jobs.enqueue(:update_event_reminders, opts)
         end
+      elsif tc.diff['event_rsvp']
+        Jobs.enqueue(:update_event_reminders, topic_id: tc.topic.id)
       end
     end
   end
@@ -319,7 +433,14 @@ after_initialize do
       topic.custom_fields['event_going_max'] = going_max if going_max
       topic.custom_fields['event_going'] = going if going
 
-      topic.save!
+      if topic.save! &&
+        usernames = [user.username]
+        usernames.push(*going) if going
+        Jobs.enqueue(:update_event_reminders,
+          topic_id: topic.id,
+          added_usernames: usernames
+        )
+      end
     end
   end
 
@@ -385,12 +506,12 @@ after_initialize do
   class ::TopicQuery
     SORTABLE_MAPPING['event'] = 'custom_fields.event_start'
 
-    def list_agenda
+    def list_agenda(params={})
       @options[:order] = 'event'
       @options[:list] = 'agenda'
 
       opts = {
-        remove_past: SiteSetting.events_remove_past_from_agenda
+        remove_past: params[:remove_past] || SiteSetting.events_remove_past_from_agenda
       }
 
       opts[:status] = 'open' if SiteSetting.events_agenda_filter_closed

@@ -18,6 +18,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
+      update_reminders(rsvp_params[:username], 'added')
 
       render json: success_json
     else
@@ -36,6 +37,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
+      update_reminders(rsvp_params[:username], 'removed')
 
       render json: success_json
     else
@@ -79,5 +81,11 @@ class CalendarEvents::RsvpController < ApplicationController
     msg[prop.to_sym] = topic.send(prop)
 
     MessageBus.publish(channel, msg)
+  end
+
+  def update_reminders(username, type)
+    opts = { topic_id: @topic.id }
+    opts["#{type}_usernames".to_sym] = [username]
+    Jobs.enqueue(:update_event_reminders, opts)
   end
 end

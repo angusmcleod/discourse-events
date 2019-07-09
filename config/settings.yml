@@ -75,3 +75,7 @@ plugins:
   events_rsvp:
     default: false
     client: true
+  events_reminders_enabled:
+    default: false
+  events_reminders_hours_before:
+    default: 1
