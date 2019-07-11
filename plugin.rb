@@ -152,7 +152,9 @@ after_initialize do
   require_dependency 'topic'
   class ::Topic
     def has_event?
-      self.custom_fields['event_start']&.nonzero?
+      self.custom_fields['event_start'].present? &&
+      self.custom_fields['event_start'].is_a?(Numeric) &&
+      self.custom_fields['event_start'] != 0
     end
 
     def event
