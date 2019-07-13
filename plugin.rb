@@ -503,6 +503,10 @@ after_initialize do
       cal = Icalendar::Calendar.new
       cal.x_wr_calname = calendar_name
       cal.x_wr_timezone = tzid
+      # add timezone once per calendar
+      event_now = DateTime.now 
+      timezone = tz.ical_timezone event_now
+      cal.add_timezone timezone
 
       @topic_list = TopicQuery.new(current_user, list_opts).list_calendar
 
@@ -510,7 +514,6 @@ after_initialize do
         if t.event && t.event[:start]
           event = CalendarEvents::Helper.localize_event(t.event, tzid)
           timezone = tz.ical_timezone event[:start]
-          cal.add_timezone timezone
 
           ## to do: check if working later
           if event[:format] == :date_only
@@ -524,8 +527,8 @@ after_initialize do
               e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
             end
             e.summary = t.title
-            e.description = t.excerpt
-            e.url = t.url
+            e.description = t.url << "\n\n" << t.excerpt #add url to event body
+            e.url = t.url #most calendar clients don't display this field
           end
         end
       end
