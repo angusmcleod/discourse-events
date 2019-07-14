@@ -321,7 +321,7 @@ after_initialize do
       topic.custom_fields['event_going_max'] = going_max if going_max
       topic.custom_fields['event_going'] = going if going
 
-      topic.save!
+      topic.save_custom_fields(true)
     end
   end
 
