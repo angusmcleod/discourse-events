@@ -385,10 +385,8 @@ after_initialize do
 
   require_dependency 'topic_query'
   class ::TopicQuery
-    SORTABLE_MAPPING['event'] = 'custom_fields.event_start'
-
     def list_agenda
-      @options[:order] = 'event'
+      @options[:unordered] = true
       @options[:list] = 'agenda'
 
       opts = {
@@ -401,7 +399,7 @@ after_initialize do
     end
 
     def list_calendar
-      @options[:order] = 'event'
+      @options[:unordered] = true
       @options[:list] = 'calendar'
 
       opts = {
@@ -433,6 +431,21 @@ after_initialize do
           AND value > '#{Time.now.to_i}'
         )")
       end
+
+      topics = topics.order("(
+          SELECT CASE
+          WHEN EXISTS (
+            SELECT true FROM topic_custom_fields tcf
+            WHERE tcf.topic_id::integer = topics.id::integer
+            AND tcf.name = 'event_start' LIMIT 1
+          )
+          THEN (
+            SELECT value::integer FROM topic_custom_fields tcf
+            WHERE tcf.topic_id::integer = topics.id::integer
+            AND tcf.name = 'event_start' LIMIT 1
+          )
+          ELSE 0 END
+        ) DESC")
 
       if options[:include_excerpt]
         topics.each { |t| t.include_excerpt = true }
@@ -504,7 +517,7 @@ after_initialize do
       cal.x_wr_calname = calendar_name
       cal.x_wr_timezone = tzid
       # add timezone once per calendar
-      event_now = DateTime.now 
+      event_now = DateTime.now
       timezone = tz.ical_timezone event_now
       cal.add_timezone timezone
 
