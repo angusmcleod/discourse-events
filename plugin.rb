@@ -532,12 +532,15 @@ after_initialize do
           if event[:format] == :date_only
             event[:start] = event[:start].to_date
             event[:end] = event[:end].to_date if event[:end]
+            date_class = Icalendar::Values::Date
+          else
+            date_class = Icalendar::Values::DateTime
           end
 
           cal.event do |e|
-            e.dtstart = Icalendar::Values::DateTime.new event[:start], 'tzid' => tzid
+            e.dtstart = date_class.new event[:start], 'tzid' => tzid
             if event[:end]
-              e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
+              e.dtend = date_class.new event[:end], 'tzid' => tzid
             end
             e.summary = t.title
             e.description = t.url << "\n\n" << t.excerpt #add url to event body
