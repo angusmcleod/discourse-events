@@ -445,7 +445,7 @@ after_initialize do
             AND tcf.name = 'event_start' LIMIT 1
           )
           ELSE 0 END
-        ) DESC")
+        ) ASC")
 
       if options[:include_excerpt]
         topics.each { |t| t.include_excerpt = true }
