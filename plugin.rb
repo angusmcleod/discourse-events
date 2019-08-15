@@ -552,6 +552,33 @@ after_initialize do
     end
   end
 
+  on(:approved_post) do |reviewable, post|
+    event = reviewable.payload['event']
+    if (
+    event.present? &&
+      event['event_start'].present? &&
+      event['event_start'].is_a?(Numeric) &&
+      event['event_start'] != 0
+    )
+
+      topic = post.topic
+      event.each do |k,v|
+        topic.custom_fields[k] = v
+      end
+
+      topic.save_custom_fields(true)
+    end
+  end
+
+  NewPostManager.add_handler(1) do |manager|
+    if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
+      # manager.args['event'] = manager.args['event'].inspect
+      NewPostManager.add_plugin_payload_attribute('event')
+    end
+
+    nil
+  end
+
   Discourse::Application.routes.prepend do
     get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
     get "agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
