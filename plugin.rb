@@ -572,8 +572,7 @@ after_initialize do
 
   NewPostManager.add_handler(1) do |manager|
     if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
-      # manager.args['event'] = manager.args['event'].inspect
-      NewPostManager.add_plugin_payload_attribute('event')
+      NewPostManager.add_plugin_payload_attribute('event') if NewPostManager.respond_to?(:add_plugin_payload_attribute)
     end
 
     nil
