@@ -1,6 +1,7 @@
 import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
 import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
 import Category from 'discourse/models/category';
+import { ajax } from 'discourse/lib/ajax';
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [
@@ -8,6 +9,7 @@ const YEARS = [
   moment().year(),
   moment().add(1, 'year').year()
 ];
+const KEY_ENDPOINT = "/calendar-events/api_keys.json";
 
 export default Ember.Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
@@ -53,6 +55,10 @@ export default Ember.Component.extend({
     let year = currentYear;
 
     this.setProperties({ currentDate, currentMonth, currentYear, month, year });
+
+    ajax(KEY_ENDPOINT, {
+      type: 'GET',
+    }).then((result) => this.set('userApiKeys', result.api_keys));
   },
 
   @on('willDestroy')

@@ -148,6 +148,7 @@ after_initialize do
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
   load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
+  load File.expand_path('../controllers/api_keys.rb', __FILE__)
 
   # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
@@ -259,6 +260,15 @@ after_initialize do
   User.register_custom_field_type('calendar_first_day_week', :integer)
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
+
+  UserApiKey::SCOPES.reverse_merge!(
+    CalendarEvents::USER_API_KEY_SCOPE.to_sym => [
+      [:get, 'list#calendar_ics'],
+      [:get, 'list#agenda_ics'],
+      [:get, 'list#calendar_feed'],
+      [:get, 'list#agenda_feed'],
+    ],
+  )
 
   PostRevisor.track_topic_field(:event)
 
@@ -461,6 +471,9 @@ after_initialize do
   ListController.class_eval do
     skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
 
+    USER_API_KEY ||= "user_api_key"
+    USER_API_CLIENT_ID ||= "user_api_client_id"
+
     def calendar_feed
       set_category if params[:category]
       self.send('event_feed', name: 'calendar', start: params[:start], end: params[:end])
@@ -550,6 +563,17 @@ after_initialize do
       cal.publish
 
       render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
+    end
+
+    def current_user
+      if params.key?(USER_API_KEY) && params.key?(USER_API_CLIENT_ID)
+        # Logging in with user api keys normally only works by passing certain headers.
+        # As we cannot force calendar software to send those headers, we need to fake
+        # them using request parameters.
+        request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
+        request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+      end
+      super
     end
   end
 

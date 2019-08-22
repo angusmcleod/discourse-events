@@ -54,6 +54,8 @@ de:
       subscribe: "Abonnieren"
       ical: "iCal"
       rss: "RSS"
+      subscription:
+        warning: "Diese Links niemals weitergeben!"
     user:
       events_calendar:
         label: "Kalender"

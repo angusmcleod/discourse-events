@@ -12,7 +12,9 @@
     {{events-calendar-subscription showFullTitle=showFullTitle
                                    none='events_calendar.subscribe'
                                    headerIcon='rss'
-                                   category=category}}
+                                   category=category
+                                   userApiKeys=userApiKeys
+                                   filterComponent='events-calendar-subscription-warning'}}
   {{/if}}
 </div>
 {{events-calendar-body days=days
