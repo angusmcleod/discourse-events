@@ -51,6 +51,7 @@ after_initialize do
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_min_trust_to_create', :integer)
   Category.register_custom_field_type('events_required', :boolean)
+  Category.register_custom_field_type('events_event_label_no_text', :boolean)
 
   [
     "events_enabled",
