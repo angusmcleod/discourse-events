@@ -6,9 +6,9 @@ export default {
     const buffered = this.get('buffered');
     const user = Discourse.User.current();
     const showEventControls = (category) => {
-      return category && category.events_enabled && (
+      return category && category.custom_fields.events_enabled && (
         user.staff ||
-        user.trust_level >= category.events_min_trust_to_create
+        user.trust_level >= category.custom_fields.events_min_trust_to_create
       );
     }
     component.set('showEventControls', showEventControls(buffered.get('category')))
