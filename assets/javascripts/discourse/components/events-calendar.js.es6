@@ -56,9 +56,11 @@ export default Ember.Component.extend({
 
     this.setProperties({ currentDate, currentMonth, currentYear, month, year });
 
-    ajax(KEY_ENDPOINT, {
-      type: 'GET',
-    }).then((result) => this.set('userApiKeys', result.api_keys));
+    if (this.get('siteSettings.login_required')) {
+      ajax(KEY_ENDPOINT, {
+        type: 'GET',
+      }).then((result) => this.set('userApiKeys', result.api_keys));
+    }
   },
 
   @on('willDestroy')
