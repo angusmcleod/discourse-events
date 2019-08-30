@@ -21,8 +21,10 @@ export default DropdownSelectBoxComponent.extend({
     ];
   },
 
-  @computed('userApiKey', 'category')
-  authSuffix(userApiKey, category) {
+  @computed('userApiKey', 'category', 'siteSettings.login_required')
+  authSuffix(userApiKey, category, loginRequired) {
+    // only private sites need login
+    if (!loginRequired) return "";
     // only append for private categories
     if (!category || !category.read_restricted) return "";
     const {
