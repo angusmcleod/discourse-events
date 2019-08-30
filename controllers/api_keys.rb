@@ -12,6 +12,7 @@ class CalendarEvents::ApiKeysController < ApplicationController
   TODO: Instead we should allow a unique key to be created for each client.
 =end
   def index
+    raise Discourse::NotFound unless current_user
     key = find_or_create!
     render json: [{
       key: key.key,
