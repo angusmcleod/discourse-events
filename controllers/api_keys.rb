@@ -3,6 +3,8 @@ class CalendarEvents::ApiKeysController < ApplicationController
   APPLICATION_NAME = 'discourse-events'
   SCOPES = [CalendarEvents::USER_API_KEY_SCOPE]
 
+  before_action :ensure_logged_in
+
 =begin
   As soon as a new client_id is passed for the same API key, the key record
   will be updated to contain the new client_id automatically.
@@ -12,7 +14,6 @@ class CalendarEvents::ApiKeysController < ApplicationController
   TODO: Instead we should allow a unique key to be created for each client.
 =end
   def index
-    raise Discourse::NotFound unless current_user
     key = find_or_create!
     render json: [{
       key: key.key,
