@@ -22,27 +22,31 @@ export default DropdownSelectBoxComponent.extend({
     ];
   },
 
-  @computed('userApiKey', 'category', 'siteSettings.login_required')
-  authSuffix(userApiKey, category, loginRequired) {
-    // only private sites need login
-    if (!loginRequired) return "";
-    // only append for private categories
-    if (!category || !category.read_restricted) return "";
+  @computed('userApiKey', 'siteSettings.login_required', 'category.read_restricted')
+  authSuffix(userApiKey, loginRequired, privateCategory) {
+    if (!loginRequired && !privateCategory) return "";
+    if (!userApiKey) return "";
+    let suffix = "";
     const {
       key,
       client_id,
     } = userApiKey;
     // only append if available
-    if (!key || !client_id) return "";
-    return `&user_api_key=${key}&user_api_client_id=${client_id}`;
+    if (key) {
+      suffix += `&user_api_key=${encodeURIComponent(key)}`;
+      if (client_id) {
+        // be aware that the client_id be changed at will by the user
+        suffix += `&user_api_client_id=${encodeURIComponent(client_id)}`;
+      }
+    }
+    return suffix;
   },
 
   @computed('userApiKeys.[]')
   userApiKey(keys) {
-    if (!keys || !Array.isArray(keys) || !keys.length) {
-      return {};
+    if (keys && Array.isArray(keys)) {
+      return keys[0];
     }
-    return keys[0];
   },
 
   actions: {

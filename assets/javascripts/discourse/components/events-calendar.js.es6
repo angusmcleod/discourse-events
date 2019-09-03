@@ -56,7 +56,9 @@ export default Ember.Component.extend({
 
     this.setProperties({ currentDate, currentMonth, currentYear, month, year });
 
-    if (this.get('siteSettings.login_required')) {
+    const loginRequired = this.get('siteSettings.login_required');
+    const privateCategory = this.get('category.read_restricted');
+    if (loginRequired || privateCategory) {
       ajax(KEY_ENDPOINT, {
         type: 'GET',
       }).then((result) => this.set('userApiKeys', result.api_keys));
