@@ -565,13 +565,15 @@ after_initialize do
       render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
     end
 
+    # Logging in with user API keys normally only works by passing certain headers.
+    # As we cannot force third-party software to send those headers, we need to fake
+    # them using request parameters.
     def current_user
-      if params.key?(USER_API_KEY) && params.key?(USER_API_CLIENT_ID)
-        # Logging in with user api keys normally only works by passing certain headers.
-        # As we cannot force calendar software to send those headers, we need to fake
-        # them using request parameters.
+      if params.key?(USER_API_KEY)
         request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
-        request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+        if params.key?(USER_API_CLIENT_ID)
+          request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+        end
       end
       super
     end
