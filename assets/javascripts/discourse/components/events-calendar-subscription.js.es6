@@ -4,27 +4,26 @@ import computed from 'ember-addons/ember-computed-decorators';
 export default DropdownSelectBoxComponent.extend({
   classNames: ["events-calendar-subscription"],
   rowComponent: "events-calendar-subscription-row",
-  filterComponent: "events-calendar-subscription-warning",
 
-  @computed('authSuffix')
-  content(authSuffix) {
+  @computed('authParams')
+  content(authParams) {
     const baseUrl = window.location.host + window.location.pathname;
     const timeZone = moment.tz.guess();
     return [
       {
-        id: `webcal://${baseUrl}.ics?time_zone=${timeZone}${authSuffix}`,
+        id: `webcal://${baseUrl}.ics?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.ical')
       },
       {
-        id: `${baseUrl}.rss?time_zone=${timeZone}${authSuffix}`,
+        id: `${baseUrl}.rss?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.rss')
       }
     ];
   },
 
-  @computed('userApiKey', 'siteSettings.login_required', 'category.read_restricted')
-  authSuffix(userApiKey, loginRequired, privateCategory) {
-    if (!loginRequired && !privateCategory) return "";
+  @computed('userApiKey', 'showAuthParams')
+  authParams(userApiKey, showAuthParams) {
+    if (!showAuthParams) return "";
     if (!userApiKey) return "";
     let suffix = "";
     const {
@@ -47,6 +46,18 @@ export default DropdownSelectBoxComponent.extend({
     if (keys && Array.isArray(keys)) {
       return keys[0];
     }
+  },
+
+  @computed('siteSettings.login_required', 'category.read_restricted')
+  showAuthParams(loginRequired, privateCategory) {
+    return loginRequired || privateCategory;
+  },
+
+  @computed('userApiKey', 'showAuthParams')
+  filterComponent(userApiKey, showAuthParams) {
+    return (showAuthParams && userApiKey)
+      ? "events-calendar-subscription-warning"
+      : null;
   },
 
   actions: {
