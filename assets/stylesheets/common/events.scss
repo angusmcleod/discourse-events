@@ -231,7 +231,16 @@
   .select-kit-body {
     width: 380px;
     max-width: 90vw;
-    padding: 5px 0;
+
+    .events-calendar-subscription-warning {
+      padding: 6px 16px;
+      background-color: rgba(255, 247, 78, 0.32);
+      font-size: 1.1em;
+
+      .fa.d-icon {
+        margin-right: 6px;
+      }
+    }
 
     .events-calendar-subscription-row {
       cursor: initial;
