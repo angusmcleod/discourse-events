@@ -51,6 +51,7 @@ after_initialize do
   Category.register_custom_field_type('events_calendar_enabled', :boolean)
   Category.register_custom_field_type('events_min_trust_to_create', :integer)
   Category.register_custom_field_type('events_required', :boolean)
+  Category.register_custom_field_type('events_event_label_no_text', :boolean)
 
   [
     "events_enabled",
@@ -147,6 +148,7 @@ after_initialize do
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
   load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
+  load File.expand_path('../controllers/api_keys.rb', __FILE__)
 
   # a combined hash with iso8601 dates is easier to work with
   require_dependency 'topic'
@@ -259,6 +261,15 @@ after_initialize do
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
+  UserApiKey::SCOPES.reverse_merge!(
+    CalendarEvents::USER_API_KEY_SCOPE.to_sym => [
+      [:get, 'list#calendar_ics'],
+      [:get, 'list#agenda_ics'],
+      [:get, 'list#calendar_feed'],
+      [:get, 'list#agenda_feed'],
+    ],
+  )
+
   PostRevisor.track_topic_field(:event)
 
   PostRevisor.class_eval do
@@ -321,7 +332,7 @@ after_initialize do
       topic.custom_fields['event_going_max'] = going_max if going_max
       topic.custom_fields['event_going'] = going if going
 
-      topic.save!
+      topic.save_custom_fields(true)
     end
   end
 
@@ -385,10 +396,8 @@ after_initialize do
 
   require_dependency 'topic_query'
   class ::TopicQuery
-    SORTABLE_MAPPING['event'] = 'custom_fields.event_start'
-
     def list_agenda
-      @options[:order] = 'event'
+      @options[:unordered] = true
       @options[:list] = 'agenda'
 
       opts = {
@@ -401,7 +410,7 @@ after_initialize do
     end
 
     def list_calendar
-      @options[:order] = 'event'
+      @options[:unordered] = true
       @options[:list] = 'calendar'
 
       opts = {
@@ -434,6 +443,21 @@ after_initialize do
         )")
       end
 
+      topics = topics.order("(
+          SELECT CASE
+          WHEN EXISTS (
+            SELECT true FROM topic_custom_fields tcf
+            WHERE tcf.topic_id::integer = topics.id::integer
+            AND tcf.name = 'event_start' LIMIT 1
+          )
+          THEN (
+            SELECT value::integer FROM topic_custom_fields tcf
+            WHERE tcf.topic_id::integer = topics.id::integer
+            AND tcf.name = 'event_start' LIMIT 1
+          )
+          ELSE 0 END
+        ) ASC")
+
       if options[:include_excerpt]
         topics.each { |t| t.include_excerpt = true }
       end
@@ -446,6 +470,9 @@ after_initialize do
 
   ListController.class_eval do
     skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
+
+    USER_API_KEY ||= "user_api_key"
+    USER_API_CLIENT_ID ||= "user_api_client_id"
 
     def calendar_feed
       set_category if params[:category]
@@ -504,7 +531,7 @@ after_initialize do
       cal.x_wr_calname = calendar_name
       cal.x_wr_timezone = tzid
       # add timezone once per calendar
-      event_now = DateTime.now 
+      event_now = DateTime.now
       timezone = tz.ical_timezone event_now
       cal.add_timezone timezone
 
@@ -537,6 +564,45 @@ after_initialize do
 
       render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
     end
+
+    # Logging in with user API keys normally only works by passing certain headers.
+    # As we cannot force third-party software to send those headers, we need to fake
+    # them using request parameters.
+    def current_user
+      if params.key?(USER_API_KEY)
+        request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
+        if params.key?(USER_API_CLIENT_ID)
+          request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+        end
+      end
+      super
+    end
+  end
+
+  on(:approved_post) do |reviewable, post|
+    event = reviewable.payload['event']
+    if (
+    event.present? &&
+      event['event_start'].present? &&
+      event['event_start'].is_a?(Numeric) &&
+      event['event_start'] != 0
+    )
+
+      topic = post.topic
+      event.each do |k,v|
+        topic.custom_fields[k] = v
+      end
+
+      topic.save_custom_fields(true)
+    end
+  end
+
+  NewPostManager.add_handler(1) do |manager|
+    if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
+      NewPostManager.add_plugin_payload_attribute('event') if NewPostManager.respond_to?(:add_plugin_payload_attribute)
+    end
+
+    nil
   end
 
   Discourse::Application.routes.prepend do
@@ -553,152 +619,5 @@ after_initialize do
     get "c/:parent_category/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
-  end
-
-  Rails.configuration.paths['app/views'].unshift(Rails.root.join('plugins', 'discourse-events', 'app/views'))
-
-  module UserNotificationsEventExtension
-    protected def send_notification_email(opts)
-      post = opts[:post]
-      if post && post.topic.event
-        @event = post.topic.event
-      end
-      super(opts)
-    end
-  end
-
-  module InviteMailerEventExtension
-    def send_invite(invite)
-      topic = invite.topics.order(:created_at).first
-      if topic && topic.event
-        @event = topic.event
-      end
-      super(invite)
-    end
-  end
-
-  module BuildEmailHelperExtension
-    def build_email(*builder_args)
-      if builder_args[1] && @event
-        builder_args[1][:event] = @event
-      end
-      super(*builder_args)
-    end
-  end
-
-  require_dependency 'user_notifications'
-  class ::UserNotifications
-    prepend UserNotificationsEventExtension
-    prepend BuildEmailHelperExtension
-  end
-
-  require_dependency 'invite_mailer'
-  class ::InviteMailer
-    prepend InviteMailerEventExtension
-    prepend BuildEmailHelperExtension
-  end
-
-  module MessageBuilderExtension
-    def html_part
-      if @opts[:event] && invite_template
-        event_str = build_event_string
-        event_html = "<div style='padding-left:1em;'>#{event_str}</div>"
-
-        if html = @opts[:html_override]
-          html = substitute_topic_type(@opts[:html_override])
-
-          doc = Nokogiri::HTML::fragment(html)
-
-          doc.at_css('blockquote').css("p:eq(1)").after(event_html)
-
-          @opts[:html_override] = doc.to_s
-        else
-          doc = Nokogiri::HTML::fragment(PrettyText.cook(body))
-          doc.at_css('blockquote:eq(1) p:eq(2)').replace(event_html)
-          @opts[:html_override] = doc.to_s
-        end
-      end
-
-      super
-    end
-
-    def body
-      body = super
-
-      if @opts[:event]
-        event_str = build_event_string
-
-        if invite_template
-          body = substitute_topic_type(body)
-
-          pre_str, post_str = body.slice!(0...(body.rindex('*') + 1)), body
-
-          body = "#{pre_str}\n>\n> #{event_str}\n#{post_str}"
-        else
-          body = "#{event_str}\n\n#{body}"
-        end
-      end
-
-      body
-    end
-
-    def invite_template
-      invite_notification || invite_mailer
-    end
-
-    def invite_notification
-      @opts[:template] === "user_notifications.user_invited_to_topic"
-    end
-
-    def invite_mailer
-      @opts[:template] === "invite_mailer" || @opts[:template] === "custom_invite_mailer"
-    end
-
-    def build_event_string
-      event = @opts[:event]
-
-      return '' if !event
-
-      localized_event = CalendarEvents::Helper.localize_event(event)
-
-      event_str = "&#128197; #{I18n.l(localized_event[:start], format: localized_event[:format])}"
-
-      if localized_event[:end]
-        event_str << " — #{I18n.l(localized_event[:end], format: localized_event[:format])}"
-      end
-
-      if localized_event[:timezone] && SiteSetting.events_timezone_include_in_email
-        event_str << " #{CalendarEvents::Helper.timezone_label(localized_event)}"
-      end
-
-      event_str
-    end
-
-    def substitute_topic_type(text)
-      topic_type_match = Regexp.new("#{I18n.t('event_email.topic_type_match')}")
-      topic_type_sub = I18n.t('event_email.topic_type_sub')
-
-      text.gsub!(topic_type_match, topic_type_sub)
-
-      text
-    end
-  end
-
-  class Email::MessageBuilder
-    prepend MessageBuilderExtension
-  end
-
-  class UserNotifications::UserNotificationRenderer
-    def localized_event(event)
-      if event
-        @event ||= CalendarEvents::Helper.localize_event(event)
-      else
-        nil
-      end
-    end
-
-    def timezone_label(event)
-      CalendarEvents::Helper.timezone_label(event)
-    end
   end
 end

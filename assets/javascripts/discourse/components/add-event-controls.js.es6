@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   iconOnly(category, noText) {
     return noText ||
            Discourse.SiteSettings.events_event_label_no_text ||
-           Boolean(category && category.get('events_event_label_no_text'));
+           Boolean(category && category.get('custom_fields.events_event_label_no_text'));
   },
 
   actions: {

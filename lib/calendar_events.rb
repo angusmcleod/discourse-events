@@ -3,11 +3,14 @@ module ::CalendarEvents
     engine_name 'calendar_events'
     isolate_namespace CalendarEvents
   end
+
+  USER_API_KEY_SCOPE = 'calendar_events'
 end
 
 CalendarEvents::Engine.routes.draw do
   post '/rsvp/add' => 'rsvp#add'
   post '/rsvp/remove' => 'rsvp#remove'
+  get '/api_keys' => 'api_keys#index'
 end
 
 class CalendarEvents::List
