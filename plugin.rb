@@ -554,8 +554,11 @@ after_initialize do
               e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
             end
             e.summary = t.title
-            e.description = t.url << "\n\n" << t.excerpt #add url to event body
-            e.url = t.url #most calendar clients don't display this field
+            e.description = t.url << "\n\n" << t.excerpt # add url to event body
+            e.url = t.url # most calendar clients don't display this field
+            e.uid = t.url # event UID (discourse topic URI is unique)
+            # increment event sequence number each time the first post of the topic is changed
+            e.sequence = t.posts.first.version
           end
         end
       end
