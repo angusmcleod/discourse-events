@@ -523,6 +523,7 @@ after_initialize do
       calendar_url = "#{base_url}/calendar"
       list_opts = {}
       list_opts[:category] = @category.id if @category
+      list_opts[:tags] = params[:tags] if params[:tags]
 
       tzid = params[:time_zone]
       tz = TZInfo::Timezone.get tzid
