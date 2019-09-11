@@ -58,7 +58,8 @@ export default Ember.Component.extend({
 
     const loginRequired = this.get('siteSettings.login_required');
     const privateCategory = this.get('category.read_restricted');
-    if (loginRequired || privateCategory) {
+    const alwaysAddKeys = this.get('siteSettings.events_webcal_always_add_user_api_key');
+    if (loginRequired || privateCategory || alwaysAddKeys) {
       ajax(KEY_ENDPOINT, {
         type: 'GET',
       }).then((result) => this.set('userApiKeys', result.api_keys));

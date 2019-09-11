@@ -524,6 +524,12 @@ after_initialize do
       list_opts = {}
       list_opts[:category] = @category.id if @category
       list_opts[:tags] = params[:tags] if params[:tags]
+      
+      if current_user &&
+         SiteSetting.respond_to?(:assign_enabled) &&
+         SiteSetting.assign_enabled
+        list_opts[:assigned] = current_user.username if params[:assigned]
+      end 
 
       tzid = params[:time_zone]
       tz = TZInfo::Timezone.get tzid

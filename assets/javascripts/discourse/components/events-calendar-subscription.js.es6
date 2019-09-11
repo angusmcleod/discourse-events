@@ -48,9 +48,9 @@ export default DropdownSelectBoxComponent.extend({
     }
   },
 
-  @computed('siteSettings.login_required', 'category.read_restricted')
-  showAuthParams(loginRequired, privateCategory) {
-    return loginRequired || privateCategory;
+  @computed('siteSettings.login_required', 'category.read_restricted', 'siteSettings.events_webcal_always_add_user_api_key')
+  showAuthParams(loginRequired, privateCategory, alwaysAddKeys) {
+    return loginRequired || privateCategory || alwaysAddKeys;
   },
 
   @computed('userApiKey', 'showAuthParams')
