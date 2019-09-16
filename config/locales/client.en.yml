@@ -1,7 +1,7 @@
 en:
   js:
     add_event:
-      btn_label: "Add Date and Time"
+      btn_label: "Add Event"
       modal_title: Date and Time
       event_start: Start
       event_end: End
