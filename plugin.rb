@@ -524,12 +524,12 @@ after_initialize do
       list_opts = {}
       list_opts[:category] = @category.id if @category
       list_opts[:tags] = params[:tags] if params[:tags]
-      
+
       if current_user &&
          SiteSetting.respond_to?(:assign_enabled) &&
          SiteSetting.assign_enabled
         list_opts[:assigned] = current_user.username if params[:assigned]
-      end 
+      end
 
       tzid = params[:time_zone]
       tz = TZInfo::Timezone.get tzid
@@ -563,6 +563,7 @@ after_initialize do
             e.summary = t.title
             e.description = t.url << "\n\n" << t.excerpt #add url to event body
             e.url = t.url #most calendar clients don't display this field
+            e.uid = t.id.to_s + "@" + SiteSetting.notification_email.split('@')[1]
           end
         end
       end
