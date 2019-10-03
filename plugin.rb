@@ -177,6 +177,10 @@ after_initialize do
         event[:all_day] = custom_fields['event_all_day']
       end
 
+      if custom_fields['event_version'].present?
+        event[:version] = custom_fields['event_version']
+      end
+
       if event_rsvp
         event[:rsvp] = event_rsvp
 
@@ -186,10 +190,6 @@ after_initialize do
 
         if event_going
           event[:going] = event_going
-        end
-
-        if custom_fields['event_version'].present?
-          event[:version] = custom_fields['event_version']
         end
       end
 
