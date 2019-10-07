@@ -571,7 +571,7 @@ after_initialize do
             e.summary = t.title
             e.description = t.url << "\n\n" << t.excerpt #add url to event body
             e.url = t.url #most calendar clients don't display this field
-            e.uid = t.id.to_s + "@" + SiteSetting.notification_email.split('@')[1]
+            e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/,'')
             e.sequence = event[:version]
           end
         end
