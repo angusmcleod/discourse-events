@@ -33,6 +33,7 @@ class CalendarEvents::Helper
     event_start = event[:start].to_datetime
     event_end = event[:end].present? ? event[:end].to_datetime : nil
     format = event[:all_day] ? :date_only : :long
+    event_version  = event[:version] if event[:version]
 
     event_timezone = SiteSetting.events_timezone_default
     event_timezone = event[:timezone] if event[:timezone].present?
@@ -49,7 +50,8 @@ class CalendarEvents::Helper
     result = {
       start: event_start,
       end: event_end,
-      format: format
+      format: format,
+      version: event_version
     }
 
     if event_timezone.present?

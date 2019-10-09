@@ -137,6 +137,7 @@ after_initialize do
   Topic.register_custom_field_type('event_all_day', :boolean)
   Topic.register_custom_field_type('event_rsvp', :boolean)
   Topic.register_custom_field_type('event_going_max', :integer)
+  Topic.register_custom_field_type('event_version', :integer)
 
   TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
@@ -145,6 +146,7 @@ after_initialize do
   TopicList.preloaded_custom_fields << 'event_rsvp' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_going' if TopicList.respond_to? :preloaded_custom_fields
   TopicList.preloaded_custom_fields << 'event_going_max' if TopicList.respond_to? :preloaded_custom_fields
+  TopicList.preloaded_custom_fields << 'event_version' if TopicList.respond_to? :preloaded_custom_fields
 
   load File.expand_path('../lib/calendar_events.rb', __FILE__)
   load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
@@ -173,6 +175,10 @@ after_initialize do
 
       if custom_fields['event_all_day'].present?
         event[:all_day] = custom_fields['event_all_day']
+      end
+
+      if custom_fields['event_version'].present?
+        event[:version] = custom_fields['event_version']
       end
 
       if event_rsvp
@@ -270,43 +276,43 @@ after_initialize do
     ],
   )
 
-  PostRevisor.track_topic_field(:event)
-
-  PostRevisor.class_eval do
-    track_topic_field(:event) do |tc, event|
+  ::PostRevisor.track_topic_field(:event) do |tc, event|
       if tc.guardian.can_edit_event?(tc.topic.category)
         event_start = event['start'] ? event['start'].to_datetime.to_i : nil
-        tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-        tc.topic.custom_fields['event_start'] = event_start
+        start_change = tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
+        tc.topic.custom_fields['event_start'] = event_start if start_change
 
         event_end = event['end'] ? event['end'].to_datetime.to_i : nil
-        tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
-        tc.topic.custom_fields['event_end'] = event_end
+        end_change = tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
+        tc.topic.custom_fields['event_end'] = event_end  if end_change
 
         all_day = event['all_day'] ? event['all_day'] === 'true' : false
-        tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
-        tc.topic.custom_fields['event_all_day'] = all_day
+        all_day_change = tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
+        tc.topic.custom_fields['event_all_day'] = all_day if all_day_change
 
         timezone = event['timezone']
-        tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
-        tc.topic.custom_fields['event_timezone'] = timezone
+        timezone_change = tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
+        tc.topic.custom_fields['event_timezone'] = timezone if timezone_change
 
         rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
-        tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
-        tc.topic.custom_fields['event_rsvp'] = rsvp
+        rsvp_change = tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
+        tc.topic.custom_fields['event_rsvp'] = rsvp if rsvp_change
 
         if rsvp
           going_max = event['going_max'] ? event['going_max'].to_i : nil
-          tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
-          tc.topic.custom_fields['event_going_max'] = going_max
+          going_max_change = tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
+          tc.topic.custom_fields['event_going_max'] = going_max if going_max_change
 
           going = event['going'] ? event['going'].join(',') : ''
-          tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
-          tc.topic.custom_fields['event_going'] = going
+          going_change = tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
+          tc.topic.custom_fields['event_going'] = going if going_change
+        end
+
+        if start_change || end_change || timezone_change # increment by 1, even if more than one props are changed at once
+          tc.topic.custom_fields['event_version'] = tc.topic.custom_fields['event_version'].nil? ? 1 : tc.topic.custom_fields['event_version'] + 1
         end
       end
     end
-  end
 
   DiscourseEvent.on(:post_created) do |post, opts, user|
     if post.is_first_post? && opts[:event]
@@ -323,6 +329,7 @@ after_initialize do
       rsvp = event['rsvp']
       going_max = event['going_max']
       going = event['going']
+      event_version = 1
 
       topic.custom_fields['event_start'] = event_start.to_datetime.to_i if event_start
       topic.custom_fields['event_end'] = event_end.to_datetime.to_i if event_end
@@ -331,6 +338,7 @@ after_initialize do
       topic.custom_fields['event_rsvp'] = rsvp if rsvp
       topic.custom_fields['event_going_max'] = going_max if going_max
       topic.custom_fields['event_going'] = going if going
+      topic.custom_fields['event_version'] = event_version if event_version
 
       topic.save_custom_fields(true)
     end
@@ -524,12 +532,12 @@ after_initialize do
       list_opts = {}
       list_opts[:category] = @category.id if @category
       list_opts[:tags] = params[:tags] if params[:tags]
-      
+
       if current_user &&
          SiteSetting.respond_to?(:assign_enabled) &&
          SiteSetting.assign_enabled
         list_opts[:assigned] = current_user.username if params[:assigned]
-      end 
+      end
 
       tzid = params[:time_zone]
       tz = TZInfo::Timezone.get tzid
@@ -563,6 +571,8 @@ after_initialize do
             e.summary = t.title
             e.description = t.url << "\n\n" << t.excerpt #add url to event body
             e.url = t.url #most calendar clients don't display this field
+            e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/,'')
+            e.sequence = event[:version]
           end
         end
       end

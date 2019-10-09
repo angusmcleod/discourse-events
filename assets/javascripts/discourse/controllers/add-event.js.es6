@@ -179,7 +179,7 @@ export default Ember.Controller.extend({
         event = {
           timezone,
           all_day: allDay,
-          start: start.year(sYear).month(sMonth).date(sDate).hour(sHour).minute(sMin).toISOString()
+          start: start.year(sYear).month(sMonth).date(sDate).hour(sHour).minute(sMin).second(0).millisecond(0).toISOString()
         };
 
         const endEnabled = this.get('endEnabled');
@@ -195,7 +195,7 @@ export default Ember.Controller.extend({
           let eHour = allDay ? 0 : moment(endTime, 'HH:mm').hour();
           let eMin = allDay ? 0 : moment(endTime, 'HH:mm').minute();
 
-          event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).toISOString();
+          event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).second(0).millisecond(0).toISOString();
         }
       }
 
