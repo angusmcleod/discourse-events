@@ -245,7 +245,7 @@ export default {
       });
     });
 
-    withPluginApi('0.8.32', api => {
+    withPluginApi('0.8.33', api => {
       api.serializeToDraft('event');
     });
 
