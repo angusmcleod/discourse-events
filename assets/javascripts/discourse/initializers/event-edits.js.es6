@@ -248,6 +248,7 @@ export default {
     withPluginApi('0.8.12', api => {
       api.addDiscoveryQueryParam('end', { replace: true, refreshModel: true });
       api.addDiscoveryQueryParam('start', { replace: true, refreshModel: true });
+      api.serializeToDraft('event');
 
       api.modifyClass('controller:preferences/interface', {
         @computed("makeThemeDefault")
