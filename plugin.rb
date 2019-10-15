@@ -559,14 +559,14 @@ after_initialize do
 
           ## to do: check if working later
           if event[:format] == :date_only
-            event[:start] = event[:start].to_date
-            event[:end] = event[:end].to_date if event[:end]
+            event[:start] = event[:start].to_date.strftime "%Y%m%d"
+            event[:end] = (event[:end].to_date+1).strftime "%Y%m%d" if event[:end]
           end
 
           cal.event do |e|
-            e.dtstart = Icalendar::Values::DateTime.new event[:start], 'tzid' => tzid
+            e.dtstart = Icalendar::Values::DateOrDateTime.new(event[:start], 'tzid' => tzid).call
             if event[:end]
-              e.dtend = Icalendar::Values::DateTime.new event[:end], 'tzid' => tzid
+              e.dtend = Icalendar::Values::DateOrDateTime.new(event[:end], 'tzid' => tzid).call
             end
             e.summary = t.title
             e.description = t.url << "\n\n" << t.excerpt #add url to event body
