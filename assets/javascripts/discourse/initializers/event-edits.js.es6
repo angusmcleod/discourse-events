@@ -245,6 +245,10 @@ export default {
       });
     });
 
+    withPluginApi('0.8.33', api => {
+      api.serializeToDraft('event');
+    });
+
     withPluginApi('0.8.12', api => {
       api.addDiscoveryQueryParam('end', { replace: true, refreshModel: true });
       api.addDiscoveryQueryParam('start', { replace: true, refreshModel: true });
