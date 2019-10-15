@@ -539,7 +539,7 @@ after_initialize do
         list_opts[:assigned] = current_user.username if params[:assigned]
       end
 
-      tzid = params[:time_zone]
+      tzid = params[:time_zone] || ( SiteSetting.respond_to?(:events_timezone_default) && SiteSetting.events_timezone_default.present? && SiteSetting.events_timezone_default ) || "Etc/UTC"
       tz = TZInfo::Timezone.get tzid
 
       cal = Icalendar::Calendar.new
