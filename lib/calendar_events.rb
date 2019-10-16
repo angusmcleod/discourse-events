@@ -11,6 +11,7 @@ CalendarEvents::Engine.routes.draw do
   post '/rsvp/add' => 'rsvp#add'
   post '/rsvp/remove' => 'rsvp#remove'
   get '/api_keys' => 'api_keys#index'
+  post '/rsvp/get_usernames' => 'rsvp#get_usernames'
 end
 
 class CalendarEvents::List

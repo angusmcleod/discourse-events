@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 
   @computed('currentUser', 'topic.event_going')
   userGoing(user, eventGoing) {
-    return eventGoing && eventGoing.indexOf(user.username) > -1;
+    return eventGoing && eventGoing.indexOf(user.id.toString()) > -1;
   },
 
   @computed('topic.event_going')
@@ -23,13 +23,7 @@ export default Ember.Component.extend({
 
   @computed('userGoing')
   goingClasses(userGoing) {
-    let classes = '';
-
-    if (userGoing) {
-      classes += 'btn-primary';
-    }
-
-    return classes;
+    return userGoing ? 'btn-primary' : '';
   },
 
   @computed('currentUser', 'eventFull')
@@ -67,14 +61,14 @@ export default Ember.Component.extend({
     return false;
   },
 
-  updateTopic(username, action, type) {
+  updateTopic(user_id, action, type) {
     let existing = this.get(`topic.event_${type}`);
     let list = existing ? existing : [];
 
     if (action === 'add') {
-      list.push(username);
+      list.push(user_id);
     } else {
-      list.splice(list.indexOf(username), 1);
+      list.splice(list.indexOf(user_id), 1);
     }
 
     this.set(`topic.event_${type}`, list);
@@ -89,15 +83,15 @@ export default Ember.Component.extend({
       data: {
         topic_id: this.get('topic.id'),
         type,
-        username: user.username
+        user_id: user.id
       }
     }).then((result) => {
       if (result.success) {
-        this.updateTopic(user.username, action, type);
+        this.updateTopic(user.id, action, type);
       }
     }).catch(popupAjaxError).finally(() => {
       this.set(`${type}Saving`, false);
-    })
+    });
   },
 
   actions: {

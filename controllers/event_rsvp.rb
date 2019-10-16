@@ -1,7 +1,7 @@
 class CalendarEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
-  before_action :check_if_rsvp_enabled
+  before_action :check_if_rsvp_enabled, except: [:get_usernames]
 
   def add
     prop = "event_#{rsvp_params[:type]}".freeze
@@ -12,7 +12,7 @@ class CalendarEvents::RsvpController < ApplicationController
       raise I18n.t('event_rsvp.errors.going_max')
     end
 
-    list.push(rsvp_params[:username])
+    list.push(rsvp_params[:user_id])
 
     @topic.custom_fields[prop] = list.join(',')
 
@@ -30,7 +30,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list = @topic.send(prop) || []
 
-    list.delete(rsvp_params[:username])
+    list.delete(rsvp_params[:user_id])
 
     @topic.custom_fields[prop] = list.join(',')
 
@@ -43,14 +43,18 @@ class CalendarEvents::RsvpController < ApplicationController
     end
   end
 
+  def get_usernames
+    render json: success_json.merge(usernames: User.find(rsvp_params[:user_ids]).pluck(:username))
+  end
+
   private
 
   def rsvp_params
-    params.permit(:topic_id, :type, :username)
+    params.permit(:topic_id, :type, :user_id, :user_ids =>[])
   end
 
   def check_user_and_find_topic
-    unless User.exists?(username: rsvp_params[:username])
+    unless User.exists?(id: rsvp_params[:user_id])
       raise Discourse::InvalidAccess.new
     end
 
