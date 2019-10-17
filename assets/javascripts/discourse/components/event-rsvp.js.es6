@@ -66,9 +66,9 @@ export default Ember.Component.extend({
     let list = existing ? existing : [];
 
     if (action === 'add') {
-      list.push(user_id);
+      list.push(user_id.toString());
     } else {
-      list.splice(list.indexOf(user_id), 1);
+      list.splice(list.indexOf(user_id.toString()), 1);
     }
 
     this.set(`topic.event_${type}`, list);

@@ -21,27 +21,18 @@ export default Ember.Controller.extend({
 
     let userList = [];
 
-    ajax('/calendar-events/rsvp/get_usernames', {
+    ajax('/calendar-events/rsvp/get_users', {
       data:{
         user_ids: user_ids
       },
       type: "POST"
     }).then((response) => {
-      let usernames = response.usernames;
-
-        usernames.forEach((username, index) => {
-        User.findByUsername(username).then((user) => {
-          userList.push(user);
-
-          if (userList.length == usernames.length) {
-            this.setProperties({
-              userList,
-              loadingList: false
-            })
-          }
-        })
-      });
-    })
+      let userList = response.users;
+        this.setProperties({
+          userList,
+          loadingList: false
+        });
+    });
   },
 
   @computed('type')
