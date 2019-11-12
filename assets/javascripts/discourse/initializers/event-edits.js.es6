@@ -128,7 +128,7 @@ export default {
         DiscourseURL.routeTo(href);
       },
 
-      @on('didInsertElement')
+      @on('didRender')
       moveElements() {
         const topic = this.get('topic');
 
