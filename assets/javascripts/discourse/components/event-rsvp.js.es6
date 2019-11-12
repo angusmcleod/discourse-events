@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 
   @computed('currentUser', 'topic.event_going')
   userGoing(user, eventGoing) {
-    return eventGoing && eventGoing.indexOf(user.id.toString()) > -1;
+    return eventGoing && eventGoing.indexOf(user.id) > -1;
   },
 
   @computed('topic.event_going')
@@ -61,14 +61,14 @@ export default Ember.Component.extend({
     return false;
   },
 
-  updateTopic(user_id, action, type) {
+  updateTopic(userId, action, type) {
     let existing = this.get(`topic.event_${type}`);
     let list = existing ? existing : [];
 
     if (action === 'add') {
-      list.push(user_id.toString());
+      list.push(userId);
     } else {
-      list.splice(list.indexOf(user_id.toString()), 1);
+      list.splice(list.indexOf(userId), 1);
     }
 
     this.set(`topic.event_${type}`, list);

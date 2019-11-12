@@ -198,9 +198,13 @@ after_initialize do
 
     def event_going
       if self.custom_fields['event_going']
-        self.custom_fields['event_going'].split(',')
+        begin
+        JSON.parse (self.custom_fields['event_going'])
+        rescue
+        false
+        end
       else
-        []
+        false
       end
     end
 
@@ -255,7 +259,7 @@ after_initialize do
     end
 
     def event_going_total
-      object.event_going.length
+      object.event_going ? object.event_going.length : 0
     end
 
     def include_event_going_total?

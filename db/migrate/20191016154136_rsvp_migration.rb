@@ -17,7 +17,7 @@ class RsvpMigration < ActiveRecord::Migration[6.0]
         end
       end
 
-      custom_field.value = going_ids.join ","
+      custom_field.value = going_ids.to_json
       custom_field.save
       puts "RSVP for topic: #{custom_field.topic_id} migrated successfully"
     end

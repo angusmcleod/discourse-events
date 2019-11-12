@@ -12,9 +12,9 @@ class CalendarEvents::RsvpController < ApplicationController
       raise I18n.t('event_rsvp.errors.going_max')
     end
 
-    list.push(rsvp_params[:user_id])
+    list.push(rsvp_params[:user_id].to_i)
 
-    @topic.custom_fields[prop] = list.join(',')
+    @topic.custom_fields[prop] = list.to_json
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -30,9 +30,9 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list = @topic.send(prop) || []
 
-    list.delete(rsvp_params[:user_id])
+    list.delete(rsvp_params[:user_id].to_i)
 
-    @topic.custom_fields[prop] = list.join(',')
+    @topic.custom_fields[prop] = list.to_json
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -44,9 +44,12 @@ class CalendarEvents::RsvpController < ApplicationController
   end
 
   def get_users
-    users = User.find(rsvp_params[:user_ids])
-    serializer = ::ActiveModel::ArraySerializer.new(users, each_serializer: BasicUserSerializer)
-    render json: success_json.merge(users: serializer)
+    begin
+      users = User.find(rsvp_params[:user_ids])
+      render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
+    rescue
+      render_json_dump "[]"
+    end
   end
 
   private
