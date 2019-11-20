@@ -1,7 +1,7 @@
 class CalendarEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
-  before_action :check_if_rsvp_enabled, except: [:get_users]
+  before_action :check_if_rsvp_enabled, except: [:users]
 
   def add
     prop = "event_#{rsvp_params[:type]}".freeze
@@ -44,11 +44,15 @@ class CalendarEvents::RsvpController < ApplicationController
   end
 
   def users
-    begin
-      users = User.find(rsvp_params[:user_ids])
-      render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
-    rescue
+    unless rsvp_params[:user_ids].any?
       render_json_dump "[]"
+    else
+      begin
+        users = User.find(rsvp_params[:user_ids])
+        render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
+      rescue
+        render_json_dump "[]"
+      end
     end
   end
 
