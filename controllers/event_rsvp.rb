@@ -43,7 +43,7 @@ class CalendarEvents::RsvpController < ApplicationController
     end
   end
 
-  def get_users
+  def users
     begin
       users = User.find(rsvp_params[:user_ids])
       render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
