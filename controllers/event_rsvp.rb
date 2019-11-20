@@ -14,7 +14,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list.push(rsvp_params[:user_id].to_i)
 
-    @topic.custom_fields[prop] = list.to_json
+    @topic.custom_fields[prop] = list
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -32,7 +32,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list.delete(rsvp_params[:user_id].to_i)
 
-    @topic.custom_fields[prop] = list.to_json
+    @topic.custom_fields[prop] = list
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)

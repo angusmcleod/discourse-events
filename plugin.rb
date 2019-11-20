@@ -136,6 +136,7 @@ after_initialize do
   Topic.register_custom_field_type('event_end', :integer)
   Topic.register_custom_field_type('event_all_day', :boolean)
   Topic.register_custom_field_type('event_rsvp', :boolean)
+  Topic.register_custom_field_type('event_going', :json)
   Topic.register_custom_field_type('event_going_max', :integer)
   Topic.register_custom_field_type('event_version', :integer)
 
@@ -198,11 +199,7 @@ after_initialize do
 
     def event_going
       if self.custom_fields['event_going']
-        begin
-        JSON.parse (self.custom_fields['event_going'])
-        rescue
-        false
-        end
+        self.custom_fields['event_going']
       else
         false
       end
