@@ -345,7 +345,7 @@ after_initialize do
   end
 
   TopicQuery.add_custom_filter(:start) do |topics, query|
-    if query.options[:calendar] && query.options[:start]
+    if query.options[:start]
       topics.where("topics.id in (
         SELECT topic_id FROM topic_custom_fields
         WHERE (name = 'event_start' OR name = 'event_end')
@@ -357,7 +357,7 @@ after_initialize do
   end
 
   TopicQuery.add_custom_filter(:end) do |topics, query|
-    if query.options[:calendar] && query.options[:end]
+    if query.options[:end]
       topics.where("topics.id in (
         SELECT topic_id FROM topic_custom_fields
         WHERE (name = 'event_start' OR name = 'event_end')
