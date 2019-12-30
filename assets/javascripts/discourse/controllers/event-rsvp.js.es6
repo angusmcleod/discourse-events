@@ -16,15 +16,15 @@ export default Ember.Controller.extend(ModalFunctionality, {
     const type = this.get('type');
     const topic = this.get('model.topic');
 
-    let userIds = topic.get(`event_${type}`);
+    let userNames = topic.get(`event_${type}`);
 
-    if (!userIds || !userIds.length) return;
+    if (!userNames || !userNames.length) return;
 
     let userList = [];
 
     ajax('/calendar-events/rsvp/users', {
       data:{
-        user_ids: userIds
+        user_names: userNames
       }
     }).then((response) => {
       let userList = response.users || [];
@@ -56,7 +56,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
     const currentUser = this.get('currentUser');
     if (currentUser) {
       userList.sort((a, b) => {
-        if (a.id === currentUser.id) {
+        if (a.username === currentUser.username) {
           return -1;
         } else {
           return 1;

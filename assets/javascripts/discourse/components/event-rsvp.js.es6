@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 
   @computed('currentUser', 'topic.event_going')
   userGoing(user, eventGoing) {
-    return eventGoing && eventGoing.indexOf(user.id) > -1;
+    return eventGoing && eventGoing.indexOf(user.username) > -1;
   },
 
   @computed('topic.event_going')
@@ -61,14 +61,14 @@ export default Ember.Component.extend({
     return false;
   },
 
-  updateTopic(userId, action, type) {
+  updateTopic(userName, action, type) {
     let existing = this.get(`topic.event_${type}`);
     let list = existing ? existing : [];
 
     if (action === 'add') {
-      list.push(userId);
+      list.push(userName);
     } else {
-      list.splice(list.indexOf(userId), 1);
+      list.splice(list.indexOf(userName), 1);
     }
 
     this.set(`topic.event_${type}`, list);
@@ -83,11 +83,11 @@ export default Ember.Component.extend({
       data: {
         topic_id: this.get('topic.id'),
         type,
-        user_id: user.id
+        user_name: user.username
       }
     }).then((result) => {
       if (result.success) {
-        this.updateTopic(user.id, action, type);
+        this.updateTopic(user.username, action, type);
       }
     }).catch(popupAjaxError).finally(() => {
       this.set(`${type}Saving`, false);

@@ -12,7 +12,7 @@ class CalendarEvents::RsvpController < ApplicationController
       raise I18n.t('event_rsvp.errors.going_max')
     end
 
-    list.push(rsvp_params[:user_id].to_i)
+    list.push(User.find_by(username: rsvp_params[:user_name]).id)
 
     @topic.custom_fields[prop] = list
 
@@ -30,7 +30,7 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list = @topic.send(prop) || []
 
-    list.delete(rsvp_params[:user_id].to_i)
+    list.delete(User.find_by(username: rsvp_params[:user_name]).id)
 
     @topic.custom_fields[prop] = list
 
@@ -44,11 +44,11 @@ class CalendarEvents::RsvpController < ApplicationController
   end
 
   def users
-    unless rsvp_params[:user_ids].any?
+    unless rsvp_params[:user_names].any?
       render_json_dump "[]"
     else
       begin
-        users = User.find(rsvp_params[:user_ids])
+        users = User.where(username: rsvp_params[:user_names])
         render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
       rescue
         render_json_dump "[]"
@@ -59,11 +59,11 @@ class CalendarEvents::RsvpController < ApplicationController
   private
 
   def rsvp_params
-    params.permit(:topic_id, :type, :user_id, :user_ids =>[])
+    params.permit(:topic_id, :type, :user_name, :user_names =>[])
   end
 
   def check_user_and_find_topic
-    unless User.exists?(id: rsvp_params[:user_id])
+    unless User.exists?(username: rsvp_params[:user_name])
       raise Discourse::InvalidAccess.new
     end
 
@@ -84,7 +84,7 @@ class CalendarEvents::RsvpController < ApplicationController
     channel = "/calendar-events/#{topic.id}"
 
     msg = {
-      current_user_id: current_user.id,
+      current_user_name: current_user.username,
       updated_at: Time.now,
       type: "rsvp"
     }

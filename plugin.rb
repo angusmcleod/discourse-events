@@ -190,7 +190,7 @@ after_initialize do
         end
 
         if event_going
-          event[:going] = event_going
+          event[:going] = User.find(event_going).pluck(:username)
         end
       end
 
@@ -235,7 +235,7 @@ after_initialize do
     end
 
     def event_going
-      object.topic.event_going
+      User.find(object.topic.event_going).pluck(:username)
     end
 
     def include_event_going?
@@ -295,7 +295,7 @@ after_initialize do
         timezone_change = tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
         tc.topic.custom_fields['event_timezone'] = timezone if timezone_change
 
-        rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
+        rsvp = !!event['rsvp']
         rsvp_change = tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
         tc.topic.custom_fields['event_rsvp'] = rsvp if rsvp_change
 
@@ -304,7 +304,8 @@ after_initialize do
           going_max_change = tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
           tc.topic.custom_fields['event_going_max'] = going_max if going_max_change
 
-          going = event['going'] ? event['going'].join(',') : ''
+          goingNames = event['going']
+          going = User.where(username: goingNames).pluck(:id)
           going_change = tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
           tc.topic.custom_fields['event_going'] = going if going_change
         end
@@ -338,7 +339,7 @@ after_initialize do
       topic.custom_fields['event_timezone'] = timezone if timezone
       topic.custom_fields['event_rsvp'] = rsvp if rsvp
       topic.custom_fields['event_going_max'] = going_max if going_max
-      topic.custom_fields['event_going'] = going if going
+      topic.custom_fields['event_going'] = User.where(username: going).pluck(:id) if going
       topic.custom_fields['event_version'] = event_version if event_version
 
       topic.save_custom_fields(true)

@@ -296,15 +296,15 @@ export default {
       }
 
       api.modifyClass('controller:topic', {
-        @observes('model.id')
+        @observes('model.username')
         subscribeCalendarEvents() {
           this.unsubscribeCalendarEvents();
 
-          this.messageBus.subscribe(`/calendar-events/${this.get('model.id')}`, data => {
+          this.messageBus.subscribe(`/calendar-events/${this.get('model.username')}`, data => {
             const topic = this.get('model');
             const currentUser = this.get('currentUser');
 
-            if (data.current_user_id === currentUser.id) return;
+            if (data.current_user_name === currentUser.username) return;
 
             switch (data.type) {
               case "rsvp": {
