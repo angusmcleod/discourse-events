@@ -9,7 +9,7 @@ class RsvpMigration < ActiveRecord::Migration[6.0]
       going.each do |v|
         next if v.empty? || v.to_i != 0 #its an integer in quotes so its either an event created using latest code or already migrated
         begin
-          user_id = User.find_by(username: v).id
+          user_id = User.find_by!(username: v).id
         rescue ActiveRecord::RecordNotFound => e
           print "invalid username #{v}" #safely ignored invalid user id
         else
