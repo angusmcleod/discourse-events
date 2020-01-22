@@ -287,7 +287,7 @@ after_initialize do
         end_change = tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
         tc.topic.custom_fields['event_end'] = event_end  if end_change
 
-        all_day = event['all_day'] ? event['all_day'] === 'true' : false
+        all_day = !!event['all_day']
         all_day_change = tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
         tc.topic.custom_fields['event_all_day'] = all_day if all_day_change
 
