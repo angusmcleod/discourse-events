@@ -235,7 +235,7 @@ after_initialize do
     end
 
     def event_going
-      User.find(object.topic.event_going).pluck(:username)
+      User.find(object.topic.event_going).pluck(:username) if object.topic.event_going
     end
 
     def include_event_going?
