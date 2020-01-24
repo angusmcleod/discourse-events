@@ -224,7 +224,7 @@ after_initialize do
 
   require_dependency 'topic_view_serializer'
   class ::TopicViewSerializer
-    attributes :event, :event_going
+    attributes :event
 
     def event
       object.topic.event
@@ -232,14 +232,6 @@ after_initialize do
 
     def include_event?
       object.topic.has_event?
-    end
-
-    def event_going
-      User.find(object.topic.event_going).pluck(:username) if object.topic.event_going
-    end
-
-    def include_event_going?
-      include_event?
     end
   end
 

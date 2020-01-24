@@ -16,22 +16,23 @@ export default Ember.Controller.extend(ModalFunctionality, {
     const type = this.get('type');
     const topic = this.get('model.topic');
 
-    let userNames = topic.get(`event_${type}`);
+    let usernames = topic.get(`event.${type}`);
 
-    if (!userNames || !userNames.length) return;
+    if (!usernames || !usernames.length) return;
 
     let userList = [];
 
     ajax('/calendar-events/rsvp/users', {
       data:{
-        user_names: userNames
+        usernames
       }
     }).then((response) => {
       let userList = response.users || [];
-        this.setProperties({
-          userList,
-          loadingList: false
-        });
+      
+      this.setProperties({
+        userList,
+        loadingList: false
+      });
     }).catch(e => {
       this.flash(extractError(e),'alert-error');
     })

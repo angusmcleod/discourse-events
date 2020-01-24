@@ -7,12 +7,12 @@ export default Ember.Component.extend({
   classNames: 'event-rsvp',
   goingSaving: false,
 
-  @computed('currentUser', 'topic.event_going')
+  @computed('currentUser', 'topic.event.going')
   userGoing(user, eventGoing) {
     return eventGoing && eventGoing.indexOf(user.username) > -1;
   },
 
-  @computed('topic.event_going')
+  @computed('topic.event.going')
   goingTotal(eventGoing) {
     if (eventGoing) {
       return eventGoing.length;
@@ -62,7 +62,7 @@ export default Ember.Component.extend({
   },
 
   updateTopic(userName, action, type) {
-    let existing = this.get(`topic.event_${type}`);
+    let existing = this.get(`topic.event.${type}`);
     let list = existing ? existing : [];
 
     if (action === 'add') {
@@ -71,8 +71,8 @@ export default Ember.Component.extend({
       list.splice(list.indexOf(userName), 1);
     }
 
-    this.set(`topic.event_${type}`, list);
-    this.notifyPropertyChange(`topic.event_${type}`);
+    this.set(`topic.event.${type}`, list);
+    this.notifyPropertyChange(`topic.event.${type}`);
   },
 
   save(user, action, type) {
@@ -83,7 +83,7 @@ export default Ember.Component.extend({
       data: {
         topic_id: this.get('topic.id'),
         type,
-        user_name: user.username
+        usernames: [user.username]
       }
     }).then((result) => {
       if (result.success) {
