@@ -4,9 +4,10 @@ class CalendarEvents::RsvpController < ApplicationController
   before_action :check_if_rsvp_enabled, except: [:users]
 
   def add
-    prop = "event_#{rsvp_params[:type]}".freeze
+    prop = Hash.new
+    prop[:key] = "event_#{rsvp_params[:type]}".freeze
 
-    list = @topic.send(prop) || []
+    list = @topic.send(prop[:key]) || []
 
     if @topic.event_going_max && list.length >= @topic.event_going_max
       raise I18n.t('event_rsvp.errors.going_max')
@@ -14,7 +15,8 @@ class CalendarEvents::RsvpController < ApplicationController
 
     list.push(User.find_by(username: rsvp_params[:usernames].first).id)
 
-    @topic.custom_fields[prop] = list
+    @topic.custom_fields[prop[:key]] = list
+    prop[:value] = User.find(list).pluck(:username)
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -26,13 +28,14 @@ class CalendarEvents::RsvpController < ApplicationController
   end
 
   def remove
-    prop = "event_#{rsvp_params[:type]}".freeze
+    prop = Hash.new
+    prop[:key] = "event_#{rsvp_params[:type]}".freeze
 
-    list = @topic.send(prop) || []
-
+    list = @topic.send(prop[:key]) || []
     list.delete(User.find_by(username: rsvp_params[:usernames].first).id)
 
-    @topic.custom_fields[prop] = list
+    @topic.custom_fields[prop[:key]] = list
+    prop[:value] = User.find(list).pluck(:username)
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -89,7 +92,7 @@ class CalendarEvents::RsvpController < ApplicationController
       type: "rsvp"
     }
 
-    msg[prop.to_sym] = topic.send(prop)
+    msg[prop[:key]] = prop[:value]
 
     MessageBus.publish(channel, msg)
   end
