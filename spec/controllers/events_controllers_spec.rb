@@ -54,7 +54,7 @@ describe "event rsvp" , :type => :request do
 
   it "converts the usernames to user ids while storing" do
       expect(response).to be_successful
-      expect(event_topic.event_going).to eq([rsvp_user_1.id, rsvp_user_2.id])
+      expect(event_topic.event_going.sort).to eq([rsvp_user_1.id, rsvp_user_2.id].sort)
 
   end
 
@@ -62,7 +62,7 @@ describe "event rsvp" , :type => :request do
     get "/t/#{event_topic.id}.json"
     expect(response).to be_successful
     topic = JSON.parse(response.body)
-    expect(topic['event_going']).to eq([rsvp_user_1.username,rsvp_user_2.username ])
+    expect(topic['event']['going'].sort).to eq([rsvp_user_1.username,rsvp_user_2.username].sort)
   end
 
 end
