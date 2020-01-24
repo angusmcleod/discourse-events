@@ -136,6 +136,7 @@ after_initialize do
   Topic.register_custom_field_type('event_end', :integer)
   Topic.register_custom_field_type('event_all_day', :boolean)
   Topic.register_custom_field_type('event_rsvp', :boolean)
+  Topic.register_custom_field_type('event_going', :json)
   Topic.register_custom_field_type('event_going_max', :integer)
   Topic.register_custom_field_type('event_version', :integer)
 
@@ -189,7 +190,7 @@ after_initialize do
         end
 
         if event_going
-          event[:going] = event_going
+          event[:going] = User.find(event_going).pluck(:username)
         end
       end
 
@@ -198,9 +199,9 @@ after_initialize do
 
     def event_going
       if self.custom_fields['event_going']
-        self.custom_fields['event_going'].split(',')
+        self.custom_fields['event_going']
       else
-        []
+        false
       end
     end
 
@@ -223,7 +224,7 @@ after_initialize do
 
   require_dependency 'topic_view_serializer'
   class ::TopicViewSerializer
-    attributes :event, :event_going
+    attributes :event
 
     def event
       object.topic.event
@@ -231,14 +232,6 @@ after_initialize do
 
     def include_event?
       object.topic.has_event?
-    end
-
-    def event_going
-      object.topic.event_going
-    end
-
-    def include_event_going?
-      include_event?
     end
   end
 
@@ -255,7 +248,7 @@ after_initialize do
     end
 
     def event_going_total
-      object.event_going.length
+      object.event_going ? object.event_going.length : 0
     end
 
     def include_event_going_total?
@@ -286,7 +279,7 @@ after_initialize do
         end_change = tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
         tc.topic.custom_fields['event_end'] = event_end  if end_change
 
-        all_day = event['all_day'] ? event['all_day'] === 'true' : false
+        all_day = !!event['all_day']
         all_day_change = tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
         tc.topic.custom_fields['event_all_day'] = all_day if all_day_change
 
@@ -294,7 +287,7 @@ after_initialize do
         timezone_change = tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
         tc.topic.custom_fields['event_timezone'] = timezone if timezone_change
 
-        rsvp = event['rsvp'] ? event['rsvp'] === 'true' : false
+        rsvp = !!event['rsvp']
         rsvp_change = tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
         tc.topic.custom_fields['event_rsvp'] = rsvp if rsvp_change
 
@@ -303,7 +296,8 @@ after_initialize do
           going_max_change = tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
           tc.topic.custom_fields['event_going_max'] = going_max if going_max_change
 
-          going = event['going'] ? event['going'].join(',') : ''
+          goingNames = event['going']
+          going = User.where(username: goingNames).pluck(:id)
           going_change = tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
           tc.topic.custom_fields['event_going'] = going if going_change
         end
@@ -337,7 +331,7 @@ after_initialize do
       topic.custom_fields['event_timezone'] = timezone if timezone
       topic.custom_fields['event_rsvp'] = rsvp if rsvp
       topic.custom_fields['event_going_max'] = going_max if going_max
-      topic.custom_fields['event_going'] = going if going
+      topic.custom_fields['event_going'] = User.where(username: going).pluck(:id) if going
       topic.custom_fields['event_version'] = event_version if event_version
 
       topic.save_custom_fields(true)

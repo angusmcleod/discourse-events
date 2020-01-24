@@ -1,20 +1,22 @@
 class CalendarEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
-  before_action :check_if_rsvp_enabled
+  before_action :check_if_rsvp_enabled, except: [:users]
 
   def add
-    prop = "event_#{rsvp_params[:type]}".freeze
+    prop = Hash.new
+    prop[:key] = "event_#{rsvp_params[:type]}".freeze
 
-    list = @topic.send(prop) || []
+    list = @topic.send(prop[:key]) || []
 
     if @topic.event_going_max && list.length >= @topic.event_going_max
       raise I18n.t('event_rsvp.errors.going_max')
     end
 
-    list.push(rsvp_params[:username])
+    list.push(User.find_by(username: rsvp_params[:usernames].first).id)
 
-    @topic.custom_fields[prop] = list.join(',')
+    @topic.custom_fields[prop[:key]] = list
+    prop[:value] = User.find(list).pluck(:username)
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -26,13 +28,14 @@ class CalendarEvents::RsvpController < ApplicationController
   end
 
   def remove
-    prop = "event_#{rsvp_params[:type]}".freeze
+    prop = Hash.new
+    prop[:key] = "event_#{rsvp_params[:type]}".freeze
 
-    list = @topic.send(prop) || []
+    list = @topic.send(prop[:key]) || []
+    list.delete(User.find_by(username: rsvp_params[:usernames].first).id)
 
-    list.delete(rsvp_params[:username])
-
-    @topic.custom_fields[prop] = list.join(',')
+    @topic.custom_fields[prop[:key]] = list
+    prop[:value] = User.find(list).pluck(:username)
 
     if topic.save_custom_fields(true)
       push_update(topic, prop)
@@ -43,14 +46,27 @@ class CalendarEvents::RsvpController < ApplicationController
     end
   end
 
+  def users
+    unless rsvp_params[:usernames].any?
+      render_json_dump "[]"
+    else
+      begin
+        users = User.where(username: rsvp_params[:usernames])
+        render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
+      rescue
+        render_json_dump "[]"
+      end
+    end
+  end
+
   private
 
   def rsvp_params
-    params.permit(:topic_id, :type, :username)
+    params.permit(:topic_id, :type, :usernames =>[])
   end
 
   def check_user_and_find_topic
-    unless User.exists?(username: rsvp_params[:username])
+    unless User.exists?(username: rsvp_params[:usernames].first)
       raise Discourse::InvalidAccess.new
     end
 
@@ -76,7 +92,7 @@ class CalendarEvents::RsvpController < ApplicationController
       type: "rsvp"
     }
 
-    msg[prop.to_sym] = topic.send(prop)
+    msg[prop[:key]] = prop[:value]
 
     MessageBus.publish(channel, msg)
   end

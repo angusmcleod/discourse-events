@@ -7,12 +7,12 @@ export default Ember.Component.extend({
   classNames: 'event-rsvp',
   goingSaving: false,
 
-  @computed('currentUser', 'topic.event_going')
+  @computed('currentUser', 'topic.event.going')
   userGoing(user, eventGoing) {
     return eventGoing && eventGoing.indexOf(user.username) > -1;
   },
 
-  @computed('topic.event_going')
+  @computed('topic.event.going')
   goingTotal(eventGoing) {
     if (eventGoing) {
       return eventGoing.length;
@@ -23,13 +23,7 @@ export default Ember.Component.extend({
 
   @computed('userGoing')
   goingClasses(userGoing) {
-    let classes = '';
-
-    if (userGoing) {
-      classes += 'btn-primary';
-    }
-
-    return classes;
+    return userGoing ? 'btn-primary' : '';
   },
 
   @computed('currentUser', 'eventFull')
@@ -67,18 +61,18 @@ export default Ember.Component.extend({
     return false;
   },
 
-  updateTopic(username, action, type) {
-    let existing = this.get(`topic.event_${type}`);
+  updateTopic(userName, action, type) {
+    let existing = this.get(`topic.event.${type}`);
     let list = existing ? existing : [];
 
     if (action === 'add') {
-      list.push(username);
+      list.push(userName);
     } else {
-      list.splice(list.indexOf(username), 1);
+      list.splice(list.indexOf(userName), 1);
     }
 
-    this.set(`topic.event_${type}`, list);
-    this.notifyPropertyChange(`topic.event_${type}`);
+    this.set(`topic.event.${type}`, list);
+    this.notifyPropertyChange(`topic.event.${type}`);
   },
 
   save(user, action, type) {
@@ -89,7 +83,7 @@ export default Ember.Component.extend({
       data: {
         topic_id: this.get('topic.id'),
         type,
-        username: user.username
+        usernames: [user.username]
       }
     }).then((result) => {
       if (result.success) {
@@ -97,7 +91,7 @@ export default Ember.Component.extend({
       }
     }).catch(popupAjaxError).finally(() => {
       this.set(`${type}Saving`, false);
-    })
+    });
   },
 
   actions: {

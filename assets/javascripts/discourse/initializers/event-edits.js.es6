@@ -299,18 +299,21 @@ export default {
         @observes('model.id')
         subscribeCalendarEvents() {
           this.unsubscribeCalendarEvents();
-
+          
           this.messageBus.subscribe(`/calendar-events/${this.get('model.id')}`, data => {
             const topic = this.get('model');
             const currentUser = this.get('currentUser');
-
+            
             if (data.current_user_id === currentUser.id) return;
-
+            
             switch (data.type) {
               case "rsvp": {
-                let prop = Object.keys(data).filter((p) => p.indexOf('event_') > -1);
-                this.set(`model.${prop}`, data[prop]);
-                this.notifyPropertyChange(`model.${prop}`);
+                let prop = Object.keys(data).filter((p) => p.indexOf('event') > -1);
+                if (prop && prop[0]) {
+                  let key = prop[0].split('_').join('.');
+                  this.set(`model.${key}`, data[prop[0]]);
+                  this.notifyPropertyChange(`model.${prop}`);
+                }
               }
             }
           });

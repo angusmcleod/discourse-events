@@ -1,8 +1,10 @@
 import { default as computed, observes, on } from 'ember-addons/ember-computed-decorators';
 import { getOwner } from 'discourse-common/lib/get-owner';
-import User from 'discourse/models/user';
+import { ajax } from 'discourse/lib/ajax';
+import ModalFunctionality from "discourse/mixins/modal-functionality";
+import { extractError } from 'discourse/lib/ajax-error';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(ModalFunctionality, {
   filter: null,
   userList: [],
   type: 'going',
@@ -14,24 +16,31 @@ export default Ember.Controller.extend({
     const type = this.get('type');
     const topic = this.get('model.topic');
 
-    let usernames = topic.get(`event_${type}`);
+    let usernames = topic.get(`event.${type}`);
 
     if (!usernames || !usernames.length) return;
 
     let userList = [];
 
-    usernames.forEach((username, index) => {
-      User.findByUsername(username).then((user) => {
-        userList.push(user);
-
-        if (userList.length == usernames.length) {
-          this.setProperties({
-            userList,
-            loadingList: false
-          })
-        }
-      })
-    });
+    ajax('/calendar-events/rsvp/users', {
+      data:{
+        usernames
+      }
+    }).then((response) => {
+      let userList = response.users || [];
+      
+      this.setProperties({
+        userList,
+        loadingList: false
+      });
+    }).catch(e => {
+      this.flash(extractError(e),'alert-error');
+    })
+    .finally(()=>{
+      this.setProperties({
+        loadingList: false
+      });
+    })
   },
 
   @computed('type')
@@ -48,7 +57,7 @@ export default Ember.Controller.extend({
     const currentUser = this.get('currentUser');
     if (currentUser) {
       userList.sort((a, b) => {
-        if (a.id === currentUser.id) {
+        if (a.username === currentUser.username) {
           return -1;
         } else {
           return 1;
