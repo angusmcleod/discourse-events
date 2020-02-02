@@ -10,7 +10,14 @@
     </div>
     {{#unless allDay}}
       <div class="control">
-        {{combo-box value=timezone valueAttribute="value" content=timezones none='add_event.no_timezone' filterable=true}}
+        {{combo-box
+          value=timezone
+          valueProperty="value"
+          content=timezones
+          filterable=true
+          options=(hash
+            none='add_event.no_timezone'
+          )}}
       </div>
     {{/unless}}
   </div>

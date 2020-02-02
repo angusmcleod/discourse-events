@@ -3,7 +3,10 @@ import computed from 'ember-addons/ember-computed-decorators';
 
 export default DropdownSelectBoxComponent.extend({
   classNames: ["events-calendar-subscription"],
-  rowComponent: "events-calendar-subscription-row",
+  
+  modifyComponentForRow() {
+    return "events-calendar-subscription-row";
+  },
 
   @computed('authParams')
   content(authParams) {
