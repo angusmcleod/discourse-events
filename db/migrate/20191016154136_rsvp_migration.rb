@@ -4,7 +4,12 @@ class RsvpMigration < ActiveRecord::Migration[5.2]
 
     custom_fields.each do |custom_field|
       going = custom_field.value.split ','
-      next if going.empty?
+
+      if going.empty?
+        custom_field.value = []
+        custom_field.save
+        next
+      end
 
       going_ids = User.where(username: going).pluck(:id)
       custom_field.value = going_ids.to_json
