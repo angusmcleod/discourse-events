@@ -5,15 +5,16 @@
 {{/each}}
 
 {{#each days as |day index|}}
-  {{events-calendar-day day=day
-                        currentDate=currentDate
-                        currentMonth=currentMonth
-                        selectDate='selectDate'
-                        canSelectDate=canSelectDate
-                        expandedDate=expandedDate
-                        setExpandedDate=(action 'setExpandedDate')
-                        showEvents=showEvents
-                        topics=topics
-                        responsive=responsive
-                        index=index}}
+  {{events-calendar-day 
+    day=day
+    currentDate=currentDate
+    currentMonth=currentMonth
+    selectDate='selectDate'
+    canSelectDate=canSelectDate
+    expandedDate=expandedDate
+    setExpandedDate=(action 'setExpandedDate')
+    showEvents=showEvents
+    topics=topics
+    responsive=responsive
+    index=index}}
 {{/each}}

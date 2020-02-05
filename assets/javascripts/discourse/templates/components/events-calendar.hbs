@@ -19,20 +19,19 @@
       none='events_calendar.subscribe'
       category=category
       userApiKeys=userApiKeys
-      options=(hash
-       showFullTitle=showFullTitle
-       icon="rss"
-      )}}
+      showFullTitle=showFullTitle
+      icon="rss"}}
   {{/if}}
 </div>
-{{events-calendar-body days=days
-                       topics=topics
-                       currentMonth=currentMonth
-                       currentDate=currentDate
-                       selectDate='selectDate'
-                       canSelectDate=canSelectDate
-                       showEvents=showEvents
-                       responsive=responsive}}
+{{events-calendar-body 
+  days=days
+  topics=topics
+  currentMonth=currentMonth
+  currentDate=currentDate
+  selectDate='selectDate'
+  canSelectDate=canSelectDate
+  showEvents=showEvents
+  responsive=responsive}}
 {{#if eventsBelow}}
   <div class="events-below">
     {{events-calendar-events events=dateEvents responsive=responsive}}
