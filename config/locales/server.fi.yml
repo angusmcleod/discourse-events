@@ -1,0 +1,48 @@
+fi:
+  site_settings:
+    events_enabled: "Salli tapahtumien lisääminen ketjuihin kaikilla alueilla."
+    events_agenda_enabled: "Näytä navigaatiolinkki tapahtumalistaukseen kaikilla alueilla."
+    events_calendar_enabled: "Näytä navigaatiolinkki kalenteriin kaikilla alueilla."
+    events_add_to_calendar: "Näytä lisää kalenteriin -nappula tapahtumaketjuissa."
+    events_event_label_icon: "Tapahtumaikonin FontAwesome luokka. Saatat joutua lisäämään tämän ikonin myös sivustoasetuksien kohtaan `svg icon subset`."
+    events_event_label_no_text: "Älä näytä tekstiä lisää tapahtuma -nappuloissa."
+    events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman ajankohdalle (ketjun otsikon alla)."
+    events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman ajankohdalle ketjulistauksessa."
+    events_event_label_short_only_start: "Näytä vain tapahtuman alkamispäivä ketjulistauksessa."
+    events_event_label_short_after_title: "Näytä tapahtuman ajankohta otsikon alla ketjulistauksessa."
+    events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman kellonajalle kalenterinäkymässä."
+    events_remove_past_from_map: "Piilota menneet tapahtumat karttanäkymästä <a href='https://github.com/angusmcleod/discourse-locations'>Locations</a>-lisäosassa."
+    events_remove_past_from_agenda: "Piilota menneet tapahtumat tapahtumalistauksessa."
+    events_remove_past_from_calendar: "Piilota menneet tapahtumat kalenterissa."
+    events_agenda_filter_closed: "Piilota suljetut ketjut tapahtumalistauksessa."
+    events_calendar_filter_closed: "Piilota suljetut ketjut kalenterissa."
+    events_timezone_default: "Oletusaikavyöhyke. Oletuksena käytetään käyttäjän asettamaa aikavyöhykettä, mikäli arvoa ei ole asetettu."
+    events_timezone_display: "Aikavyöhyke, jonka mukaan tapahtumien ajankohta näytetään."
+    events_timezone_display_default: "Oletusaikavyöhyke"
+    events_timezone_display_event: "Tapahtuman aikavyöhyke, jos asetettu"
+    events_timezone_display_different: "Tapahtuman aikavyöhyke, jos asetettu ja eri kuin oletusaikavyöhyke"
+    events_timezone_include_in_topic: "Näytä aikavyöhyke ketjun otsikon alla."
+    events_timezone_include_in_topic_list: "Näytä aikavyöhyke ketjulistauksessa."
+    events_timezone_include_in_email: "Näytä aikavyöhyke sähköposteissa."
+    events_timezone_format: "<a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman aikavyöhykkeelle. Ohittaa Rails-muotoilun."
+    events_timezone_rails_format: "Käytä <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails-muotoilua</a> tapahtuman aikavyöhykkeelle."
+    events_hamburger_menu_calendar_link: "Lisää hampurilaisvalikkoon linkki kalenteriin."
+    events_hamburger_menu_agenda_link: "Lisää hampurilaisvalikkoon linkki tapahtumalistaukseen."
+    events_min_trust_to_create: "Alin luottamustaso, jolla käyttäjä voi luoda tapahtuman."
+    events_rsvp: "Ota käyttöön tapahtumiin ilmoittautuminen."
+    events_webcal_always_add_user_api_key: "Lisää aina käyttäjän api-avain webcal-osoitteisiin."
+
+  rss_description:
+    events: "Tapahtumat"
+
+  webcal_description:
+    events: "Tapahtumat"
+
+  event_email:
+    topic_type_match: "keskustelutilaisuus"
+    topic_type_sub: "tapahtuma"
+
+  event_rsvp:
+    errors:
+      not_enabled: "Ilmoittautuminen ei ole käytössä."
+      going_max: "Suurin mahdollinen osallistujamäärä saavutettu."
