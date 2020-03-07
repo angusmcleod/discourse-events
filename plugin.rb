@@ -308,10 +308,8 @@ after_initialize do
       end
     end
 
-  DiscourseEvent.on(:post_created) do |post, opts, user|
-    if post.is_first_post? && opts[:event]
-      topic = Topic.find(post.topic_id)
-
+  DiscourseEvent.on(:topic_created) do |topic, opts, user|
+    if opts[:event]
       guardian = Guardian.new(user)
       guardian.ensure_can_create_event!(topic.category)
 
