@@ -27,7 +27,7 @@ register_svg_icon "rss" if respond_to?(:register_svg_icon)
 load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
 load File.expand_path('../models/events_timezone_display_site_setting.rb', __FILE__)
 
-DiscourseEvent.on(:locations_ready) do
+on(:locations_ready) do
   Locations::Map.add_list_filter do |topics, options|
     if SiteSetting.events_remove_past_from_map
       topics = topics.where("NOT EXISTS (SELECT * FROM topic_custom_fields
@@ -308,7 +308,7 @@ after_initialize do
       end
     end
 
-  DiscourseEvent.on(:topic_created) do |topic, opts, user|
+  on(:topic_created) do |topic, opts, user|
     if opts[:event]
       guardian = Guardian.new(user)
       guardian.ensure_can_create_event!(topic.category)
