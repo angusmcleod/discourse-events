@@ -41,7 +41,6 @@ export default Ember.Component.extend({
         }
       });
 
-      controller.setup();
     },
 
     removeEvent() {
