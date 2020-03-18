@@ -309,7 +309,7 @@ after_initialize do
     end
 
   DiscourseEvent.on(:post_created) do |post, opts, user|
-    if post.is_first_post? && ( opts[:event] || opts[:custom_fields][:wizard_event])
+    if post.is_first_post? && opts[:event]
       topic = Topic.find(post.topic_id)
 
       guardian = Guardian.new(user)
@@ -630,12 +630,5 @@ after_initialize do
     get "c/:parent_category/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
-  end
-end
-
-on(:custom_wizard_ready) do
-  if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
-    CustomWizard::Field.add_assets('event', 'discourse-events', ['components','controllers' ,'templates', 'lib'])
-    add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
   end
 end
