@@ -1,0 +1,86 @@
+  <div class="add-event-controls">
+    <div class="control">
+      {{input type='checkbox' checked=event.endEnabled}}
+      <span>{{i18n 'add_event.end_enabled'}}</span>
+    </div>
+    <div class="control">
+      {{input type='checkbox' checked=event.allDay}}
+      <span>{{i18n 'add_event.all_day'}}</span>
+    </div>
+    {{#unless event.allDay}}
+      <div class="control">
+        {{combo-box value=event.timezone valueAttribute="value" content=timezones none='add_event.no_timezone' filterable=true}}
+      </div>
+    {{/unless}}
+  </div>
+  <div class="start-card date-time-card">
+    <span class="modal-sub-title">
+      {{i18n "add_event.event_start"}}
+    </span>
+    {{input-tip validation=startDateTimeValidation}}
+	  <div class="modal-date-time-set">
+      <div class="modal-date-area">
+        <label class="input-group-label">
+          {{i18n "add_event.event_date"}}
+        </label>
+        {{events-date-picker value=event.startDate containerId="date-container-start"}}
+      </div>
+      {{#unless event.allDay}}
+        <div class="modal-time-area">
+          <label class="input-group-label">
+            {{i18n "add_event.event_time"}}
+          </label>
+          <input type="text" id="start-time-picker"/>
+        </div>
+      {{/unless}}
+    </div>
+    <div id="date-container-start"/>
+  </div>
+  {{#if event.endEnabled}}
+    <div class="end-card date-time-card">
+      <span class="modal-sub-title">
+        {{i18n "add_event.event_end"}}
+      </span>
+      {{input-tip validation=scheduleDateTimeValidation}}
+  	  <div class="modal-date-time-set">
+        <div class="modal-date-area">
+          <label class="input-group-label">
+            {{i18n "add_event.event_date"}}
+          </label>
+          {{events-date-picker value=event.endDate containerId="date-container-end"}}
+        </div>
+        {{#unless event.allDay}}
+          <div class="modal-time-area">
+            <label class="input-group-label">
+              {{i18n "add_event.event_time"}}
+            </label>
+            <input type="text" id="end-time-picker"/>
+          </div>
+        {{/unless}}
+      </div>
+      <div id="date-container-end"/>
+    </div>
+  {{/if}}
+  {{#if siteSettings.events_rsvp}}
+    <div class="rsvp">
+      {{input type='checkbox' checked=event.rsvpEnabled}}
+      <span>{{i18n 'add_event.rsvp_enabled'}}</span>
+
+      {{#if event.rsvpEnabled}}
+        <div class="going-max">
+          <span>{{i18n 'add_event.going_max'}}</span>
+          {{input type='number' value=event.goingMax}}
+        </div>
+
+        <div class="going-list">
+          <span>{{i18n 'add_event.going'}}</span>
+          {{user-selector usernames=event.usersGoing class="user-selector" placeholderKey="composer.users_placeholder"}}
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
+
+  <div class="modal-footer">
+  {{d-button action="addEvent" class="btn-primary" label="add_event.event_add" disabled=notReady}}
+  <a class="clear" {{action 'clear'}}>{{i18n 'add_event.event_clear'}}</a>
+</div>
