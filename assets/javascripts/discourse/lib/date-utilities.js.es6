@@ -414,4 +414,50 @@ let calendarRange = function(month, year) {
   };
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };
+const addEvent = (eventParams) => {
+    let event = null;
+    if (eventParams.startDate) {
+      let start = moment();
+
+      start.tz(eventParams.timezone);
+
+      const sYear = moment(eventParams.startDate).year();
+      const sMonth = moment(eventParams.startDate).month();
+      const sDate = moment(eventParams.startDate).date();
+      let sHour = event.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').hour();
+      let sMin = event.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').minute();
+
+      event = {
+        timezone: eventParams.timezone,
+        all_day: eventParams.allDay,
+        start: start.year(sYear).month(sMonth).date(sDate).hour(sHour).minute(sMin).second(0).millisecond(0).toISOString()
+      };
+
+      if (eventParams.endEnabled) {
+        let end = moment();
+        if (eventParams.timezone) end.tz(eventParams.timezone);
+
+        const eYear = moment(eventParams.endDate).year();
+        const eMonth = moment(eventParams.endDate).month();
+        const eDate = moment(eventParams.endDate).date();
+        let eHour = eventParams.allDay ? 0 : moment(event.endTime, 'HH:mm').hour();
+        let eMin = eventParams.allDay ? 0 : moment(event.endTime, 'HH:mm').minute();
+
+        event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).second(0).millisecond(0).toISOString();
+      }
+    }
+
+    if (eventParams.rsvpEnabled) {
+      event['rsvp'] = true;
+      if (eventParams.goingMax) {
+        event['going_max'] = eventParams.goingMax;
+      }
+
+      if (eventParams.usersGoing) {
+        event['going'] = eventParams.usersGoing.split(',')
+      }
+    }
+
+    return event;
+}
+export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, addEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };

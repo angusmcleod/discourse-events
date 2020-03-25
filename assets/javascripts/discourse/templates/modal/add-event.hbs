@@ -1,5 +1,8 @@
 {{#d-modal-body class="add-event-modal" id="event-modal" title=title}}
-{{event-form event=model.event timezone=timezone hideModal=(action 'hideModal')}}
+  {{event-form event=model.event timezone=timezone}}
 {{/d-modal-body}}
 
-
+<div class="modal-footer">
+  {{d-button action="hideModal" class="btn-primary" label="add_event.event_add" disabled=notReady}}
+  <a class="clear" {{action 'clear'}}>{{i18n 'add_event.event_clear'}}</a>
+</div>

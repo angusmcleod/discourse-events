@@ -131,7 +131,7 @@ nextInterval() {
   return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
 },
 
-@discourseComputed
+@discourseComputed()
 timezones() {
   return this.site.event_timezones.map((tz) => {
     return {
@@ -160,64 +160,5 @@ actions: {
     this.set("timezone", null);
     this.toggleProperty('showTimezone');
   }, 
-
-  addEvent() {
-    const startDate = this.get('event.startDate');
-    let event = null;
-
-    if (startDate) {
-      let start = moment();
-
-      const timezone = this.get('timezone');
-      start.tz(timezone);
-
-      const allDay = this.get('event.allDay');
-      const sYear = moment(startDate).year();
-      const sMonth = moment(startDate).month();
-      const sDate = moment(startDate).date();
-      const startTime = this.get('event.startTime');
-      let sHour = allDay ? 0 : moment(startTime, 'HH:mm').hour();
-      let sMin = allDay ? 0 : moment(startTime, 'HH:mm').minute();
-
-      event = {
-        timezone,
-        all_day: allDay,
-        start: start.year(sYear).month(sMonth).date(sDate).hour(sHour).minute(sMin).second(0).millisecond(0).toISOString()
-      };
-
-      const endEnabled = this.get('event.endEnabled');
-      if (endEnabled) {
-        let end = moment();
-        if (timezone) end.tz(timezone);
-
-        const endDate = this.get('event.endDate');
-        const eYear = moment(endDate).year();
-        const eMonth = moment(endDate).month();
-        const eDate = moment(endDate).date();
-        const endTime = this.get('event.endTime');
-        let eHour = allDay ? 0 : moment(endTime, 'HH:mm').hour();
-        let eMin = allDay ? 0 : moment(endTime, 'HH:mm').minute();
-
-        event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).second(0).millisecond(0).toISOString();
-      }
-    }
-
-    if (this.get('event.rsvpEnabled')) {
-      event['rsvp'] = true;
-      let goingMax = this.get('event.goingMax');
-      if (goingMax) {
-        event['going_max'] = goingMax;
-      }
-
-      let usersGoing = this.get('event.usersGoing');
-      if (usersGoing) {
-        event['going'] = usersGoing.split(',')
-      }
-    }
-    this.set('event',event);
-    this.resetProperties();
-    this.sendAction("hideModal");
-  }
-
 }
 });
