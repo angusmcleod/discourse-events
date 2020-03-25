@@ -460,4 +460,5 @@ const addEvent = (eventParams) => {
 
     return event;
 }
+
 export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, addEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };
