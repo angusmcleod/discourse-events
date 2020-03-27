@@ -9,7 +9,7 @@ import { setupEvent, timezoneLabel, getTimezone } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'HH:mm';
-export default Ember.Component.extend({
+export default Component.extend({
   
   title: 'add_event.modal_title',
   endEnabled: false,
@@ -133,7 +133,8 @@ nextInterval() {
 
 @discourseComputed()
 timezones() {
-  return this.site.event_timezones.map((tz) => {
+  const event_timezones = this.get('eventTimezones') || this.site.event_timezones; 
+  return event_timezones.map((tz) => {
     return {
       value: tz.value,
       name: timezoneLabel(tz.value)

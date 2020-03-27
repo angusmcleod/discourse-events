@@ -424,8 +424,8 @@ const addEvent = (eventParams) => {
       const sYear = moment(eventParams.startDate).year();
       const sMonth = moment(eventParams.startDate).month();
       const sDate = moment(eventParams.startDate).date();
-      let sHour = event.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').hour();
-      let sMin = event.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').minute();
+      let sHour = eventParams.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').hour();
+      let sMin = eventParams.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').minute();
 
       event = {
         timezone: eventParams.timezone,
