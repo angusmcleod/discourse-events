@@ -271,6 +271,8 @@ after_initialize do
   )
 
   ::PostRevisor.track_topic_field(:event) do |tc, event|
+      event = event.present? ? event : {}
+    
       if tc.guardian.can_edit_event?(tc.topic.category)
         event_start = event['start'] ? event['start'].to_datetime.to_i : nil
         start_change = tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
