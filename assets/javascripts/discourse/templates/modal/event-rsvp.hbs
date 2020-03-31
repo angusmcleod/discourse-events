@@ -20,11 +20,12 @@
           <li>
             {{#user-info user=user}}
               {{#if user.can_send_private_message_to_user}}
-                {{d-button class='btn compose-pm'
-                           action="composePrivateMessage"
-                           actionParam=user
-                           icon="envelope"
-                           label='user.private_message'}}
+                {{d-button
+                  class='btn compose-pm'
+                  action="composePrivateMessage"
+                  actionParam=user
+                  icon="envelope"
+                  label='user.private_message'}}
               {{/if}}
             {{/user-info}}
           </li>
