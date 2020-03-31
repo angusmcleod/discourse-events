@@ -40,7 +40,6 @@ export default Ember.Component.extend({
           update: (event) => this.set('event', event)
         }
       });
-
     },
 
     removeEvent() {

@@ -440,8 +440,8 @@ const addEvent = (eventParams) => {
         const eYear = moment(eventParams.endDate).year();
         const eMonth = moment(eventParams.endDate).month();
         const eDate = moment(eventParams.endDate).date();
-        let eHour = eventParams.allDay ? 0 : moment(event.endTime, 'HH:mm').hour();
-        let eMin = eventParams.allDay ? 0 : moment(event.endTime, 'HH:mm').minute();
+        let eHour = eventParams.allDay ? 0 : moment(eventParams.endTime, 'HH:mm').hour();
+        let eMin = eventParams.allDay ? 0 : moment(eventParams.endTime, 'HH:mm').minute();
 
         event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).second(0).millisecond(0).toISOString();
       }

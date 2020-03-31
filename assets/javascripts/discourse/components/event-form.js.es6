@@ -1,10 +1,9 @@
 import Component from "@ember/component";
 import {
-  on,
   observes,
   default as discourseComputed
 } from "discourse-common/utils/decorators";
-import { A } from '@ember/array';
+import { scheduleOnce } from "@ember/runloop";
 import { setupEvent, timezoneLabel, getTimezone } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -77,7 +76,7 @@ export default Component.extend({
 
   setupTimePicker(type) {
     const time = this.get(`event.${type}Time`);
-    Ember.run.scheduleOnce('afterRender', this, () => {
+    scheduleOnce('afterRender', this, () => {
       const $timePicker = $(`#${type}-time-picker`);
       $timePicker.timepicker({ timeFormat: 'H:i' });
       $timePicker.timepicker('setTime', time);
@@ -85,7 +84,7 @@ export default Component.extend({
     });
   },
 
-@observes('event.endEnabled')
+  @observes('event.endEnabled')
   setupOnEndEnabled() {
     const endEnabled = this.get('event.endEnabled');
     if (endEnabled) {
@@ -125,11 +124,6 @@ export default Component.extend({
     }
   },
 
-  nextInterval() {
-    const ROUNDING = 30 * 60 * 1000;
-    return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
-  },
-
   @discourseComputed()
   timezones() {
     const event_timezones = this.get('eventTimezones') || this.site.event_timezones; 
@@ -141,24 +135,8 @@ export default Component.extend({
     });
   },
 
-  resetProperties() {
-    this.set('event', {});
-  },
   nextInterval() {
     const ROUNDING = 30 * 60 * 1000;
     return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
   },
-
-  actions: {
-
-    clear() {
-      this.resetProperties();
-      this.get('model.update')(null);
-    },
-
-    clearTimezone() {
-      this.set("timezone", null);
-      this.toggleProperty('showTimezone');
-    },
-  }
 });
