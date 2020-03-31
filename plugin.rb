@@ -45,7 +45,6 @@ end
 
 after_initialize do
   add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
-  add_to_serializer(:custom_wizard_field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
 
   Category.register_custom_field_type('events_enabled', :boolean)
   Category.register_custom_field_type('events_agenda_enabled', :boolean)
@@ -638,5 +637,6 @@ end
 on(:custom_wizard_ready) do
   if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
     CustomWizard::Field.add_assets('event', 'discourse-events', ['components', 'templates', 'lib'])
+    add_to_serializer(:custom_wizard_field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
 end

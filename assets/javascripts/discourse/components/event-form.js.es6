@@ -3,7 +3,7 @@ import {
   observes,
   default as discourseComputed
 } from "discourse-common/utils/decorators";
-import { scheduleOnce } from "@ember/runloop";
+import { scheduleOnce, later } from "@ember/runloop";
 import { setupEvent, timezoneLabel, getTimezone } from '../lib/date-utilities';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -76,11 +76,13 @@ export default Component.extend({
 
   setupTimePicker(type) {
     const time = this.get(`event.${type}Time`);
-    scheduleOnce('afterRender', this, () => {
-      const $timePicker = $(`#${type}-time-picker`);
-      $timePicker.timepicker({ timeFormat: 'H:i' });
-      $timePicker.timepicker('setTime', time);
-      $timePicker.change(() => this.set(`event.${type}Time`, $timePicker.val()));
+    later(this, () => {
+      scheduleOnce('afterRender', this, () => {
+        const $timePicker = $(`#${type}-time-picker`);
+        $timePicker.timepicker({ timeFormat: 'H:i' });
+        $timePicker.timepicker('setTime', time);
+        $timePicker.change(() => this.set(`event.${type}Time`, $timePicker.val()));
+      });
     });
   },
 
