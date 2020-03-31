@@ -559,6 +559,10 @@ after_initialize do
             event[:end] = (event[:end].to_date+1).strftime "%Y%m%d" if event[:end]
           end
 
+          if event[:going].present?
+            going_emails = User.where(username: event[:going]).map(&:email)
+          end
+
           cal.event do |e|
             e.dtstart = Icalendar::Values::DateOrDateTime.new(event[:start], 'tzid' => tzid).call
             if event[:end]
@@ -569,6 +573,12 @@ after_initialize do
             e.url = t.url #most calendar clients don't display this field
             e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/,'')
             e.sequence = event[:version]
+
+            if going_emails
+              going_emails.each do |email|
+                e.append_attendee "mailto:#{email}"
+              end
+            end
           end
         end
       end
