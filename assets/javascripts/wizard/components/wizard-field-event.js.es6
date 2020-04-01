@@ -11,7 +11,7 @@ export default Component.extend({
   inputFields: ['event.startDate', 'event.startTime', 'event.endDate', 'event.endTime', 'event.endEnabled', 'event.allDay', 'event.rsvpEnabled','event.usersGoing', 'event.goingMax' ],
 
   @on('init')
-  setTimezones() {
+  setup() {
     this.set('eventTimezones', this.get('field.event_timezones'));
     this.set('event', {});
 
