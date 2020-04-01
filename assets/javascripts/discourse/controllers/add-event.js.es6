@@ -13,6 +13,9 @@ export default Ember.Controller.extend({
       }
 
       this.send('closeModal');
+    },
+    validateEvent(status) {
+      this.set('notReady', !status);
     }
   }
 });

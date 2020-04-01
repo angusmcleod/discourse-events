@@ -23,6 +23,11 @@ export default Component.extend({
     return moment(startTime, 'HH:mm').isAfter(moment(endTime, 'HH:mm'));
   },
 
+  @observes('event.startDate', 'event.startTime', 'event.endDate', 'event.endTime', 'event.endEnabled', 'event.allDay')
+  validate(){
+    this.validateEvent(!this.get('notReady'));
+  },
+
   didInsertElement() {
     const event = this.get('event');
     const { start, end, allDay, multiDay, timezone } = setupEvent(event, { useEventTimezone: true });

@@ -1,5 +1,5 @@
 {{#d-modal-body class="add-event-modal" id="event-modal" title=title}}
-  {{event-form event=model.event notReady=notReady}}
+  {{event-form event=model.event validateEvent=(action 'validateEvent')}}
 {{/d-modal-body}}
 
 <div class="modal-footer">
