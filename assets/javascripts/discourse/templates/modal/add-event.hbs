@@ -1,5 +1,7 @@
 {{#d-modal-body class="add-event-modal" id="event-modal" title=title}}
-  {{event-form event=model.event validateEvent=(action 'validateEvent')}}
+  {{event-form
+    event=model.event
+    updateEvent=(action 'updateEvent')}}
 {{/d-modal-body}}
 
 <div class="modal-footer">

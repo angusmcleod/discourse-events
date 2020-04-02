@@ -3,18 +3,16 @@ import { addEvent } from '../lib/date-utilities';
 export default Ember.Controller.extend({
   actions: {
     clear() {
-      this.set('model.event', null);
-      this.get('model.update')(null);
+      this.set('bufferedEvent', null);
     },
+    
     saveEvent(){
-      if(this.get('model.event')) {
-        const updatedEvent = addEvent(this.get('model.event'));
-        this.get('model.update')(updatedEvent);
-      }
-
+      this.get('model.update')(this.bufferedEvent);
       this.send('closeModal');
     },
-    validateEvent(status) {
+    
+    updateEvent(event, status) {
+      this.set('bufferedEvent', event);
       this.set('notReady', !status);
     }
   }

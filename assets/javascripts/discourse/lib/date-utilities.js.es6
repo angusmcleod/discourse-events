@@ -414,51 +414,120 @@ let calendarRange = function(month, year) {
   };
 };
 
-const addEvent = (eventParams) => {
-    let event = null;
-    if (eventParams.startDate) {
-      let start = moment();
+const formDateFormat = 'YYYY-MM-DD';
+const formTimeFormat = 'HH:mm';
 
-      start.tz(eventParams.timezone);
+function setupEventForm(event) {
+  const { start, end, allDay, multiDay, timezone } = setupEvent(event, { useEventTimezone: true });
+  let props = {};
 
-      const sYear = moment(eventParams.startDate).year();
-      const sMonth = moment(eventParams.startDate).month();
-      const sDate = moment(eventParams.startDate).date();
-      let sHour = eventParams.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').hour();
-      let sMin = eventParams.allDay ? 0 : moment(eventParams.startTime, 'HH:mm').minute();
+  if (allDay) {
+    let startDate = start.format(formDateFormat);
+    let endDate = end ? end.format(formDateFormat) : startDate;
+    let endEnabled = moment(endDate).isAfter(startDate, 'day');
 
-      event = {
-        timezone: eventParams.timezone,
-        all_day: eventParams.allDay,
-        start: start.year(sYear).month(sMonth).date(sDate).hour(sHour).minute(sMin).second(0).millisecond(0).toISOString()
-      };
+    props = {
+      allDay,
+      startDate,
+      endDate,
+      endEnabled,
+    };
+  } else if (start) {
+    props['startDate'] = start.format(formDateFormat);
+    props['startTime'] = start.format(formTimeFormat);
 
-      if (eventParams.endEnabled) {
-        let end = moment();
-        if (eventParams.timezone) end.tz(eventParams.timezone);
+    if (end) {
+      let endDate = end.format(formDateFormat);
+      let endTime = end.format(formTimeFormat);
+      props['endDate'] = endDate;
+      props['endTime'] = endTime;
+      props['endEnabled'] = true;
+    }
+  } else {
+    props['startDate'] = moment().format(formDateFormat);
+    props['startTime'] = this.nextInterval().format(formTimeFormat);
+  }
 
-        const eYear = moment(eventParams.endDate).year();
-        const eMonth = moment(eventParams.endDate).month();
-        const eDate = moment(eventParams.endDate).date();
-        let eHour = eventParams.allDay ? 0 : moment(eventParams.endTime, 'HH:mm').hour();
-        let eMin = eventParams.allDay ? 0 : moment(eventParams.endTime, 'HH:mm').minute();
+  props['timezone'] = timezone;
 
-        event['end'] = end.year(eYear).month(eMonth).date(eDate).hour(eHour).minute(eMin).second(0).millisecond(0).toISOString();
-      }
+  if (event && event.rsvp) {
+    props['rsvpEnabled'] = true;
+
+    if (event.going_max) {
+      props['goingMax'] = event.going_max;
     }
 
-    if (eventParams.rsvpEnabled) {
-      event['rsvp'] = true;
-      if (eventParams.goingMax) {
-        event['going_max'] = eventParams.goingMax;
-      }
-
-      if (eventParams.usersGoing) {
-        event['going'] = eventParams.usersGoing.split(',')
-      }
+    if (event.going) {
+      props['usersGoing'] = event.going.join(',');
     }
-
-    return event;
+  }
+  
+  return props;
 }
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, addEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };
+function compileDateTime(params, type) {
+  const year = moment(params[`${type}Date`]).year();
+  const month = moment(params[`${type}Date`]).month();
+  const date = moment(params[`${type}Date`]).date();
+  let hour = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').hour();
+  let min = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').minute();
+  
+  let dateTime = moment();
+  dateTime.tz(params.timezone);
+
+  return dateTime
+    .year(year)
+    .month(month)
+    .date(date)
+    .hour(hour)
+    .minute(min)
+    .second(0)
+    .millisecond(0)
+    .toISOString();
+}
+
+function compileEvent(params) {
+  let event = null;
+    
+  if (params.startDate) {
+    event = {
+      timezone: params.timezone,
+      all_day: params.allDay,
+      start: compileDateTime(params, 'start')
+    };
+
+    if (params.endEnabled) {
+      event.end = compileDateTime(params, 'end')
+    }
+  }
+
+  if (params.rsvpEnabled) {
+    event.rsvp = true;
+    
+    if (params.goingMax) {
+      event.going_max = params.goingMax;
+    }
+
+    if (params.usersGoing) {
+      event.going = params.usersGoing.split(',')
+    }
+  }
+  
+  return event;
+}
+
+export {
+  eventLabel,
+  googleUri,
+  icsUri,
+  eventsForDay,
+  setupEvent,
+  compileEvent,
+  setupEventForm,
+  timezoneLabel,
+  firstDayOfWeek,
+  calendarDays,
+  calendarRange, 
+  getTimezone,
+  formTimeFormat
+};

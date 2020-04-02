@@ -36,8 +36,11 @@ export default Ember.Component.extend({
     showAddEvent() {
       let controller = showModal('add-event', {
         model: {
-          event: this.get('event'),
-          update: (event) => this.set('event', event)
+          bufferedEvent: this.event,
+          event: this.event,
+          update: (event) => {
+            this.set('event', event)
+          }
         }
       });
     },
