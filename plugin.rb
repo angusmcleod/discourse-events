@@ -311,9 +311,11 @@ after_initialize do
     end
 
   DiscourseEvent.on(:post_created) do |post, opts, user|
-    if post.is_first_post? && (opts[:event]||opts[:topic_opts][:custom_fields]['event'])
+    is_wizard_event = !!(opts[:topic_opts] && opts[:topic_opts][:custom_fields] && opts[:topic_opts][:custom_fields]['event'])
+
+    if post.is_first_post? && (opts[:event] || is_wizard_event)
       topic = Topic.find(post.topic_id)
-      event_params = opts[:event]||opts[:topic_opts][:custom_fields]['event']
+      event_params = is_wizard_event ? opts[:topic_opts][:custom_fields]['event'] : opts[:event]
       guardian = Guardian.new(user)
       guardian.ensure_can_create_event!(topic.category)
       event = event_params.is_a?(String) ? ::JSON.parse(event_params) : event_params
