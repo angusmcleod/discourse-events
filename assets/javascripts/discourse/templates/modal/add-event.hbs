@@ -10,7 +10,12 @@
     </div>
     {{#unless allDay}}
       <div class="control">
-        {{combo-box value=timezone valueAttribute="value" content=timezones none='add_event.no_timezone' filterable=true}}
+        {{combo-box
+          value=timezone
+          valueProperty="value"
+          content=timezones
+          filterable=true
+          none='add_event.no_timezone'}}
       </div>
     {{/unless}}
   </div>
@@ -75,7 +80,10 @@
 
         <div class="going-list">
           <span>{{i18n 'add_event.going'}}</span>
-          {{user-selector usernames=usersGoing class="user-selector" placeholderKey="composer.users_placeholder"}}
+          {{user-selector
+            usernames=usersGoing
+            class="user-selector"
+            placeholderKey="composer.users_placeholder"}}
         </div>
       {{/if}}
     </div>
