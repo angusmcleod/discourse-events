@@ -16,10 +16,11 @@
       </div>
       {{#if hasHidden}}
         <div class="hidden-events">
-          {{d-button class='btn-small'
-                     translatedLabel=(i18n 'events_calendar.hidden' count=hidden)
-                     action=setExpandedDate
-                     actionParam=date}}
+          {{d-button
+            class='btn-small'
+            translatedLabel=(i18n 'events_calendar.hidden' count=hidden)
+            action=setExpandedDate
+            actionParam=date}}
         </div>
       {{/if}}
     {{else}}

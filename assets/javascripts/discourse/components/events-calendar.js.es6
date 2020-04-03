@@ -17,7 +17,7 @@ export default Ember.Component.extend({
   canSelectDate: Ember.computed.alias('eventsBelow'),
   routing: Ember.inject.service('-routing'),
   queryParams: Ember.computed.alias('routing.router.currentState.routerJsState.fullQueryParams'),
-  years: YEARS,
+  years: YEARS.map(y => ({id: y, name: y})),
 
   @on('init')
   setup() {

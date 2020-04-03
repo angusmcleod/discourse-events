@@ -3,27 +3,35 @@
     {{d-button label='events_calendar.today' action='today'}}
     {{d-button icon='chevron-left' action='monthPrevious'}}
     {{d-button icon='chevron-right' action='monthNext'}}
-    {{combo-box content=months value=month class='month-dropdown'}}
+    {{combo-box
+      content=months
+      value=month
+      class='month-dropdown'}}
     {{#unless site.mobileView}}
-      {{combo-box content=years value=year class='year-dropdown'}}
+      {{combo-box
+        content=years
+        value=year
+        class='year-dropdown'}}
     {{/unless}}
   </div>
   {{#if showSubscription}}
-    {{events-calendar-subscription showFullTitle=showFullTitle
-                                   none='events_calendar.subscribe'
-                                   headerIcon='rss'
-                                   category=category
-                                   userApiKeys=userApiKeys}}
+    {{events-calendar-subscription
+      none='events_calendar.subscribe'
+      category=category
+      userApiKeys=userApiKeys
+      showFullTitle=showFullTitle
+      icon="rss"}}
   {{/if}}
 </div>
-{{events-calendar-body days=days
-                       topics=topics
-                       currentMonth=currentMonth
-                       currentDate=currentDate
-                       selectDate='selectDate'
-                       canSelectDate=canSelectDate
-                       showEvents=showEvents
-                       responsive=responsive}}
+{{events-calendar-body 
+  days=days
+  topics=topics
+  currentMonth=currentMonth
+  currentDate=currentDate
+  selectDate='selectDate'
+  canSelectDate=canSelectDate
+  showEvents=showEvents
+  responsive=responsive}}
 {{#if eventsBelow}}
   <div class="events-below">
     {{events-calendar-events events=dateEvents responsive=responsive}}
