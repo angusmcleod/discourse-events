@@ -40,6 +40,10 @@ class CalendarEvents::Helper
     event_timezone = event[:timezone] if event[:timezone].present?
     event_timezone = timezone if timezone.present?
 
+    if event[:rsvp]
+      event_going = event[:going]
+    end
+
     if event_timezone.present?
       event_start = event_start.in_time_zone(event_timezone)
 
@@ -47,6 +51,7 @@ class CalendarEvents::Helper
         event_end = event_end.in_time_zone(event_timezone)
       end
     end
+
 
     result = {
       start: event_start,
@@ -58,6 +63,10 @@ class CalendarEvents::Helper
     if event_timezone.present?
       result[:timezone] = event_timezone
       result[:offset] = timezone_offset(event_timezone)
+    end
+
+    if event_going.present?
+      result[:going] = event_going
     end
 
     result
