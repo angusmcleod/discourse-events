@@ -1,5 +1,6 @@
 import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
 import computed from 'ember-addons/ember-computed-decorators';
+import Category from 'discourse/models/category';
 
 export default DropdownSelectBoxComponent.extend({
   classNames: ["events-calendar-subscription"],
@@ -7,18 +8,22 @@ export default DropdownSelectBoxComponent.extend({
   modifyComponentForRow() {
     return "events-calendar-subscription-row";
   },
+  
+  getDomain() {
+    return location.hostname + (location.port ? ':' + location.port : '');
+  },
 
   @computed('authParams')
   content(authParams) {
-    const baseUrl = window.location.host + window.location.pathname;
+    const url = this.getDomain() + Discourse.getURL(`/c/${Category.slugFor(this.category)}`);
     const timeZone = moment.tz.guess();
     return [
       {
-        id: `webcal://${baseUrl}.ics?time_zone=${timeZone}${authParams}`,
+        id: `webcal://${url}/l/calendar.ics?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.ical')
       },
       {
-        id: `${baseUrl}.rss?time_zone=${timeZone}${authParams}`,
+        id: `${url}/l/calendar.rss?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.rss')
       }
     ];
