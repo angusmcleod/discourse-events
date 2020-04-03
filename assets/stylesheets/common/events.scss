@@ -1,7 +1,14 @@
 @import 'event-form';
 
-.add-event-modal + .modal-footer .clear {
-  margin: 5px 10px;
+.add-event-modal {
+  
+  &.modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer .clear {
+    margin: 5px 10px;
+  }
 }
 
 .add-event {

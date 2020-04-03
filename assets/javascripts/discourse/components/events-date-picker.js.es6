@@ -5,6 +5,7 @@ import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",
+  
   @on("didInsertElement")
   _loadDatePicker() {
     const input = this.$(".date-picker")[0];

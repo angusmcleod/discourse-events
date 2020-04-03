@@ -534,5 +534,6 @@ export {
   calendarDays,
   calendarRange, 
   getTimezone,
-  formTimeFormat
+  formTimeFormat,
+  nextInterval
 };

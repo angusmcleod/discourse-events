@@ -1,130 +1,171 @@
 .event-form {
-  .add-event-controls {
-    padding: 0 10px;
-    margin-bottom: 10px;
-
-    .control {
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      min-height: 30px;
-      margin-right: 20px;
-
-      > span {
-        line-height: 30px;
-      }
+  width: 585px;
+  max-width: 80vw;
+  
+  .control {
+    display: inline-flex;
+    align-items: flex-start;
+    min-height: 30px;
+    margin-right: 20px;
+    
+    > input:first-child {
+      margin-top: 10px !important;
     }
-
-    .timezone-modal {
-      position: absolute;
-      top: 0;
-      padding: 5px;
-      height: auto;
-      background-color: $secondary;
-      box-shadow: 0 2px 2px rgba(0,0,0,0.4);
-
-      .combo-box {
-        display: block;
-        margin-bottom: 5px;
-      }
-
-      .btn {
-        margin-right: 2px;
-      }
+    
+    > span:first-child {
+      margin-top: 5px !important;
     }
-  }
-
-  .date-time-card {
-    width: 270px;
-    display: inline-block;
-    padding: 0 10px;
-    text-align: left;
-  }
-
-  .start-card {
-    border-left: 1px solid transparent;
-    margin-right: 10px;
-  }
-
-  .end-card {
-    border-left: 1px solid #eee;
-    padding-left: 25px;
-  }
-
-  .set-all-day {
-    font-size: 1.2em;
-    padding-bottom: 13px;
-  }
-
-  .modal-title-label {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-
-  .modal-title {
-    width: 565px;
-  }
-
-  .modal-sub-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    padding-bottom: 2px;
-    padding-right: 10px;
-  }
-
-  .modal-date-time-set {
-    padding-top: 3px;
-    padding-bottom: 4px;
-    display: flex;
-    flex-direction: row;
-
-    .modal-date-area {
-      order: 1;
+    
+    > input + span {
+      margin-top: 5px;
     }
-
-    .modal-time-area {
-      order: 2;
-      margin-left: 10px;
-
-      .modal-time{
-        width: 127px;
-      }
+    
+    &:last-of-type {
+      margin-right: 0;
     }
-  }
-
-  .ui-timepicker-input {
-    width: 105px;
-    text-align: center;
-  }
-
-  .date-picker {
-     width: 110px;
-  }
-
-  .pika-single {
-    position: relative !important;
-    z-index: 100;
-
-    .pika-lendar {
-      border: 1px solid #eee;
-      padding: 14px;
+    
+    input[type="checkbox"] {
+      margin: 0 10px 0 0;
+    }
+    
+    input[type="number"] {
+      width: 50px;
       margin: 0;
-      float: none;
-      width: auto;
+    }
+    
+    &.full-width {
+      flex: 1;
+    }
+    
+    .select-kit, .ac-wrap {
+      width: 100% !important;
+    }
+    
+    .select-kit-body {
+      width: 100% !important;
+      max-width: 388px;
+    }
+  }
+  
+  .event-controls {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .datetime-controls {
+    display: flex;
+    margin-bottom: 5px;
+    
+    .date-time-card {
+      width: 270px;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .start-card {
+      border-left: 1px solid transparent;
+      padding-right: 20px;
+    }
+
+    .end-card {
+      border-left: 1px solid #eee;
+      padding-left: 20px;
+      
+      &.disabled {
+        span, label, .pika-label, .pika-table th, .pika-button, .pika-prev, .pika-next, input, .pika-lendar {
+          color: $primary-low;
+          background-image: initial;
+          cursor: default;
+          pointer-events: none;
+        }
+        
+        input, .pika-lendar {
+          border: 1px solid $primary-low !important;
+        }
+      }
+    }
+
+    .set-all-day {
+      font-size: 1.2em;
+      padding-bottom: 13px;
+    }
+
+    .sub-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      padding-bottom: 2px;
+      padding-right: 10px;
+    }
+
+    .date-time-set {
+      padding-top: 10px;
+      display: flex;
+      flex-direction: row;
+
+      .date-area {
+        order: 1;
+      }
+
+      .time-area {
+        order: 2;
+        margin-left: 10px;
+
+        .modal-time {
+          width: 127px;
+        }
+      }
+      
+      input {
+        padding: 4px 10px;
+        font-size: 1em;
+        line-height: 1;
+        color: $primary;
+        border: 1px solid $primary-medium;
+        min-height: 30px;
+        width: 130px;
+        margin: 10px 0;
+      }
+    }
+    
+    #date-container-start,
+    #date-container-end {
+      height: 250px;
+    }
+
+    .ui-timepicker-input {
+      width: 105px;
+      text-align: center;
+    }
+
+    .pika-single {
+      position: relative !important;
+      border: none;
+      z-index: 100;
+
+      .pika-lendar {
+        border: 1px solid $primary-medium;
+        padding: 14px;
+        margin: 0;
+        float: none;
+        width: auto;
+      }
     }
   }
 
-  .rsvp {
-    margin-top: 10px;
-    padding: 10px;
-
-    .going-max {
+  .rsvp-controls {
+    
+    .rsvp-container {
+      display: flex;
+      flex-flow: wrap;
       margin-top: 10px;
-
-      input {
-        margin-left: 4px;
-        width: 60px;
+              
+      .control span {
+        margin-right: 10px;
+      }
+      
+      .full-width {
+        align-items: flex-start;
       }
     }
   }

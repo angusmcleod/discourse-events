@@ -1,6 +1,8 @@
 import { addEvent } from '../lib/date-utilities';
 
 export default Ember.Controller.extend({
+  title: 'add_event.modal_title',
+  
   actions: {
     clear() {
       this.set('bufferedEvent', null);

@@ -11,7 +11,6 @@ import {
 } from '../lib/date-utilities';
 
 export default Component.extend({
-  title: 'add_event.modal_title',
   classNames: 'event-form',
   endEnabled: false,
   allDay: false,
@@ -73,6 +72,11 @@ export default Component.extend({
         name: timezoneLabel(tz.value)
       }
     });
+  },
+  
+  @discourseComputed('endEnabled')
+  endClass(endEnabled) {
+    return endEnabled ? '' : 'disabled';
   },
   
   actions: {
