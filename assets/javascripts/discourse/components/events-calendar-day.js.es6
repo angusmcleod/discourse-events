@@ -1,4 +1,4 @@
-import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
+import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { eventsForDay } from '../lib/date-utilities';
 
 const MAX_EVENTS = 4;
@@ -8,12 +8,12 @@ export default Ember.Component.extend({
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
 
-  @computed('date', 'month', 'expandedDate')
+  @discourseComputed('date', 'month', 'expandedDate')
   expanded(date, month, expandedDate) {
     return `${month}.${date}` === expandedDate;
   },
 
-  @computed('month', 'currentMonth')
+  @discourseComputed('month', 'currentMonth')
   differentMonth(month, currentMonth) {
     return month !== currentMonth
   },
@@ -38,12 +38,12 @@ export default Ember.Component.extend({
     this.set("events", events);
   },
 
-  @computed('day', 'topics.[]', 'expanded', 'rowIndex')
+  @discourseComputed('day', 'topics.[]', 'expanded', 'rowIndex')
   allEvents(day, topics, expanded, rowIndex) {
     return eventsForDay(day, topics, { rowIndex, expanded });
   },
 
-  @computed('index')
+  @discourseComputed('index')
   rowIndex(index) {
     return index % 7;
   },
@@ -81,19 +81,19 @@ export default Ember.Component.extend({
     }
   },
 
-  @computed('index')
+  @discourseComputed('index')
   date() {
     const day = this.get('day');
     return day.date();
   },
 
-  @computed('index')
+  @discourseComputed('index')
   month() {
     const day = this.get('day');
     return day.month();
   },
 
-  @computed('day', 'currentDate', 'currentMonth', 'expanded', 'responsive')
+  @discourseComputed('day', 'currentDate', 'currentMonth', 'expanded', 'responsive')
   classes(day, currentDate, currentMonth, expanded, responsive) {
     let classes = '';
     if (day.isSame(moment(), "day")) {
@@ -108,7 +108,7 @@ export default Ember.Component.extend({
     return classes;
   },
 
-  @computed('expanded')
+  @discourseComputed('expanded')
   containerStyle(expanded) {
     let style = '';
 

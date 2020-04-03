@@ -1,4 +1,4 @@
-import { default as computed, on, observes } from 'ember-addons/ember-computed-decorators';
+import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
 import Category from 'discourse/models/category';
 import { ajax } from 'discourse/lib/ajax';
@@ -79,30 +79,30 @@ export default Ember.Component.extend({
     this.set("responsive", windowWidth < breakpoint);
   },
 
-  @computed
+  @discourseComputed
   months() {
     return moment.localeData().months().map((m, i) => {
       return { id: i, name: m };
     });
   },
 
-  @computed
+  @discourseComputed
   showFullTitle() {
     return !this.site.mobileView;
   },
 
-  @computed('responsive')
+  @discourseComputed('responsive')
   eventsBelow(responsive) {
     return responsive || this.site.mobileView;
   },
 
-  @computed('currentDate', 'currentMonth', 'currentYear', 'topics.[]')
+  @discourseComputed('currentDate', 'currentMonth', 'currentYear', 'topics.[]')
   dateEvents(currentDate, currentMonth, currentYear, topics) {
     const day = moment().year(currentYear).month(currentMonth);
     return eventsForDay(day.date(currentDate), topics, { dateEvents: true });
   },
 
-  @computed('currentMonth', 'currentYear')
+  @discourseComputed('currentMonth', 'currentYear')
   days(currentMonth, currentYear) {
     const { start, end } = calendarDays(currentMonth, currentYear);
     let days = [];
@@ -112,7 +112,7 @@ export default Ember.Component.extend({
     return days;
   },
 
-  @computed('category')
+  @discourseComputed('category')
   showSubscription(category) {
     return true // !category || !category.read_restricted;
   },

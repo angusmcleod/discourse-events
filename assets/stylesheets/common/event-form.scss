@@ -39,11 +39,12 @@
     
     .select-kit, .ac-wrap {
       width: 100% !important;
+      max-width: 330px;
     }
     
     .select-kit-body {
       width: 100% !important;
-      max-width: 388px;
+      max-width: 330px;
     }
   }
   
@@ -73,9 +74,11 @@
       padding-left: 20px;
       
       &.disabled {
-        span, label, .pika-label, .pika-table th, .pika-button, .pika-prev, .pika-next, input, .pika-lendar {
+        span, label, .pika-label, .pika-table th, .pika-button, .pika-prev, .pika-next, input, .pika-lendar, .is-selected .pika-button {
           color: $primary-low;
           background-image: initial;
+          background: initial;
+          box-shadow: initial;
           cursor: default;
           pointer-events: none;
         }

@@ -1,4 +1,4 @@
-import { default as computed, observes, on } from 'ember-addons/ember-computed-decorators';
+import { default as discourseComputed, observes, on } from 'discourse-common/utils/decorators';
 import { getOwner } from 'discourse-common/lib/get-owner';
 import { ajax } from 'discourse/lib/ajax';
 import ModalFunctionality from "discourse/mixins/modal-functionality";
@@ -43,12 +43,12 @@ export default Ember.Controller.extend(ModalFunctionality, {
     })
   },
 
-  @computed('type')
+  @discourseComputed('type')
   goingNavClass(type) {
     return type === 'going' ? 'active' : '';
   },
 
-  @computed('userList', 'filter')
+  @discourseComputed('userList', 'filter')
   filteredList(userList, filter) {
     if (filter) {
       userList = userList.filter((u) => u.username.indexOf(filter) > -1);
