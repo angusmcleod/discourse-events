@@ -469,33 +469,55 @@ after_initialize do
       topics
     end
   end
-
-  require 'icalendar/tzinfo'
-
-  ListController.class_eval do
-    skip_before_action :ensure_logged_in, only: [:calendar_ics, :agenda_ics]
-
+  
+  module ListControllerEventsExtension
     USER_API_KEY ||= "user_api_key"
     USER_API_CLIENT_ID ||= "user_api_client_id"
+    # Logging in with user API keys normally only works by passing certain headers.
+    # As we cannot force third-party software to send those headers, we need to fake
+    # them using request parameters.
+    def current_user
+      if params.key?(USER_API_KEY)
+        request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
+        if params.key?(USER_API_CLIENT_ID)
+          request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+        end
+      end
+      super
+    end
+  end
 
-    def calendar_feed
-      set_category if params[:category]
-      self.send('event_feed', name: 'calendar', start: params[:start], end: params[:end])
+  require 'icalendar/tzinfo'
+  class ::ListController
+    skip_before_action :ensure_logged_in, only: [:calendar_ics, :calendar_feed]
+    skip_before_action :set_category, only: [
+      :agenda_feed,
+      :calendar_ics,
+      :calendar_feed,
+    ]
+    
+    def agenda_feed
+      self.send('event_ics', name: 'agenda')
     end
 
-    def agenda_feed
-      set_category if params[:category]
-      self.send('event_feed', name: 'agenda')
+    def calendar_feed
+      self.send('event_feed', name: 'calendar')
     end
 
     def calendar_ics
-      set_category if params[:category]
       self.send('event_ics', name: 'calendar')
     end
+    
+    def agenda_feed_category
+      self.send('event_feed', name: 'agenda')
+    end
+    
+    def calendar_feed_category
+      self.send('event_feed', name: 'calendar')
+    end
 
-    def agenda_ics
-      set_category if params[:category]
-      self.send('event_ics', name: 'agenda')
+    def calendar_ics_category
+      self.send('event_ics', name: 'calendar')
     end
 
     def event_feed(opts = {})
@@ -517,9 +539,9 @@ after_initialize do
       render 'list', formats: [:rss]
     end
 
-    def event_ics(opts = {})
+    def event_ics(opts = {})      
       guardian.ensure_can_see!(@category) if @category
-
+      
       name_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
       base_url = @category ? @category.url : Discourse.base_url
 
@@ -559,6 +581,10 @@ after_initialize do
             event[:end] = (event[:end].to_date+1).strftime "%Y%m%d" if event[:end]
           end
 
+          if event[:going].present?
+            going_emails = User.where(username: event[:going]).map(&:email)
+          end
+
           cal.event do |e|
             e.dtstart = Icalendar::Values::DateOrDateTime.new(event[:start], 'tzid' => tzid).call
             if event[:end]
@@ -569,27 +595,22 @@ after_initialize do
             e.url = t.url #most calendar clients don't display this field
             e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/,'')
             e.sequence = event[:version]
+            
+            if going_emails
+              going_emails.each do |email|
+                e.append_attendee "mailto:#{email}"
+              end
+            end
           end
         end
       end
-
+      
       cal.publish
 
       render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
     end
-
-    # Logging in with user API keys normally only works by passing certain headers.
-    # As we cannot force third-party software to send those headers, we need to fake
-    # them using request parameters.
-    def current_user
-      if params.key?(USER_API_KEY)
-        request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
-        if params.key?(USER_API_CLIENT_ID)
-          request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
-        end
-      end
-      super
-    end
+    
+    prepend ListControllerEventsExtension
   end
 
   on(:approved_post) do |reviewable, post|
@@ -620,16 +641,12 @@ after_initialize do
 
   Discourse::Application.routes.prepend do
     get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
-    get "agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
-    get "c/:category/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
-    get "c/:parent_category/:category/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
-    get "c/:category/l/agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
-    get "c/:parent_category/:category/l/agenda.ics" => "list#agenda_ics", format: :ics, protocol: :webcal
-
-    get "c/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
-    get "c/:parent_category/:category/l/calendar.rss" => "list#calendar_feed", format: :rss
-    get "c/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
-    get "c/:parent_category/:category/l/agenda.rss" => "list#agenda_feed", format: :rss
+    get "calendar.rss" => "list#calendar_feed", format: :rss
+    get "agenda.rss" => "list#agenda_feed", format: :rss
+    
+    get "c/*category_slug_path_with_id/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
+    get "c/*category_slug_path_with_id/l/calendar.rss" => "list#calendar_feed", format: :rss
+    get "c/*category_slug_path_with_id/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
   end
