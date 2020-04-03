@@ -41,9 +41,8 @@ export default Ember.Controller.extend({
       props['startDate'] = moment().format(DATE_FORMAT);
       props['startTime'] = this.nextInterval().format(TIME_FORMAT);
     }
-    let defaultTz = this.timezones.find((tz)=>moment.tz(tz.value).format('Z') == moment.tz(moment.tz.guess()).format('Z'));
 
-    props['timezone'] = timezone || defaultTz.name;
+    props['timezone'] = timezone || this.siteSettings.events_timezone_default;
 
     if (event && event.rsvp) {
       props['rsvpEnabled'] = true;
