@@ -1,5 +1,10 @@
 import { renderIcon } from "discourse-common/lib/icon-library";
 
+function nextInterval() {
+  const rounding = 30 * 60 * 1000;
+  return moment(Math.ceil((+moment()) / rounding) * rounding);
+}
+
 let isAllDay = function(event) {
   if (event['all_day'] === true || event['all_day'] === 'true') return true;
 
@@ -445,7 +450,7 @@ function setupEventForm(event) {
     }
   } else {
     props['startDate'] = moment().format(formDateFormat);
-    props['startTime'] = this.nextInterval().format(formTimeFormat);
+    props['startTime'] = nextInterval().format(formTimeFormat);
   }
 
   props['timezone'] = timezone;

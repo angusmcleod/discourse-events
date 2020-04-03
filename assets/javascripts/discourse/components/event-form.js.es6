@@ -1,10 +1,18 @@
 import Component from "@ember/component";
 import { observes, default as discourseComputed } from "discourse-common/utils/decorators";
 import { scheduleOnce, later } from "@ember/runloop";
-import { compileEvent, setupEventForm, timezoneLabel, getTimezone, formTimeFormat } from '../lib/date-utilities';
+import {
+  compileEvent,
+  setupEventForm,
+  timezoneLabel,
+  getTimezone,
+  formTimeFormat,
+  nextInterval
+} from '../lib/date-utilities';
 
 export default Component.extend({
   title: 'add_event.modal_title',
+  classNames: 'event-form',
   endEnabled: false,
   allDay: false,
   showTimezone: false,
@@ -66,11 +74,6 @@ export default Component.extend({
       }
     });
   },
-
-  nextInterval() {
-    const ROUNDING = 30 * 60 * 1000;
-    return moment(Math.ceil((+moment()) / ROUNDING) * ROUNDING);
-  },
   
   actions: {
     toggleEndEnabled(value) {
@@ -95,7 +98,7 @@ export default Component.extend({
       this.set('allDay', value);
       
       if (!value) {
-        const start = this.nextInterval();
+        const start = nextInterval();
         
         this.set('startTime', start.format(formTimeFormat));
         this.setupTimePicker('start');
