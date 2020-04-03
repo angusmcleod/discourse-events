@@ -15,15 +15,16 @@ export default DropdownSelectBoxComponent.extend({
 
   @computed('authParams')
   content(authParams) {
-    const url = this.getDomain() + Discourse.getURL(`/c/${Category.slugFor(this.category)}`);
+    const path = this.category ? `/c/${Category.slugFor(this.category)}/l` : '';
+    const url = this.getDomain() + Discourse.getURL(path);
     const timeZone = moment.tz.guess();
     return [
       {
-        id: `webcal://${url}/l/calendar.ics?time_zone=${timeZone}${authParams}`,
+        id: `webcal://${url}/calendar.ics?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.ical')
       },
       {
-        id: `${url}/l/calendar.rss?time_zone=${timeZone}${authParams}`,
+        id: `${url}/calendar.rss?time_zone=${timeZone}${authParams}`,
         name: I18n.t('events_calendar.rss')
       }
     ];
