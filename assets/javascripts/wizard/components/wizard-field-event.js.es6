@@ -5,7 +5,6 @@ import { addEvent, setupEvent } from '../../discourse/lib/date-utilities';
 export default Component.extend({
   layoutName: "javascripts/wizard/templates/components/wizard-field-event",
   eventTimezones: alias('field.event_timezones'),
-  event: {},
 
   actions: {
     updateEvent(event, status){
