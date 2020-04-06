@@ -23,14 +23,13 @@ export default Component.extend({
     this.setupTimePicker('end');
   },
   
-  @discourseComputed()
-  endValid() {
-    return !this.endEnabled ||
-      (!moment(this.endDate).isBefore(moment(this.startDate), 'day') &&
-      moment(this.endTime, 'HH:mm').isAfter(moment(this.startTime, 'HH:mm')));
+  @discourseComputed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled')
+  endValid(startDate, startTime, endDate, endTime, endEnabled) {
+    return !endEnabled ||
+      moment(endDate+" "+endTime).isSameOrAfter(startDate+" "+startTime)
   },
 
-  @observes('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
+  @observes('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay', 'timezone', 'rsvpEnabled', 'goingMax', 'usersGoing')
   eventUpdated(){
     const ready = this.endValid;
     const event = compileEvent({
