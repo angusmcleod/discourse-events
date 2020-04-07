@@ -33,7 +33,7 @@ export default Component.extend({
 
   @observes('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay', 'timezone', 'rsvpEnabled', 'goingMax', 'usersGoing')
   eventUpdated(){
-    const ready = this.endValid;
+    const valid = this.endValid;
     const event = compileEvent({
       startDate: this.startDate,
       startTime: this.startTime,
@@ -47,7 +47,7 @@ export default Component.extend({
       usersGoing: this.usersGoing
     });
     
-    this.updateEvent(event, ready);
+    this.updateEvent(event, valid);
   },
 
   setupTimePicker(type) {    

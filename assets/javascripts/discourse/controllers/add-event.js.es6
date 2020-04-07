@@ -10,15 +10,17 @@ export default Ember.Controller.extend(ModalFunctionality, {
     },
     
     saveEvent(){
-      this.get('model.update')(this.bufferedEvent);
-      this.send('closeModal');
+      if (this.valid) {
+        this.get('model.update')(this.bufferedEvent);
+        this.send('closeModal');
+      } else {
+        this.flash(I18n.t('add_event.error'), 'error');
+      }
     },
     
-    updateEvent(event, status) {
+    updateEvent(event, valid) {
       this.set('bufferedEvent', event);
-      this.set('notReady', !status);
-
-      status ? this.clearFlash() : this.flash(I18n.t('add_event.error'), 'error');
+      this.set('valid', valid);
     }
   }
 });
