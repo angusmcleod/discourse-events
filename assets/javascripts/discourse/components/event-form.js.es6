@@ -23,10 +23,12 @@ export default Component.extend({
     this.setupTimePicker('end');
   },
   
-  @discourseComputed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled')
-  endValid(startDate, startTime, endDate, endTime, endEnabled) {
-    return !endEnabled ||
-      moment(endDate+" "+endTime).isSameOrAfter(startDate+" "+startTime)
+  @discourseComputed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
+  endValid(startDate, startTime, endDate, endTime, endEnabled, allDay) {
+    let start = allDay ? moment(startDate, "YYYY-MM-DD") : moment(startDate+"T"+startTime, "YYYY-MM-DDTHH:mm");
+    let end = allDay ? moment(endDate, "YYYY-MM-DD") : moment(endDate+"T"+endTime, "YYYY-MM-DDTHH:mm");
+
+    return !endEnabled || end.isSameOrAfter(start);
   },
 
   @observes('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay', 'timezone', 'rsvpEnabled', 'goingMax', 'usersGoing')

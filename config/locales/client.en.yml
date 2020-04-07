@@ -18,6 +18,7 @@ en:
       going: "Guests"
       going_max: "Maximum guests"
       going_max_label: "{{goingMax}} Guests"
+      error: "Event start should be same as or after event end"
     category:
       events_setting_heading: "Events"
       enable_events: "Allow events to be added to topics in this category (overrides site setting)."
