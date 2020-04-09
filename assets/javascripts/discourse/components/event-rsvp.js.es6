@@ -1,5 +1,5 @@
 import { popupAjaxError } from 'discourse/lib/ajax-error';
-import { default as computed } from 'ember-addons/ember-computed-decorators';
+import { default as discourseComputed } from 'discourse-common/utils/decorators';
 import showModal from 'discourse/lib/show-modal';
 import { ajax } from 'discourse/lib/ajax';
 
@@ -7,12 +7,12 @@ export default Ember.Component.extend({
   classNames: 'event-rsvp',
   goingSaving: false,
 
-  @computed('currentUser', 'topic.event.going')
+  @discourseComputed('currentUser', 'topic.event.going')
   userGoing(user, eventGoing) {
     return eventGoing && eventGoing.indexOf(user.username) > -1;
   },
 
-  @computed('topic.event.going')
+  @discourseComputed('topic.event.going')
   goingTotal(eventGoing) {
     if (eventGoing) {
       return eventGoing.length;
@@ -21,12 +21,12 @@ export default Ember.Component.extend({
     }
   },
 
-  @computed('userGoing')
+  @discourseComputed('userGoing')
   goingClasses(userGoing) {
     return userGoing ? 'btn-primary' : '';
   },
 
-  @computed('currentUser', 'eventFull')
+  @discourseComputed('currentUser', 'eventFull')
   canGo(currentUser, eventFull) {
     return currentUser && !eventFull;
   },
@@ -35,14 +35,14 @@ export default Ember.Component.extend({
 
   hasMax: Ember.computed.notEmpty('topic.event.going_max'),
 
-  @computed('goingTotal', 'topic.event.going_max')
+  @discourseComputed('goingTotal', 'topic.event.going_max')
   spotsLeft(goingTotal, goingMax) {
     return Number(goingMax) - Number(goingTotal);
   },
 
   eventFull: Ember.computed.equal('spotsLeft', 0),
 
-  @computed('hasMax', 'eventFull')
+  @discourseComputed('hasMax', 'eventFull')
   goingMessage(hasMax, full) {
     if (hasMax) {
       if (full) {

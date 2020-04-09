@@ -311,13 +311,14 @@ after_initialize do
     end
 
   DiscourseEvent.on(:post_created) do |post, opts, user|
-    if post.is_first_post? && opts[:event]
-      topic = Topic.find(post.topic_id)
+    is_wizard_event = !!(opts[:topic_opts] && opts[:topic_opts][:custom_fields] && opts[:topic_opts][:custom_fields]['event'])
 
+    if post.is_first_post? && (opts[:event] || is_wizard_event)
+      topic = Topic.find(post.topic_id)
+      event_params = is_wizard_event ? opts[:topic_opts][:custom_fields]['event'] : opts[:event]
       guardian = Guardian.new(user)
       guardian.ensure_can_create_event!(topic.category)
-
-      event = opts[:event].is_a?(String) ? ::JSON.parse(opts[:event]) : opts[:event]
+      event = event_params.is_a?(String) ? ::JSON.parse(event_params) : event_params
       event_start = event['start']
       event_end = event['end']
       event_all_day = event['all_day']
@@ -649,5 +650,12 @@ after_initialize do
     get "c/*category_slug_path_with_id/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
+  end
+end
+
+on(:custom_wizard_ready) do
+  if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
+    CustomWizard::Field.add_assets('event', 'discourse-events', ['components', 'templates', 'lib'])
+    add_to_serializer(:custom_wizard_field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
 end

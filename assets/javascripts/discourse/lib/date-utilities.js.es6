@@ -1,4 +1,10 @@
 import { renderIcon } from "discourse-common/lib/icon-library";
+import Site from "discourse/models/site";
+
+function nextInterval() {
+  const rounding = 30 * 60 * 1000;
+  return moment(Math.ceil((+moment()) / rounding) * rounding);
+}
 
 let isAllDay = function(event) {
   if (event['all_day'] === true || event['all_day'] === 'true') return true;
@@ -14,8 +20,10 @@ let isAllDay = function(event) {
 
 let getDefaultTimezone = function() {
   const setting = Discourse.SiteSettings.events_timezone_default;
-  const user = moment.tz.guess();
-  return setting ? setting : user;
+  let userTimezoneAbbrs = moment.tz.zone(moment.tz.guess(true)).abbrs.toString();
+  let userTimezoneFromList = Site.currentProp('event_timezones').find(t => moment.tz.zone(t.value).abbrs.toString() === userTimezoneAbbrs);
+
+  return setting ? setting : userTimezoneFromList.value;
 }
 
 let getTimezone = function(event = null, args = {}) {
@@ -414,4 +422,121 @@ let calendarRange = function(month, year) {
   };
 };
 
-export { eventLabel, googleUri, icsUri, eventsForDay, setupEvent, timezoneLabel, firstDayOfWeek, calendarDays, calendarRange, getTimezone };
+const formDateFormat = 'YYYY-MM-DD';
+const formTimeFormat = 'HH:mm';
+
+function setupEventForm(event) {
+  const { start, end, allDay, multiDay, timezone } = setupEvent(event, { useEventTimezone: true });
+  let props = {};
+
+  if (allDay) {
+    let startDate = start.format(formDateFormat);
+    let endDate = end ? end.format(formDateFormat) : startDate;
+    let endEnabled = moment(endDate).isAfter(startDate, 'day');
+
+    props = {
+      allDay,
+      startDate,
+      endDate,
+      endEnabled,
+    };
+  } else if (start) {
+    props['startDate'] = start.format(formDateFormat);
+    props['startTime'] = start.format(formTimeFormat);
+
+    if (end) {
+      let endDate = end.format(formDateFormat);
+      let endTime = end.format(formTimeFormat);
+      props['endDate'] = endDate;
+      props['endTime'] = endTime;
+      props['endEnabled'] = true;
+    }
+  } else {
+    props['startDate'] = moment().format(formDateFormat);
+    props['startTime'] = nextInterval().format(formTimeFormat);
+  }
+
+  props['timezone'] = timezone || getDefaultTimezone();
+
+  if (event && event.rsvp) {
+    props['rsvpEnabled'] = true;
+
+    if (event.going_max) {
+      props['goingMax'] = event.going_max;
+    }
+
+    if (event.going) {
+      props['usersGoing'] = event.going.join(',');
+    }
+  }
+  
+  return props;
+}
+
+function compileDateTime(params, type) {
+  const year = moment(params[`${type}Date`]).year();
+  const month = moment(params[`${type}Date`]).month();
+  const date = moment(params[`${type}Date`]).date();
+  let hour = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').hour();
+  let min = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').minute();
+  
+  let dateTime = moment();
+  dateTime.tz(params.timezone);
+
+  return dateTime
+    .year(year)
+    .month(month)
+    .date(date)
+    .hour(hour)
+    .minute(min)
+    .second(0)
+    .millisecond(0)
+    .toISOString();
+}
+
+function compileEvent(params) {
+  let event = null;
+    
+  if (params.startDate) {
+    event = {
+      timezone: params.timezone,
+      all_day: params.allDay,
+      start: compileDateTime(params, 'start')
+    };
+
+    if (params.endEnabled) {
+      event.end = compileDateTime(params, 'end')
+    }
+  }
+
+  if (params.rsvpEnabled) {
+    event.rsvp = true;
+    
+    if (params.goingMax) {
+      event.going_max = params.goingMax;
+    }
+
+    if (params.usersGoing) {
+      event.going = params.usersGoing.split(',')
+    }
+  }
+  
+  return event;
+}
+
+export {
+  eventLabel,
+  googleUri,
+  icsUri,
+  eventsForDay,
+  setupEvent,
+  compileEvent,
+  setupEventForm,
+  timezoneLabel,
+  firstDayOfWeek,
+  calendarDays,
+  calendarRange, 
+  getTimezone,
+  formTimeFormat,
+  nextInterval
+};

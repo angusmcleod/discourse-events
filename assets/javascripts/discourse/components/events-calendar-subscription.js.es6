@@ -1,5 +1,5 @@
 import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
-import computed from 'ember-addons/ember-computed-decorators';
+import computed from 'discourse-common/utils/decorators';
 import Category from 'discourse/models/category';
 
 export default DropdownSelectBoxComponent.extend({
@@ -13,7 +13,7 @@ export default DropdownSelectBoxComponent.extend({
     return location.hostname + (location.port ? ':' + location.port : '');
   },
 
-  @computed('authParams')
+  @discourseComputed('authParams')
   content(authParams) {
     const path = this.category ? `/c/${Category.slugFor(this.category)}/l` : '';
     const url = this.getDomain() + Discourse.getURL(path);
@@ -30,7 +30,7 @@ export default DropdownSelectBoxComponent.extend({
     ];
   },
 
-  @computed('userApiKey', 'showAuthParams')
+  @discourseComputed('userApiKey', 'showAuthParams')
   authParams(userApiKey, showAuthParams) {
     if (!showAuthParams) return "";
     if (!userApiKey) return "";
@@ -50,19 +50,19 @@ export default DropdownSelectBoxComponent.extend({
     return suffix;
   },
 
-  @computed('userApiKeys.[]')
+  @discourseComputed('userApiKeys.[]')
   userApiKey(keys) {
     if (keys && Array.isArray(keys)) {
       return keys[0];
     }
   },
 
-  @computed('siteSettings.login_required', 'category.read_restricted', 'siteSettings.events_webcal_always_add_user_api_key')
+  @discourseComputed('siteSettings.login_required', 'category.read_restricted', 'siteSettings.events_webcal_always_add_user_api_key')
   showAuthParams(loginRequired, privateCategory, alwaysAddKeys) {
     return loginRequired || privateCategory || alwaysAddKeys;
   },
 
-  @computed('userApiKey', 'showAuthParams')
+  @discourseComputed('userApiKey', 'showAuthParams')
   filterComponent(userApiKey, showAuthParams) {
     return (showAuthParams && userApiKey)
       ? "events-calendar-subscription-warning"

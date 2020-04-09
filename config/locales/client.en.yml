@@ -2,22 +2,23 @@ en:
   js:
     add_event:
       btn_label: "Add Event"
-      modal_title: Date and Time
+      modal_title: Add Event
       event_start: Start
       event_end: End
       event_date: Date
       event_time: Time
       event_add: Done
       event_clear: Clear
-      end_enabled: "Include event end"
+      end_enabled: "Event end"
       all_day: "All day"
       timezone: "Timezone"
       no_timezone: "Select a timezone"
       rsvp_enabled: "Rsvp enabled"
       rsvp_enabled_label: "Rsvp"
-      going: "Guest list"
-      going_max: "Maximum number of guests"
+      going: "Guests"
+      going_max: "Maximum guests"
       going_max_label: "{{goingMax}} Guests"
+      error: "Event start should be same as or after event end"
     category:
       events_setting_heading: "Events"
       enable_events: "Allow events to be added to topics in this category (overrides site setting)."
