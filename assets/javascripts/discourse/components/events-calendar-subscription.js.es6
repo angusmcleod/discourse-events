@@ -1,5 +1,5 @@
 import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
-import computed from 'discourse-common/utils/decorators';
+import discourseComputed from "discourse-common/utils/decorators";
 import Category from 'discourse/models/category';
 
 export default DropdownSelectBoxComponent.extend({
