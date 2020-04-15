@@ -20,10 +20,19 @@ let isAllDay = function(event) {
 
 let getDefaultTimezone = function() {
   const setting = Discourse.SiteSettings.events_timezone_default;
-  let userTimezoneAbbrs = moment.tz.zone(moment.tz.guess(true)).abbrs.toString();
-  let userTimezoneFromList = Site.currentProp('event_timezones').find(t => moment.tz.zone(t.value).abbrs.toString() === userTimezoneAbbrs);
-
-  return setting ? setting : userTimezoneFromList.value;
+  const siteTimezones = Site.currentProp('event_timezones');
+  let timezone = setting;
+  
+  if (siteTimezones) {
+    let userTimezoneAbbrs = moment.tz.zone(moment.tz.guess(true)).abbrs.toString();
+    let userTimezoneFromList = siteTimezones.find(t => moment.tz.zone(t.value).abbrs.toString() === userTimezoneAbbrs);
+    
+    if (userTimezoneFromList.value) {
+      timezone = userTimezoneFromList.value;
+    }
+  }
+  
+  return timezone;
 }
 
 let getTimezone = function(event = null, args = {}) {

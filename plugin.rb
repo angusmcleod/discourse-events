@@ -654,8 +654,11 @@ after_initialize do
 end
 
 on(:custom_wizard_ready) do
-  if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
+  if defined?(CustomWizard) == 'constant' &&
+    CustomWizard.class == Module &&
+    defined?(CustomWizard::FieldSerializer) == 'constant'
+    
     CustomWizard::Field.add_assets('event', 'discourse-events', ['components', 'templates', 'lib'])
-    add_to_serializer(:custom_wizard_field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
+    add_to_serializer(CustomWizard::Field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
 end
