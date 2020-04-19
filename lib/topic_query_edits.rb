@@ -52,7 +52,7 @@ class ::TopicQuery
   end
 
   def event_results(options = {})
-    topics = default_results(options.reverse_merge(ascending: 'true'))
+    topics = default_results(options)
       .joins("INNER JOIN topic_custom_fields
               ON topic_custom_fields.topic_id = topics.id
               AND topic_custom_fields.name = 'event_start'
@@ -70,7 +70,7 @@ class ::TopicQuery
       )")
     end
 
-    topics = topics.order("(
+    topics = topics.reorder("(
         SELECT CASE
         WHEN EXISTS (
           SELECT true FROM topic_custom_fields tcf
@@ -83,7 +83,7 @@ class ::TopicQuery
           AND tcf.name = 'event_start' LIMIT 1
         )
         ELSE 0 END
-      ) ASC")
+      ) ASC") if [nil, "default"].include? @options[:order]
 
     if options[:include_excerpt]
       topics.each { |t| t.include_excerpt = true }
