@@ -20,19 +20,8 @@ let isAllDay = function(event) {
 
 let getDefaultTimezone = function() {
   const setting = Discourse.SiteSettings.events_timezone_default;
-  const siteTimezones = Site.currentProp('event_timezones');
-  let timezone = setting;
-  
-  if (siteTimezones) {
-    let userTimezoneAbbrs = moment.tz.zone(moment.tz.guess(true)).abbrs.toString();
-    let userTimezoneFromList = siteTimezones.find(t => moment.tz.zone(t.value).abbrs.toString() === userTimezoneAbbrs);
-    
-    if (userTimezoneFromList.value) {
-      timezone = userTimezoneFromList.value;
-    }
-  }
-  
-  return timezone;
+  const user = moment.tz.guess();
+  return setting ? setting : user;
 }
 
 let getTimezone = function(event = null, args = {}) {
@@ -465,7 +454,7 @@ function setupEventForm(event) {
     props['startTime'] = nextInterval().format(formTimeFormat);
   }
 
-  props['timezone'] = timezone || getDefaultTimezone();
+  props['timezone'] = timezone || Discourse.SiteSettings.events_timezone_default;
 
   if (event && event.rsvp) {
     props['rsvpEnabled'] = true;
