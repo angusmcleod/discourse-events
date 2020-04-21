@@ -59,7 +59,7 @@ after_initialize do
   ].each do |key|
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
     add_to_class(:category, key.to_sym) do
-      self.custom_fields[key] || SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false
+      self.custom_fields[key] || ( SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false )
     end
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
