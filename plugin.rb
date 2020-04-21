@@ -27,23 +27,19 @@ register_svg_icon "rss" if respond_to?(:register_svg_icon)
 load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
 load File.expand_path('../models/events_timezone_display_site_setting.rb', __FILE__)
 
-DiscourseEvent.on(:locations_ready) do
-  Locations::Map.add_list_filter do |topics, options|
-    if SiteSetting.events_remove_past_from_map
-      topics = topics.where("NOT EXISTS (SELECT * FROM topic_custom_fields
-                                         WHERE topic_id = topics.id
-                                         AND name = 'event_start')
-                             OR topics.id in (
-                                SELECT topic_id FROM topic_custom_fields
-                                WHERE (name = 'event_start' OR name = 'event_end')
-                                AND value > '#{Time.now.to_i}')")
-    end
-
-    topics
-  end
-end
-
 after_initialize do
+  [
+    "../lib/calendar_events.rb",
+    "../lib/event_creator.rb",
+    "../lib/event_revisor.rb",
+    "../lib/topic_query_edits.rb",
+    "../controllers/event_rsvp.rb",
+    "../controllers/api_keys.rb",
+    "../controllers/list_controller_edits.rb"
+  ].each do |path|
+    load File.expand_path(path, __FILE__)
+  end
+
   add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
 
   Category.register_custom_field_type('events_enabled', :boolean)
@@ -92,24 +88,35 @@ after_initialize do
   Topic.register_custom_field_type('event_going_max', :integer)
   Topic.register_custom_field_type('event_version', :integer)
 
-  TopicList.preloaded_custom_fields << 'event_start' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_end' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_all_day' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_timezone' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_rsvp' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_going' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_going_max' if TopicList.respond_to? :preloaded_custom_fields
-  TopicList.preloaded_custom_fields << 'event_version' if TopicList.respond_to? :preloaded_custom_fields
-
-  load File.expand_path('../lib/calendar_events.rb', __FILE__)
-  load File.expand_path('../controllers/event_rsvp.rb', __FILE__)
-  load File.expand_path('../controllers/api_keys.rb', __FILE__)
+  if TopicList.respond_to? :preloaded_custom_fields
+    preloaded_custom_fields = [
+      'event_start',
+      'event_end',
+      'event_all_day',
+      'event_timezone',
+      'event_rsvp',
+      'event_going',
+      'event_going_max',
+      'event_version',
+    ]
+    TopicList.preloaded_custom_fields += preloaded_custom_fields
+  end
 
   # a combined hash with iso8601 dates is easier to work with
   add_to_class(:topic, :has_event?) do
     self.custom_fields['event_start'].present? &&
     self.custom_fields['event_start'].is_a?(Numeric) &&
     self.custom_fields['event_start'] != 0
+  end
+
+  [
+    "event_going",
+    "event_rsvp",
+    "event_going_max",
+  ].each do |key|
+    add_to_class(:topic, key.to_sym) do
+      self.custom_fields[key] || false
+    end
   end
 
   add_to_class(:topic, :event) do
@@ -145,16 +152,6 @@ after_initialize do
     end
 
     event
-  end
-
-  [
-    "event_going",
-    "event_rsvp",
-    "event_going_max",
-  ].each do |key|
-    add_to_class(:topic, key.to_sym) do
-      self.custom_fields[key] || false
-    end
   end
 
   add_to_serializer(:topic_view, :event, false) do
@@ -194,54 +191,6 @@ after_initialize do
     ],
   )
 
-  ::PostRevisor.track_topic_field(:event) do |tc, event|
-      event = event.present? ? event : {}
-    
-      if tc.guardian.can_edit_event?(tc.topic.category)
-        event_start = event['start'] ? event['start'].to_datetime.to_i : nil
-        start_change = tc.record_change('event_start', tc.topic.custom_fields['event_start'], event_start)
-        tc.topic.custom_fields['event_start'] = event_start if start_change
-
-        event_end = event['end'] ? event['end'].to_datetime.to_i : nil
-        end_change = tc.record_change('event_end', tc.topic.custom_fields['event_end'], event_end)
-        tc.topic.custom_fields['event_end'] = event_end  if end_change
-
-        all_day = !!event['all_day']
-        all_day_change = tc.record_change('event_all_day', tc.topic.custom_fields['event_all_day'], all_day)
-        tc.topic.custom_fields['event_all_day'] = all_day if all_day_change
-
-        timezone = event['timezone']
-        timezone_change = tc.record_change('event_timezone', tc.topic.custom_fields['event_timezone'], timezone)
-        tc.topic.custom_fields['event_timezone'] = timezone if timezone_change
-
-        rsvp = !!event['rsvp']
-        rsvp_change = tc.record_change('event_rsvp', tc.topic.custom_fields['event_rsvp'], rsvp)
-        tc.topic.custom_fields['event_rsvp'] = rsvp if rsvp_change
-
-        if rsvp
-          going_max = event['going_max'] ? event['going_max'].to_i : nil
-          going_max_change = tc.record_change('event_going_max', tc.topic.custom_fields['event_going_max'], going_max)
-          tc.topic.custom_fields['event_going_max'] = going_max if going_max_change
-
-          goingNames = event['going']
-          going = User.where(username: goingNames).pluck(:id)
-          going_change = tc.record_change('event_going', tc.topic.custom_fields['event_going'], going)
-          tc.topic.custom_fields['event_going'] = going if going_change
-        end
-
-        if start_change || end_change || timezone_change # increment by 1, even if more than one props are changed at once
-          tc.topic.custom_fields['event_version'] = tc.topic.custom_fields['event_version'].nil? ? 1 : tc.topic.custom_fields['event_version'] + 1
-        end
-      end
-    end
-
-  load File.expand_path('../lib/event_creator.rb', __FILE__)
-
-  on(:post_created) do |post, opts, user|
-    event_creator = ::EventCreator.new(post, opts, user)
-    event_creator.create
-  end
-
   add_to_class(:guardian, :can_create_event?) do |category|
     category.events_enabled &&
     can_create_topic_on_category?(category) &&
@@ -267,8 +216,10 @@ after_initialize do
     prepend ListableTopicSerializerExtension
   end
 
-  load File.expand_path('../lib/topic_query_edits.rb', __FILE__)
-  load File.expand_path('../controllers/list_controller_edits.rb', __FILE__)
+  on(:post_created) do |post, opts, user|
+    event_creator = ::EventCreator.new(post, opts, user)
+    event_creator.create
+  end
 
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload['event']
@@ -288,7 +239,12 @@ after_initialize do
     end
   end
 
-  NewPostManager.add_handler(1) do |manager|
+  ::PostRevisor.track_topic_field(:event) do |tc, event|
+    event_revisor = EventRevisor.new(tc, event)
+    event_revisor.revise!
+  end
+
+  ::NewPostManager.add_handler(1) do |manager|
     if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
       NewPostManager.add_plugin_payload_attribute('event') if NewPostManager.respond_to?(:add_plugin_payload_attribute)
     end
@@ -306,6 +262,22 @@ after_initialize do
     get "c/*category_slug_path_with_id/l/agenda.rss" => "list#agenda_feed", format: :rss
 
     mount ::CalendarEvents::Engine, at: '/calendar-events'
+  end
+end
+
+on(:locations_ready) do
+  Locations::Map.add_list_filter do |topics, options|
+    if SiteSetting.events_remove_past_from_map
+      topics = topics.where("NOT EXISTS (SELECT * FROM topic_custom_fields
+                                         WHERE topic_id = topics.id
+                                         AND name = 'event_start')
+                             OR topics.id in (
+                                SELECT topic_id FROM topic_custom_fields
+                                WHERE (name = 'event_start' OR name = 'event_end')
+                                AND value > '#{Time.now.to_i}')")
+    end
+
+    topics
   end
 end
 
