@@ -1,0 +1,77 @@
+nl:
+  js:
+    add_event:
+      btn_label: "Voeg evenement toe"
+      modal_title: Datum en tijd
+      event_start: Begin
+      event_end: Einde
+      event_date: Datum
+      event_time: Tijd
+      event_add: Gereed
+      event_clear: Wis
+      end_enabled: "Eindtijd opnemen"
+      all_day: "Hele dag"
+      timezone: "Tijdszone"
+      no_timezone: "Kies een tijdszone"
+      rsvp_enabled: "r.s.v.p. geactiveerd"
+      rsvp_enabled_label: "r.s.v.p."
+      going: "Gastenlijst"
+      going_max: "Maximum aantal gasten"
+      going_max_label: "{{goingMax}} Gasten"
+    category:
+      events_setting_heading: "Evenementen"
+      enable_events: "Sta toe dat evenementen worden toegevoegd aan onderwerpen in deze categorie (overschrijft site-instelling)."
+      enable_events_agenda: "Toon een agenda-topiclijst in deze categorie (overschrijft site-instelling)."
+      enable_events_calendar: "Toon een kalender-topiclijst in deze categorie (overschrijft site-instelling)."
+      events_min_trust_to_create: "Minimum vertrouwensniveau om evenementen te maken in deze categorie (overschrijft site-instelling)."
+      events_event_label_no_text: "Geen text op evenementknoppen in deze categorie (overschrijft site-instelling)."
+      require_event: "Alle topics in deze categorie moeten een evenement hebben."
+    composer:
+      error:
+        event_missing: "Topics in deze categorie moeten een evenement hebben."
+    event_list:
+      title: '{{categoryName}} Evenementen'
+      about: 'Evenementen in je buurt'
+      no_results: "Geen nabije evenementen"
+      create: "Maak Evenement"
+    filters:
+      agenda:
+        title: "Agenda"
+        help: "Toon evenementen in oplopende chronologische volgorde volgens de startdatum en -tijd."
+      calendar:
+        title: "Kalender"
+        help: "Toon evenementen in een kalender"
+    add_to_calendar:
+      label: "Voeg toe aan Kalender"
+      google: "Google Calendar"
+      ics: ".ics File"
+      default_details: "Evenementdetails: {{url}}"
+    topics:
+      none:
+        agenda: "Er zijn geen agendatopics."
+      bottom:
+        agenda: "Er zijn geen agendatopics meer."
+    events_calendar:
+      today: "Vandaag"
+      hidden: "nog {{count}}"
+      subscribe: "Abonneren"
+      ical: "iCal"
+      rss: "RSS"
+      subscription:
+        warning: "Deel deze links nooit met iemand!"
+    user:
+      events_calendar:
+        label: "Kalender"
+        first_day_week: "Start week op"
+    event_rsvp:
+      modal:
+        title: "Gasten"
+        filter: "Filter"
+      going:
+        label: "Ik ga"
+        max_reached: "Volzet"
+        one_spot_left: "nog 1 plaats vrij"
+        x_spots_left: "{{spotsLeft}} plaatsen vrij"
+
+    site_settings:
+      events_timezone_default_placeholder: "Kies een Tijdszone"
