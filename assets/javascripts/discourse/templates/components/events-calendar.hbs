@@ -1,26 +1,26 @@
 <div class="header">
   <div class="navigation">
-    {{d-button label='events_calendar.today' action='today'}}
+    {{d-button label=todayLabel action='today' icon='calendar'}}
     {{d-button icon='chevron-left' action='monthPrevious'}}
     {{d-button icon='chevron-right' action='monthNext'}}
     {{combo-box
       content=months
       value=month
       class='month-dropdown'}}
-    {{#unless site.mobileView}}
-      {{combo-box
-        content=years
-        value=year
-        class='year-dropdown'}}
-    {{/unless}}
+    {{combo-box
+      content=years
+      value=year
+      class='year-dropdown'}}
   </div>
   {{#if showSubscription}}
     {{events-calendar-subscription
-      none='events_calendar.subscribe'
       category=category
       userApiKeys=userApiKeys
-      showFullTitle=showFullTitle
-      icon="rss"}}
+      options=(hash
+        showFullTitle=showFullTitle
+        icon="rss"
+        none='events_calendar.subscribe'
+      )}}
   {{/if}}
 </div>
 {{events-calendar-body 

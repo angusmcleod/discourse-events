@@ -154,9 +154,17 @@
 }
 
 .events-calendar.responsive {
+  .month-dropdown {
+    width: 90px;
+    min-width: 90px;
+  }
+  
+  .year-dropdown {
+    width: 50px;
+    min-width: 50px;
+  }
+  
   .month-dropdown, .year-dropdown {
-    width: 110px;
-    min-width: 110px;
     height: 30px;
 
     .select-kit-header {
@@ -165,6 +173,10 @@
 
     &:not(.is-expanded) .select-kit-header {
       width: inherit;
+    }
+    
+    .d-icon {
+      display: none;
     }
   }
 

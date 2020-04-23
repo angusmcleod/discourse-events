@@ -1,0 +1,77 @@
+fi:
+  js:
+    add_event:
+      btn_label: "Lisää tapahtuma"
+      modal_title: Päivämäärä ja aika
+      event_start: Alkaa
+      event_end: Päättyy
+      event_date: Päivämäärä
+      event_time: Aika
+      event_add: Valmis
+      event_clear: Tyhjennä
+      end_enabled: "Lisää päättymisajankohta"
+      all_day: "Koko päivä"
+      timezone: "Aikavyöhyke"
+      no_timezone: "Valitse aikavyöhyke"
+      rsvp_enabled: "Ilmoittautuminen käytössä"
+      rsvp_enabled_label: "Ilmoittautuminen"
+      going: "Osallistujalista"
+      going_max: "Osallistujien enimmäismäärä"
+      going_max_label: "{{goingMax}} osallistujaa"
+    category:
+      events_setting_heading: "Tapahtumat"
+      enable_events: "Salli tapahtumien lisääminen ketjuihin tällä alueella (ohita sivustoasetukset)."
+      enable_events_agenda: "Näytä navigaatiolinkki tapahtumalistaan tällä alueella (ohita sivustoasetukset)."
+      enable_events_calendar: "Näytä navigaatiolinkki kalenteriin tällä alueella (ohita sivustoasetukset)."
+      events_min_trust_to_create: "Pienin luottamustaso, jolla käyttäjä voi luoda tapahtuman tällä alueella (ohita sivustoasetukset)."
+      events_event_label_no_text: "Älä näytä tekstiä tapahtumapainikkeissa tällä alueella (ohita sivustoasetukset)."
+      require_event: "Kaikkien ketjujen tulee sisältää tapahtuma tällä alueella."
+    composer:
+      error:
+        event_missing: "Tämän alueen ketjuissa on oltava tapahtuma."
+    event_list:
+      title: '{{categoryName}} tapahtumaa'
+      about: 'Tapahtumaa alueellasi'
+      no_results: "Ei tulevia tapahtumia"
+      create: "Luo tapahtuma"
+    filters:
+      agenda:
+        title: "Tapahtumat"
+        help: "Listaa tapahtumat nousevassa aikajärjestyksessä alkamispäivän mukaan."
+      calendar:
+        title: "Kalenteri"
+        help: "Näytä tapahtumat kalenterissa."
+    add_to_calendar:
+      label: "Lisää kalenteriin"
+      google: "Google kalenteri"
+      ics: ".ics-tiedosto"
+      default_details: "Tapahtuman yksityiskohdat: {{url}}"
+    topics:
+      none:
+        agenda: "Tapahtumaketjuja ei ole."
+      bottom:
+        agenda: "Tapahtumaketjuja ei ole enempää."
+    events_calendar:
+      today: "Tänään"
+      hidden: "{{count}} lisää"
+      subscribe: "Tilaa"
+      ical: "iCal"
+      rss: "RSS"
+      subscription:
+        warning: "Älä koskaan jaa näitä linkkejä kenenkään kanssa!"
+    user:
+      events_calendar:
+        label: "Kalenteri"
+        first_day_week: "Ensimmäinen viikonpäivä viikolla"
+    event_rsvp:
+      modal:
+        title: "Osallistujat"
+        filter: "Suodata"
+      going:
+        label: "Menossa"
+        max_reached: "Kaikki paikat varattu"
+        one_spot_left: "1 paikka jäljellä"
+        x_spots_left: "{{spotsLeft}} paikkaa jäljellä"
+
+    site_settings:
+      events_timezone_default_placeholder: "Valitse aikavyöhyke..."
