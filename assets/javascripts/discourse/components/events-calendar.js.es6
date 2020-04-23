@@ -1,5 +1,6 @@
 import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities';
+import { or, not, alias } from "@ember/object/computed";
 import Category from 'discourse/models/category';
 import { ajax } from 'discourse/lib/ajax';
 
@@ -18,6 +19,7 @@ export default Ember.Component.extend({
   routing: Ember.inject.service('-routing'),
   queryParams: Ember.computed.alias('routing.router.currentState.routerJsState.fullQueryParams'),
   years: YEARS.map(y => ({id: y, name: y})),
+  layoutName: 'components/events-calendar',
 
   @on('init')
   setup() {
@@ -74,9 +76,17 @@ export default Ember.Component.extend({
 
   handleResize() {
     if (this._state === 'destroying') return;
-    const windowWidth = $(window).width();
-    const breakpoint = RESPONSIVE_BREAKPOINT;
-    this.set("responsive", windowWidth < breakpoint);
+    this.set("responsiveBreak", $(window).width() < RESPONSIVE_BREAKPOINT);
+  },
+  
+  forceResponsive: false,
+  responsive: or('forceResponsive', 'responsiveBreak', 'site.mobileView'),
+  showFullTitle: not('responsive'),
+  eventsBelow: alias('responsive'),
+  
+  @discourseComputed('responsive')
+  todayLabel(responsive) {
+    return responsive ? null : 'events_calendar.today';
   },
 
   @discourseComputed
@@ -84,16 +94,6 @@ export default Ember.Component.extend({
     return moment.localeData().months().map((m, i) => {
       return { id: i, name: m };
     });
-  },
-
-  @discourseComputed
-  showFullTitle() {
-    return !this.site.mobileView;
-  },
-
-  @discourseComputed('responsive')
-  eventsBelow(responsive) {
-    return responsive || this.site.mobileView;
   },
 
   @discourseComputed('currentDate', 'currentMonth', 'currentYear', 'topics.[]')
