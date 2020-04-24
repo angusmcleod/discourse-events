@@ -290,3 +290,18 @@ on(:custom_wizard_ready) do
     add_to_serializer(CustomWizard::Field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
 end
+
+on(:user_destroyed) do |user|
+  user_id = user.id
+  topic_ids = TopicCustomField.where(name: 'event_going').pluck(:topic_id)
+  topics = Topic.find(topic_ids) if topic_ids
+
+  if topics
+    topics.each do |topic|
+      rsvp_array = topic.custom_fields['event_going'] || []
+      rsvp_array.delete(user.id)
+      topic.custom_fields['event_going'] = rsvp_array
+      topic.save_custom_fields(true)
+    end
+  end
+end
