@@ -16,8 +16,8 @@ class CalendarEvents::ApiKeysController < ApplicationController
   def index
     key = find_or_create!
     render json: [{
-      key: key.key,
-      client_id: key.client_id,
+      key: key[:key],
+      client_id: key[:client_id],
     }]
   end
 
