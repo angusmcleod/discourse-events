@@ -29,7 +29,6 @@ class CalendarEvents::ApiKeysController < ApplicationController
     key = UserApiKey.find_by attributes
     return key if key
     UserApiKey.create! attributes.reverse_merge(
-      key: SecureRandom.hex(32),
       scopes: SCOPES,
       # client_id has a unique constraint
       client_id: SecureRandom.uuid,
