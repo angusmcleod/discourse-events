@@ -40,6 +40,7 @@ class CalendarEvents::ApiKeysController < ApplicationController
     {
       application_name: APPLICATION_NAME,
       user_id: current_user.id,
+      revoked_at: nil
     }
   end
 
