@@ -536,5 +536,6 @@ export {
   calendarRange, 
   getTimezone,
   formTimeFormat,
-  nextInterval
+  nextInterval,
+  eventCalculations
 };
