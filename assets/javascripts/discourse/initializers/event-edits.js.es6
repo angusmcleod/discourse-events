@@ -158,7 +158,7 @@ export default {
       availableViews(category) {
         let views = this._super(...arguments);
 
-        if (category.get('custom-fields.events_agenda_enabled')) {
+        if (category.get('custom_fields.events_agenda_enabled')) {
           views.push({name: I18n.t('filters.agenda.title'), value: 'agenda'});
         }
 
