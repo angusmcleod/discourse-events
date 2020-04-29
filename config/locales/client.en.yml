@@ -64,6 +64,17 @@ en:
       events_calendar:
         label: "Calendar"
         first_day_week: "Start week on"
+
+    webcal_preferences:
+      webcal_keys: "Webcal Keys"
+      heading: "Webcal API Keys"
+      api_key: "Api Key"
+      client_id: "Client ID"
+      generate: "Generate"
+      notice: "Note: The key and client id will be visible only once. Please store them in a safe place before you leave this page."
+      calendar_notice: 'Please go to <a href="%{link}">this page</a> to generate API keys in order to subscribe to the ical feed'
+      calendar_usage: "Put yousiteurl?user_api_key=yourkey&client_id=yourclientid in your webcal client"
+
     event_rsvp:
       modal:
         title: "Guests"

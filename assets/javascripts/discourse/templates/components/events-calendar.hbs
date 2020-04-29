@@ -21,6 +21,12 @@
         icon="rss"
         none='events_calendar.subscribe'
       )}}
+      {{#if showNotice}}
+        <ul class="events-webcal-notices">
+          <li>{{html-safe (i18n 'webcal_preferences.calendar_notice' link="/my/preferences/webcal-keys")}}</li>
+          <li>{{i18n 'webcal_preferences.calendar_usage'}}</li>
+        </ul>
+      {{/if}}
   {{/if}}
 </div>
 {{events-calendar-body 

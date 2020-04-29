@@ -57,17 +57,12 @@ export default Ember.Component.extend({
     let year = currentYear;
 
     this.setProperties({ currentDate, currentMonth, currentYear, month, year });
-
-    const loginRequired = this.get('siteSettings.login_required');
-    const privateCategory = this.get('category.read_restricted');
-    const alwaysAddKeys = this.get('siteSettings.events_webcal_always_add_user_api_key');
-    if (loginRequired || privateCategory || alwaysAddKeys) {
-      ajax(KEY_ENDPOINT, {
-        type: 'GET',
-      }).then((result) => this.set('userApiKeys', result.api_keys));
-    }
   },
 
+  @discourseComputed('siteSettings.login_required', 'category.read_restricted')
+  showNotice(loginRequired, categoryRestricted) {
+    return loginRequired || categoryRestricted;
+  },
   @on('willDestroy')
   teardown() {
     $(window).off('resize', Ember.run.bind(this, this.handleResize));

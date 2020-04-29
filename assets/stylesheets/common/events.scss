@@ -587,3 +587,22 @@ ul.events-calendar-events {
     min-width: 300px;
   }
 }
+
+.events-webcal-api {
+  margin: 0 0 5px;
+}
+
+.webcal-label {
+  font-weight: bold;
+}
+
+.webcal-notice {
+  font-weight: bold;
+}
+ul.events-webcal-notices {
+  float: right;
+  margin: 10px 0;
+  li {
+    font-style: italic;
+  }
+}
