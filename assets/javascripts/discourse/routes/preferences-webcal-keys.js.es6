@@ -6,6 +6,4 @@ import { getOwner } from "@ember/application";
 
 export default RestrictedUserRoute.extend({
   showFooter: true,
-  apiKey: null,
-
 })
