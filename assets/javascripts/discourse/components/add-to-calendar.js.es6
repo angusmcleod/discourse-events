@@ -1,7 +1,8 @@
 import { googleUri, icsUri } from '../lib/date-utilities';
 import { default as discourseComputed } from 'discourse-common/utils/decorators';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   expanded: false,
   classNames: 'add-to-calendar',
 

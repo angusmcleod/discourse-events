@@ -1,7 +1,8 @@
 import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { firstDayOfWeek } from '../lib/date-utilities';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: 'events-calendar-body',
   expandedDate: 0.0,
 

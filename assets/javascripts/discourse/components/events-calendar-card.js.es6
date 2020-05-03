@@ -1,8 +1,9 @@
 import DiscourseURL from 'discourse/lib/url';
 import { cookAsync } from 'discourse/lib/text';
 import { on } from 'discourse-common/utils/decorators';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: 'events-calendar-card',
 
   @on('init')

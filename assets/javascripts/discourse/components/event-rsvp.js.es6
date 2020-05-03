@@ -2,8 +2,9 @@ import { popupAjaxError } from 'discourse/lib/ajax-error';
 import { default as discourseComputed } from 'discourse-common/utils/decorators';
 import showModal from 'discourse/lib/show-modal';
 import { ajax } from 'discourse/lib/ajax';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: 'event-rsvp',
   goingSaving: false,
 

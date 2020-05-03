@@ -1,6 +1,7 @@
 import DiscourseURL from 'discourse/lib/url';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'li',
 
   actions: {

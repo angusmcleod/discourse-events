@@ -1,9 +1,10 @@
 import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { eventsForDay } from '../lib/date-utilities';
+import Component from "@ember/component";
 
 const MAX_EVENTS = 4;
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNameBindings: [':day', 'classes', 'differentMonth'],
   hidden: 0,
   hasHidden: Ember.computed.gt('hidden', 0),
