@@ -14,26 +14,19 @@ class CalendarEvents::ApiKeysController < ApplicationController
   TODO: Instead we should allow a unique key to be created for each client.
 =end
   def index
-    key = find_or_create!
-    render json: [{
-      key: key[:key],
-      client_id: key[:client_id],
-    }]
-  end
-
-  private
-
-  def find_or_create!
-    # We use UserApiKey instead of ApiKey so that the surface area of
-    # a leaked key is as small as possible (using UserApiKey.scopes).
-    key = UserApiKey.find_by attributes
-    return key if key
-    UserApiKey.create! attributes.reverse_merge(
+    key = UserApiKey.create! attributes.reverse_merge(
       scopes: SCOPES,
       # client_id has a unique constraint
       client_id: SecureRandom.uuid,
     )
+
+    render json: [{
+      key: key.key,
+      client_id: key.client_id,
+    }]
   end
+
+  private
 
   def attributes
     {

@@ -75,6 +75,3 @@ plugins:
   events_rsvp:
     default: false
     client: true
-  events_webcal_always_add_user_api_key:
-    default: false
-    client: true
