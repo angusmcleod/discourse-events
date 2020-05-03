@@ -1,8 +1,9 @@
 import showModal from 'discourse/lib/show-modal';
 import { eventLabel } from '../lib/date-utilities';
 import { default as discourseComputed } from 'discourse-common/utils/decorators';
+import Component from "@ember/component";
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['event-label'],
 
   didInsertElement() {

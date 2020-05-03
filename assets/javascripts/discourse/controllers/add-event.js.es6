@@ -1,7 +1,8 @@
 import { addEvent } from '../lib/date-utilities';
 import ModalFunctionality from "discourse/mixins/modal-functionality";
+import Controller from "@ember/controller";
 
-export default Ember.Controller.extend(ModalFunctionality, {
+export default Controller.extend(ModalFunctionality, {
   title: 'add_event.modal_title',
   
   actions: {

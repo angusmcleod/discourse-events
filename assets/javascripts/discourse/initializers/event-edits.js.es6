@@ -11,7 +11,6 @@ import { withPluginApi } from 'discourse/lib/plugin-api';
 import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
 import InputValidation from 'discourse/models/input-validation';
 import { CREATE_TOPIC } from "discourse/models/composer";
-import loadScript from "discourse/lib/load-script";
 
 export default {
   name: 'events-edits',

@@ -3,6 +3,7 @@ import { eventsForDay, calendarDays, calendarRange } from '../lib/date-utilities
 import { or, not, alias } from "@ember/object/computed";
 import Category from 'discourse/models/category';
 import { ajax } from 'discourse/lib/ajax';
+import Component from "@ember/component";
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [
@@ -12,7 +13,7 @@ const YEARS = [
 ];
 const KEY_ENDPOINT = "/calendar-events/api_keys.json";
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
   showEvents: Ember.computed.not('eventsBelow'),
   canSelectDate: Ember.computed.alias('eventsBelow'),

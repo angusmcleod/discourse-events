@@ -3,8 +3,9 @@ import { getOwner } from 'discourse-common/lib/get-owner';
 import { ajax } from 'discourse/lib/ajax';
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import { extractError } from 'discourse/lib/ajax-error';
+import Controller from "@ember/controller";
 
-export default Ember.Controller.extend(ModalFunctionality, {
+export default Controller.extend(ModalFunctionality, {
   filter: null,
   userList: [],
   type: 'going',
