@@ -24,7 +24,7 @@
       {{#if showNotice}}
         <ul class="events-webcal-notices">
           <li>{{html-safe (i18n 'webcal_preferences.calendar_notice' link="/my/preferences/webcal-keys")}}</li>
-          <li>{{i18n 'webcal_preferences.calendar_usage'}}</li>
+          <li>{{html-safe (i18n 'webcal_preferences.calendar_usage' doc="https://thepavilion.io/t/subscribing-to-events-ical-and-rss-feeds/2883")}}</li>
         </ul>
       {{/if}}
   {{/if}}
