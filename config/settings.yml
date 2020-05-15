@@ -32,6 +32,9 @@ plugins:
   events_event_time_calendar_format:
     client: true
     default: 'HH:mm'
+  events_event_timepicker_format:
+    client: true
+    default: 'H:i'
   events_remove_past_from_agenda:
     default: false
   events_remove_past_from_map:

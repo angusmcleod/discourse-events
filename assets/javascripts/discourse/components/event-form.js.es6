@@ -55,10 +55,12 @@ export default Component.extend({
     later(this, () => {
       scheduleOnce('afterRender', this, () => {
         const $timePicker = $(`#${type}-time-picker`);
-        $timePicker.timepicker({ timeFormat: 'H:i' });
+        $timePicker.timepicker({
+          timeFormat: this.siteSettings.events_event_timepicker_format
+        });
         $timePicker.timepicker('setTime', time);
         $timePicker.change(() => {
-          this.set(`${type}Time`, $timePicker.val());
+          this.set(`${type}Time`, $timePicker.timepicker('getTime'));
         });
       })
     });
