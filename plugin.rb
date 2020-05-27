@@ -11,8 +11,6 @@ register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
-enabled_site_setting :events_enabled
-
 gem 'icalendar', '2.4.1'
 
 Discourse.top_menu_items.push(:agenda)
@@ -76,9 +74,7 @@ after_initialize do
     end
   end
 
-  class ::SiteSettings::TypeSupervisor
-    prepend EventsSiteSettingExtension if SiteSetting.events_enabled
-  end
+  ::SiteSettings::TypeSupervisor.prepend EventsSiteSettingExtension
 
   # event times are stored individually as seconds since epoch so that event topic lists
   # can be ordered easily within the exist topic list query structure in Discourse core.
@@ -214,9 +210,7 @@ after_initialize do
     end
   end
 
-  class ::ListableTopicSerializer
-    prepend ListableTopicSerializerExtension if SiteSetting.events_enabled
-  end
+  ::ListableTopicSerializer.prepend ListableTopicSerializerExtension
 
   on(:post_created) do |post, opts, user|
     event_creator = ::EventCreator.new(post, opts, user)
