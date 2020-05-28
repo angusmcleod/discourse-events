@@ -222,12 +222,6 @@ export default {
             }
           }
           this.render("discovery/calendar", { outlet: "list-container", controller: 'discovery/topics' });
-        },
-        
-        actions: {
-          error(err) {
-            console.log(err)
-          }
         }
       });
     });
@@ -247,12 +241,6 @@ export default {
               return this.replaceWith(`/c/${Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
             } else {
               return this._super(...arguments);
-            }
-          },
-          
-          actions: {
-            error(err) {
-              console.log(err)
             }
           }
         });
