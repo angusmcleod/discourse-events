@@ -1,4 +1,5 @@
 import { getOwner } from 'discourse-common/lib/get-owner';
+import I18n from "I18n";
 
 export default {
   setupComponent(attrs, component) {

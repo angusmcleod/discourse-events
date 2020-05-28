@@ -1,6 +1,7 @@
 import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { firstDayOfWeek } from '../lib/date-utilities';
 import Component from "@ember/component";
+import I18n from "I18n";
 
 export default Component.extend({
   classNames: 'events-calendar-body',

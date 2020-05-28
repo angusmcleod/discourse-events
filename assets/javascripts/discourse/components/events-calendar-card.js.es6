@@ -1,6 +1,7 @@
 import DiscourseURL from 'discourse/lib/url';
 import { cookAsync } from 'discourse/lib/text';
 import { on } from 'discourse-common/utils/decorators';
+import { bind, next, scheduleOnce } from "@ember/runloop";
 import Component from "@ember/component";
 
 export default Component.extend({
@@ -15,13 +16,11 @@ export default Component.extend({
   },
 
   didInsertElement() {
-    this.set('clickHandler', Ember.run.bind(this, this.documentClick));
+    this.set('clickHandler', bind(this, this.documentClick));
 
-    Ember.run.next(() => {
-      Ember.$(document).on('mousedown', this.get('clickHandler'));
-    });
+    next(() => ($(document).on('mousedown', this.get('clickHandler'))));
 
-    Ember.run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       const offsetLeft = this.$().closest('.day').offset().left;
       const offsetTop = this.$().closest('.day').offset().top;
       const windowWidth = $(window).width();
@@ -58,7 +57,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
-    Ember.$(document).off('mousedown', this.get('clickHandler'));
+    $(document).off('mousedown', this.get('clickHandler'));
   },
 
   documentClick(event) {
