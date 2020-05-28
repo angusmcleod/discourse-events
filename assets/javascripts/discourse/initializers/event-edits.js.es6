@@ -1,4 +1,5 @@
 import Composer from 'discourse/models/composer';
+import Category from 'discourse/models/category';
 import ComposerBody from 'discourse/components/composer-body';
 import Topic from 'discourse/models/topic';
 import TopicController from 'discourse/controllers/topic';
@@ -243,7 +244,7 @@ export default {
           afterModel(model, transition) {
             const filter = this.filter(model.category);
             if (filter === 'calendar' || filter === 'agenda') {
-              return this.replaceWith(`/c/${Discourse.Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
+              return this.replaceWith(`/c/${Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
             } else {
               return this._super(...arguments);
             }
