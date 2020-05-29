@@ -1,5 +1,6 @@
 import { googleUri, icsUri } from '../lib/date-utilities';
 import { default as discourseComputed } from 'discourse-common/utils/decorators';
+import { bind } from "@ember/runloop";
 import Component from "@ember/component";
 
 export default Component.extend({
@@ -7,11 +8,11 @@ export default Component.extend({
   classNames: 'add-to-calendar',
 
   didInsertElement() {
-    Ember.$(document).on('click', Ember.run.bind(this, this.outsideClick));
+    $(document).on('click', bind(this, this.outsideClick));
   },
 
   willDestroyElement() {
-    Ember.$(document).off('click', Ember.run.bind(this, this.outsideClick));
+    $(document).off('click', bind(this, this.outsideClick));
   },
 
   outsideClick(e) {

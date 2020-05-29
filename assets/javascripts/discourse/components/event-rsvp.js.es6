@@ -3,6 +3,8 @@ import { default as discourseComputed } from 'discourse-common/utils/decorators'
 import showModal from 'discourse/lib/show-modal';
 import { ajax } from 'discourse/lib/ajax';
 import Component from "@ember/component";
+import { gt, notEmpty, equal } from "@ember/object/computed";
+import I18n from "I18n";
 
 export default Component.extend({
   classNames: 'event-rsvp',
@@ -32,16 +34,15 @@ export default Component.extend({
     return currentUser && !eventFull;
   },
 
-  hasGuests: Ember.computed.gt('goingTotal', 0),
-
-  hasMax: Ember.computed.notEmpty('topic.event.going_max'),
+  hasGuests: gt('goingTotal', 0),
+  hasMax: notEmpty('topic.event.going_max'),
 
   @discourseComputed('goingTotal', 'topic.event.going_max')
   spotsLeft(goingTotal, goingMax) {
     return Number(goingMax) - Number(goingTotal);
   },
 
-  eventFull: Ember.computed.equal('spotsLeft', 0),
+  eventFull: equal('spotsLeft', 0),
 
   @discourseComputed('hasMax', 'eventFull')
   goingMessage(hasMax, full) {

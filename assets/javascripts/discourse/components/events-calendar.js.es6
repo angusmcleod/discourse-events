@@ -4,6 +4,9 @@ import { or, not, alias } from "@ember/object/computed";
 import Category from 'discourse/models/category';
 import { ajax } from 'discourse/lib/ajax';
 import Component from "@ember/component";
+import { scheduleOnce, bind } from "@ember/runloop";
+import { inject as service } from "@ember/service";
+import I18n from "I18n";
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [
@@ -15,10 +18,10 @@ const KEY_ENDPOINT = "/calendar-events/api_keys.json";
 
 export default Component.extend({
   classNameBindings: [':events-calendar', 'responsive'],
-  showEvents: Ember.computed.not('eventsBelow'),
-  canSelectDate: Ember.computed.alias('eventsBelow'),
-  routing: Ember.inject.service('-routing'),
-  queryParams: Ember.computed.alias('routing.router.currentState.routerJsState.fullQueryParams'),
+  showEvents: not('eventsBelow'),
+  canSelectDate: alias('eventsBelow'),
+  routing: service('-routing'),
+  queryParams: alias('routing.router.currentState.routerJsState.fullQueryParams'),
   years: YEARS.map(y => ({id: y, name: y})),
   layoutName: 'components/events-calendar',
 
@@ -27,9 +30,9 @@ export default Component.extend({
     this._super();
     moment.locale(I18n.locale);
 
-    Ember.run.scheduleOnce('afterRender', () => {
+    scheduleOnce('afterRender', () => {
       this.handleResize();
-      $(window).on('resize', Ember.run.bind(this, this.handleResize));
+      $(window).on('resize', bind(this, this.handleResize));
       $('body').addClass('calendar');
     });
 
@@ -66,7 +69,7 @@ export default Component.extend({
   },
   @on('willDestroy')
   teardown() {
-    $(window).off('resize', Ember.run.bind(this, this.handleResize));
+    $(window).off('resize', bind(this, this.handleResize));
     $('body').removeClass('calendar');
   },
 

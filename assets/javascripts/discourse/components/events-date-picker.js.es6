@@ -2,6 +2,8 @@ import DatePicker from "discourse/components/date-picker";
 import { default as discourseComputed, observes, on } from 'discourse-common/utils/decorators';
 import loadScript from "discourse/lib/load-script";
 import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
+import { next } from "@ember/runloop";
+import I18n from "I18n";
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",
@@ -12,7 +14,7 @@ export default DatePicker.extend({
     const container = $("#" + this.get("containerId"))[0];
 
     loadScript("/javascripts/pikaday.js").then(() => {
-      Ember.run.next(() => {
+      next(() => {
         let default_opts = {
           field: input,
           container: container || this.$()[0],

@@ -1,4 +1,5 @@
 import Composer from 'discourse/models/composer';
+import Category from 'discourse/models/category';
 import ComposerBody from 'discourse/components/composer-body';
 import Topic from 'discourse/models/topic';
 import TopicController from 'discourse/controllers/topic';
@@ -9,8 +10,10 @@ import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
 import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
-import InputValidation from 'discourse/models/input-validation';
 import { CREATE_TOPIC } from "discourse/models/composer";
+import { scheduleOnce, bind } from "@ember/runloop";
+import EmberObject from "@ember/object";
+import I18n from "I18n";
 
 export default {
   name: 'events-edits',
@@ -41,7 +44,7 @@ export default {
 
       @observes('composer.showEventControls', 'composer.composeState')
       applyEventInlineClass() {
-        Ember.run.scheduleOnce('afterRender', this, () => {
+        scheduleOnce('afterRender', this, () => {
           const showEventControls = this.get('composer.showEventControls');
           const $container = $('.composer-fields .title-and-category');
 
@@ -109,14 +112,14 @@ export default {
     TopicListItem.reopen({
       @on('didInsertElement')
       setupEventLink() {
-        Ember.run.scheduleOnce('afterRender', this, () => {
-          this.$('.event-link').on('click', Ember.run.bind(this, this.handleEventLabelClick));
+        scheduleOnce('afterRender', this, () => {
+          $('.event-link', this.element).on('click', bind(this, this.handleEventLabelClick));
         });
       },
 
       @on('willDestroyElement')
       teardownEventLink() {
-        this.$('.event-link').off('click', Ember.run.bind(this, this.handleEventLabelClick));
+        $('.event-link', this.element).off('click', bind(this, this.handleEventLabelClick));
       },
 
       handleEventLabelClick(e) {
@@ -131,22 +134,22 @@ export default {
       moveElements() {
         const topic = this.get('topic');
 
-        Ember.run.scheduleOnce('afterRender', () => {
-          const $linkTopLine = this.$('.link-top-line');
+        scheduleOnce('afterRender', () => {
+          const $linkTopLine = $('.link-top-line', this.element);
           let rowBelowTitle = false;
 
           if (topic.event && topic.event.rsvp) {
-            this.$('.topic-list-event-rsvp').insertAfter($linkTopLine);
+            $('.topic-list-event-rsvp', this.element).insertAfter($linkTopLine);
             rowBelowTitle = true;
           }
 
           if (Discourse.SiteSettings.events_event_label_short_after_title) {
-            this.$('.date-time-container').insertAfter($linkTopLine);
+            $('.date-time-container', this.element).insertAfter($linkTopLine);
             rowBelowTitle = true;
           }
 
           if (rowBelowTitle) {
-            this.$('.main-link').addClass('row-below-title');
+            $('.main-link', this.element).addClass('row-below-title');
           }
         });
       }
@@ -235,7 +238,7 @@ export default {
           afterModel(model, transition) {
             const filter = this.filter(model.category);
             if (filter === 'calendar' || filter === 'agenda') {
-              return this.replaceWith(`/c/${Discourse.Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
+              return this.replaceWith(`/c/${Category.slugFor(model.category)}/l/${this.filter(model.category)}`);
             } else {
               return this._super(...arguments);
             }
@@ -284,13 +287,14 @@ export default {
       const user = api.getCurrentUser();
       if (user && user.admin) {
         api.modifyClass('model:site-setting', {
-          allowsNone: function() {
+          @discourseComputed('valid_values')
+          allowsNone() {
             if (this.get('setting') === 'events_timezone_default') {
               return 'site_settings.events_timezone_default_placeholder';
             } else {
               this._super();
             }
-          }.property('valid_values')
+          }
         });
       }
 
@@ -327,7 +331,7 @@ export default {
         @discourseComputed('model.action', 'model.event', 'model.category.custom_fields.events_required', 'lastValidatedAt')
         eventValidation(action, event, eventsRequired, lastValidatedAt) {
           if (action === CREATE_TOPIC && eventsRequired && !event) {
-            return InputValidation.create({
+            return EmberObject.create({
               failed: true,
               reason: I18n.t('composer.error.event_missing'),
               lastShownAt: lastValidatedAt

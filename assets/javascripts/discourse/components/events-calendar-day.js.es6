@@ -1,13 +1,16 @@
 import { default as discourseComputed, on, observes } from 'discourse-common/utils/decorators';
 import { eventsForDay } from '../lib/date-utilities';
+import { gt, notEmpty, equal } from "@ember/object/computed";
+import { bind } from "@ember/runloop";
 import Component from "@ember/component";
+import { htmlSafe } from "@ember/template";
 
 const MAX_EVENTS = 4;
 
 export default Component.extend({
   classNameBindings: [':day', 'classes', 'differentMonth'],
   hidden: 0,
-  hasHidden: Ember.computed.gt('hidden', 0),
+  hasHidden: gt('hidden', 0),
 
   @discourseComputed('date', 'month', 'expandedDate')
   expanded(date, month, expandedDate) {
@@ -50,12 +53,12 @@ export default Component.extend({
   },
 
   didInsertElement() {
-    this.set('clickHandler', Ember.run.bind(this, this.documentClick));
-    Ember.$(document).on('click', this.get('clickHandler'));
+    this.set('clickHandler', bind(this, this.documentClick));
+    $(document).on('click', this.get('clickHandler'));
   },
 
   willDestroyElement() {
-    Ember.$(document).off('click', this.get('clickHandler'));
+    $(document).off('click', this.get('clickHandler'));
   },
 
   documentClick(event) {
@@ -132,6 +135,6 @@ export default Component.extend({
       }
     }
 
-    return Ember.String.htmlSafe(style);
+    return htmlSafe(style);
   }
 });

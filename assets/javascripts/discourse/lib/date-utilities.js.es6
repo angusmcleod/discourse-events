@@ -1,5 +1,7 @@
 import { renderIcon } from "discourse-common/lib/icon-library";
 import Site from "discourse/models/site";
+import { htmlSafe } from "@ember/template";
+import I18n from "I18n";
 
 function nextInterval() {
   const rounding = 30 * 60 * 1000;
@@ -311,7 +313,7 @@ let eventsForDay = function(day, topics, args = {}) {
         }
         blockIndex ++;
       } else if (topic.category) {
-        attrs['dotStyle'] = Ember.String.htmlSafe(`color: #${topic.category.color}`);
+        attrs['dotStyle'] = htmlSafe(`color: #${topic.category.color}`);
       }
 
       if (!allDay && (!multiDay || startIsSame)) {
@@ -328,11 +330,11 @@ let eventsForDay = function(day, topics, args = {}) {
           let buffer = 20;
           if (attrs['time']) buffer += 55;
           let tStyle = `width:calc((100%*${daysInRow}) - ${buffer}px);background-color:#${topic.category.color};`;
-          attrs['titleStyle'] = Ember.String.htmlSafe(tStyle);
+          attrs['titleStyle'] = htmlSafe(tStyle);
         }
       }
 
-      attrs['listStyle'] = Ember.String.htmlSafe(attrs['listStyle']);
+      attrs['listStyle'] = htmlSafe(attrs['listStyle']);
 
       // Add placeholders if necessary
       if (blockStyle) {
