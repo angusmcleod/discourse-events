@@ -24,12 +24,12 @@ export default {
     Composer.serializeToTopic('event', 'topic.event');
 
     Composer.reopen({
-      @discourseComputed('subtype', 'category.custom_fields.events_enabled', 'topicFirstPost', 'topic.event', 'canCreateEvent')
+      @discourseComputed('subtype', 'category.events_enabled', 'topicFirstPost', 'topic.event', 'canCreateEvent')
       showEventControls(subtype, categoryEnabled, topicFirstPost, event, canCreateEvent) {
         return topicFirstPost && (subtype === 'event' || categoryEnabled || event) && canCreateEvent;
       },
 
-      @discourseComputed('category.custom_fields.events_min_trust_to_create')
+      @discourseComputed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
         const user = Discourse.User.current();
         return user.staff || user.trust_level >= minTrust;
@@ -61,12 +61,12 @@ export default {
     });
 
     Topic.reopen({
-      @discourseComputed('subtype', 'category.custom_fields.events_enabled', 'canCreateEvent')
+      @discourseComputed('subtype', 'category.events_enabled', 'canCreateEvent')
       showEventControls(subtype, categoryEnabled, canCreateEvent) {
         return (subtype === 'event' || categoryEnabled) && canCreateEvent;
       },
 
-      @discourseComputed('category.custom_fields.events_min_trust_to_create')
+      @discourseComputed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
         const user = Discourse.User.current();
         return user.staff || user.trust_level >= minTrust;
@@ -97,10 +97,10 @@ export default {
         if (category) {
           items = items.reject((item) => item.name === 'agenda' || item.name === 'calendar');
 
-          if (category.custom_fields.events_agenda_enabled) {
+          if (category.events_agenda_enabled) {
             items.push(Discourse.NavItem.fromText('agenda', args));
           }
-          if (category.custom_fields.events_calendar_enabled) {
+          if (category.events_calendar_enabled) {
             items.push(Discourse.NavItem.fromText('calendar', args));
           }
         }
@@ -328,7 +328,7 @@ export default {
       });
 
       api.modifyClass('controller:composer', {
-        @discourseComputed('model.action', 'model.event', 'model.category.custom_fields.events_required', 'lastValidatedAt')
+        @discourseComputed('model.action', 'model.event', 'model.category.events_required', 'lastValidatedAt')
         eventValidation(action, event, eventsRequired, lastValidatedAt) {
           if (action === CREATE_TOPIC && eventsRequired && !event) {
             return EmberObject.create({
