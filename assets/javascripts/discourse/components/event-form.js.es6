@@ -16,25 +16,20 @@ export default Component.extend({
   allDay: false,
   showTimezone: false,
   
-  didInsertElement() {    
+  didInsertElement() {
     const props = setupEventForm(this.event);
     this.setProperties(props);
     this.setupTimePicker('start');
     this.setupTimePicker('end');
   },
   
-  @discourseComputed('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay')
-  endValid(startDate, startTime, endDate, endTime, endEnabled, allDay) {
-    let start = allDay ? moment(startDate, "YYYY-MM-DD") : moment(startDate+"T"+startTime, "YYYY-MM-DDTHH:mm");
-    let end = allDay ? moment(endDate, "YYYY-MM-DD") : moment(endDate+"T"+endTime, "YYYY-MM-DDTHH:mm");
-
-    return !endEnabled || end.isSameOrAfter(start);
+  eventValid(event) {
+    return !event || !event.end || moment(event.end).isSameOrAfter(event.start);
   },
 
   @observes('startDate', 'startTime', 'endDate', 'endTime', 'endEnabled', 'allDay', 'timezone', 'rsvpEnabled', 'goingMax', 'usersGoing')
-  eventUpdated(){
-    const valid = this.endValid;
-    const event = compileEvent({
+  eventUpdated() {
+    let event = compileEvent({
       startDate: this.startDate,
       startTime: this.startTime,
       endDate: this.endDate,
@@ -46,8 +41,7 @@ export default Component.extend({
       goingMax: this.goingMax,
       usersGoing: this.usersGoing
     });
-    
-    this.updateEvent(event, valid);
+    this.updateEvent(event, this.eventValid(event));
   },
 
   setupTimePicker(type) {    
