@@ -82,10 +82,15 @@
   }
 
   .dropdown-menu {
-    top: 24px;
+    top: 25px;
     bottom: initial;
     width: 190px;
     position: absolute;
+    display: none;
+    background-color: $secondary;
+    z-index: 100;
+    box-shadow: shadow('dropdown');
+    border-top: 1px solid $primary-very-low;
 
     &.show {
       display: block;
@@ -94,6 +99,15 @@
     ul {
       list-style: none;
       margin: 0;
+      
+      li {
+        padding: 10px;
+        cursor: pointer;
+        
+        &:hover {
+          background-color: $primary-low;
+        }
+      }
     }
   }
 }
