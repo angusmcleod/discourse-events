@@ -2,14 +2,15 @@ import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-bo
 import discourseComputed from "discourse-common/utils/decorators";
 import Category from 'discourse/models/category';
 import I18n from "I18n";
+import getURL from "discourse-common/lib/get-url";
 
 export default DropdownSelectBoxComponent.extend({
   classNames: ["events-calendar-subscription"],
-  
+
   modifyComponentForRow() {
     return "events-calendar-subscription-row";
   },
-  
+
   getDomain() {
     return location.hostname + (location.port ? ':' + location.port : '');
   },
@@ -17,7 +18,7 @@ export default DropdownSelectBoxComponent.extend({
   @discourseComputed()
   content() {
     const path = this.category ? `/c/${Category.slugFor(this.category)}/l` : '';
-    const url = this.getDomain() + Discourse.getURL(path);
+    const url = this.getDomain() + getURL(path);
     const timeZone = moment.tz.guess();
     return [
       {
