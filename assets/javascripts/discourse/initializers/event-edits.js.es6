@@ -98,10 +98,10 @@ export default {
           items = items.reject((item) => item.name === 'agenda' || item.name === 'calendar');
 
           if (category.events_agenda_enabled) {
-            items.push(Discourse.NavItem.fromText('agenda', args));
+            items.push(NavItem.fromText('agenda', args));
           }
           if (category.events_calendar_enabled) {
-            items.push(Discourse.NavItem.fromText('calendar', args));
+            items.push(NavItem.fromText('calendar', args));
           }
         }
 
