@@ -301,7 +301,7 @@ end
 on(:user_destroyed) do |user|
   user_id = user.id
   topic_ids = TopicCustomField.where(name: 'event_going').pluck(:topic_id)
-  topics = Topic.find(topic_ids) if topic_ids
+  topics = Topic.where(id: topic_ids) if topic_ids.present?
 
   if topics
     topics.each do |topic|
