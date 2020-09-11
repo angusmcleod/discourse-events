@@ -4,6 +4,7 @@ import loadScript from "discourse/lib/load-script";
 import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
 import { next } from "@ember/runloop";
 import I18n from "I18n";
+import { deepMerge } from "discourse-common/lib/object";
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",
@@ -41,7 +42,7 @@ export default DatePicker.extend({
           }
         };
 
-        this._picker = new Pikaday(_.merge(default_opts, this._opts()));
+        this._picker = new Pikaday(deepMerge(default_opts, this._opts()));
       });
     });
   }
