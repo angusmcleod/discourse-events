@@ -1,7 +1,7 @@
 class CalendarEvents::ApiKeysController < ApplicationController
 
   APPLICATION_NAME = 'discourse-events'
-  SCOPES = [CalendarEvents::USER_API_KEY_SCOPE]
+  SCOPES = [UserApiKeyScope.new(name: CalendarEvents::USER_API_KEY_SCOPE)]
 
   before_action :ensure_logged_in
 

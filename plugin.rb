@@ -187,7 +187,7 @@ after_initialize do
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
-  UserApiKeyScope::SCOPES.reverse_merge!(
+  UserApiKey::SCOPES.reverse_merge!(
     CalendarEvents::USER_API_KEY_SCOPE.to_sym => [
       [:get, 'list#calendar_ics'],
       [:get, 'list#agenda_ics'],
