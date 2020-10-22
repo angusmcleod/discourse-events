@@ -187,13 +187,14 @@ after_initialize do
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
-  UserApiKey::SCOPES.reverse_merge!(
-    CalendarEvents::USER_API_KEY_SCOPE.to_sym => [
-      [:get, 'list#calendar_ics'],
-      [:get, 'list#agenda_ics'],
-      [:get, 'list#calendar_feed'],
-      [:get, 'list#agenda_feed'],
-    ],
+  add_user_api_key_scope(CalendarEvents::USER_API_KEY_SCOPE.to_sym,
+    methods: :get,
+    actions: ['list#calendar_ics',
+              'list#agenda_ics',
+              'list#calendar_feed',
+              'list#agenda_feed'],
+    formats: [:ics, :rss],
+    params: [:tags, :assigned, :time_zone, ListControllerEventsExtension::USER_API_KEY.to_sym, ListControllerEventsExtension::USER_API_CLIENT_ID.to_sym ]
   )
 
   add_to_class(:guardian, :can_create_event?) do |category|
