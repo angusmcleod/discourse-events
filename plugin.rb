@@ -293,7 +293,7 @@ on(:custom_wizard_ready) do
     CustomWizard.class == Module &&
     defined?(CustomWizard::FieldSerializer) == 'constant'
     
-    CustomWizard::Field.add_assets('event', 'discourse-events', ['components', 'templates', 'lib'])
+    CustomWizard::Field.register('event', 'discourse-events', ['components', 'templates', 'lib'])
     add_to_serializer(CustomWizard::Field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
 end
