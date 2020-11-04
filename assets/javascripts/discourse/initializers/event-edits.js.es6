@@ -175,7 +175,6 @@ export default {
     const calendarRoutes = [
       `Calendar`,
       `CalendarCategory`,
-      `CalendarParentCategory`,
       `CalendarCategoryNone`
     ];
 
