@@ -10,6 +10,9 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
   EV_MARKDOWN
   start_string = "start=\"%s\""
   end_string = "end=\"%s\""
+
+  puts "", "Total #{topics.count} event topics found"
+  
   topics.each do |topic|
     event_data = topic.event
     e_start = event_data[:start].to_time.strftime("%F %T")
@@ -29,6 +32,7 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
     first_post.raw = first_post.raw + final_markdown
     first_post.save
     first_post.rebake!(priority: :normal)
+    puts "", "Successfully migrated the event data for Topic: #{topic.id}.", ""
 
     if args[:remove_actual]
       fields = topic.custom_fields.keys.select { |key| key.match(/^event_/) }
@@ -37,6 +41,9 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
       end
 
       topic.save_custom_fields(true)
+      puts "", "Removed the old events data for Topic: #{topic.id}.", ""
     end
   end
+
+  puts "", "Finished!!"
 end
