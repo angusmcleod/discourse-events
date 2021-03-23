@@ -32,6 +32,8 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
     first_post.raw = first_post.raw + final_markdown
     first_post.save
     first_post.rebake!(priority: :normal)
+
+    migrate_rsvp_users(topic, first_post)
     puts "", "Successfully migrated the event data for Topic: #{topic.id}.", ""
 
     if args[:remove_actual]
@@ -46,4 +48,24 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
   end
 
   puts "", "Finished!!"
+end
+
+def migrate_rsvp_users(topic, first_post)
+  rsvp_enabled = topic.event[:rsvp]
+  return unless !!rsvp_enabled
+  return unless ("DiscoursePostEvent::Invitee".constantize.is_a?(Class) rescue false)
+  rsvp_data = topic.custom_fields[:event_going]
+  return unless rsvp_data.present?
+
+  puts "", "Importing invitees for Topic: #{topic.id} ...", ""
+  p "Importing user ids #{rsvp_data.inspect}"
+  rsvp_data.each do |user_id|
+    DiscoursePostEvent::Invitee.create!(
+      user_id: user_id,
+      post_id: first_post.id,
+      status: DiscoursePostEvent::Invitee.statuses[:going]
+    )
+  end
+
+  puts "", "Imported Successfully", ""
 end
