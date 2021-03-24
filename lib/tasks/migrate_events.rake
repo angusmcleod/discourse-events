@@ -19,8 +19,8 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
     start_arg = sprintf(start_string, e_start)
     replace_args = [start_arg]
 
-    e_end = event_data[:end].present? ? event_data[:start].to_time.strftime("%F %T") : ""
-    end_arg = sprintf(start_string, e_start)
+    e_end = event_data[:end].present? ? event_data[:end].to_time.strftime("%F %T") : ""
+    end_arg = sprintf(end_string, e_end)
     replace_args.push(end_arg)
 
     final_markdown = sprintf(
@@ -31,7 +31,7 @@ task "events:migrate_events", [:remove_actual] => :environment do |_, args|
     first_post = topic.first_post
     first_post.raw = first_post.raw + final_markdown
     first_post.save
-    first_post.rebake!(priority: :normal)
+    DiscoursePostEvent::Event.update_from_raw(first_post)
 
     migrate_rsvp_users(topic, first_post)
     puts "", "Successfully migrated the event data for Topic: #{topic.id}.", ""
@@ -60,7 +60,7 @@ def migrate_rsvp_users(topic, first_post)
   puts "", "Importing invitees for Topic: #{topic.id} ...", ""
   p "Importing user ids #{rsvp_data.inspect}"
   rsvp_data.each do |user_id|
-    DiscoursePostEvent::Invitee.create!(
+    DiscoursePostEvent::Invitee.create(
       user_id: user_id,
       post_id: first_post.id,
       status: DiscoursePostEvent::Invitee.statuses[:going]
