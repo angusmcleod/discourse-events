@@ -2,7 +2,7 @@
 # about: Allows you to manage events in Discourse
 # version: 0.1
 # authors: Angus McLeod
-# url: https://github.com/angusmcleod/discourse-events
+# url: https://github.com/paviliondev/discourse-events
 
 register_asset 'stylesheets/common/events.scss'
 register_asset 'stylesheets/desktop/events.scss', :desktop
