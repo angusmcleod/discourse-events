@@ -4,7 +4,7 @@ import Category from 'discourse/models/category';
 export default {
   setupComponent(attrs, component) {
     const buffered = this.get('buffered');
-    const user = Discourse.User.current();
+    const user = component.currentUser;
     const showEventControls = (category) => {
       return category && category.events_enabled && (
         user.staff ||

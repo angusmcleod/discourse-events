@@ -2,6 +2,7 @@ import { renderIcon } from "discourse-common/lib/icon-library";
 import Site from "discourse/models/site";
 import { htmlSafe } from "@ember/template";
 import I18n from "I18n";
+import User from 'discourse/models/user'
 
 function nextInterval() {
   const rounding = 30 * 60 * 1000;
@@ -379,7 +380,7 @@ let eventsForDay = function(day, topics, args = {}) {
 
 const allowedFirstDays = [6, 0, 1]; // Saturday, Sunday, Monday
 let firstDayOfWeek = function() {
-  const user = Discourse.User.current();
+  const user = User.current();
   return user && allowedFirstDays.indexOf(user.calendar_first_day_week) > -1 ?
          user.calendar_first_day_week : moment().weekday(0).day();
 };
