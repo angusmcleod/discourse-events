@@ -19,6 +19,7 @@ export default {
   name: 'events-edits',
   initialize(container) {
     const siteSettings = container.lookup('site-settings:main');
+    const currentUser = container.lookup("current-user:main");
 
     Composer.serializeOnCreate('event');
     Composer.serializeToTopic('event', 'topic.event');
@@ -31,8 +32,7 @@ export default {
 
       @discourseComputed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
-        const user = Discourse.User.current();
-        return user.staff || user.trust_level >= minTrust;
+        return currentUser.staff || currentUser.trust_level >= minTrust;
       }
     });
 
@@ -68,8 +68,7 @@ export default {
 
       @discourseComputed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
-        const user = Discourse.User.current();
-        return user.staff || user.trust_level >= minTrust;
+        return currentUser.staff || currentUser.trust_level >= minTrust;
       },
 
       @discourseComputed('last_read_post_number', 'highest_post_number')
