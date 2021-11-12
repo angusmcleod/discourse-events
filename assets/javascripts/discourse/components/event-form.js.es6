@@ -5,7 +5,6 @@ import {
   compileEvent,
   setupEventForm,
   timezoneLabel,
-  getTimezone,
   formTimeFormat,
   nextInterval
 } from '../lib/date-utilities';
@@ -17,7 +16,7 @@ export default Component.extend({
   showTimezone: false,
   
   didInsertElement() {
-    const props = setupEventForm(this.event);
+    const props = setupEventForm(this.event, { siteSettings: this.siteSettings });
     this.setProperties(props);
     this.setupTimePicker('start');
     this.setupTimePicker('end');
@@ -66,7 +65,7 @@ export default Component.extend({
     return eventTimezones.map((tz) => {
       return {
         value: tz.value,
-        name: timezoneLabel(tz.value)
+        name: timezoneLabel(tz.value, { siteSettings: this.siteSettings })
       }
     });
   },

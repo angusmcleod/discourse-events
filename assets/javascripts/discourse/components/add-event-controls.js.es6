@@ -22,14 +22,15 @@ export default Component.extend({
     return eventLabel(event, {
       noText: this.get('noText'),
       useEventTimezone: true,
-      showRsvp: true
+      showRsvp: true,
+      siteSettings: this.siteSettings
     });
   },
 
   @discourseComputed('category', 'noText')
   iconOnly(category, noText) {
     return noText ||
-           Discourse.SiteSettings.events_event_label_no_text ||
+           this.siteSettings.events_event_label_no_text ||
            Boolean(category && category.get('custom_fields.events_event_label_no_text'));
   },
 

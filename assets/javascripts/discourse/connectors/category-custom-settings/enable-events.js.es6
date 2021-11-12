@@ -5,7 +5,7 @@ export default {
     }
 
     const settingValueToggle = function(name) {
-      const settings = Discourse.SiteSettings;
+      const settings = component.siteSettings;
       const siteEnabled = settings[name];
       const categorySetting = attrs.category.custom_fields[name];
       const property = name.camelize();

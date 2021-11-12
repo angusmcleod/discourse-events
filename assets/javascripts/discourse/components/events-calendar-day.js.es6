@@ -44,7 +44,7 @@ export default Component.extend({
 
   @discourseComputed('day', 'topics.[]', 'expanded', 'rowIndex')
   allEvents(day, topics, expanded, rowIndex) {
-    return eventsForDay(day, topics, { rowIndex, expanded });
+    return eventsForDay(day, topics, { rowIndex, expanded, siteSettings: this.siteSettings });
   },
 
   @discourseComputed('index')

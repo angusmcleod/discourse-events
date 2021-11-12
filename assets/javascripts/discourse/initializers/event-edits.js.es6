@@ -9,7 +9,7 @@ import EditCategorySettings from 'discourse/components/edit-category-settings';
 import TopicListItem from 'discourse/components/topic-list-item';
 import DiscourseURL from 'discourse/lib/url';
 import { withPluginApi } from 'discourse/lib/plugin-api';
-import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
+import { calendarRange } from '../lib/date-utilities';
 import { CREATE_TOPIC } from "discourse/models/composer";
 import { scheduleOnce, bind } from "@ember/runloop";
 import EmberObject from "@ember/object";
@@ -142,7 +142,7 @@ export default {
             rowBelowTitle = true;
           }
 
-          if (Discourse.SiteSettings.events_event_label_short_after_title) {
+          if (this.siteSettings.events_event_label_short_after_title) {
             $('.date-time-container', this.element).insertAfter($linkTopLine);
             rowBelowTitle = true;
           }
@@ -232,6 +232,8 @@ export default {
     categoryRoutes.forEach(function(route){
       withPluginApi('0.8.12', api => {
         api.modifyClass(`route:discovery.${route}`, {
+          pluginId: 'events',
+
           afterModel(model, transition) {
             const filter = this.filter(model.category);
             if (filter === 'calendar' || filter === 'agenda') {
@@ -253,6 +255,8 @@ export default {
       api.addDiscoveryQueryParam('start', { replace: true, refreshModel: true });
 
       api.modifyClass('controller:preferences/interface', {
+        pluginId: 'events',
+
         @discourseComputed("makeThemeDefault")
         saveAttrNames(makeDefault) {
           let attrs = this._super(makeDefault);
@@ -284,6 +288,8 @@ export default {
       const user = api.getCurrentUser();
       if (user && user.admin) {
         api.modifyClass('model:site-setting', {
+          pluginId: 'events',
+
           @discourseComputed('valid_values')
           allowsNone() {
             if (this.get('setting') === 'events_timezone_default') {
@@ -296,6 +302,8 @@ export default {
       }
 
       api.modifyClass('controller:topic', {
+        pluginId: 'events',
+
         @observes('model.id')
         subscribeCalendarEvents() {
           this.unsubscribeCalendarEvents();
@@ -325,6 +333,8 @@ export default {
       });
 
       api.modifyClass('controller:composer', {
+        pluginId: 'events',
+
         @discourseComputed('model.action', 'model.event', 'model.category.events_required', 'lastValidatedAt')
         eventValidation(action, event, eventsRequired, lastValidatedAt) {
           if (action === CREATE_TOPIC && eventsRequired && !event) {

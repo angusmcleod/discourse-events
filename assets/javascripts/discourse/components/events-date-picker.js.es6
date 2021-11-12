@@ -1,7 +1,7 @@
 import DatePicker from "discourse/components/date-picker";
 import { default as discourseComputed, observes, on } from 'discourse-common/utils/decorators';
 import loadScript from "discourse/lib/load-script";
-import { calendarRange, firstDayOfWeek } from '../lib/date-utilities';
+import { firstDayOfWeek } from '../lib/date-utilities';
 import { next } from "@ember/runloop";
 import I18n from "I18n";
 import { deepMerge } from "discourse-common/lib/object";

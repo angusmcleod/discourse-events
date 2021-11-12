@@ -1,4 +1,3 @@
-import { addEvent } from '../lib/date-utilities';
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import Controller from "@ember/controller";
 import I18n from "I18n";

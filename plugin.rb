@@ -11,7 +11,8 @@ register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
-gem 'icalendar', '2.4.1'
+gem 'ice_cube', '0.16.4'
+gem 'icalendar', '2.5.3'
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)

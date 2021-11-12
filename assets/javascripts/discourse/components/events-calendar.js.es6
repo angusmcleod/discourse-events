@@ -98,7 +98,7 @@ export default Component.extend({
   @discourseComputed('currentDate', 'currentMonth', 'currentYear', 'topics.[]')
   dateEvents(currentDate, currentMonth, currentYear, topics) {
     const day = moment().year(currentYear).month(currentMonth);
-    return eventsForDay(day.date(currentDate), topics, { dateEvents: true });
+    return eventsForDay(day.date(currentDate), topics, { dateEvents: true, siteSettings: this.siteSettings });
   },
 
   @discourseComputed('currentMonth', 'currentYear')

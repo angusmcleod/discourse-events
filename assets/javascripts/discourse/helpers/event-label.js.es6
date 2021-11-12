@@ -1,6 +1,8 @@
-import { registerUnbound } from 'discourse-common/lib/helpers';
+import { helperContext, registerUnbound } from "discourse-common/lib/helpers";
+import { htmlSafe } from "@ember/template";
 import { eventLabel } from '../lib/date-utilities';
 
 export default registerUnbound('event-label', function(event, args) {
-  return new Handlebars.SafeString(eventLabel(event, args));
+  let siteSettings = helperContext().siteSettings;
+  return htmlSafe(eventLabel(event, Object.assign({}, args, { siteSettings })));
 });
