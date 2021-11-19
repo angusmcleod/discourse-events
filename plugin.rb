@@ -226,16 +226,17 @@ after_initialize do
     event_creator.create
   end
 
-  on(:approved_post) do |reviewable, post|
+  on(:reviewable_transitioned_to) do |status_symbol, reviewable|
     event = reviewable.payload['event']
     if (
-    event.present? &&
+      status_symbol == :approved &&
+      event.present? &&
       event['event_start'].present? &&
       event['event_start'].is_a?(Numeric) &&
       event['event_start'] != 0
     )
 
-      topic = post.topic
+      topic = reviewable.topic
       event.each do |k,v|
         topic.custom_fields[k] = v
       end
@@ -251,7 +252,7 @@ after_initialize do
 
   ::NewPostManager.add_handler(1) do |manager|
     if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
-      NewPostManager.add_plugin_payload_attribute('event') if NewPostManager.respond_to?(:add_plugin_payload_attribute)
+      NewPostManager.add_plugin_payload_attribute('event')
     end
 
     nil
