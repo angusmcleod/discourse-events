@@ -1,11 +1,11 @@
 @import 'event-form';
 
 .add-event-modal {
-  
+
   &.modal-body {
     padding: 20px;
   }
-  
+
   .modal-footer .clear {
     margin: 5px 10px;
   }
@@ -99,11 +99,11 @@
     ul {
       list-style: none;
       margin: 0;
-      
+
       li {
         padding: 10px;
         cursor: pointer;
-        
+
         &:hover {
           background-color: $primary-low;
         }
@@ -117,12 +117,9 @@
 }
 
 .select-kit.events-calendar-subscription {
-  float: right;
+  margin-left: auto;
 
   .select-kit-body {
-    width: 380px;
-    max-width: 90vw;
-
     .events-calendar-subscription-warning {
       padding: 6px 16px;
       background-color: rgba(255, 247, 78, 0.32);
@@ -133,10 +130,20 @@
       }
     }
 
-    .events-calendar-subscription-row {
+    .select-kit-collection {
+      overflow: unset;
+      padding: .5em;
+    }
+
+    li.events-calendar-subscription-row {
       cursor: initial;
       display: flex;
-      padding: 5px;
+      position: relative;
+      padding: unset;
+
+      &:not(:first-of-type) {
+        margin-top: .5em;
+      }
 
       &.is-highlighted {
         background-color: initial;
@@ -151,6 +158,17 @@
       input {
         flex: 1;
         margin: 0;
+        background: var(--primary-very-low);
+        border: var(--primary-low);
+      }
+
+      .copied {
+        position: absolute;
+        left: -65px;
+        padding: 0.3em 0.5em;
+        background: var(--success);
+        color: var(--secondary);
+        border: 1px solid var(--primary-low);
       }
     }
   }
@@ -167,17 +185,21 @@
   }
 }
 
+.events-calendar .header {
+  display: flex;
+}
+
 .events-calendar.responsive {
   .month-dropdown {
     width: 90px;
     min-width: 90px;
   }
-  
+
   .year-dropdown {
     width: 50px;
     min-width: 50px;
   }
-  
+
   .month-dropdown, .year-dropdown {
     height: 30px;
 
@@ -188,9 +210,20 @@
     &:not(.is-expanded) .select-kit-header {
       width: inherit;
     }
-    
+
     .d-icon {
       display: none;
+    }
+  }
+
+  .select-kit.events-calendar-subscription {
+    .select-kit-collection {
+      li {
+        .copied {
+          left: unset;
+          top: -35px;
+        }
+      }
     }
   }
 
