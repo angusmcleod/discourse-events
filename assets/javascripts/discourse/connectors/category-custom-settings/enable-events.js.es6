@@ -1,3 +1,5 @@
+import { camelize } from "@ember/string";
+
 export default {
   setupComponent(attrs, component) {
     if (!attrs.category.custom_fields) {
@@ -8,7 +10,7 @@ export default {
       const settings = component.siteSettings;
       const siteEnabled = settings[name];
       const categorySetting = attrs.category.custom_fields[name];
-      const property = name.camelize();
+      const property = camelize(name);
       const value = categorySetting !== undefined ? categorySetting : siteEnabled;
 
       component.set(property, value);
