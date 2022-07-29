@@ -260,7 +260,7 @@ function compileEvent(params) {
     }
 
     if (params.usersGoing) {
-      event.going = params.usersGoing.split(',')
+      event.going = params.usersGoing;
     }
   }
   
