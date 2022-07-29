@@ -107,8 +107,9 @@
 
         <div class="control full-width">
           <span>{{i18n 'add_event.going'}}</span>
-          {{user-selector
-            usernames=usersGoing
+          {{email-group-user-chooser
+            value=usersGoing
+            onChange=(action (mut usersGoing))
             class="user-selector"
             placeholderKey="composer.users_placeholder"}}
         </div>
