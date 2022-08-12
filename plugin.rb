@@ -2,6 +2,7 @@
 # about: Allows you to manage events in Discourse
 # version: 0.1
 # authors: Angus McLeod
+# contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
 
 register_asset 'stylesheets/common/events.scss'
@@ -70,12 +71,12 @@ after_initialize do
       add_choices(name) if name == :top_menu
       super
     end
-    
+
     def validate_value(name, type, val)
       add_choices(name) if name == :top_menu
       super
     end
-    
+
     def add_choices(name)
       @choices[name].push("agenda") if @choices[name].exclude?("agenda")
       @choices[name].push("calendar") if @choices[name].exclude?("calendar")
@@ -261,7 +262,7 @@ after_initialize do
     get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
     get "calendar.rss" => "list#calendar_feed", format: :rss
     get "agenda.rss" => "list#agenda_feed", format: :rss
-    
+
     %w{users u}.each do |root_path|
       get "#{root_path}/:username/preferences/webcal-keys" => "users#preferences", constraints: { username: RouteFormat.username }
     end
@@ -294,7 +295,7 @@ on(:custom_wizard_ready) do
   if defined?(CustomWizard) == 'constant' &&
     CustomWizard.class == Module &&
     defined?(CustomWizard::FieldSerializer) == 'constant'
-    
+
     CustomWizard::Field.register('event', 'discourse-events', ['components', 'templates', 'lib'])
     add_to_serializer(CustomWizard::Field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
   end
