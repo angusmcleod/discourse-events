@@ -38,8 +38,8 @@ export default {
 
     ComposerBody.reopen({
       @observes('composer.event')
-      resizeWhenEventAdded: function() {
-        this.resize();
+      resizeWhenEventAdded() {
+        this.composerResized();
       },
 
       @observes('composer.showEventControls', 'composer.composeState')
@@ -55,7 +55,7 @@ export default {
             $('.composer-controls-event').appendTo($anchor);
           }
 
-          this.resize();
+          this.composerResized();
         });
       }
     });
@@ -307,13 +307,13 @@ export default {
         @observes('model.id')
         subscribeCalendarEvents() {
           this.unsubscribeCalendarEvents();
-          
+
           this.messageBus.subscribe(`/calendar-events/${this.get('model.id')}`, data => {
             const topic = this.get('model');
             const currentUser = this.get('currentUser');
-            
+
             if (data.current_user_id === currentUser.id) return;
-            
+
             switch (data.type) {
               case "rsvp": {
                 let prop = Object.keys(data).filter((p) => p.indexOf('event') > -1);
