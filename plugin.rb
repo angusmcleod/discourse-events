@@ -312,17 +312,14 @@ on(:custom_wizard_ready) do
           event_params['event_timezone'] = event['timezone'] if event['timezone'].present?
           event_params['event_rsvp'] = event['rsvp'] if event['rsvp'].present?
           event_params['event_going_max'] = event['going_max'] if event['going_max'].present?
-          event_params['event_version'] = event['version'] if event['version'].present?
-
-          byebug
+          event_params['event_going'] = User.where(username: event['going']).pluck(:id) if event['going'].present?
+          event_params['event_version'] = 1
 
           params[:topic_opts] ||= {}
           params[:topic_opts][:custom_fields] ||= {}
           params[:topic_opts][:custom_fields].merge!(event_params)
         end
       end
-
-      byebug
 
       params
     }
