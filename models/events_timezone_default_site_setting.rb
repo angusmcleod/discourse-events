@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_dependency 'enum_site_setting'
 
 class EventsTimezoneDefaultSiteSetting < EnumSiteSetting
@@ -24,7 +25,7 @@ class EventsTimezoneDefaultSiteSetting < EnumSiteSetting
     timezones.each do |k, v|
       if zone_map.include?(v)
         duplicates = timezones.select { |key, val| val === v }
-        remove = duplicates.select{ |key, val| !val.include?(key) }
+        remove = duplicates.select { |key, val| !val.include?(key) }
         remove_zones.push(*remove.keys)
       end
 

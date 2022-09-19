@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CalendarEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
@@ -62,7 +63,7 @@ class CalendarEvents::RsvpController < ApplicationController
   private
 
   def rsvp_params
-    params.permit(:topic_id, :type, :usernames =>[])
+    params.permit(:topic_id, :type, usernames: [])
   end
 
   def check_user_and_find_topic

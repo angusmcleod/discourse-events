@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ListControllerEventsExtension
   USER_API_KEY ||= "user_api_key"
   USER_API_CLIENT_ID ||= "user_api_client_id"
@@ -23,7 +24,7 @@ class ::ListController
     :calendar_ics,
     :calendar_feed,
   ]
-  
+
   def agenda_feed
     self.send('event_ics', name: 'agenda')
   end
@@ -35,11 +36,11 @@ class ::ListController
   def calendar_ics
     self.send('event_ics', name: 'calendar')
   end
-  
+
   def agenda_feed_category
     self.send('event_feed', name: 'agenda')
   end
-  
+
   def calendar_feed_category
     self.send('event_feed', name: 'calendar')
   end
@@ -67,9 +68,9 @@ class ::ListController
     render 'list', formats: [:rss]
   end
 
-  def event_ics(opts = {})      
+  def event_ics(opts = {})
     guardian.ensure_can_see!(@category) if @category
-    
+
     name_prefix = @category ? "#{SiteSetting.title} - #{@category.name}" : SiteSetting.title
     base_url = @category ? @category.url : Discourse.base_url
 
@@ -85,7 +86,7 @@ class ::ListController
       list_opts[:assigned] = current_user.username if params[:assigned]
     end
 
-    tzid = params[:time_zone] || ( SiteSetting.respond_to?(:events_timezone_default) && SiteSetting.events_timezone_default.present? && SiteSetting.events_timezone_default ) || "Etc/UTC"
+    tzid = params[:time_zone] || (SiteSetting.respond_to?(:events_timezone_default) && SiteSetting.events_timezone_default.present? && SiteSetting.events_timezone_default) || "Etc/UTC"
     tz = TZInfo::Timezone.get tzid
 
     cal = Icalendar::Calendar.new
@@ -106,7 +107,7 @@ class ::ListController
         ## to do: check if working later
         if event[:format] == :date_only
           event[:start] = event[:start].to_date.strftime "%Y%m%d"
-          event[:end] = (event[:end].to_date+1).strftime "%Y%m%d" if event[:end]
+          event[:end] = (event[:end].to_date + 1).strftime "%Y%m%d" if event[:end]
         end
 
         if event[:going].present?
@@ -121,9 +122,9 @@ class ::ListController
           e.summary = t.title
           e.description = t.url << "\n\n" << t.excerpt #add url to event body
           e.url = t.url #most calendar clients don't display this field
-          e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/,'')
+          e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/, '')
           e.sequence = event[:version]
-          
+
           if going_emails
             going_emails.each do |email|
               e.append_attendee "mailto:#{email}"
@@ -132,11 +133,11 @@ class ::ListController
         end
       end
     end
-    
+
     cal.publish
 
     render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
   end
-  
+
   prepend ListControllerEventsExtension
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ::TopicQuery.add_custom_filter(:start) do |topics, query|
   if query.options[:start]
     topics.where("topics.id in (

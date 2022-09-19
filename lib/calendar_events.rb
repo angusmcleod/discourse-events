@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ::CalendarEvents
   class Engine < ::Rails::Engine
     engine_name 'calendar_events'
@@ -51,7 +52,6 @@ class CalendarEvents::Helper
         event_end = event_end.in_time_zone(event_timezone)
       end
     end
-
 
     result = {
       start: event_start,

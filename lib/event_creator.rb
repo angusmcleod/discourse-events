@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EventCreator
   def initialize(post, opts, user)
     @post = post
@@ -6,8 +7,8 @@ class EventCreator
   end
 
   def is_wizard_event?
-    !!(@opts[:topic_opts] && 
-      @opts[:topic_opts][:custom_fields] && 
+    !!(@opts[:topic_opts] &&
+      @opts[:topic_opts][:custom_fields] &&
       @opts[:topic_opts][:custom_fields]['event'])
   end
 
