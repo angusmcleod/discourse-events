@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
 # version: 0.1.1
@@ -13,7 +14,7 @@ register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
 gem 'ice_cube', '0.16.4'
-gem 'icalendar', '2.5.3'
+gem 'icalendar', '2.8.0'
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -61,7 +62,7 @@ after_initialize do
   ].each do |key|
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
     add_to_class(:category, key.to_sym) do
-      self.custom_fields[key] || ( SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false )
+      self.custom_fields[key] || (SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false)
     end
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
@@ -237,7 +238,7 @@ after_initialize do
     )
 
       topic = post.topic
-      event.each do |k,v|
+      event.each do |k, v|
         topic.custom_fields[k] = v
       end
 
@@ -292,12 +293,40 @@ on(:locations_ready) do
 end
 
 on(:custom_wizard_ready) do
-  if defined?(CustomWizard) == 'constant' &&
-    CustomWizard.class == Module &&
-    defined?(CustomWizard::FieldSerializer) == 'constant'
+  if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
+    action_callback = proc { |params, wizard, action, submission|
+      if action['add_event']
+        event = CustomWizard::Mapper.new(
+          inputs: action['add_event'],
+          data: submission&.fields_and_meta,
+          user: wizard.user
+        ).perform
 
-    CustomWizard::Field.register('event', 'discourse-events', ['components', 'templates', 'lib'])
-    add_to_serializer(CustomWizard::Field, :event_timezones) { EventsTimezoneDefaultSiteSetting.values if object.type === 'event'}
+        if event['start'].present?
+          event_params = {
+            'event_start': event['start'].to_datetime.to_i
+          }
+
+          event_params['event_end'] = event['end'].to_datetime.to_i if event['end'].present?
+          event_params['event_all_day'] = event['all_day'] === 'true' if event['all_day'].present?
+          event_params['event_timezone'] = event['timezone'] if event['timezone'].present?
+          event_params['event_rsvp'] = event['rsvp'] if event['rsvp'].present?
+          event_params['event_going_max'] = event['going_max'] if event['going_max'].present?
+          event_params['event_version'] = event['version'] if event['version'].present?
+
+          byebug
+
+          params[:topic_opts] ||= {}
+          params[:topic_opts][:custom_fields] ||= {}
+          params[:topic_opts][:custom_fields].merge!(event_params)
+        end
+      end
+
+      byebug
+
+      params
+    }
+    CustomWizard::Field.register('event', 'discourse-events', action_callback: action_callback)
   end
 end
 
