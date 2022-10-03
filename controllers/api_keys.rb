@@ -2,7 +2,6 @@
 class CalendarEvents::ApiKeysController < ApplicationController
 
   APPLICATION_NAME = 'discourse-events'
-  SCOPES = [UserApiKeyScope.new(name: "#{APPLICATION_NAME}:#{CalendarEvents::USER_API_KEY_SCOPE}")]
 
   before_action :ensure_logged_in
 
@@ -16,7 +15,7 @@ class CalendarEvents::ApiKeysController < ApplicationController
 =end
   def index
     key = UserApiKey.create! attributes.reverse_merge(
-      scopes: SCOPES,
+      scopes: [UserApiKeyScope.new(name: "#{APPLICATION_NAME}:#{CalendarEvents::USER_API_KEY_SCOPE}")],
       # client_id has a unique constraint
       client_id: SecureRandom.uuid,
     )
