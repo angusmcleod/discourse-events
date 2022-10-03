@@ -5,11 +5,11 @@
 {{/each}}
 
 {{#each days as |day index|}}
-  {{events-calendar-day 
+  {{events-calendar-day
     day=day
     currentDate=currentDate
     currentMonth=currentMonth
-    selectDate='selectDate'
+    selectDate=selectDate
     canSelectDate=canSelectDate
     expandedDate=expandedDate
     setExpandedDate=(action 'setExpandedDate')

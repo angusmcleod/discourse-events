@@ -10,18 +10,14 @@ export default Component.extend({
   classNames: 'event-rsvp',
   goingSaving: false,
 
-  @discourseComputed('currentUser', 'topic.event.going')
-  userGoing(user, eventGoing) {
-    return eventGoing && eventGoing.indexOf(user.username) > -1;
-  },
+  didReceiveAttrs() {
+    const currentUser = this.currentUser;
+    const eventGoing = this.topic.event.going;
 
-  @discourseComputed('topic.event.going')
-  goingTotal(eventGoing) {
-    if (eventGoing) {
-      return eventGoing.length;
-    } else {
-      return 0;
-    }
+    this.setProperties({
+      goingTotal: eventGoing ? eventGoing.length : 0,
+      userGoing: eventGoing && eventGoing.indexOf(currentUser.username) > -1
+    });
   },
 
   @discourseComputed('userGoing')
@@ -66,15 +62,20 @@ export default Component.extend({
   updateTopic(userName, action, type) {
     let existing = this.get(`topic.event.${type}`);
     let list = existing ? existing : [];
+    let userGoing = action === 'add';
 
-    if (action === 'add') {
+    if (userGoing) {
       list.push(userName);
     } else {
       list.splice(list.indexOf(userName), 1);
     }
 
-    this.set(`topic.event.${type}`, list);
-    this.notifyPropertyChange(`topic.event.${type}`);
+    let props = {
+      userGoing,
+      goingTotal: list.length
+    };
+    props[`topic.event.${type}`] = list;
+    this.setProperties(props);
   },
 
   save(user, action, type) {

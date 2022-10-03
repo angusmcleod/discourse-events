@@ -29,12 +29,12 @@
       {{/if}}
   {{/if}}
 </div>
-{{events-calendar-body 
+{{events-calendar-body
   days=days
   topics=topics
   currentMonth=currentMonth
   currentDate=currentDate
-  selectDate='selectDate'
+  selectDate=(action 'selectDate')
   canSelectDate=canSelectDate
   showEvents=showEvents
   responsive=responsive}}

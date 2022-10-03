@@ -29,10 +29,6 @@ export default Component.extend({
   },
 
   actions: {
-    selectDate(date, month) {
-      this.sendAction('selectDate', date, month);
-    },
-
     setExpandedDate(date) {
       const month = this.get('currentMonth');
       this.set('expandedDate', month + '.' + date);

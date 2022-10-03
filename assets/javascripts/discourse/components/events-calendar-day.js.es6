@@ -81,7 +81,7 @@ export default Component.extend({
     if (canSelectDate) {
       const date = this.get('date');
       const month = this.get('month');
-      this.sendAction('selectDate', date, month);
+      this.selectDate(date, month);
     }
   },
 
