@@ -294,7 +294,8 @@ end
 
 on(:custom_wizard_ready) do
   if defined?(CustomWizard) == 'constant' && CustomWizard.class == Module
-    action_callback = proc { |params, wizard, action, submission|
+    CustomWizard::Field.register('event', 'discourse-events')
+    CustomWizard::Action.register_callback(:before_create_topic) do |params, wizard, action, submission|
       if action['add_event']
         event = CustomWizard::Mapper.new(
           inputs: action['add_event'],
@@ -322,8 +323,7 @@ on(:custom_wizard_ready) do
       end
 
       params
-    }
-    CustomWizard::Field.register('event', 'discourse-events', action_callback: action_callback)
+    end
   end
 end
 
