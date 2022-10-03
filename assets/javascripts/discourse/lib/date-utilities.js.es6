@@ -222,7 +222,7 @@ function compileDateTime(params, type) {
   const date = moment(params[`${type}Date`]).date();
   let hour = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').hour();
   let min = params.allDay ? 0 : moment(params[`${type}Time`], 'HH:mm').minute();
-  
+
   let dateTime = moment();
   dateTime.tz(params.timezone);
 
@@ -254,7 +254,7 @@ function compileEvent(params) {
 
   if (params.rsvpEnabled) {
     event.rsvp = true;
-    
+
     if (params.goingMax) {
       event.going_max = params.goingMax;
     }
@@ -263,7 +263,7 @@ function compileEvent(params) {
       event.going = params.usersGoing;
     }
   }
-  
+
   return event;
 };
 
@@ -421,10 +421,10 @@ function setupEventForm(event, args = {}) {
     }
 
     if (event.going) {
-      props['usersGoing'] = event.going.join(',');
+      props['usersGoing'] = event.going;
     }
   }
-  
+
   return props;
 };
 
@@ -534,10 +534,9 @@ export {
   timezoneLabel,
   firstDayOfWeek,
   calendarDays,
-  calendarRange, 
+  calendarRange,
   getTimezone,
   formTimeFormat,
   nextInterval,
   eventCalculations
 };
-
