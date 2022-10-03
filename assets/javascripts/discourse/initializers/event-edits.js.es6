@@ -33,7 +33,7 @@ export default {
       @discourseComputed('category.events_min_trust_to_create')
       canCreateEvent(minTrust) {
         return currentUser.staff || currentUser.trust_level >= minTrust;
-      }
+      },
     });
 
     ComposerBody.reopen({
@@ -343,6 +343,13 @@ export default {
               reason: I18n.t('composer.error.event_missing'),
               lastShownAt: lastValidatedAt
             });
+          }
+        },
+
+        @observes('model.composeState')
+        ensureEvent() {
+          if (this.model.topic.event && !this.model.event) {
+            this.set('model.event', this.model.topic.event);
           }
         },
 
