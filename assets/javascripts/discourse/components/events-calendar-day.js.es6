@@ -67,6 +67,9 @@ export default Component.extend({
 
     if (!$target.closest($element).length) {
       this.clickOutside();
+    } else {
+      // fix this properly when we remove jquery in plugin consolidation.
+      this.click();
     }
   },
 
