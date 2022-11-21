@@ -19,10 +19,13 @@
     <div class="control full-width">
       {{combo-box
         value=timezone
-        valueAttribute="value"
+        valueProperty="value"
+        onChange=(action (mut timezone))
         content=timezones
-        none='add_event.no_timezone'
-        filterable=true}}
+        options=(hash
+          filterable=true
+          none="add_event.no_timezone"
+        )}}
     </div>
   {{/unless}}
 </div>

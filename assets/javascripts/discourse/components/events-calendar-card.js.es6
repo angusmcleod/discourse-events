@@ -6,6 +6,7 @@ import Component from "@ember/component";
 
 export default Component.extend({
   classNames: 'events-calendar-card',
+  attributeBindings: ["topic.id:data-topic-id"],
 
   @on('init')
   setup() {
@@ -21,38 +22,40 @@ export default Component.extend({
     next(() => ($(document).on('mousedown', this.get('clickHandler'))));
 
     scheduleOnce('afterRender', () => {
-      const offsetLeft = this.$().closest('.day').offset().left;
-      const offsetTop = this.$().closest('.day').offset().top;
+      const offsetLeft = this.element.closest('.day').offsetLeft;
+      const offsetTop = this.element.closest('.day').offsetTop;
       const windowWidth = $(window).width();
       const windowHeight = $(window).height();
 
-      let css;
+      let styles;
 
       if (offsetLeft > (windowWidth / 2)) {
-        css = {
+        styles = {
           left: "-390px",
           right: "initial"
         }
       } else {
-        css = {
+        styles = {
           right: "-390px",
           left: "initial"
         }
       }
 
       if (offsetTop > (windowHeight / 2)) {
-        css = $.extend(css, {
+        styles = Object.assign(styles, {
           bottom: "-15px",
           top: "initial"
         });
       } else {
-        css = $.extend(css, {
+        styles = Object.assign(styles, {
           top: "-15px",
           bottom: "initial"
         });
       }
 
-      this.$().css(css);
+      Object.keys(styles).forEach(key => {
+        this.element.style[key] = styles[key];
+      });
     });
   },
 
@@ -61,10 +64,7 @@ export default Component.extend({
   },
 
   documentClick(event) {
-    let $element = this.$();
-    let $target = $(event.target);
-
-    if (!$target.closest($element).length) {
+    if (!event.target.closest(`div.events-calendar-card[data-topic-id='${this.topic.id}']`)) {
       this.clickOutside();
     }
   },
@@ -74,7 +74,7 @@ export default Component.extend({
   },
 
   close() {
-    this.sendAction('selectEvent');
+    this.selectEvent();
   },
 
   actions: {

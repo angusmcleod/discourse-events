@@ -8,17 +8,17 @@ import { deepMerge } from "discourse-common/lib/object";
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",
-  
+
   @on("didInsertElement")
   _loadDatePicker() {
-    const input = this.$(".date-picker")[0];
-    const container = $("#" + this.get("containerId"))[0];
+    const input = this.element.querySelector(".date-picker");
+    const container = document.getElementById(this.get("containerId"));
 
     loadScript("/javascripts/pikaday.js").then(() => {
       next(() => {
         let default_opts = {
           field: input,
-          container: container || this.$()[0],
+          container: container || this.element,
           bound: container === undefined,
           format: "YYYY-MM-DD",
           firstDay: firstDayOfWeek(),

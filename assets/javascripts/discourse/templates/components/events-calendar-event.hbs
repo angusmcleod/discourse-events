@@ -11,5 +11,5 @@
 </div>
 
 {{#if showEventCard}}
-  {{events-calendar-card topic=event.topic selectEvent="selectEvent"}}
+  {{events-calendar-card topic=event.topic selectEvent=(action "selectEvent")}}
 {{/if}}

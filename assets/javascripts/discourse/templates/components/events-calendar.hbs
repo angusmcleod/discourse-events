@@ -1,21 +1,24 @@
 <div class="header">
   <div class="navigation">
-    {{d-button label=todayLabel action='today' icon='calendar'}}
-    {{d-button icon='chevron-left' action='monthPrevious'}}
-    {{d-button icon='chevron-right' action='monthNext'}}
+    {{d-button label=todayLabel action=(action "today") icon='calendar'}}
+    {{d-button icon='chevron-left' action=(action "monthPrevious")}}
+    {{d-button icon='chevron-right' action=(action "monthNext")}}
     {{combo-box
       content=months
       value=month
-      class='month-dropdown'}}
+      class='month-dropdown'
+      onChange=(action (mut month))}}
     {{combo-box
       content=years
       value=year
-      class='year-dropdown'}}
+      class='year-dropdown'
+      onChange=(action (mut year))}}
   </div>
   {{#if showSubscription}}
     {{events-calendar-subscription
       category=category
       userApiKeys=userApiKeys
+      onChange=(action "changeSubscription")
       options=(hash
         showFullTitle=showFullTitle
         icon="rss"

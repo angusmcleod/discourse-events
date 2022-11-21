@@ -67,6 +67,7 @@ export default Component.extend({
   showNotice(loginRequired, categoryRestricted) {
     return loginRequired || categoryRestricted;
   },
+
   @on('willDestroy')
   teardown() {
     $(window).off('resize', bind(this, this.handleResize));
@@ -77,12 +78,12 @@ export default Component.extend({
     if (this._state === 'destroying') return;
     this.set("responsiveBreak", $(window).width() < RESPONSIVE_BREAKPOINT);
   },
-  
+
   forceResponsive: false,
   responsive: or('forceResponsive', 'responsiveBreak', 'site.mobileView'),
   showFullTitle: not('responsive'),
   eventsBelow: alias('responsive'),
-  
+
   @discourseComputed('responsive')
   todayLabel(responsive) {
     return responsive ? null : 'events_calendar.today';
@@ -138,6 +139,8 @@ export default Component.extend({
         filter,
         params: { start, end }
       }).then(list => {
+        if (this._state === 'destroying') return;
+
         this.setProperties({
           topics: list.topics,
           currentMonth: month,
@@ -204,6 +207,9 @@ export default Component.extend({
       }
 
       this.setProperties({ month, year });
+    },
+
+    changeSubscription() {
     }
   }
 });

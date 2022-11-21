@@ -9,6 +9,7 @@ const MAX_EVENTS = 4;
 
 export default Component.extend({
   classNameBindings: [':day', 'classes', 'differentMonth'],
+  attributeBindings: ["day:data-day"],
   hidden: 0,
   hasHidden: gt('hidden', 0),
 
@@ -62,13 +63,9 @@ export default Component.extend({
   },
 
   documentClick(event) {
-    let $element = this.$();
-    let $target = $(event.target);
-
-    if (!$target.closest($element).length) {
+    if (!event.target.closest(`.events-calendar-body .day[data-day='${this.day}']`)) {
       this.clickOutside();
     } else {
-      // fix this properly when we remove jquery in plugin consolidation.
       this.click();
     }
   },
@@ -120,8 +117,8 @@ export default Component.extend({
     let style = '';
 
     if (expanded) {
-      const offsetLeft = this.$().offset().left;
-      const offsetTop = this.$().offset().top;
+      const offsetLeft = this.element.offsetLeft;
+      const offsetTop = this.element.offsetTop;
       const windowWidth = $(window).width();
       const windowHeight = $(window).height();
 
