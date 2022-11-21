@@ -1,6 +1,6 @@
 import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
 import discourseComputed from "discourse-common/utils/decorators";
-import Category from 'discourse/models/category';
+import Category from "discourse/models/category";
 import I18n from "I18n";
 import getURL from "discourse-common/lib/get-url";
 
@@ -12,27 +12,27 @@ export default DropdownSelectBoxComponent.extend({
   },
 
   getDomain() {
-    return location.hostname + (location.port ? ':' + location.port : '');
+    return location.hostname + (location.port ? ":" + location.port : "");
   },
 
   @discourseComputed()
   content() {
-    const path = this.category ? `/c/${Category.slugFor(this.category)}/l` : '';
+    const path = this.category ? `/c/${Category.slugFor(this.category)}/l` : "";
     const url = this.getDomain() + getURL(path);
     const timeZone = moment.tz.guess();
     return [
       {
         id: `webcal://${url}/calendar.ics?time_zone=${timeZone}`,
-        name: I18n.t('events_calendar.ical')
+        name: I18n.t("events_calendar.ical"),
       },
       {
         id: `${url}/calendar.rss?time_zone=${timeZone}`,
-        name: I18n.t('events_calendar.rss')
-      }
+        name: I18n.t("events_calendar.rss"),
+      },
     ];
   },
 
   actions: {
-    onSelect() {}
-  }
+    onSelect() {},
+  },
 });

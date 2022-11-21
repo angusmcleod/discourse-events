@@ -1,13 +1,13 @@
-import { popupAjaxError } from 'discourse/lib/ajax-error';
-import { default as discourseComputed } from 'discourse-common/utils/decorators';
-import showModal from 'discourse/lib/show-modal';
-import { ajax } from 'discourse/lib/ajax';
+import { popupAjaxError } from "discourse/lib/ajax-error";
+import { default as discourseComputed } from "discourse-common/utils/decorators";
+import showModal from "discourse/lib/show-modal";
+import { ajax } from "discourse/lib/ajax";
 import Component from "@ember/component";
-import { gt, notEmpty, equal } from "@ember/object/computed";
+import { equal, gt, notEmpty } from "@ember/object/computed";
 import I18n from "I18n";
 
 export default Component.extend({
-  classNames: 'event-rsvp',
+  classNames: "event-rsvp",
   goingSaving: false,
 
   didReceiveAttrs() {
@@ -16,42 +16,42 @@ export default Component.extend({
 
     this.setProperties({
       goingTotal: eventGoing ? eventGoing.length : 0,
-      userGoing: eventGoing && eventGoing.indexOf(currentUser.username) > -1
+      userGoing: eventGoing && eventGoing.indexOf(currentUser.username) > -1,
     });
   },
 
-  @discourseComputed('userGoing')
+  @discourseComputed("userGoing")
   goingClasses(userGoing) {
-    return userGoing ? 'btn-primary' : '';
+    return userGoing ? "btn-primary" : "";
   },
 
-  @discourseComputed('currentUser', 'eventFull')
+  @discourseComputed("currentUser", "eventFull")
   canGo(currentUser, eventFull) {
     return currentUser && !eventFull;
   },
 
-  hasGuests: gt('goingTotal', 0),
-  hasMax: notEmpty('topic.event.going_max'),
+  hasGuests: gt("goingTotal", 0),
+  hasMax: notEmpty("topic.event.going_max"),
 
-  @discourseComputed('goingTotal', 'topic.event.going_max')
+  @discourseComputed("goingTotal", "topic.event.going_max")
   spotsLeft(goingTotal, goingMax) {
     return Number(goingMax) - Number(goingTotal);
   },
 
-  eventFull: equal('spotsLeft', 0),
+  eventFull: equal("spotsLeft", 0),
 
-  @discourseComputed('hasMax', 'eventFull')
+  @discourseComputed("hasMax", "eventFull")
   goingMessage(hasMax, full) {
     if (hasMax) {
       if (full) {
-        return I18n.t('event_rsvp.going.max_reached');
+        return I18n.t("event_rsvp.going.max_reached");
       } else {
-        const spotsLeft = this.get('spotsLeft');
+        const spotsLeft = this.get("spotsLeft");
 
         if (spotsLeft === 1) {
-          return I18n.t('event_rsvp.going.one_spot_left');
+          return I18n.t("event_rsvp.going.one_spot_left");
         } else {
-          return I18n.t('event_rsvp.going.x_spots_left', { spotsLeft });
+          return I18n.t("event_rsvp.going.x_spots_left", { spotsLeft });
         }
       }
     }
@@ -62,7 +62,7 @@ export default Component.extend({
   updateTopic(userName, action, type) {
     let existing = this.get(`topic.event.${type}`);
     let list = existing ? existing : [];
-    let userGoing = action === 'add';
+    let userGoing = action === "add";
 
     if (userGoing) {
       list.push(userName);
@@ -72,7 +72,7 @@ export default Component.extend({
 
     let props = {
       userGoing,
-      goingTotal: list.length
+      goingTotal: list.length,
     };
     props[`topic.event.${type}`] = list;
     this.setProperties(props);
@@ -81,39 +81,41 @@ export default Component.extend({
   save(user, action, type) {
     this.set(`${type}Saving`, true);
 
-    ajax(`/calendar-events/rsvp/${action}`, {
-      type: 'POST',
+    ajax(`/discourse-events/rsvp/${action}`, {
+      type: "POST",
       data: {
-        topic_id: this.get('topic.id'),
+        topic_id: this.get("topic.id"),
         type,
-        usernames: [user.username]
-      }
-    }).then((result) => {
-      if (result.success) {
-        this.updateTopic(user.username, action, type);
-      }
-    }).catch(popupAjaxError).finally(() => {
-      this.set(`${type}Saving`, false);
-    });
+        usernames: [user.username],
+      },
+    })
+      .then((result) => {
+        if (result.success) {
+          this.updateTopic(user.username, action, type);
+        }
+      })
+      .catch(popupAjaxError)
+      .finally(() => {
+        this.set(`${type}Saving`, false);
+      });
   },
 
   actions: {
     going() {
-      const currentUser = this.get('currentUser');
-      const userGoing = this.get('userGoing');
+      const currentUser = this.get("currentUser");
+      const userGoing = this.get("userGoing");
 
-      let action = userGoing ? 'remove' : 'add';
+      let action = userGoing ? "remove" : "add";
 
-      this.save(currentUser, action, 'going');
+      this.save(currentUser, action, "going");
     },
 
     openModal() {
-      const topic = this.get('topic');
-      const controller = showModal('event-rsvp', {
+      showModal("event-rsvp", {
         model: {
-          topic
-        }
+          topic: this.get("topic"),
+        },
       });
-    }
-  }
-})
+    },
+  },
+});

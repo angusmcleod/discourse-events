@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class CalendarEvents::ApiKeysController < ApplicationController
+class DiscourseEvents::ApiKeysController < ApplicationController
 
   APPLICATION_NAME = 'discourse-events'
 
@@ -15,7 +15,7 @@ class CalendarEvents::ApiKeysController < ApplicationController
 =end
   def index
     key = UserApiKey.create! attributes.reverse_merge(
-      scopes: [UserApiKeyScope.new(name: "#{APPLICATION_NAME}:#{CalendarEvents::USER_API_KEY_SCOPE}")],
+      scopes: [UserApiKeyScope.new(name: "#{APPLICATION_NAME}:#{DiscourseEvents::USER_API_KEY_SCOPE}")],
       # client_id has a unique constraint
       client_id: SecureRandom.uuid,
     )

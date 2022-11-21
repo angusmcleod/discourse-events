@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class CalendarEvents::RsvpController < ApplicationController
+class DiscourseEvents::RsvpController < ApplicationController
   attr_accessor :topic
   before_action :check_user_and_find_topic, only: [:add, :remove]
   before_action :check_if_rsvp_enabled, except: [:users]

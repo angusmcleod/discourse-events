@@ -1,12 +1,14 @@
 # frozen_string_literal: true
-class EventRevisor
-  def initialize(tc, event)
-    @tc = tc
-    @event = event
-  end
 
-  def revise!
-    @event ||= {}
+module DiscourseEvents
+  class EventRevisor
+    def initialize(tc, event)
+      @tc = tc
+      @event = event
+    end
+
+    def revise!
+      @event ||= {}
 
       if @tc.guardian.can_edit_event?(@tc.topic.category)
         event_start = @event['start'] ? @event['start'].to_datetime.to_i : nil
@@ -44,5 +46,6 @@ class EventRevisor
           @tc.topic.custom_fields['event_version'] = @tc.topic.custom_fields['event_version'].nil? ? 1 : @tc.topic.custom_fields['event_version'] + 1
         end
       end
+    end
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module ListControllerEventsExtension
   USER_API_KEY ||= "user_api_key"
   USER_API_CLIENT_ID ||= "user_api_client_id"
@@ -101,7 +102,7 @@ class ::ListController
 
     @topic_list.topics.each do |t|
       if t.event && t.event[:start]
-        event = CalendarEvents::Helper.localize_event(t.event, tzid)
+        event = DiscourseEvents::Helper.localize_event(t.event, tzid)
         timezone = tz.ical_timezone event[:start]
 
         ## to do: check if working later

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require_dependency 'enum_site_setting'
 
-class EventsTimezoneDefaultSiteSetting < EnumSiteSetting
+class DiscourseEvents::TimezoneDefaultSiteSetting < EnumSiteSetting
   def self.valid_value?(val)
     return true if val == ""
     values.any? { |v| v[:value].to_s == val.to_s }

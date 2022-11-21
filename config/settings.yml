@@ -48,7 +48,7 @@ plugins:
   events_timezone_default:
     default: ''
     client: true
-    enum: 'EventsTimezoneDefaultSiteSetting'
+    enum: 'DiscourseEvents::TimezoneDefaultSiteSetting'
   events_timezone_display:
     client: true
     default: 'default'

@@ -3,25 +3,25 @@ import Controller from "@ember/controller";
 import I18n from "I18n";
 
 export default Controller.extend(ModalFunctionality, {
-  title: 'add_event.modal_title',
-  
+  title: "add_event.modal_title",
+
   actions: {
     clear() {
-      this.set('bufferedEvent', null);
+      this.set("bufferedEvent", null);
     },
-    
-    saveEvent(){
+
+    saveEvent() {
       if (this.valid) {
-        this.get('model.update')(this.bufferedEvent);
-        this.send('closeModal');
+        this.get("model.update")(this.bufferedEvent);
+        this.send("closeModal");
       } else {
-        this.flash(I18n.t('add_event.error'), 'error');
+        this.flash(I18n.t("add_event.error"), "error");
       }
     },
-    
+
     updateEvent(event, valid) {
-      this.set('bufferedEvent', event);
-      this.set('valid', valid);
-    }
-  }
+      this.set("bufferedEvent", event);
+      this.set("valid", valid);
+    },
+  },
 });

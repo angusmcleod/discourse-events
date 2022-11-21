@@ -1,17 +1,17 @@
-import DiscourseURL from 'discourse/lib/url';
+import DiscourseURL from "discourse/lib/url";
 import Component from "@ember/component";
 
 export default Component.extend({
-  tagName: 'li',
+  tagName: "li",
 
   actions: {
     selectEvent(url) {
-      const responsive = this.get('responsive');
+      const responsive = this.get("responsive");
       if (responsive) {
         DiscourseURL.routeTo(url);
       } else {
-        this.toggleProperty('showEventCard');
+        this.toggleProperty("showEventCard");
       }
-    }
-  }
-})
+    },
+  },
+});

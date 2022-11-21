@@ -1,6 +1,6 @@
 export default {
-  resource: 'user.preferences',
+  resource: "user.preferences",
   map() {
-    this.route('webcal-keys');
-  }
-}
+    this.route("webcal-keys");
+  },
+};
