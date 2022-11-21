@@ -5,6 +5,6 @@
 {{/d-modal-body}}
 
 <div class="modal-footer">
-  {{d-button action="saveEvent" class="btn-primary" label="add_event.event_add"}}
+  {{d-button action=(action "saveEvent") class="btn-primary" label="add_event.event_add"}}
   <a class="clear" {{action 'clear'}}>{{i18n 'add_event.event_clear'}}</a>
 </div>
