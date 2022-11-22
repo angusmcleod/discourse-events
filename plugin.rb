@@ -405,7 +405,7 @@ after_initialize do
     return false unless SiteSetting.events_enabled
 
     is_admin? || (
-      SiteSetting.allow_moderator_event_management &&
+      SiteSetting.events_allow_moderator_management &&
       is_staff?
     )
   end
