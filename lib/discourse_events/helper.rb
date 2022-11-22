@@ -50,7 +50,7 @@ module DiscourseEvents
     def self.timezone_label(event)
       return '' if !event[:timezone]
 
-      standard_tz = DiscourseEvents::TimezoneDefaultSiteSetting.values.select do |tz|
+      standard_tz = DiscourseEventsTimezoneDefaultSiteSetting.values.select do |tz|
         tz[:value] === event[:timezone]
       end
 

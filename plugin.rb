@@ -45,12 +45,12 @@ register_svg_icon "rss"
 register_svg_icon "fingerprint"
 register_svg_icon "save"
 
-load File.expand_path('../lib/discourse_events/engine.rb', __FILE__)
-load File.expand_path('../lib/discourse_events/timezone_default_site_setting.rb', __FILE__)
-load File.expand_path('../lib/discourse_events/timezone_display_site_setting.rb', __FILE__)
+load File.expand_path('../lib/discourse_events_timezone_default_site_setting.rb', __FILE__)
+load File.expand_path('../lib/discourse_events_timezone_display_site_setting.rb', __FILE__)
 
 after_initialize do
   %w(
+    ../lib/discourse_events/engine.rb
     ../lib/discourse_events/helper.rb
     ../lib/discourse_events/list.rb
     ../lib/discourse_events/event_creator.rb
@@ -63,11 +63,35 @@ after_initialize do
     ../lib/discourse_events/syncer/events.rb
     ../lib/discourse_events/auth/base.rb
     ../lib/discourse_events/auth/meetup.rb
-    ../config/routes.rb
+    ../app/models/discourse_events/connection_filter.rb
+    ../app/models/discourse_events/connection.rb
+    ../app/models/discourse_events/event_connection.rb
+    ../app/models/discourse_events/event.rb
+    ../app/models/discourse_events/log.rb
+    ../app/models/discourse_events/provider.rb
+    ../app/models/discourse_events/source.rb
+    ../app/controllers/discourse_events/admin_controller.rb
+    ../app/controllers/discourse_events/api_keys_controller.rb
+    ../app/controllers/discourse_events/connection_controller.rb
+    ../app/controllers/discourse_events/event_controller.rb
+    ../app/controllers/discourse_events/rsvp_controller.rb
+    ../app/controllers/discourse_events/log_controller.rb
+    ../app/controllers/discourse_events/provider_controller.rb
+    ../app/controllers/discourse_events/source_controller.rb
+    ../app/serializers/discourse_events/basic_event_serializer.rb
+    ../app/serializers/discourse_events/connection_filter_serializer.rb
+    ../app/serializers/discourse_events/connection_serializer.rb
+    ../app/serializers/discourse_events/connection_user_serializer.rb
+    ../app/serializers/discourse_events/source_serializer.rb
+    ../app/serializers/discourse_events/event_serializer.rb
+    ../app/serializers/discourse_events/log_serializer.rb
+    ../app/serializers/discourse_events/post_event_serializer.rb
+    ../app/serializers/discourse_events/provider_serializer.rb
     ../app/jobs/discourse_events/scheduled/update_events.rb
     ../app/jobs/discourse_events/regular/import_source.rb
     ../app/jobs/discourse_events/regular/sync_connection.rb
     ../app/jobs/discourse_events/regular/refresh_token.rb
+    ../config/routes.rb
     ../extensions/list_controller.rb
     ../extensions/site_settings_type_supervisor.rb
     ../extensions/listable_topic_serializer.rb
@@ -76,7 +100,7 @@ after_initialize do
     load File.expand_path(path, __FILE__)
   end
 
-  add_to_serializer(:site, :event_timezones) { DiscourseEvents::TimezoneDefaultSiteSetting.values }
+  add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
   register_category_custom_field_type('events_enabled', :boolean)
   register_category_custom_field_type('events_agenda_enabled', :boolean)
