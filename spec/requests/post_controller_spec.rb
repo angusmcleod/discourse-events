@@ -28,13 +28,13 @@ describe PostsController do
   describe "when creating a post with an event" do
     it "creates an event" do
       post "/posts.json", params: create_params.merge(event: { start: '2017-09-18T16:00:00+08:00' })
-      expect(response).to be_successful
+      expect(response.status).to eq(200)
       expect(find_topic(response).has_event?).to eq(true)
     end
 
     it "doesn't create the event without the start value" do
       post "/posts.json", params: create_params.merge(event: { start: nil })
-      expect(response).to be_successful
+      expect(response.status).to eq(200)
       expect(find_topic(response).has_event?).to eq(false)
     end
   end
@@ -48,7 +48,7 @@ describe PostsController do
         going: [user1.username, user2.username]
       }
       post "/posts.json", params: create_params.merge(event: event)
-      expect(response).to be_successful
+      expect(response.status).to eq(200)
       expect(find_topic(response).event_going.sort).to eq([user1.id, user2.id].sort)
     end
   end

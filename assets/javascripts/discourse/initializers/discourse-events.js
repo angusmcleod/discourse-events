@@ -19,7 +19,7 @@ export default {
     const siteSettings = container.lookup("site-settings:main");
     const currentUser = container.lookup("current-user:main");
 
-    withPluginApi("0.8.33", (api) => {
+    withPluginApi("1.4.0", (api) => {
       api.serializeToDraft("event");
       api.serializeOnCreate("event");
       api.serializeToTopic("event", "topic.event");
@@ -443,6 +443,31 @@ export default {
             this.set("lastValidatedAt", Date.now());
           }
         },
+      });
+
+      api.includePostAttributes("connected_event", "connected_event");
+
+      api.addPostClassesCallback((attrs) => {
+        if (attrs.post_number === 1 && attrs.connected_event) {
+          return ["for-event"];
+        }
+      });
+
+      api.decorateWidget("post-menu:before-extra-controls", (helper) => {
+        const post = helper.getModel();
+
+        if (post.connected_event && post.connected_event.can_manage) {
+          return helper.attach("link", {
+            attributes: {
+              target: "_blank",
+            },
+            href: post.connected_event.admin_url,
+            className: "manage-event",
+            icon: "external-link-alt",
+            label: "post.event.manage.label",
+            title: "post.event.manage.title",
+          });
+        }
       });
     });
   },

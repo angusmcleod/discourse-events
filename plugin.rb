@@ -6,15 +6,31 @@
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
 
+enabled_site_setting :events_enabled
+
 register_asset 'stylesheets/common/events.scss'
+register_asset 'stylesheets/common/admin.scss'
 register_asset 'stylesheets/desktop/events.scss', :desktop
 register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
-gem 'ice_cube', '0.16.4'
-gem 'icalendar', '2.8.0'
+gem "uuidtools", "2.2.0"
+gem "iso-639", "0.3.5"
+gem "ice_cube", "0.16.4"
+gem "icalendar", "2.8.0"
+gem "icalendar-recurrence", "1.1.3"
+gem "date", "3.2.2"
+gem "time", "0.2.0"
+gem "stringio", "3.0.2"
+gem "open-uri", "0.2.0"
+gem "omnievent", "0.1.0.pre3", require_name: "omnievent"
+gem "omnievent-icalendar", "0.1.0.pre2", require_name: "omnievent/icalendar"
+gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
+gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
+gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
+gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -25,7 +41,9 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
-register_svg_icon "rss" if respond_to?(:register_svg_icon)
+register_svg_icon "rss"
+register_svg_icon "fingerprint"
+register_svg_icon "save"
 
 load File.expand_path('../lib/discourse_events/engine.rb', __FILE__)
 load File.expand_path('../lib/discourse_events/timezone_default_site_setting.rb', __FILE__)
@@ -37,12 +55,23 @@ after_initialize do
     ../lib/discourse_events/list.rb
     ../lib/discourse_events/event_creator.rb
     ../lib/discourse_events/event_revisor.rb
+    ../lib/discourse_events/logger.rb
+    ../lib/discourse_events/import_manager.rb
+    ../lib/discourse_events/sync_manager.rb
+    ../lib/discourse_events/syncer.rb
+    ../lib/discourse_events/syncer/discourse_events.rb
+    ../lib/discourse_events/syncer/events.rb
+    ../lib/discourse_events/auth/base.rb
+    ../lib/discourse_events/auth/meetup.rb
     ../config/routes.rb
-    ../app/controllers/discourse_events/event_rsvp.rb
-    ../app/controllers/discourse_events/api_keys.rb
+    ../app/jobs/discourse_events/scheduled/update_events.rb
+    ../app/jobs/discourse_events/regular/import_source.rb
+    ../app/jobs/discourse_events/regular/sync_connection.rb
+    ../app/jobs/discourse_events/regular/refresh_token.rb
     ../extensions/list_controller.rb
     ../extensions/site_settings_type_supervisor.rb
     ../extensions/listable_topic_serializer.rb
+    ../extensions/guardian.rb
   ).each do |path|
     load File.expand_path(path, __FILE__)
   end
@@ -327,6 +356,54 @@ after_initialize do
       )")
     else
       topics
+    end
+  end
+
+  Post.has_one :event_connection, class_name: 'DiscourseEvents::EventConnection', dependent: :destroy
+  Guardian.prepend EventsGuardianExtension
+
+  TopicView.attr_writer :posts
+  TopicView.on_preload do |topic_view|
+    if SiteSetting.events_enabled
+      topic_view.posts = topic_view.posts.includes({ event_connection: :event })
+    end
+  end
+
+  # The discourse-calendar plugin uses "event" on the post model
+  add_to_serializer(:post, :connected_event) do
+    DiscourseEvents::PostEventSerializer.new(object.event_connection.event, scope: scope, root: false).as_json
+  end
+  add_to_serializer(:post, :include_connected_event?) do
+    SiteSetting.events_enabled && object.event_connection.present?
+  end
+
+  add_to_class(:guardian, :can_manage_events?) do
+    return false unless SiteSetting.events_enabled
+
+    is_admin? || (
+      SiteSetting.allow_moderator_event_management &&
+      is_staff?
+    )
+  end
+
+  add_to_serializer(:current_user, :can_manage_events) do
+    scope.can_manage_events?
+  end
+
+  add_model_callback(:user, :after_initialize) do
+    self.class.define_method(:can_act_on_discourse_post_event?) do |event|
+      return false if event.post.event_connection
+
+      # "super" doesn't work here so this is lifted directly from discourse-calendar
+      if defined?(@can_act_on_discourse_post_event)
+        return @can_act_on_discourse_post_event
+      end
+      @can_act_on_discourse_post_event = begin
+        return true if staff?
+        can_create_discourse_post_event? && Guardian.new(self).can_edit_post?(event.post)
+      rescue StandardError
+        false
+      end
     end
   end
 end

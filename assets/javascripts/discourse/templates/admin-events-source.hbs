@@ -1,0 +1,36 @@
+<EventsHeader @view={{view}} @message={{message}}>
+  {{d-button
+    id="add-source"
+    action=(action "addSource")
+    label="admin.events.source.add.label"
+    title="admin.events.source.add.title"
+    icon="plus"}}
+</EventsHeader>
+
+<div class="admin-events-container">
+  {{#if hasSources}}
+    <table>
+      <thead>
+        <tr>
+          <th>{{I18n "admin.events.source.name.label"}}</th>
+          <th>{{I18n "admin.events.source.provider.label"}}</th>
+          <th>{{I18n "admin.events.source.source_options.label"}}</th>
+          <th>{{I18n "admin.events.source.date_range"}}</th>
+          <th class="action-column">{{I18n "admin.events.actions"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each sources as |source|}}
+          {{events-source-row
+            source=source
+            providers=providers
+            authTypes=authTypes
+            removeSource=(action "removeSource")
+            setMessage=(action "setMessage")}}
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>{{i18n "admin.events.source.none"}}</p>
+  {{/if}}
+</div>

@@ -1,0 +1,87 @@
+<td class="name-column">
+  {{input
+    value=provider.name
+    placeholder=(i18n "admin.events.provider.name.placeholder")
+    class="provider-name"}}
+</td>
+
+<td class="url-column">
+  {{input
+    value=provider.url
+    placeholder=(i18n "admin.events.provider.url.placeholder")
+    class="provider-name"}}
+</td>
+
+<td>
+  {{combo-box
+    value=provider.provider_type
+    content=providerTypes
+    onChange=(action (mut provider.provider_type))
+    class="provider-type"
+    options=(hash
+      none="admin.events.provider.provider_type.select"
+    )}}
+</td>
+
+<td class="credentials-column">
+  <div class="credentials-container">
+    {{#if showToken}}
+      {{#if hideCredentials}}
+        <Input @type="password" @value={{provider.token}} class="token" placeholder={{i18n "admin.events.provider.token"}} />
+      {{else}}
+        <Input @type="text" @value={{provider.token}} class="token" placeholder={{i18n "admin.events.provider.token"}} />
+      {{/if}}
+    {{/if}}
+
+    {{#if showClientCredentials}}
+      <Input @type="text" @value={{provider.client_id}} class="client-id" placeholder={{i18n "admin.events.provider.client_id"}} />
+
+      {{#if hideCredentials}}
+        <Input @type="password" @value={{provider.client_secret}} class="client-secret" placeholder={{i18n "admin.events.provider.client_secret"}} />
+      {{else}}
+        <Input @type="text" @value={{provider.client_secret}} class="client-secret" placeholder={{i18n "admin.events.provider.client_secret"}} />
+      {{/if}}
+    {{/if}}
+
+    {{#if hasSecretCredentials}}
+      <DButton @action={{action "toggleHideCredentials"}} class="toggle-secret-visibility" @icon="far-eye-slash" />
+    {{/if}}
+
+    {{#if showNoAuth}}
+      {{i18n "admin.events.provider.no_credentials"}}
+    {{/if}}
+  </div>
+</td>
+
+<td class="status-column">
+  {{#if provider.authenticated}}
+    <span class="status authenticated" title={{i18n "admin.events.provider.ready"}}></span>
+  {{else}}
+    <span class="status not-authenticated" title={{i18n "admin.events.provider.not_ready"}}></span>
+  {{/if}}
+</td>
+
+<td class="action-column">
+  {{conditional-loading-spinner condition=saving size="small"}}
+
+  {{d-button
+    action=(action "saveProvider")
+    icon="save"
+    title="admin.events.provider.save.title"
+    disabled=saveDisabled
+    class=saveClass}}
+
+  {{d-button
+    action=removeProvider
+    actionParam=provider
+    icon="trash-alt"
+    title="admin.events.provider.remove.title"
+    class="remove-provider btn-danger"}}
+
+  {{d-button
+    action=(action "authenticateProvider")
+    icon="fingerprint"
+    title="admin.events.provider.authenticate.title"
+    disabled=authenticateDisabled
+    class=authenticateClass}}
+</td>

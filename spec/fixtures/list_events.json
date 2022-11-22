@@ -1,0 +1,68 @@
+{
+  "events": [
+    {
+      "id": "1234",
+      "created_at": "2022-06-12T12:41:13+02:00",
+      "updated_at": "2022-06-15T12:41:39+02:00",
+      "language": "nb",
+      "taxonomies": ["opera", "verdi"],
+      "start_time": "2022-7-18T12:30:00+02:00",
+      "end_time": "2022-7-18T14:30:00+02:00",
+      "timezone": "Europe/Oslo",
+      "name": "La Traviata",
+      "description": "An opera in three acts by Giuseppe Verdi set to an Italian libretto by Francesco Maria Piave.",
+      "status": "draft",
+      "url": "https://event-platfom.com/events/la-traviata",
+      "location": {
+        "id": "abcd",
+        "region": "Østlandet",
+        "country": "Norway",
+        "countryCode": "no",
+        "latitude": "59.9075",
+        "longitude": "10.7531",
+        "address1": "Oslo Opera House",
+        "address2": "Kirsten Flagstads Plass 1, 0150 Oslo, Norway",
+        "address3": "",
+        "city": "Oslo",
+        "postalCode": "0150"
+      }
+    },
+    {
+      "id": "5678",
+      "created_at": "2022-06-19T08:45:26+02:00",
+      "updated_at": "2022-06-21T10:45:26+02:00",
+      "language": "hr",
+      "taxonomies": ["opera", "mozart"],
+      "start_time": "2022-11-01T19:30:00+02:00",
+      "end_time": "2022-11-01T21:30:00+02:00",
+      "timezone": "Europe/Zagreb",
+      "name": "Don Giovanni",
+      "description": "An opera in two acts with music by Wolfgang Amadeus Mozart to an Italian libretto by Lorenzo Da Ponte",
+      "status": "published",
+      "url": "https://event-platfom.com/events/don-giovanni",
+      "location": {
+        "id": "efgh",
+        "region": "City of Zagreb",
+        "country": "Croatia",
+        "countryCode": "hr",
+        "latitude": "45.8094",
+        "longitude": "15.9700",
+        "address1": "Croatian National Theatre Zagreb",
+        "address2": "Trg Republike Hrvatske 15, 10000, Zagreb",
+        "address3": "",
+        "city": "Zagreb",
+        "postalCode": "10000"
+      },
+      "virtual_location": {
+        "id": "1a2b",
+        "entry_points": [
+          {
+            "uri": "https://opera-online.com/events/don-giovanni",
+            "type": "video",
+            "label": "Don Giovanni Live"
+          }
+        ]
+      }
+    }
+  ]
+}

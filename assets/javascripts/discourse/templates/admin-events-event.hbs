@@ -1,0 +1,29 @@
+<EventsHeader @view={{view}} @message={{message}}>
+  {{d-button
+    icon="cog"
+    title="admin.events.event.show_select"
+    action=(action "showSelect")
+    disabled=selectDisabled}}
+  {{d-button
+    action=(action "openDelete")
+    label="admin.events.event.delete.label"
+    title="admin.events.event.delete.title"
+    disabled=deleteDisabled
+    class="btn-danger"
+    icon="trash-alt"}}
+</EventsHeader>
+
+<div class="admin-events-container">
+  {{#if hasEvents}}
+    {{events-event-table
+      events=events
+      page=page
+      order=order
+      asc=asc
+      showSelect=showSelect
+      modifySelection=(action "modifySelection")
+      selectAll=selectAll}}
+  {{else}}
+    <p>{{i18n "admin.events.event.none"}}</p>
+  {{/if}}
+</div>

@@ -99,7 +99,6 @@ jobs:
         if: matrix.build_type == 'backend'
         run: |
           bin/rake plugin:install[https://github.com/discourse/discourse-calendar.git]
-          bin/rake plugin:install[https://github.com/paviliondev/discourse-events.git]
 
       - name: Fetch app state cache
         uses: actions/cache@v3

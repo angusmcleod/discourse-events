@@ -1,0 +1,21 @@
+<td class="start-time">
+  {{raw-date event.start_time}}
+</td>
+
+<td class="name">
+  {{event.name}}
+</td>
+
+<td class="source">
+  {{event.source.name}}
+</td>
+
+<td class="topic">
+  {{#each event.topics as |topic|}}
+    <a href={{topic.url}}>{{topic.fancy_title}}</a>
+  {{/each}}
+</td>
+
+<td class="select-event">
+  <Input @type="checkbox" @checked={{selected}} />
+</td>

@@ -85,5 +85,165 @@ en:
         one_spot_left: "1 spot left"
         x_spots_left: "{{spotsLeft}} spots left"
 
+    post:
+      event:
+        manage:
+          label: Manage Event
+          title: Manage event on event provider.
+
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"
+
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_events: "Events"
+
+      events:
+        title: Events
+        actions: Actions
+        source:
+          title: Sources
+          none: No sources.
+          add:
+            label: Add
+            title: Add Source
+          remove:
+            label: Remove
+            title: Remove Source
+            confirm: Are you sure you want to remove '%{source_name}'? Removing a source removes all associated events and connections.
+          name:
+            label: Name
+            placeholder: underscored
+          provider:
+            label: Provider
+            select: Select a provider...
+          save:
+            label: Save
+            title: Save Source
+          source_options:
+            label: Options
+            none: No options
+          date_range: Date Range
+          import:
+            label: Import
+            title: Import Source
+        provider:
+          title: Providers
+          none: No providers.
+          add:
+            label: Add
+            title: Add Provider
+          status: Status
+          ready: Ready
+          not_ready: Not Ready
+          name:
+            label: Name
+            placeholder: underscored
+          url:
+            label: URL
+            placeholder: admin url
+          provider_type:
+            label: Type
+            select: Select a type...
+          method: Method
+          credentials: Credentials
+          no_credentials: No Credentials
+          username: Username
+          password: Password
+          token: Token
+          client_id: Client ID
+          client_secret: Client Secret
+          save:
+            label: Save
+            title: Save Provider
+          remove:
+            label: Remove
+            title: Remove Provider
+            confirm: Are you sure you want to remove '%{provider_name}'? Removing a provider removes associated sources.
+          authenticate:
+            label: Authenticate
+            title: Authenticate Provider
+        connection:
+          title: Connections
+          none: No connections.
+          add:
+            label: Add
+            title: Add Connection
+          remove:
+            label: Remove
+            title: Remove Connection
+            confirm: Are you sure you want to remove this connection?
+          save:
+            label: Save
+            title: Save Connection
+          user: User
+          category: Category
+          source: Source
+          client:
+            label: Client
+            select: Select...
+          source:
+            label: Source
+            select: Select...
+          sync:
+            label: Sync
+            title: Sync Connection
+          filters:
+            title: Connection Filters
+            label: Filters
+            add:
+              label: Add
+              title: Add a filter
+            done:
+              label: Done
+              title: Close filters
+          filter:
+            query_column:
+              select: Select an attribute...
+            query_value: Enter a value
+            remove:
+              title: Remove filter
+
+        event:
+          title: Events
+          select_all: Select All
+          show_select: Show event select
+          start_time: Start Time
+          name: Name
+          source: Source
+          topics: Topics
+          none: No events.
+          delete:
+            title: Delete Events and Topics
+            label: Delete
+            events_only: Delete events only
+            events_and_topics: Delete events and associated topics
+            topics_only: Delete topics only
+            events_only_btn: Delete Events
+            events_and_topics_btn: Delete Events and Topics
+            topics_only_btn: Delete Topics
+        log:
+          title: Logs
+          created_at: Created At
+          level: Level
+          context: Context
+          message: Message
+          none: No logs.
+        message:
+          documentation: "Check out the documentation"
+          connection:
+            info: "Connections are where you show your events"
+            sync_started: "Sync started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            sync_failed_to_start: "Sync failed to start."
+          source:
+            info: "Sources are how you import events from a provider"
+            import_started: "Import started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            import_failed_to_start: "Import failed to start."
+          event:
+            info: "The events you've imported"
+          provider:
+            info: "Providers are the services providing your events"
+          log:
+            info: "The logs of your events"

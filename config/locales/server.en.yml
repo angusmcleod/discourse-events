@@ -1,6 +1,7 @@
 en:
   site_settings:
-    events_enabled: "Allow events to be added to topics in all categories."
+    events_enabled: "Enable events plugin."
+    events_all_categories: "Allow events to be added to topics in all categories."
     events_agenda_enabled: "Show an agenda topic list in all categories."
     events_calendar_enabled: "Show a calendar topic list in all categories."
     events_add_to_calendar: "Show an Add to Calendar button in event topics."
@@ -31,6 +32,10 @@ en:
     events_hamburger_menu_agenda_link: "Add a link to the site agenda to the hamburger menu."
     events_min_trust_to_create: "Min trust to create event."
     events_rsvp: "Enable event rsvp."
+    events_update_automatically: "Automatically import all sources and sync all connections."
+    events_update_automatically_period_mins: "The period in minutes between automatically updating events. NOTE: requires restart."
+    events_split_series_into_different_topics: "A seperate topic will be created for each event in a series."
+    events_allow_moderator_management: "Allow moderators to administer events."
 
   rss_description:
     events: "Events"
@@ -50,3 +55,8 @@ en:
   user_api_key:
     scopes:
       calendar_events: "Events plugin webcal"
+
+  log:
+    import_finished: "Finished importing from %{source_name}. Retrieved %{events_count} events, created %{created_count} events and updated %{updated_count} events."
+    sync_finished: "Finished syncing %{source_name} with %{category_name}. Created %{created_count} topics and updated %{updated_count} topics for the %{client_name} plugin."
+    sync_client_not_ready: "Failed to sync %{source_name} with %{category_name}. %{client_name} plugin is not ready."
