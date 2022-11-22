@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class CreateDiscourseEventsConnectionFilters < ActiveRecord::Migration[7.0]
   def change
     create_table :discourse_events_connection_filters do |t|

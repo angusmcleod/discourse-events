@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreateDiscourseEventsProviders < ActiveRecord::Migration[7.0]
   def change
     create_table :discourse_events_providers do |t|
