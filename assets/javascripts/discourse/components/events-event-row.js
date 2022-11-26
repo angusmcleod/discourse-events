@@ -3,11 +3,7 @@ import { observes } from "discourse-common/utils/decorators";
 
 export default Component.extend({
   tagName: "tr",
-  classNameBindings: [
-    ":events-event-row",
-    "showSelect",
-    "selected",
-  ],
+  classNameBindings: [":events-event-row", "showSelect", "selected"],
   selected: false,
 
   @observes("showSelect")

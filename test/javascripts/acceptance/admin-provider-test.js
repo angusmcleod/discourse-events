@@ -53,10 +53,7 @@ acceptance("Events | Provider", function (needs) {
   test("Displays the provider admin", async (assert) => {
     await visit("/admin/events/provider");
 
-    assert.ok(
-      exists(".events.provider"),
-      "it shows the provider route"
-    );
+    assert.ok(exists(".events.provider"), "it shows the provider route");
 
     assert.equal(
       find(".admin-events-controls h2").eq(0).text().trim(),

@@ -72,7 +72,7 @@ export default Controller.extend(Message, {
           }
         },
         onCloseModal: () => {
-          this.set("showSelect", false);
+          this.send("showSelect");
         },
       });
     },

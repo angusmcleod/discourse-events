@@ -69,10 +69,7 @@ acceptance("Events | Source", function (needs) {
   test("Displays the source admin", async (assert) => {
     await visit("/admin/events/source");
 
-    assert.ok(
-      exists(".events.source"),
-      "it shows the source route"
-    );
+    assert.ok(exists(".events.source"), "it shows the source route");
 
     assert.equal(
       find(".admin-events-controls h2").eq(0).text().trim(),

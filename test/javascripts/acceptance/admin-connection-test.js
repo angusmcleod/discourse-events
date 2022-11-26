@@ -32,7 +32,7 @@ function sourceRoutes(needs) {
             client: "events",
           },
         ],
-        clients: ['events']
+        clients: ["events"],
       });
     });
     server.put("/admin/events/connection/new", () => {
@@ -90,10 +90,7 @@ acceptance("Events | Connection", function (needs) {
   test("Displays the connection admin", async (assert) => {
     await visit("/admin/events/connection");
 
-    assert.ok(
-      exists(".events.connection"),
-      "it shows the connection route"
-    );
+    assert.ok(exists(".events.connection"), "it shows the connection route");
 
     assert.equal(
       find(".admin-events-controls h2").eq(0).text().trim(),

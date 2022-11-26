@@ -31,10 +31,7 @@ export default Component.extend({
 
   @discourseComputed("message.key", "view", "message.opts")
   text(key, view, opts) {
-    return I18n.t(
-      `admin.events.message.${view}.${key}`,
-      opts || {}
-    );
+    return I18n.t(`admin.events.message.${view}.${key}`, opts || {});
   },
 
   @discourseComputed
@@ -45,8 +42,7 @@ export default Component.extend({
   @discourseComputed("view")
   documentationUrl(view) {
     return (
-      urls[view] ||
-      "https://discourse.pluginmanager.org/c/discourse-events"
+      urls[view] || "https://discourse.pluginmanager.org/c/discourse-events"
     );
   },
 });
