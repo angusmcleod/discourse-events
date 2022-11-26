@@ -25,6 +25,8 @@ module DiscourseEvents
       topic.custom_fields["event_end"] = event.end_time.to_i
       topic.save_custom_fields(true)
 
+      topic.first_post.trigger_post_process(bypass_bump: true, priority: :low)
+
       topic
     end
 
