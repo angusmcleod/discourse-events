@@ -4,9 +4,9 @@ export default {
       attrs.category.custom_fields = {};
     }
 
-    const settingValueToggle = function (name) {
+    const settingValueToggle = function (name, siteName = null) {
       const settings = component.siteSettings;
-      const siteEnabled = settings[name];
+      const siteEnabled = settings[siteName || name];
       const categorySetting = attrs.category.custom_fields[name];
       const property = name.camelize();
       const value =
@@ -22,7 +22,7 @@ export default {
       });
     };
 
-    settingValueToggle("events_all_categories");
+    settingValueToggle("events_enabled", "events_all_categories");
     settingValueToggle("events_agenda_enabled");
     settingValueToggle("events_calendar_enabled");
     settingValueToggle("events_event_label_no_text");

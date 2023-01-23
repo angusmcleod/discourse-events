@@ -4,7 +4,6 @@ import {
   observes,
   on,
 } from "discourse-common/utils/decorators";
-import NavItem from "discourse/models/nav-item";
 import DiscourseURL from "discourse/lib/url";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { calendarRange } from "../lib/date-utilities";
@@ -128,26 +127,21 @@ export default {
         },
       });
 
-      api.modifyClass("model:nav-item", {
-        pluginId: "events",
-
-        buildList(category, args) {
-          let items = this._super(category, args);
-
+      api.addNavigationBarItem({
+        name: "calendar",
+        displayName: "Calendar",
+        customFilter: (category) => {
+          return (
+            category &&
+            (siteSettings.events_all_categories || category.events_enabled)
+          );
+        },
+        customHref: (category) => {
           if (category) {
-            items = items.reject(
-              (item) => item.name === "agenda" || item.name === "calendar"
-            );
-
-            if (category.events_agenda_enabled) {
-              items.push(NavItem.fromText("agenda", args));
-            }
-            if (category.events_calendar_enabled) {
-              items.push(NavItem.fromText("calendar", args));
-            }
+            return `${category.url}/l/calendar`;
+          } else {
+            return "/l/calendar";
           }
-
-          return items;
         },
       });
 

@@ -5,6 +5,7 @@ plugins:
   events_all_categories:
     default: false
     client: true
+    refresh: true
   events_agenda_enabled:
     default: false
     client: true
