@@ -7,3 +7,4 @@ Discourse/NoAddReferenceOrAliasesActiveRecordMigration:
 AllCops:
   Exclude:
     - 'gems/**/*'
+    - 'vendor/**/*'
