@@ -2,6 +2,7 @@ import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
+import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
@@ -64,6 +65,7 @@ acceptance("Events | Source", function (needs) {
   needs.user();
   needs.settings({ events_enabled: true });
 
+  registerRoutes(needs);
   sourceRoutes(needs);
 
   test("Displays the source admin", async (assert) => {

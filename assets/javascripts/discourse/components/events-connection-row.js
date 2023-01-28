@@ -9,6 +9,10 @@ function filtersMatch(filters1, filters2) {
     return false;
   }
 
+  if (!filters1 && !filters2) {
+    return true;
+  }
+
   if (filters1.length !== filters2.length) {
     return false;
   }
@@ -106,7 +110,11 @@ export default Component.extend({
 
   @discourseComputed("hasFilters")
   filterClass(hasFilters) {
-    return hasFilters ? "btn-primary" : "";
+    let classes = "show-filters";
+    if (hasFilters) {
+      classes += " btn-primary";
+    }
+    return classes;
   },
 
   actions: {
@@ -138,9 +146,12 @@ export default Component.extend({
         category_id: connection.category_id,
         client: connection.client,
         source_id: connection.source_id,
-        user: connection.user,
-        filters: JSON.parse(JSON.stringify(connection.filters)),
+        user: connection.user
       };
+
+      if (connection.filters) {
+        data.filters = JSON.parse(JSON.stringify(connection.filters));
+      }
 
       this.set("loading", true);
 

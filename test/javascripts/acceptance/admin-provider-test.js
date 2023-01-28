@@ -2,6 +2,7 @@ import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
+import { registerRoutes } from "../helpers/events-routes";
 
 function providerRoutes(needs) {
   needs.pretender((server, helper) => {
@@ -48,6 +49,7 @@ acceptance("Events | Provider", function (needs) {
   needs.user();
   needs.settings({ events_enabled: true });
 
+  registerRoutes(needs);
   providerRoutes(needs);
 
   test("Displays the provider admin", async (assert) => {

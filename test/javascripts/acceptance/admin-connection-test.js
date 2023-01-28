@@ -1,7 +1,9 @@
 import selectKit from "discourse/tests/helpers/select-kit-helper";
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
+import { acceptance, exists, query } from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
+import { currentSettings } from "discourse/tests/helpers/site-settings";
+import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
@@ -85,6 +87,7 @@ acceptance("Events | Connection", function (needs) {
   needs.user({ username: "angus" });
   needs.settings({ events_enabled: true });
 
+  registerRoutes(needs);
   sourceRoutes(needs);
 
   test("Displays the connection admin", async (assert) => {
@@ -158,5 +161,58 @@ acceptance("Events | Connection", function (needs) {
     );
 
     await click(".save-connection");
+  });
+
+  test("Filter modal works", async (assert) => {
+    await visit("/admin/events/connection");
+
+    await click("tr[data-connection-id='1'] .btn.show-filters");
+    assert.ok(
+      exists(".events-connection-filters-modal"),
+      "it shows the filter modal"
+    );
+
+    await click(".events-connection-filters-modal .add-filter");
+    assert.ok(
+      exists(".events-connection-filters-modal .filter-column"),
+      "it shows the filter column"
+    );
+    assert.ok(
+      exists(".events-connection-filters-modal .filter-value"),
+      "it shows the filter value"
+    );
+
+    await selectKit(".events-connection-filters-modal .filter-column").expand();
+    await selectKit(
+      ".events-connection-filters-modal .filter-column"
+    ).selectRowByValue("name");
+
+    await fillIn(".events-connection-filters-modal .filter-value", "Event Name");
+
+    await click(".events-connection-filters-modal .btn-primary");
+
+    assert.ok(
+      exists("tr[data-connection-id='1'] .btn-primary.show-filters"),
+      "the filter content is indicated by a btn-primary class"
+    );
+
+    await click("#add-connection");
+
+    await click("tr[data-connection-id='new'] .btn.show-filters");
+    assert.ok(
+      exists(".events-connection-filters-modal"),
+      "it shows the filter modal"
+    );
+
+    await click(".events-connection-filters-modal .add-filter");
+
+    assert.blank(
+      selectKit(".events-connection-filters-modal .filter-column").header().value(),
+      "filter column is blank"
+    );
+    assert.blank(
+      query(".events-connection-filters-modal .filter-value").value,
+      "filter value is blank"
+    );
   });
 });
