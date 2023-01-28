@@ -1,8 +1,11 @@
 import selectKit from "discourse/tests/helpers/select-kit-helper";
-import { acceptance, exists, query } from "discourse/tests/helpers/qunit-helpers";
+import {
+  acceptance,
+  exists,
+  query,
+} from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
-import { currentSettings } from "discourse/tests/helpers/site-settings";
 import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
@@ -187,7 +190,10 @@ acceptance("Events | Connection", function (needs) {
       ".events-connection-filters-modal .filter-column"
     ).selectRowByValue("name");
 
-    await fillIn(".events-connection-filters-modal .filter-value", "Event Name");
+    await fillIn(
+      ".events-connection-filters-modal .filter-value",
+      "Event Name"
+    );
 
     await click(".events-connection-filters-modal .btn-primary");
 
@@ -207,7 +213,9 @@ acceptance("Events | Connection", function (needs) {
     await click(".events-connection-filters-modal .add-filter");
 
     assert.blank(
-      selectKit(".events-connection-filters-modal .filter-column").header().value(),
+      selectKit(".events-connection-filters-modal .filter-column")
+        .header()
+        .value(),
       "filter column is blank"
     );
     assert.blank(

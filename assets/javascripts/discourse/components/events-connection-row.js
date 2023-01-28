@@ -146,7 +146,7 @@ export default Component.extend({
         category_id: connection.category_id,
         client: connection.client,
         source_id: connection.source_id,
-        user: connection.user
+        user: connection.user,
       };
 
       if (connection.filters) {
