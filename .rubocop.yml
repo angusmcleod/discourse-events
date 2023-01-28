@@ -3,3 +3,7 @@ inherit_gem:
 
 Discourse/NoAddReferenceOrAliasesActiveRecordMigration:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - 'gems/**/*'
