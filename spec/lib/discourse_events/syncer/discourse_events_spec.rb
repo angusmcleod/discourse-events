@@ -62,6 +62,7 @@ describe DiscourseEvents::DiscourseEventsSyncer do
 
     post.topic.reload
     expect(post.topic.title).to eq(new_name)
+    expect(post.topic.fancy_title).to eq(new_name)
 
     events = DiscoursePostEvent::Event.all
     expect(events.size).to eq(1)

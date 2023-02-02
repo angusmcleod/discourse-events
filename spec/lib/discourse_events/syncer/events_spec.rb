@@ -49,6 +49,7 @@ describe DiscourseEvents::EventsSyncer do
     topic = Topic.find(topic.id)
     expect(Topic.all.size).to eq(1)
     expect(topic.title).to eq(new_name)
+    expect(topic.fancy_title).to eq(new_name)
     expect(topic.custom_fields['event_start']).to eq(new_start_time.to_i)
     expect(topic.custom_fields['event_end']).to eq(new_end_time.to_i)
   end

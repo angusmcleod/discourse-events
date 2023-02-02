@@ -11,7 +11,11 @@ describe DiscourseEvents::Syncer do
     end
 
     def update_event_topic(topic, event)
-      topic.update_columns(title: event.name)
+      topic.update_columns(
+        title: event.name,
+        fancy_title: nil,
+        slug: nil
+      )
       topic.first_post.update_columns(raw: post_raw(event))
       topic
     end

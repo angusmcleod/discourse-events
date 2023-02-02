@@ -16,7 +16,11 @@ module DiscourseEvents
 
     def update_event_topic(topic, event)
       # No validations or callbacks can be triggered when updating this data
-      topic.update_columns(title: event.name)
+      topic.update_columns(
+        title: event.name,
+        fancy_title: nil,
+        slug: nil,
+      )
       topic.first_post.update_columns(raw: post_raw(event))
 
       if topic.first_post.event
