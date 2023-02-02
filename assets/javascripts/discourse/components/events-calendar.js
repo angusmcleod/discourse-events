@@ -32,6 +32,7 @@ export default Component.extend({
   ),
   years: YEARS.map((y) => ({ id: y, name: y })),
   layoutName: "components/events-calendar",
+  webcalDocumentationURL: "https://coop.pavilion.tech/t/1447",
 
   @on("init")
   setup() {

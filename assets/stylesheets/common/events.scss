@@ -116,6 +116,12 @@
   display: inline-block;
 }
 
+.events-calendar-subscription-links {
+  display: flex;
+  margin-left: auto;
+  gap: 0.5em;
+}
+
 .select-kit.events-calendar-subscription {
   margin-left: auto;
 
@@ -136,7 +142,6 @@
     }
 
     li.events-calendar-subscription-row {
-      cursor: initial;
       display: flex;
       position: relative;
       padding: unset;

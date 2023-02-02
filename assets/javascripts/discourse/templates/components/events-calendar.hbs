@@ -15,21 +15,27 @@
       onChange=(action (mut year))}}
   </div>
   {{#if showSubscription}}
-    {{events-calendar-subscription
-      category=category
-      userApiKeys=userApiKeys
-      onChange=(action "changeSubscription")
-      options=(hash
-        showFullTitle=showFullTitle
-        icon="rss"
-        none='events_calendar.subscribe'
-      )}}
+    <div class="events-calendar-subscription-links">
       {{#if showNotice}}
-        <ul class="events-webcal-notices">
-          <li>{{html-safe (i18n 'webcal_preferences.calendar_notice' link="/my/preferences/webcal-keys")}}</li>
-          <li>{{html-safe (i18n 'webcal_preferences.calendar_usage' doc="https://thepavilion.io/t/subscribing-to-events-ical-and-rss-feeds/2883")}}</li>
-        </ul>
+        {{d-button
+          href="/my/preferences/webcal-keys"
+          title="webcal_preferences.calendar_notice"
+          icon="key"}}
       {{/if}}
+      {{d-button
+        href=webcalDocumentationURL
+        title="webcal_preferences.calendar_usage"
+        icon="question-circle"}}
+      {{events-calendar-subscription
+        category=category
+        userApiKeys=userApiKeys
+        onChange=(action "changeSubscription")
+        options=(hash
+          showFullTitle=showFullTitle
+          icon="rss"
+          none="events_calendar.subscribe"
+        )}}
+    </div>
   {{/if}}
 </div>
 {{events-calendar-body
