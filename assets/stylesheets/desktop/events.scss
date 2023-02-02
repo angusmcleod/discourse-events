@@ -39,26 +39,8 @@
 
 .composer-controls-event .event-label {
   display: flex;
-
-  button {
-    padding: 5px 10px;
-    min-height: 30px;
-    min-width: 35px;
-    text-align: left;
-    margin-right: 5px;
-    margin-bottom: 5px;
-
-    &.no-text {
-      max-height: 29px;
-      text-align: center;
-
-      .fa {
-        margin-right: 0;
-      }
-    }
-  }
 }
 
 .composer-controls-event .btn:not(:hover) {
-  background: $secondary;
+  background: var(--secondary);
 }

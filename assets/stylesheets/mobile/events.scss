@@ -10,7 +10,7 @@
   padding: 5px 10px;
 
   &:not(.btn-primary) {
-    background: $secondary;
+    background: var(--secondary);
   }
 
   .fa {
