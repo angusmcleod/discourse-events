@@ -10,6 +10,6 @@ class CreateDiscourseEventsConnections < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :discourse_events_connections, [:source_id, :category_id], unique: true, name: "events_source_category_connection_index"
+    add_index :discourse_events_connections, [:source_id, :category_id], unique: true, name: "events_source_category_connection_index", if_not_exists: true
   end
 end

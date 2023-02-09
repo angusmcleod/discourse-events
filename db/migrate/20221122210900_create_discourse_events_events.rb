@@ -18,6 +18,6 @@ class CreateDiscourseEventsEvents < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :discourse_events_events, [:uid, :provider_id], unique: true, name: "discourse_events_event_id_index"
+    add_index :discourse_events_events, [:uid, :provider_id], unique: true, name: "discourse_events_event_id_index", if_not_exists: true
   end
 end

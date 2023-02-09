@@ -13,6 +13,6 @@ class CreateDiscourseEventsSources < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :discourse_events_sources, [:name], unique: true
+    add_index :discourse_events_sources, [:name], unique: true, if_not_exists: true
   end
 end

@@ -9,6 +9,6 @@ class CreateDiscourseEventsConnectionFilters < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :discourse_events_connection_filters, [:query_column, :query_value], unique: true, name: :idx_events_connection_filter_column_value
+    add_index :discourse_events_connection_filters, [:query_column, :query_value], unique: true, name: :idx_events_connection_filter_column_value, if_not_exists: true
   end
 end
