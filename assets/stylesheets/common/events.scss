@@ -89,7 +89,7 @@
     display: none;
     background-color: var(--secondary);
     z-index: 100;
-    box-shadow: shadow('dropdown');
+    box-shadow: shadow("dropdown");
     border-top: 1px solid var(--primary-very-low);
 
     &.show {
@@ -283,8 +283,9 @@
   border-left: 1px solid var(--primary-medium);
   box-sizing: border-box;
 
-  .day, .weekday {
-    width: calc(99.9999%/7);
+  .day,
+  .weekday {
+    width: calc(99.9999% / 7);
     border-top: 1px solid var(--primary-medium);
     border-right: 1px solid var(--primary-medium);
     box-sizing: border-box;
@@ -314,8 +315,8 @@
     }
 
     &.different-month .container {
-      background-color: rgba(var(--primary-low), .5);
-      color: rgba(var(--primary), .5);
+      background-color: rgba(var(--primary-low), 0.5);
+      color: rgba(var(--primary), 0.5);
       height: 100%;
     }
 
@@ -333,7 +334,7 @@
       min-width: 100%;
       overflow: visible;
       border: 1px solid var(--primary-low);
-      box-shadow: 0 2px 2px rgba(0,0,0,0.4);
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
 
       .events {
         padding: 3px 4px;
@@ -455,7 +456,7 @@ ul.events-calendar-events {
   width: 350px;
   z-index: 997;
   background-color: var(--secondary);
-  box-shadow: shadow('card');
+  box-shadow: shadow("card");
   border: 1px solid var(--primary-low);
   padding: 15px;
   border-radius: 4px;
