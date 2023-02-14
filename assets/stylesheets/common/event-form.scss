@@ -134,8 +134,8 @@
         padding: 4px 10px;
         font-size: 1em;
         line-height: 1;
-        color: $primary;
-        border: 1px solid $primary-medium;
+        color: var(--primary);
+        border: 1px solid var(--primary-medium);
         min-height: 30px;
         width: 130px;
         margin: 10px 0;
@@ -158,7 +158,7 @@
       z-index: 100;
 
       .pika-lendar {
-        border: 1px solid $primary-medium;
+        border: 1px solid var(--primary-medium);
         padding: 14px;
         margin: 0;
         float: none;

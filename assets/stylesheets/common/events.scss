@@ -22,10 +22,8 @@
   }
 }
 
-.add-event,
-.add-event + button {
-  border: 1px solid $primary-medium;
-}
+.add-event, .add-event + button {
+  border: 1px solid var(--primary-medium);
 
 .form-element + span {
   display: block;
@@ -87,10 +85,10 @@
     width: 190px;
     position: absolute;
     display: none;
-    background-color: $secondary;
+    background-color: var(--secondary);
     z-index: 100;
-    box-shadow: shadow("dropdown");
-    border-top: 1px solid $primary-very-low;
+    box-shadow: shadow('dropdown');
+    border-top: 1px solid var(--primary-very-low);
 
     &.show {
       display: block;
@@ -105,7 +103,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: $primary-low;
+          background-color: var(--primary-low);
         }
       }
     }
@@ -279,15 +277,14 @@
   flex-wrap: wrap;
   width: 100%;
   margin-top: 15px;
-  border-bottom: 1px solid $primary-medium;
-  border-left: 1px solid $primary-medium;
+  border-bottom: 1px solid var(--primary-medium);
+  border-left: 1px solid var(--primary-medium);
   box-sizing: border-box;
 
-  .day,
-  .weekday {
-    width: calc(99.9999% / 7);
-    border-top: 1px solid $primary-medium;
-    border-right: 1px solid $primary-medium;
+  .day, .weekday {
+    width: calc(99.9999%/7);
+    border-top: 1px solid var(--primary-medium);
+    border-right: 1px solid var(--primary-medium);
     box-sizing: border-box;
   }
 
@@ -306,23 +303,23 @@
     position: relative;
 
     .container {
-      background-color: $secondary;
+      background-color: var(--primary-secondary);
     }
 
     &.today .container {
-      background-color: $highlight-low;
+      background-color: var(--highlight-low);
       height: 100%;
     }
 
     &.different-month .container {
-      background-color: rgba($primary-low, 0.5);
-      color: rgba($primary, 0.5);
+      background-color: rgba(var(--primary-low), .5);
+      color: rgba(var(--primary), .5);
       height: 100%;
     }
 
     &.selected .date label {
-      background-color: $tertiary;
-      color: $secondary;
+      background-color: var(--tertiary);
+      color: var(--secondary);
       border-radius: 50%;
     }
 
@@ -333,8 +330,8 @@
       width: auto;
       min-width: 100%;
       overflow: visible;
-      border: 1px solid $primary-low;
-      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--primary-low);
+      box-shadow: 0 2px 2px rgba(0,0,0,0.4);
 
       .events {
         padding: 3px 4px;
@@ -411,10 +408,10 @@ ul.events-calendar-events {
       }
 
       &.all-day {
-        background-color: $tertiary;
-        color: $secondary;
-        border-top: 1px solid $primary-low;
-        border-bottom: 1px solid $primary-low;
+        background-color: var(--primary-tertiary);
+        color: var(--secondary);
+        border-top: 1px solid var(--primary-low);
+        border-bottom: 1px solid var(--primary-low);
 
         &:not(.full-width) {
           &.start {
@@ -455,9 +452,9 @@ ul.events-calendar-events {
   left: -390px;
   width: 350px;
   z-index: 997;
-  background-color: $secondary;
-  box-shadow: shadow("card");
-  border: 1px solid $primary-low;
+  background-color: var(--secondary);
+  box-shadow: shadow('card');
+  border: 1px solid var(--primary-low);
   padding: 15px;
   border-radius: 4px;
 
@@ -573,7 +570,7 @@ ul.events-calendar-events {
     .filter {
       align-self: flex-start;
       padding-bottom: 15px;
-      border-bottom: 1px solid $primary-low;
+      border-bottom: 1px solid var(--primary-low);
 
       input {
         width: 150px;
@@ -599,7 +596,7 @@ ul.events-calendar-events {
 
       li {
         padding: 10px 15px;
-        border-bottom: 1px solid $primary-low;
+        border-bottom: 1px solid var(--primary-low);
 
         .user-info {
           margin-bottom: 0;
