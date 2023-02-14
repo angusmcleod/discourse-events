@@ -1,3 +1,22 @@
+$pavilion_primary: #3c1c8c;
+
+.events-beta-notice {
+  padding: 1em;
+  margin-bottom: 1em;
+  background-color: $pavilion_primary;
+  color: var(--secondary);
+
+  .emoji {
+    margin-right: 0.5em;
+  }
+
+  a {
+    background-color: var(--primary-very-low);
+    padding: 1px 2px;
+    border-radius: 0.25em;
+  }
+}
+
 .admin-contents.events {
   .controls.flex {
     display: flex;
