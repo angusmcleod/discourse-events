@@ -85,7 +85,7 @@
         input,
         .pika-lendar,
         .is-selected .pika-button {
-          color: $primary-low;
+          color: var(--primary-low);
           background-image: initial;
           background: initial;
           box-shadow: initial;
@@ -95,7 +95,7 @@
 
         input,
         .pika-lendar {
-          border: 1px solid $primary-low !important;
+          border: 1px solid var(--primary-low) !important;
         }
       }
     }
