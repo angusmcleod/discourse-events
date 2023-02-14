@@ -22,8 +22,10 @@
   }
 }
 
-.add-event, .add-event + button {
+.add-event,
+.add-event + button {
   border: 1px solid var(--primary-medium);
+}
 
 .form-element + span {
   display: block;
