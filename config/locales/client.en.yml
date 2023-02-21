@@ -103,7 +103,7 @@ en:
       events:
         title: Events
         actions: Actions
-        beta_notice: "These features are currently in beta. We'll soon be launching subscription plans for the Events Plugin, which will apply to these features. To find out more reach out to us at <a mailto='product@pavilion.tech'>product@pavilion.tech</a>."
+        beta_notice: "These features are currently in beta. We'll soon be launching subscription plans for the Events Plugin, which will apply to some of these features. To find out more reach out to us at <a mailto='product@pavilion.tech'>product@pavilion.tech</a>."
         source:
           title: Sources
           none: No sources.
