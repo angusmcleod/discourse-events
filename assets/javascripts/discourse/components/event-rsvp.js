@@ -16,7 +16,7 @@ export default Component.extend({
 
     this.setProperties({
       goingTotal: eventGoing ? eventGoing.length : 0,
-      userGoing: eventGoing && eventGoing.indexOf(currentUser.username) > -1,
+      userGoing: currentUser && eventGoing && eventGoing.indexOf(currentUser.username) > -1,
     });
   },
 
