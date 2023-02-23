@@ -1,0 +1,34 @@
+<EventsHeader @view={{view}} @message={{message}}>
+  {{d-button
+    id="add-provider"
+    action=(action "addProvider")
+    label="admin.events.provider.add.label"
+    title="admin.events.provider.add.title"
+    icon="plus"}}
+</EventsHeader>
+
+<div class="admin-events-container">
+  {{#if hasProviders}}
+    <table>
+      <thead>
+        <tr>
+          <th>{{I18n "admin.events.provider.name.label"}}</th>
+          <th>{{I18n "admin.events.provider.url.label"}}</th>
+          <th>{{i18n "admin.events.provider.provider_type.label"}}</th>
+          <th>{{I18n "admin.events.provider.credentials"}}</th>
+          <th>{{i18n "admin.events.provider.status"}}</th>
+          <th class="action-column">{{I18n "admin.events.actions"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each providers as |provider|}}
+          {{events-provider-row
+            provider=provider
+            removeProvider=(action "removeProvider")}}
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>{{i18n "admin.events.provider.none"}}</p>
+  {{/if}}
+</div>

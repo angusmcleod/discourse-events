@@ -37,7 +37,8 @@
       flex: 1;
     }
 
-    .select-kit, .ac-wrap {
+    .select-kit,
+    .ac-wrap {
       width: 100% !important;
       max-width: 330px;
     }
@@ -74,8 +75,17 @@
       padding-left: 20px;
 
       &.disabled {
-        span, label, .pika-label, .pika-table th, .pika-button, .pika-prev, .pika-next, input, .pika-lendar, .is-selected .pika-button {
-          color:  var(--primary-low);
+        span,
+        label,
+        .pika-label,
+        .pika-table th,
+        .pika-button,
+        .pika-prev,
+        .pika-next,
+        input,
+        .pika-lendar,
+        .is-selected .pika-button {
+          color: var(--primary-low);
           background-image: initial;
           background: initial;
           box-shadow: initial;
@@ -83,7 +93,8 @@
           pointer-events: none;
         }
 
-        input, .pika-lendar {
+        input,
+        .pika-lendar {
           border: 1px solid var(--primary-low) !important;
         }
       }
@@ -157,7 +168,6 @@
   }
 
   .rsvp-controls {
-
     .rsvp-container {
       display: flex;
       flex-flow: wrap;

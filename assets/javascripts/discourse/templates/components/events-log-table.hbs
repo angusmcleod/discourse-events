@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <TableHeaderToggle @field="created_at" @labelKey="admin.events.log.created_at" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @field="level" @labelKey="admin.events.log.level" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @field="context" @labelKey="admin.events.log.context" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <th>{{I18n "admin.events.log.message"}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each logs as |log|}}
+      {{events-log-row log=log}}
+    {{/each}}
+  </tbody>
+</table>
+{{conditional-loading-spinner condition=loading}}

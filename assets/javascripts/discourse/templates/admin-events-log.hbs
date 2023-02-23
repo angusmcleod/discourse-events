@@ -1,0 +1,13 @@
+<EventsHeader @view={{view}} @message={{message}}></EventsHeader>
+
+<div class="admin-events-container">
+  {{#if hasLogs}}
+    {{events-log-table
+      logs=logs
+      page=page
+      order=order
+      asc=asc}}
+  {{else}}
+    <p>{{i18n "admin.events.log.none"}}</p>
+  {{/if}}
+</div>

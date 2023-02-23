@@ -1,7 +1,11 @@
 plugins:
   events_enabled:
+    default: true
+    client: true
+  events_all_categories:
     default: false
     client: true
+    refresh: true
   events_agenda_enabled:
     default: false
     client: true
@@ -48,11 +52,11 @@ plugins:
   events_timezone_default:
     default: ''
     client: true
-    enum: 'EventsTimezoneDefaultSiteSetting'
+    enum: 'DiscourseEventsTimezoneDefaultSiteSetting'
   events_timezone_display:
     client: true
     default: 'default'
-    enum: "EventsTimezoneDisplaySiteSetting"
+    enum: "DiscourseEventsTimezoneDisplaySiteSetting"
   events_timezone_include_in_topic:
     default: true
     client: true
@@ -76,5 +80,11 @@ plugins:
   events_min_trust_to_create:
     default: 0
   events_rsvp:
+    default: false
+    client: true
+  events_update_automatically: false
+  events_update_automatically_period_mins: 10
+  events_split_series_into_different_topics: false
+  events_allow_moderator_management:
     default: false
     client: true

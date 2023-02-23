@@ -1,20 +1,36 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.1.7
+# version: 0.2.0
 # authors: Angus McLeod
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
 
+enabled_site_setting :events_enabled
+
 register_asset 'stylesheets/common/events.scss'
+register_asset 'stylesheets/common/admin.scss'
 register_asset 'stylesheets/desktop/events.scss', :desktop
 register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
-gem 'ice_cube', '0.16.4'
-gem 'icalendar', '2.8.0'
+gem "uuidtools", "2.2.0"
+gem "iso-639", "0.3.5"
+gem "ice_cube", "0.16.4"
+gem "icalendar", "2.8.0"
+gem "icalendar-recurrence", "1.1.3"
+gem "date", "3.3.3"
+gem "time", "0.2.0"
+gem "stringio", "3.0.2"
+gem "open-uri", "0.1.0"
+gem "omnievent", "0.1.0.pre3", require_name: "omnievent"
+gem "omnievent-icalendar", "0.1.0.pre4", require_name: "omnievent/icalendar"
+gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
+gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
+gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
+gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -25,35 +41,75 @@ Discourse.anonymous_top_menu_items.push(:calendar)
 Discourse.filters.push(:calendar)
 Discourse.anonymous_filters.push(:calendar)
 
-register_svg_icon "rss" if respond_to?(:register_svg_icon)
+register_svg_icon "rss"
+register_svg_icon "fingerprint"
+register_svg_icon "save"
 
-load File.expand_path('../models/events_timezone_default_site_setting.rb', __FILE__)
-load File.expand_path('../models/events_timezone_display_site_setting.rb', __FILE__)
+load File.expand_path('../lib/discourse_events_timezone_default_site_setting.rb', __FILE__)
+load File.expand_path('../lib/discourse_events_timezone_display_site_setting.rb', __FILE__)
 
 after_initialize do
-  [
-    "../lib/calendar_events.rb",
-    "../lib/event_creator.rb",
-    "../lib/event_revisor.rb",
-    "../lib/topic_query_edits.rb",
-    "../controllers/event_rsvp.rb",
-    "../controllers/api_keys.rb",
-    "../controllers/list_controller_edits.rb"
-  ].each do |path|
+  %w(
+    ../lib/discourse_events/engine.rb
+    ../lib/discourse_events/helper.rb
+    ../lib/discourse_events/list.rb
+    ../lib/discourse_events/event_creator.rb
+    ../lib/discourse_events/event_revisor.rb
+    ../lib/discourse_events/logger.rb
+    ../lib/discourse_events/import_manager.rb
+    ../lib/discourse_events/sync_manager.rb
+    ../lib/discourse_events/syncer.rb
+    ../lib/discourse_events/syncer/discourse_events.rb
+    ../lib/discourse_events/syncer/events.rb
+    ../lib/discourse_events/auth/base.rb
+    ../lib/discourse_events/auth/meetup.rb
+    ../app/models/discourse_events/connection_filter.rb
+    ../app/models/discourse_events/connection.rb
+    ../app/models/discourse_events/event_connection.rb
+    ../app/models/discourse_events/event.rb
+    ../app/models/discourse_events/log.rb
+    ../app/models/discourse_events/provider.rb
+    ../app/models/discourse_events/source.rb
+    ../app/controllers/discourse_events/admin_controller.rb
+    ../app/controllers/discourse_events/api_keys_controller.rb
+    ../app/controllers/discourse_events/connection_controller.rb
+    ../app/controllers/discourse_events/event_controller.rb
+    ../app/controllers/discourse_events/rsvp_controller.rb
+    ../app/controllers/discourse_events/log_controller.rb
+    ../app/controllers/discourse_events/provider_controller.rb
+    ../app/controllers/discourse_events/source_controller.rb
+    ../app/serializers/discourse_events/basic_event_serializer.rb
+    ../app/serializers/discourse_events/connection_filter_serializer.rb
+    ../app/serializers/discourse_events/connection_serializer.rb
+    ../app/serializers/discourse_events/connection_user_serializer.rb
+    ../app/serializers/discourse_events/source_serializer.rb
+    ../app/serializers/discourse_events/event_serializer.rb
+    ../app/serializers/discourse_events/log_serializer.rb
+    ../app/serializers/discourse_events/post_event_serializer.rb
+    ../app/serializers/discourse_events/provider_serializer.rb
+    ../app/jobs/discourse_events/scheduled/update_events.rb
+    ../app/jobs/discourse_events/regular/import_source.rb
+    ../app/jobs/discourse_events/regular/sync_connection.rb
+    ../app/jobs/discourse_events/regular/refresh_token.rb
+    ../config/routes.rb
+    ../extensions/list_controller.rb
+    ../extensions/site_settings_type_supervisor.rb
+    ../extensions/listable_topic_serializer.rb
+    ../extensions/guardian.rb
+  ).each do |path|
     load File.expand_path(path, __FILE__)
   end
 
-  add_to_serializer(:site, :event_timezones) { EventsTimezoneDefaultSiteSetting.values }
+  add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
-  Category.register_custom_field_type('events_enabled', :boolean)
-  Category.register_custom_field_type('events_agenda_enabled', :boolean)
-  Category.register_custom_field_type('events_calendar_enabled', :boolean)
-  Category.register_custom_field_type('events_min_trust_to_create', :integer)
-  Category.register_custom_field_type('events_required', :boolean)
-  Category.register_custom_field_type('events_event_label_no_text', :boolean)
+  register_category_custom_field_type('events_enabled', :boolean)
+  register_category_custom_field_type('events_agenda_enabled', :boolean)
+  register_category_custom_field_type('events_calendar_enabled', :boolean)
+  register_category_custom_field_type('events_min_trust_to_create', :integer)
+  register_category_custom_field_type('events_required', :boolean)
+  register_category_custom_field_type('events_event_label_no_text', :boolean)
 
   [
-    "events_enabled",
     "events_event_label_no_text",
     "events_agenda_enabled",
     "events_calendar_enabled",
@@ -67,46 +123,33 @@ after_initialize do
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
 
-  module EventsSiteSettingExtension
-    def type_hash(name)
-      add_choices(name) if name == :top_menu
-      super
-    end
+  Site.preloaded_category_custom_fields << "events_enabled" if Site.respond_to? :preloaded_category_custom_fields
+  add_to_class(:category, :events_enabled) { self.custom_fields["events_enabled"] }
+  add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
 
-    def validate_value(name, type, val)
-      add_choices(name) if name == :top_menu
-      super
-    end
-
-    def add_choices(name)
-      @choices[name].push("agenda") if @choices[name].exclude?("agenda")
-      @choices[name].push("calendar") if @choices[name].exclude?("calendar")
-    end
-  end
-
-  ::SiteSettings::TypeSupervisor.prepend EventsSiteSettingExtension
+  SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
 
   # event times are stored individually as seconds since epoch so that event topic lists
   # can be ordered easily within the exist topic list query structure in Discourse core.
-  Topic.register_custom_field_type('event_start', :integer)
-  Topic.register_custom_field_type('event_end', :integer)
-  Topic.register_custom_field_type('event_all_day', :boolean)
-  Topic.register_custom_field_type('event_rsvp', :boolean)
-  Topic.register_custom_field_type('event_going', :json)
-  Topic.register_custom_field_type('event_going_max', :integer)
-  Topic.register_custom_field_type('event_version', :integer)
+  register_topic_custom_field_type('event_start', :integer)
+  register_topic_custom_field_type('event_end', :integer)
+  register_topic_custom_field_type('event_all_day', :boolean)
+  register_topic_custom_field_type('event_rsvp', :boolean)
+  register_topic_custom_field_type('event_going', :json)
+  register_topic_custom_field_type('event_going_max', :integer)
+  register_topic_custom_field_type('event_version', :integer)
 
   if TopicList.respond_to? :preloaded_custom_fields
-    preloaded_custom_fields = [
-      'event_start',
-      'event_end',
-      'event_all_day',
-      'event_timezone',
-      'event_rsvp',
-      'event_going',
-      'event_going_max',
-      'event_version',
-    ]
+    preloaded_custom_fields = %w(
+      event_start
+      event_end
+      event_all_day
+      event_timezone
+      event_rsvp
+      event_going
+      event_going_max
+      event_version
+    )
     TopicList.preloaded_custom_fields += preloaded_custom_fields
   end
 
@@ -117,11 +160,11 @@ after_initialize do
     self.custom_fields['event_start'] != 0
   end
 
-  [
-    "event_going",
-    "event_rsvp",
-    "event_going_max",
-  ].each do |key|
+  %w(
+    event_going
+    event_rsvp
+    event_going_max
+  ).each do |key|
     add_to_class(:topic, key.to_sym) do
       self.custom_fields[key] || false
     end
@@ -186,11 +229,11 @@ after_initialize do
     include_event?
   end
 
-  User.register_custom_field_type('calendar_first_day_week', :integer)
+  register_user_custom_field_type('calendar_first_day_week', :integer)
   add_to_serializer(:current_user, :calendar_first_day_week) { object.custom_fields['calendar_first_day_week'] }
   register_editable_user_custom_field :calendar_first_day_week if defined? register_editable_user_custom_field
 
-  add_user_api_key_scope(CalendarEvents::USER_API_KEY_SCOPE.to_sym,
+  add_user_api_key_scope(DiscourseEvents::USER_API_KEY_SCOPE.to_sym,
     methods: :get,
     actions: ['list#calendar_ics',
               'list#agenda_ics',
@@ -211,31 +254,22 @@ after_initialize do
     can_create_event?(category)
   end
 
-  class ::Topic
-    attr_accessor :include_excerpt
-  end
+  Topic.attr_accessor :include_excerpt
 
-  module ListableTopicSerializerExtension
-    def include_excerpt?
-      super || object.include_excerpt
-    end
-  end
-
-  ::ListableTopicSerializer.prepend ListableTopicSerializerExtension
+  ListableTopicSerializer.prepend ListableTopicSerializerEventsExtension
 
   on(:post_created) do |post, opts, user|
-    event_creator = ::EventCreator.new(post, opts, user)
+    event_creator = DiscourseEvents::EventCreator.new(post, opts, user)
     event_creator.create
   end
 
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload['event']
-    if (
-    event.present? &&
-      event['event_start'].present? &&
-      event['event_start'].is_a?(Numeric) &&
-      event['event_start'] != 0
-    )
+
+    if (event.present? &&
+        event['event_start'].present? &&
+        event['event_start'].is_a?(Numeric) &&
+        event['event_start'] != 0)
 
       topic = post.topic
       event.each do |k, v|
@@ -246,12 +280,12 @@ after_initialize do
     end
   end
 
-  ::PostRevisor.track_topic_field(:event) do |tc, event|
-    event_revisor = EventRevisor.new(tc, event)
+  PostRevisor.track_topic_field(:event) do |tc, event|
+    event_revisor = DiscourseEvents::EventRevisor.new(tc, event)
     event_revisor.revise!
   end
 
-  ::NewPostManager.add_handler(1) do |manager|
+  NewPostManager.add_handler(1) do |manager|
     if manager.args['event'] && NewPostManager.post_needs_approval?(manager) && NewPostManager.is_first_post?(manager)
       NewPostManager.add_plugin_payload_attribute('event') if NewPostManager.respond_to?(:add_plugin_payload_attribute)
     end
@@ -259,20 +293,145 @@ after_initialize do
     nil
   end
 
-  Discourse::Application.routes.prepend do
-    get "calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
-    get "calendar.rss" => "list#calendar_feed", format: :rss
-    get "agenda.rss" => "list#agenda_feed", format: :rss
+  add_to_class(:topic_query, :list_agenda) do
+    @options[:unordered] = true
+    @options[:list] = 'agenda'
 
-    %w{users u}.each do |root_path|
-      get "#{root_path}/:username/preferences/webcal-keys" => "users#preferences", constraints: { username: RouteFormat.username }
+    opts = {
+      remove_past: SiteSetting.events_remove_past_from_agenda
+    }
+
+    opts[:status] = 'open' if SiteSetting.events_agenda_filter_closed
+
+    create_list(:agenda, {}, event_results(opts))
+  end
+
+  add_to_class(:topic_query, :list_calendar) do
+    @options[:unordered] = true
+    @options[:list] = 'calendar'
+
+    opts = {
+      limit: false,
+      include_excerpt: true,
+      remove_past: SiteSetting.events_remove_past_from_calendar
+    }
+
+    opts[:status] = 'open' if SiteSetting.events_calendar_filter_closed
+
+    create_list(:calendar, {}, event_results(opts))
+  end
+
+  add_to_class(:topic_query, :event_results) do |options = {}|
+    topics = default_results(options)
+      .joins("INNER JOIN topic_custom_fields
+              ON topic_custom_fields.topic_id = topics.id
+              AND topic_custom_fields.name = 'event_start'
+              AND topic_custom_fields.value <> ''")
+
+    DiscourseEvents::List.sorted_filters.each do |filter|
+      topics = filter[:block].call(topics, @options)
     end
 
-    get "c/*category_slug_path_with_id/l/calendar.ics" => "list#calendar_ics", format: :ics, protocol: :webcal
-    get "c/*category_slug_path_with_id/l/calendar.rss" => "list#calendar_feed", format: :rss
-    get "c/*category_slug_path_with_id/l/agenda.rss" => "list#agenda_feed", format: :rss
+    if options[:remove_past]
+      topics = topics.where("topics.id in (
+        SELECT topic_id FROM topic_custom_fields
+        WHERE (name = 'event_start' OR name ='event_end')
+        AND value > '#{Time.now.to_i}'
+      )")
+    end
 
-    mount ::CalendarEvents::Engine, at: '/calendar-events'
+    topics = topics.reorder("(
+        SELECT CASE
+        WHEN EXISTS (
+          SELECT true FROM topic_custom_fields tcf
+          WHERE tcf.topic_id::integer = topics.id::integer
+          AND tcf.name = 'event_start' LIMIT 1
+        )
+        THEN (
+          SELECT value::integer FROM topic_custom_fields tcf
+          WHERE tcf.topic_id::integer = topics.id::integer
+          AND tcf.name = 'event_start' LIMIT 1
+        )
+        ELSE 0 END
+      ) ASC") if [nil, "default"].include?(@options[:order])
+
+    if options[:include_excerpt]
+      topics.each { |t| t.include_excerpt = true }
+    end
+
+    topics
+  end
+
+  register_topic_view_posts_filter(:start) do |topics, query|
+    if query.options[:start]
+      topics.where("topics.id in (
+        SELECT topic_id FROM topic_custom_fields
+        WHERE (name = 'event_start' OR name = 'event_end')
+        AND value >= '#{query.options[:start].to_datetime.beginning_of_day.to_i}'
+      )")
+    else
+      topics
+    end
+  end
+
+  register_topic_view_posts_filter(:end) do |topics, query|
+    if query.options[:end]
+      topics.where("topics.id in (
+        SELECT topic_id FROM topic_custom_fields
+        WHERE (name = 'event_start' OR name = 'event_end')
+        AND value <= '#{query.options[:end].to_datetime.end_of_day.to_i}'
+      )")
+    else
+      topics
+    end
+  end
+
+  Post.has_one :event_connection, class_name: 'DiscourseEvents::EventConnection', dependent: :destroy
+  Guardian.prepend EventsGuardianExtension
+
+  TopicView.attr_writer :posts
+  TopicView.on_preload do |topic_view|
+    if SiteSetting.events_enabled
+      topic_view.posts = topic_view.posts.includes({ event_connection: :event })
+    end
+  end
+
+  # The discourse-calendar plugin uses "event" on the post model
+  add_to_serializer(:post, :connected_event) do
+    DiscourseEvents::PostEventSerializer.new(object.event_connection.event, scope: scope, root: false).as_json
+  end
+  add_to_serializer(:post, :include_connected_event?) do
+    SiteSetting.events_enabled && object.event_connection.present?
+  end
+
+  add_to_class(:guardian, :can_manage_events?) do
+    return false unless SiteSetting.events_enabled
+
+    is_admin? || (
+      SiteSetting.events_allow_moderator_management &&
+      is_staff?
+    )
+  end
+
+  add_to_serializer(:current_user, :can_manage_events) do
+    scope.can_manage_events?
+  end
+
+  add_model_callback(:user, :after_initialize) do
+    self.class.define_method(:can_act_on_discourse_post_event?) do |event|
+      return false if event.post.event_connection
+
+      # "super" doesn't work here so this is lifted directly from discourse-calendar
+      if defined?(@can_act_on_discourse_post_event)
+        return @can_act_on_discourse_post_event
+      end
+      @can_act_on_discourse_post_event = begin
+        return true if staff?
+        can_create_discourse_post_event? && Guardian.new(self).can_edit_post?(event.post)
+      rescue StandardError
+        false
+      end
+    end
   end
 end
 

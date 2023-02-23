@@ -2,7 +2,7 @@
   align-items: flex-start;
 
   &.event-add-no-text {
-    &>div:last-of-type {
+    & > div:last-of-type {
       margin-right: 0;
     }
   }
@@ -15,8 +15,8 @@
     }
   }
 
-  .add-event, .add-event + button {
-
+  .add-event,
+  .add-event + button {
   }
 }
 
@@ -31,7 +31,9 @@
   }
 }
 
-#reply-control .reply-area:not(.with-tags) .title-and-category.show-event-controls {
+#reply-control
+  .reply-area:not(.with-tags)
+  .title-and-category.show-event-controls {
   .category-input {
     margin-right: 5px;
   }

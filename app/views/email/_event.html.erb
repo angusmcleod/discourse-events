@@ -17,7 +17,7 @@
   <% if SiteSetting.events_rsvp %>
     <div itemprop="potentialAction" itemscope itemtype="http://schema.org/RsvpAction">
       <div itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-        <link itemprop="url" href="<%= Discourse.base_url %>/calendar-events/rsvp/add?topicId=<% topic_id %>&type=going"/>
+        <link itemprop="url" href="<%= Discourse.base_url %>/discourse-events/rsvp/add?topicId=<% topic_id %>&type=going"/>
       </div>
       <link itemprop="attendance" href="http://schema.org/RsvpAttendance/Yes"/>
       <meta itemprop="rsvpResponse" content="yes">
