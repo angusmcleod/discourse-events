@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.2.0
+# version: 0.2.1
 # authors: Angus McLeod
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -24,9 +24,8 @@ gem "icalendar-recurrence", "1.1.3"
 gem "date", "3.3.3"
 gem "time", "0.2.0"
 gem "stringio", "3.0.2"
-gem "open-uri", "0.1.0"
 gem "omnievent", "0.1.0.pre3", require_name: "omnievent"
-gem "omnievent-icalendar", "0.1.0.pre4", require_name: "omnievent/icalendar"
+gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
 gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
