@@ -131,7 +131,10 @@ export default {
         name: "calendar",
         displayName: "Calendar",
         customFilter: (category) => {
-          return siteSettings.events_calendar_enabled || (category && category.events_calendar_enabled);
+          return (
+            siteSettings.events_calendar_enabled ||
+            (category && category.events_calendar_enabled)
+          );
         },
         customHref: (category) => {
           if (category) {
@@ -146,7 +149,10 @@ export default {
         name: "agenda",
         displayName: "Agenda",
         customFilter: (category) => {
-          return siteSettings.events_agenda_enabled || (category && category.events_agenda_enabled);
+          return (
+            siteSettings.events_agenda_enabled ||
+            (category && category.events_agenda_enabled)
+          );
         },
         customHref: (category) => {
           if (category) {

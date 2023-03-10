@@ -7,6 +7,7 @@ import { ajax } from "discourse/lib/ajax";
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import { extractError } from "discourse/lib/ajax-error";
 import Controller from "@ember/controller";
+import { action } from "@ember/object";
 
 export default Controller.extend(ModalFunctionality, {
   filter: null,
@@ -74,11 +75,13 @@ export default Controller.extend(ModalFunctionality, {
     return userList;
   },
 
-  actions: {
-    setType(type) {
-      this.set("type", type);
-    },
+  @action
+  setType(type) {
+    event?.preventDefault();
+    this.set("type", type);
+  },
 
+  actions: {
     composePrivateMessage(user) {
       const controller = getOwner(this).lookup("controller:application");
       this.send("closeModal");

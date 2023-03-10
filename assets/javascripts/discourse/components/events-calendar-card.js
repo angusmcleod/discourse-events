@@ -3,6 +3,7 @@ import { cookAsync } from "discourse/lib/text";
 import { on } from "discourse-common/utils/decorators";
 import { bind, next, scheduleOnce } from "@ember/runloop";
 import Component from "@ember/component";
+import { action } from "@ember/object";
 
 export default Component.extend({
   classNames: "events-calendar-card",
@@ -77,18 +78,16 @@ export default Component.extend({
     this.close();
   },
 
+  @action
   close() {
+    event?.preventDefault();
     this.selectEvent();
   },
 
-  actions: {
-    goToTopic() {
-      const url = this.get("topic.url");
-      DiscourseURL.routeTo(url);
-    },
-
-    close() {
-      this.close();
-    },
+  @action
+  goToTopic() {
+    event?.preventDefault();
+    const url = this.get("topic.url");
+    DiscourseURL.routeTo(url);
   },
 });

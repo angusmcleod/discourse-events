@@ -1,4 +1,4 @@
-<button {{action "expand"}} class='dropdown-header btn btn-small btn-default'>
+<button {{action "expand"}} class='dropdown-header btn btn-small btn-default' type="button">
   {{d-icon 'far-calendar-plus'}}
   {{#unless site.mobileView}}
     {{i18n 'add_to_calendar.label'}}
@@ -7,7 +7,7 @@
 <div class="{{if expanded 'show'}} dropdown-menu chooser">
   <ul>
     {{#each calendarUris as |c|}}
-      <li><a href="{{c.uri}}" target="_blank">{{i18n (concat 'add_to_calendar.' c.label)}}</a></li>
+      <li><a href={{c.uri}} target="_blank" rel="noopener noreferrer">{{i18n (concat 'add_to_calendar.' c.label)}}</a></li>
     {{/each}}
   </ul>
 </div>

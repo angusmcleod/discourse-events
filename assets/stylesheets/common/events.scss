@@ -400,6 +400,8 @@ ul.events-calendar-events {
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;
+      display: block;
+      color: var(--primary);
 
       span {
         font-size: 0.9em;
@@ -486,14 +488,17 @@ ul.events-calendar-events {
     width: 100%;
     display: inline-block;
     cursor: pointer;
+    color: var(--primary);
   }
 
   .topic-excerpt {
-    padding-top: 8px;
+    margin-top: 6px;
     cursor: pointer;
     line-height: 1.4;
     width: 100%;
     word-wrap: break-word;
+    color: var(--primary);
+    display: inline-block;
 
     p {
       margin: 0;

@@ -6,5 +6,5 @@
 
 <div class="modal-footer">
   {{d-button action=(action "saveEvent") class="btn-primary" label="add_event.event_add"}}
-  <a class="clear" {{action (action "clear")}}>{{i18n 'add_event.event_clear'}}</a>
+  <a href class="clear" {{on "click" (fn this.clear)}}>{{i18n 'add_event.event_clear'}}</a>
 </div>

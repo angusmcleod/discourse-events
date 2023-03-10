@@ -1,8 +1,8 @@
 {{#d-modal-body class="event-rsvp-modal" title='event_rsvp.modal.title'}}
   <div class="header">
     <ul class="types nav nav-pills">
-      <li class='{{goingNavClass}}'>
-        <a {{action 'setType' 'going'}}>
+      <li class={{goingNavClass}}>
+        <a href {{on "click" (fn this.setType 'going')}}>
           {{i18n 'event_rsvp.going.label'}}
         </a>
       </li>

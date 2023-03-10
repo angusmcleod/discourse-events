@@ -1,11 +1,11 @@
-<div class="container" style="{{containerStyle}}">
+<div class="container" style={{containerStyle}}>
   <div class="header">
     <div class='date'>
       <label>{{date}}</label>
     </div>
 
     {{#if expanded}}
-      <div class="close" {{action setExpandedDate null}}>{{d-icon 'times'}}</div>
+      <a href class="close" {{on "click" (fn this.setExpandedDate null)}}>{{d-icon 'times'}}</a>
     {{/if}}
   </div>
 

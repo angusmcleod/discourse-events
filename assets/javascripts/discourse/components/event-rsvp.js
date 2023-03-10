@@ -5,6 +5,7 @@ import { ajax } from "discourse/lib/ajax";
 import Component from "@ember/component";
 import { equal, gt, notEmpty } from "@ember/object/computed";
 import I18n from "I18n";
+import { action } from "@ember/object";
 
 export default Component.extend({
   classNames: "event-rsvp",
@@ -62,10 +63,10 @@ export default Component.extend({
     return false;
   },
 
-  updateTopic(userName, action, type) {
+  updateTopic(userName, _action, type) {
     let existing = this.get(`topic.event.${type}`);
     let list = existing ? existing : [];
-    let userGoing = action === "add";
+    let userGoing = _action === "add";
 
     if (userGoing) {
       list.push(userName);
@@ -81,10 +82,10 @@ export default Component.extend({
     this.setProperties(props);
   },
 
-  save(user, action, type) {
+  save(user, _action, type) {
     this.set(`${type}Saving`, true);
 
-    ajax(`/discourse-events/rsvp/${action}`, {
+    ajax(`/discourse-events/rsvp/${_action}`, {
       type: "POST",
       data: {
         topic_id: this.get("topic.id"),
@@ -94,7 +95,7 @@ export default Component.extend({
     })
       .then((result) => {
         if (result.success) {
-          this.updateTopic(user.username, action, type);
+          this.updateTopic(user.username, _action, type);
         }
       })
       .catch(popupAjaxError)
@@ -103,22 +104,24 @@ export default Component.extend({
       });
   },
 
+  @action
+  openModal() {
+    event?.preventDefault();
+    showModal("event-rsvp", {
+      model: {
+        topic: this.get("topic"),
+      },
+    });
+  },
+
   actions: {
     going() {
       const currentUser = this.get("currentUser");
       const userGoing = this.get("userGoing");
 
-      let action = userGoing ? "remove" : "add";
+      let _action = userGoing ? "remove" : "add";
 
-      this.save(currentUser, action, "going");
-    },
-
-    openModal() {
-      showModal("event-rsvp", {
-        model: {
-          topic: this.get("topic"),
-        },
-      });
+      this.save(currentUser, _action, "going");
     },
   },
 });

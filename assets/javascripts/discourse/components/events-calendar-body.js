@@ -37,6 +37,7 @@ export default Component.extend({
 
   actions: {
     setExpandedDate(date) {
+      event?.preventDefault();
       const month = this.get("currentMonth");
       this.set("expandedDate", month + "." + date);
     },

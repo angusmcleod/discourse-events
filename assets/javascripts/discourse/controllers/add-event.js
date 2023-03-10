@@ -1,15 +1,18 @@
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import Controller from "@ember/controller";
 import I18n from "I18n";
+import { action } from "@ember/object";
 
 export default Controller.extend(ModalFunctionality, {
   title: "add_event.modal_title",
 
-  actions: {
-    clear() {
-      this.set("bufferedEvent", null);
-    },
+  @action
+  clear() {
+    event?.preventDefault();
+    this.set("bufferedEvent", null);
+  },
 
+  actions: {
     saveEvent() {
       if (this.valid) {
         this.get("model.update")(this.bufferedEvent);
