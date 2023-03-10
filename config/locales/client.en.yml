@@ -21,7 +21,7 @@ en:
       error: "Event end should be same as or after event start"
     category:
       events_setting_heading: "Events"
-      enable_events: "Allow events to be added to topics in this category (overrides site setting)."
+      enable_events: "Allow events to be added to topics in this category."
       enable_events_agenda: "Show an agenda topic list in this category (overrides site setting)."
       enable_events_calendar: "Show a calendar topic list in this category (overrides site setting)."
       events_min_trust_to_create: "Min trust to create event in this category (overrides site setting)."
