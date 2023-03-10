@@ -1,7 +1,6 @@
 en:
   site_settings:
     events_enabled: "Enable events plugin."
-    events_all_categories: "Allow events to be added to topics in all categories."
     events_agenda_enabled: "Show an agenda topic list in all categories."
     events_calendar_enabled: "Show a calendar topic list in all categories."
     events_add_to_calendar: "Show an Add to Calendar button in event topics."

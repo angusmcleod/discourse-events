@@ -131,10 +131,7 @@ export default {
         name: "calendar",
         displayName: "Calendar",
         customFilter: (category) => {
-          return (
-            category &&
-            (siteSettings.events_all_categories || category.events_enabled)
-          );
+          return category && category.events_enabled;
         },
         customHref: (category) => {
           if (category) {
