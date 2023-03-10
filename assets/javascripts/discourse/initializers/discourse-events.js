@@ -131,13 +131,28 @@ export default {
         name: "calendar",
         displayName: "Calendar",
         customFilter: (category) => {
-          return category && category.events_enabled;
+          return siteSettings.events_calendar_enabled || (category && category.events_calendar_enabled);
         },
         customHref: (category) => {
           if (category) {
             return `${category.url}/l/calendar`;
           } else {
-            return "/l/calendar";
+            return "/calendar";
+          }
+        },
+      });
+
+      api.addNavigationBarItem({
+        name: "agenda",
+        displayName: "Agenda",
+        customFilter: (category) => {
+          return siteSettings.events_agenda_enabled || (category && category.events_agenda_enabled);
+        },
+        customHref: (category) => {
+          if (category) {
+            return `${category.url}/l/agenda`;
+          } else {
+            return "/agenda";
           }
         },
       });
