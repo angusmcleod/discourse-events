@@ -14,7 +14,6 @@ register_asset 'stylesheets/desktop/events.scss', :desktop
 register_asset 'stylesheets/mobile/events.scss', :mobile
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
-register_asset 'lib/moment-timezone-with-data-2012-2022.js'
 
 gem "uuidtools", "2.2.0"
 gem "iso-639", "0.3.5"
