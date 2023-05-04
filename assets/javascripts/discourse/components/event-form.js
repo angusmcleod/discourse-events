@@ -103,11 +103,20 @@ export default Component.extend({
 
         if (!this.allDay) {
           if (!this.endTime) {
-            this.set("endTime", this.startTime);
+            let start = moment(this.startDate + " " + this.startTime);
+            this.set(
+              "endTime",
+              moment(start).add(1, "hours").format(formTimeFormat)
+            );
           }
 
           this.setupTimePicker("end");
         }
+      } else {
+        this.setProperties({
+          endDate: undefined,
+          endTime: undefined,
+        });
       }
     },
 

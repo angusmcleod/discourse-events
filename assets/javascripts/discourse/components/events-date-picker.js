@@ -1,5 +1,5 @@
 import DatePicker from "discourse/components/date-picker";
-import { on } from "discourse-common/utils/decorators";
+import { observes, on } from "discourse-common/utils/decorators";
 import loadScript from "discourse/lib/load-script";
 import { firstDayOfWeek } from "../lib/date-utilities";
 import { next } from "@ember/runloop";
@@ -8,6 +8,13 @@ import { deepMerge } from "discourse-common/lib/object";
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",
+
+  @observes("value")
+  setDate() {
+    if (this._picker && this.value) {
+      this._picker.setDate(this.value);
+    }
+  },
 
   @on("didInsertElement")
   _loadDatePicker() {
