@@ -25,6 +25,15 @@ export default Component.extend({
     this.setProperties(props);
     this.setupTimePicker("start");
     this.setupTimePicker("end");
+
+    if (
+      this.siteSettings.events_add_default_end_time &&
+      !this.event &&
+      !this.endDate &&
+      !this.endTime
+    ) {
+      this.send("toggleEndEnabled", true);
+    }
   },
 
   eventValid(event) {
