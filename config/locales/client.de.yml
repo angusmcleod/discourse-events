@@ -15,22 +15,26 @@ de:
       no_timezone: "Zeitzone festlegen"
       rsvp_enabled: "Gästeliste aktivieren"
       rsvp_enabled_label: "Gästeliste"
+      going: "Gäste"
       going_max: "Maximale Anzahl an Gästen"
       going_max_label: "{{goingMax}} Gäste"
+      error: "Das Ende der Veranstaltung sollte mit dem Beginn der Veranstaltung übereinstimmen oder danach liegen"
     category:
-      enable_events: "Erlaube, Events zu Themen dieser Kategorie hinzuzufügen (überschreibt site setting)."
+      events_setting_heading: "Veranstaltungen"
+      enable_events: "Erlaube, Veranstaltungen zu Themen dieser Kategorie hinzuzufügen (überschreibt site setting)."
       enable_events_agenda: "Agenda Liste in dieser Kategorie anzeigen (überschreibt site setting)."
       enable_events_calendar: "Kalender für diese Kategorie anzeigen (überschreibt site setting)."
-      events_min_trust_to_create: "Minimale Vertrauensstufe, um Events in dieser Kategorie zu erstellen (überschreibt site setting)."
+      events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen in dieser Kategorie zu erstellen (überschreibt site setting)."
       events_event_label_no_text: "Text auf Event hinzufügen Button ausblenden (überschreibt site setting)."
+      require_event: "Alle Themen in dieser Kategorie müssen ein Ereignis haben."
+    composer:
+      error:
+        event_missing: "Themen in dieser Kategorie müssen über eine Veranstaltung verfügen."
     event_list:
       title: '{{categoryName}} Veranstaltungen'
       about: 'Veranstaltungen in deiner Umgebung'
       no_results: "Keine anstehenden Veranstaltungen"
       create: "Veranstaltung erstellen"
-    composer:
-      tip:
-        add_event: "Datum, Uhrzeit und Ort zu Ihrem Event hinzufügen"
     filters:
       agenda:
         title: "Agenda"
@@ -45,7 +49,7 @@ de:
       default_details: "Event Details: {{url}}"
     topics:
       none:
-        agenda: "Es gibt keine Agenda-Themen."
+        agenda: "Es existieren keine Agenda-Themen."
       bottom:
         agenda: "Keine weiteren Agenda-Themen."
     events_calendar:
@@ -60,6 +64,17 @@ de:
       events_calendar:
         label: "Kalender"
         first_day_week: "Erster Wochentag"
+
+    webcal_preferences:
+      webcal_keys: "Webcal-Schlüssel"
+      heading: "Webcal API-Schlüssel"
+      api_key: "API-Schlüssel"
+      client_id: "Client ID"
+      generate: "Generieren"
+      notice: "Der Schlüssel und die Kundennummer sind nur einmal sichtbar. Bitte lade sie an einem sicheren Ort, bevor du diese Seite verlässt."
+      calendar_notice: "Erstelle Webcal API-Schlüssel, um den ical-Feed zu abonnieren."
+      calendar_usage: "Dokumentation über die Verwendung von Webcal-API-Schlüsseln."
+
     event_rsvp:
       modal:
         title: "Gäste"
@@ -70,5 +85,166 @@ de:
         one_spot_left: "1 Platz frei"
         x_spots_left: "{{spotsLeft}} Plätze frei"
 
+    post:
+      event:
+        manage:
+          label: Veranstaltung verwalten
+          title: Verwalte die Veranstaltung beim Veranstaltungsanbieter.
+
     site_settings:
       events_timezone_default_placeholder: "Zeitzone festlegen"
+
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_events: "Veranstaltungen"
+
+      events:
+        title: Veranstaltungen
+        actions: Aktionen
+        beta_notice: "Diese Funktionen befinden sich derzeit in der Beta-Phase. In Kürze werden wir Abo-Pläne für das Veranstaltungs-Plugin einführen, die für einige dieser Funktionen gelten werden. <a href='https://pavilion.tech/products/discourse-events-plugin'>Finde mehr heraus</a>."
+        source:
+          title: Sources
+          none: Keine Quellen.
+          add:
+            label: Hinzufügen
+            title: Quelle hinzufügen
+          remove:
+            label: Entfernen
+            title: Quelle entfernen
+            confirm: Bist du sicher, dass du "%{source_name}" entfernen möchtest? Wenn du eine Quelle entfernst, werden alle zugehörigen Veranstaltungen und Verbindungen gelöscht.
+          name:
+            label: Name
+            placeholder: unterstrichen
+          provider:
+            label: Anbieter
+            select: Wähle einen Anbieter...
+          save:
+            label: Speichern
+            title: Quelle speichern
+          source_options:
+            label: Optionen
+            none: Keine Optionen
+          date_range: Datumsbereich
+          import:
+            label: Importieren
+            title: Quelle importieren
+        provider:
+          title: Anbieter
+          none: Keine Anbieter.
+          add:
+            label: Hinzufügen
+            title: Anbieter hinzufügen
+          status: Status
+          ready: Bereit
+          not_ready: Nicht bereit
+          name:
+            label: Name
+            placeholder: unterstrichen
+          url:
+            label: URL
+            placeholder: admin url
+          provider_type:
+            label: Typ
+            select: Wähle einen Typ...
+          method: Methode
+          credentials: Anmeldedaten
+          no_credentials: Keine Anmeldedaten
+          username: Benutzername
+          password: Passwort
+          token: Token
+          client_id: Client ID
+          client_secret: Client Secret
+          save:
+            label: Speichern
+            title: Provider speichern
+          remove:
+            label: Entfernen
+            title: Anbieter entfernen
+            confirm: Bist du sicher, dass du '%{provider_name}' entfernen willst? Wenn du einen Anbieter entfernst, werden auch die zugehörigen Quellen entfernt.
+          authenticate:
+            label: Authentifizieren
+            title: Anbieter authentifizieren
+        connection:
+          title: Verbindungen
+          none: Keine Verbindungen.
+          add:
+            label: Hinzufügen
+            title: Verbindung hinzufügen
+          remove:
+            label: Entfernen
+            title: Verbindung entfernen
+            confirm: Bist du sicher, dass du diese Verbindung entfernen willst?
+          save:
+            label: Speichern
+            title: Verbindung speichern
+          user: Benutzer
+          category: Kategorie
+          source: Quelle
+          client:
+            label: Client
+            select: Wählen...
+          source:
+            label: Quelle
+            select: Wählen...
+          sync:
+            label: Synchronisieren
+            title: Verbindung synchronisieren
+          filters:
+            title: Verbindungsfilter
+            label: Filter
+            add:
+              label: Hinzufügen
+              title: Einen Filter hinzufügen
+            done:
+              label: Fertig
+              title: Filter schließen
+          filter:
+            query_column:
+              select: Wähle ein Attribut aus...
+            query_value: Einen Wert eingeben
+            remove:
+              title: Filter entfernen
+
+        event:
+          title: Veranstaltungen
+          select_all: Alle auswählen
+          show_select: Veranstaltung anzeigen auswählen
+          start_time: Startzeit
+          name: Name
+          source: Quelle
+          topics: Themen
+          none: Keine Veranstaltungen.
+          delete:
+            title: Veranstaltungen und Themen löschen
+            label: Löschen
+            events_only: Nur Veranstaltungen löschen
+            events_and_topics: Veranstaltungen und zugehörige Themen löschen
+            topics_only: Nur Themen löschen
+            events_only_btn: Veranstaltungen löschen
+            events_and_topics_btn: Veranstaltungen und Themen löschen
+            topics_only_btn: Themen löschen
+        log:
+          title: Logs
+          created_at: Erstellt am
+          level: Level
+          context: Context
+          message: Nachricht
+          none: Keine Protokolle.
+        message:
+          documentation: "Schau dir die Dokumentation an"
+          connection:
+            info: "Verbindungen sind der Ort, an dem du deine Veranstaltungen zeigst"
+            sync_started: "Sync started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            sync_failed_to_start: "Die Synchronisierung konnte nicht gestartet werden."
+          source:
+            info: "Mit den Quellen importierst du Veranstaltungen von einem Anbieter"
+            import_started: "Der Import hat begonnen. Überprüfe das Ergebnis in den <a href='/admin/events/log'>Logs</a>."
+            import_failed_to_start: "Der Import konnte nicht gestartet werden."
+          event:
+            info: "Die Veranstaltungen, die du importiert hast"
+          provider:
+            info: "Die Anbieter sind die Dienstleister für deine Veranstaltungen"
+          log:
+            info: "Die Protokolle deiner Veranstaltungen"
