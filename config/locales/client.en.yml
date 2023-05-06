@@ -181,12 +181,8 @@ en:
             title: Save Connection
           user: User
           category: Category
-          source: Source
           client:
             label: Client
-            select: Select...
-          source:
-            label: Source
             select: Select...
           sync:
             label: Sync

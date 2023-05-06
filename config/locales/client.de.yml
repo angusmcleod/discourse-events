@@ -181,12 +181,8 @@ de:
             title: Verbindung speichern
           user: Benutzer
           category: Kategorie
-          source: Quelle
           client:
             label: Client
-            select: Wählen...
-          source:
-            label: Quelle
             select: Wählen...
           sync:
             label: Synchronisieren
