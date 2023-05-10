@@ -108,6 +108,7 @@ after_initialize do
   register_category_custom_field_type('events_event_label_no_text', :boolean)
 
   [
+    "events_enabled",
     "events_event_label_no_text",
     "events_agenda_enabled",
     "events_calendar_enabled",
@@ -115,15 +116,9 @@ after_initialize do
     "events_required"
   ].each do |key|
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
-    add_to_class(:category, key.to_sym) do
-      self.custom_fields[key] || (SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false)
-    end
+    add_to_class(:category, key.to_sym) { self.custom_fields[key] || false }
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
-
-  Site.preloaded_category_custom_fields << "events_enabled" if Site.respond_to? :preloaded_category_custom_fields
-  add_to_class(:category, :events_enabled) { self.custom_fields["events_enabled"] }
-  add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
 
   SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
 
