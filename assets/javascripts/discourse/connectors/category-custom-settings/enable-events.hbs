@@ -1,7 +1,7 @@
 <h3>{{i18n 'category.events_setting_heading'}}</h3>
 <section class='field'>
   <label>
-    {{input type="checkbox" checked=eventsEnabled}}
+    {{input type="checkbox" checked=category.custom_fields.events_enabled}}
     {{i18n 'category.enable_events'}}
   </label>
 </section>
@@ -15,28 +15,28 @@
 
 <section class='field'>
   <label>
-    {{input type="checkbox" checked=eventsAgendaEnabled}}
+    {{input type="checkbox" checked=category.custom_fields.events_agenda_enabled}}
     {{i18n 'category.enable_events_agenda'}}
   </label>
 </section>
 
 <section class='field'>
   <label>
-    {{input type="checkbox" checked=eventsCalendarEnabled}}
+    {{input type="checkbox" checked=category.custom_fields.events_calendar_enabled}}
     {{i18n 'category.enable_events_calendar'}}
   </label>
 </section>
 
 <section class='field'>
   <label>
-    {{input type="checkbox" checked=eventsEventLabelNoText}}
+    {{input type="checkbox" checked=category.custom_fields.events_event_label_no_text}}
     {{i18n 'category.events_event_label_no_text'}}
   </label>
 </section>
 
 <section class='field'>
   <label>
-    {{input type="checkbox" checked=eventsRequired}}
+    {{input type="checkbox" checked=category.custom_fields.events_required}}
     {{i18n 'category.require_event'}}
   </label>
 </section>
