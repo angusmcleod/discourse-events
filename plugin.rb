@@ -116,7 +116,7 @@ after_initialize do
     "events_required"
   ].each do |key|
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
-    add_to_class(:category, key.to_sym) { self.custom_fields[key] || false }
+    add_to_class(:category, key.to_sym) { self.custom_fields[key] }
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
 
@@ -240,7 +240,7 @@ after_initialize do
     category.events_enabled &&
     can_create_topic_on_category?(category) &&
     (is_staff? ||
-    (user && user.trust_level >= category.events_min_trust_to_create))
+    (user && user.trust_level >= category.events_min_trust_to_create.to_i))
   end
 
   add_to_class(:guardian, :can_edit_event?) do |category|
