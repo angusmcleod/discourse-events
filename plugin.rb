@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.2.4
+# version: 0.2.5
 # authors: Angus McLeod
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -108,6 +108,7 @@ after_initialize do
   register_category_custom_field_type('events_event_label_no_text', :boolean)
 
   [
+    "events_enabled",
     "events_event_label_no_text",
     "events_agenda_enabled",
     "events_calendar_enabled",
@@ -115,15 +116,9 @@ after_initialize do
     "events_required"
   ].each do |key|
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
-    add_to_class(:category, key.to_sym) do
-      self.custom_fields[key] || (SiteSetting.respond_to?(key) ? SiteSetting.send(key) : false)
-    end
+    add_to_class(:category, key.to_sym) { self.custom_fields[key] }
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
-
-  Site.preloaded_category_custom_fields << "events_enabled" if Site.respond_to? :preloaded_category_custom_fields
-  add_to_class(:category, :events_enabled) { self.custom_fields["events_enabled"] }
-  add_to_serializer(:basic_category, :events_enabled) { object.events_enabled }
 
   SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
 
@@ -245,7 +240,7 @@ after_initialize do
     category.events_enabled &&
     can_create_topic_on_category?(category) &&
     (is_staff? ||
-    (user && user.trust_level >= category.events_min_trust_to_create))
+    (user && user.trust_level >= category.events_min_trust_to_create.to_i))
   end
 
   add_to_class(:guardian, :can_edit_event?) do |category|
