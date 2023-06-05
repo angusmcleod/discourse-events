@@ -233,6 +233,10 @@ $pavilion_primary: #3c1c8c;
       }
     }
   }
+
+  th.directory-table__column-header {
+    display: table-cell !important;
+  }
 }
 
 .events-event-table {

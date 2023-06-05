@@ -1,9 +1,9 @@
-<table>
+<table class='grid'>
   <thead>
     <tr>
-      <TableHeaderToggle @field="created_at" @labelKey="admin.events.log.created_at" @order={{order}} @asc={{asc}} @automatic={{true}} />
-      <TableHeaderToggle @field="level" @labelKey="admin.events.log.level" @order={{order}} @asc={{asc}} @automatic={{true}} />
-      <TableHeaderToggle @field="context" @labelKey="admin.events.log.context" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="created_at" @labelKey="admin.events.log.created_at" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="level" @labelKey="admin.events.log.level" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="context" @labelKey="admin.events.log.context" @order={{order}} @asc={{asc}} @automatic={{true}} />
       <th>{{I18n "admin.events.log.message"}}</th>
     </tr>
   </thead>
