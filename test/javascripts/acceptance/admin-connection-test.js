@@ -119,11 +119,10 @@ acceptance("Events | Connection", function (needs) {
       "it disables the save button"
     );
 
-    await selectKit("tr[data-connection-id=new] .connection-user").expand();
+    const userSelect = selectKit("tr[data-connection-id=new] .connection-user");
+    await userSelect.expand();
     await fillIn(".connection-user input.filter-input", "angus");
-    await selectKit(
-      "tr[data-connection-id=new] .connection-user"
-    ).selectRowByValue("angus");
+    await userSelect.selectRowByValue("angus");
 
     await selectKit("tr[data-connection-id=new] .connection-category").expand();
     await selectKit(
