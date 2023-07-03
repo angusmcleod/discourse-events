@@ -9,16 +9,33 @@ de:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format für Datum/Uhrzeit."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Kurzformat für Datum/Uhrzeit in Themenlisten."
     events_event_label_short_only_start: "Zeige nur den Beginn im Kurzformat (in Themenlisten)."
+    events_event_label_short_after_title: "Füge die Bezeichnung der Veranstaltung nach dem Titel des Themas in die Themenliste ein."
+    events_event_timepicker_format: "<a href='https://github.com/jonthornton/jquery-timepicker#options'>Timepicker</a> Format der Zeit im Timepicker."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Zeit-Format im Kalender."
     events_remove_past_from_map: "Vergangene Veranstaltungen in der Karte im <a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a> ausblenden."
     events_remove_past_from_agenda: "Vergangene Veranstaltungen in Agendas ausblenden."
+    events_remove_past_from_calendar: "Vergangene Veranstaltungen aus den Kalendern entfernen."
     events_agenda_filter_closed: "Geschlossene Themen in Agendas ausblenden."
+    events_calendar_filter_closed: "Entferne geschlossene Themen aus Kalendern."
     events_timezone_default: "Standard Zeitzone für Veranstaltungen."
+    events_timezone_display: "Zeitzone, die für die Anzeige der Zeiten von Veranstaltungen verwendet wird."
+    events_timezone_display_default: "Standard-Zeitzone."
+    events_timezone_display_event: "Zeitzone der Veranstaltung, falls festgelegt."
+    events_timezone_display_different: "Zeitzone der Veranstaltung, falls festgelegt und abweichend von der Standardzeitzone."
+    events_timezone_include_in_topic: "Füge die Zeitzone zu den Beschriftungen der Veranstaltungen im Thema hinzu."
+    events_timezone_include_in_topic_list: "Füge die Zeitzone zu den Etiketten der Veranstaltungen in der Themenliste hinzu."
     events_timezone_include_in_email: "Veranstaltungs-Zeitzone in Emails anzeigen."
+    events_timezone_format: "<a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format für Zeitzonen zu den Etiketten von Veranstaltungen hinzugefügt. Überschreibt die Einstellung des Rails-Formats."
+    events_timezone_rails_format: "Verwende das <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails-Format</a> für Zeitzonen, die zu den Etiketten der Veranstaltung hinzugefügt werden."
     events_hamburger_menu_calendar_link: "Im Hamburger Menü Link zum Kalender (alle Kategorien) hinzufügen."
     events_hamburger_menu_agenda_link: "Im Hamburger Menü Link zur Agenda (alle Kategorien) hinzufügen."
     events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen zu erstellen."
     events_rsvp: "Gästeliste aktivieren"
+    events_update_automatically: "Importiere automatisch alle Quellen und synchronisiere alle Verbindungen."
+    events_update_automatically_period_mins: "Der Zeitraum in Minuten zwischen den automatisch aktualisierten Veranstaltungen. HINWEIS: erfordert einen Neustart."
+    events_split_series_into_different_topics: "Für jede Veranstaltung in einer Reihe wird ein eigenes Thema erstellt."
+    events_allow_moderator_management: "Erlaube Moderatoren, Veranstaltungen zu verwalten."
+    events_add_default_end_time: "Füge eine Standardendzeit für Veranstaltungen hinzu."
 
   rss_description:
     events: "Veranstaltungen"
@@ -34,3 +51,11 @@ de:
     errors:
       not_enabled: "Gästeliste nicht aktiviert"
       going_max: "Die maximale Anzahl an Gästen wurde erreicht."
+
+  user_api_key:
+    scopes:
+      calendar_events: "Veranstaltungen Plugin webcal"
+  log:
+    import_finished: "Der Import von %{source_name} ist abgeschlossen. Hat %{events_count} Veranstaltungen abgerufen, %{created_count} Veranstaltungen erstellt und %{updated_count} Veranstaltungen aktualisiert."
+    sync_finished: "Die Synchronisierung von %{source_name} mit %{category_name} wurde abgeschlossen. Erstellte %{created_count} Themen und aktualisierte %{updated_count} Themen für das %{client_name} Plugin."
+    sync_client_not_ready: "Synchronisierung von %{source_name} mit %{category_name} fehlgeschlagen. Das Plugin %{client_name} ist nicht bereit."
