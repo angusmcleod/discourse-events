@@ -1,9 +1,9 @@
-<table>
+<table class='grid'>
   <thead>
     <tr>
-      <TableHeaderToggle @field="start_time" @labelKey="admin.events.event.start_time" @order={{order}} @asc={{asc}} @automatic={{true}} />
-      <TableHeaderToggle @field="name" @labelKey="admin.events.event.name" @order={{order}} @asc={{asc}} @automatic={{true}} />
-      <TableHeaderToggle @field="source_id" @labelKey="admin.events.event.source" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="start_time" @labelKey="admin.events.event.start_time" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="name" @labelKey="admin.events.event.name" @order={{order}} @asc={{asc}} @automatic={{true}} />
+      <TableHeaderToggle @tagName="th" @field="source_id" @labelKey="admin.events.event.source" @order={{order}} @asc={{asc}} @automatic={{true}} />
       <th>{{i18n "admin.events.event.topics"}}</th>
       {{#if showSelect}}
         <th class="event-actions">
