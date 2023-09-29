@@ -5,7 +5,7 @@ import {
   query,
 } from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
-import { visit, settled } from "@ember/test-helpers";
+import { settled, visit } from "@ember/test-helpers";
 import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
