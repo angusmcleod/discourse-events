@@ -1,5 +1,5 @@
 import DiscourseURL from "discourse/lib/url";
-import { cookAsync } from "discourse/lib/text";
+import { cook } from "discourse/lib/text";
 import { on } from "discourse-common/utils/decorators";
 import { bind, next, scheduleOnce } from "@ember/runloop";
 import Component from "@ember/component";
@@ -13,8 +13,8 @@ export default Component.extend({
   setup() {
     const excerpt = this.get("topic.excerpt");
     const title = this.get("topic.title");
-    cookAsync(excerpt).then((cooked) => this.set("cookedExcerpt", cooked));
-    cookAsync(title).then((cooked) => this.set("cookedTitle", cooked));
+    cook(excerpt).then((cooked) => this.set("cookedExcerpt", cooked));
+    cook(title).then((cooked) => this.set("cookedTitle", cooked));
   },
 
   didInsertElement() {
