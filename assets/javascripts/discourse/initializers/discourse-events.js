@@ -271,42 +271,35 @@ export default {
           setupController(controller, model) {
             const start = this.get("start");
             const end = this.get("end");
+            let initialDateRange;
 
             if (start || end) {
-              let initialDateRange = {};
+              initialDateRange = {};
               if (start) {
                 initialDateRange["start"] = start;
               }
               if (end) {
                 initialDateRange["end"] = end;
               }
-              this.controllerFor("discovery/topics").setProperties({
-                initialDateRange,
-              });
             }
 
-            this._super(controller, model);
-          },
-
-          renderTemplate(controller, model) {
             // respect discourse-layouts settings
             const global = siteSettings.layouts_list_navigation_disabled_global;
             const catGlobal =
               model.category &&
               model.category.get("layouts_list_navigation_disabled_global");
-            if (!global && !catGlobal) {
-              if (this.routeName.indexOf("Category") > -1) {
-                this.render("navigation/category", {
-                  outlet: "navigation-bar",
-                });
-              } else {
-                this.render("navigation/default", { outlet: "navigation-bar" });
-              }
-            }
-            this.render("discovery/calendar", {
-              outlet: "list-container",
-              controller: "discovery/topics",
+            const showNavigation = !global && !catGlobal;
+
+            controller.setProperties({
+              initialDateRange,
+              showNavigation,
             });
+
+            this._super(controller, model);
+          },
+
+          renderTemplate() {
+            this.render("discovery/calendar");
           },
         });
       });

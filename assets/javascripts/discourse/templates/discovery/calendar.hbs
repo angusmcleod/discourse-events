@@ -1,3 +1,20 @@
+{{#if showNavigation}}
+  <Discovery::Navigation
+    @category={{this.navigationArgs.category}}
+    @tag={{this.navigationArgs.tag}}
+    @additionalTags={{this.additionalTags}}
+    @filterType={{this.navigationArgs.filterType}}
+    @noSubcategories={{this.navigationArgs.noSubcategories}}
+    @canBulkSelect={{this.canBulkSelect}}
+    @bulkSelectHelper={{this.bulkSelectHelper}}
+    @createTopic={{this.createTopic}}
+    @createTopicDisabled={{this.createTopicDisabled}}
+    @canCreateTopicOnTag={{this.canCreateTopicOnTag}}
+    @toggleTagInfo={{this.toggleTagInfo}}
+    @tagNotification={{this.tagNotification}}
+  />
+{{/if}}
+
 {{events-calendar
   topics=model.topics
   category=category
