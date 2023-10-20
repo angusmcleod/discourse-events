@@ -4,6 +4,7 @@ require 'rails_helper'
 
 describe DiscourseEvents::DiscourseEventsSyncer do
   subject { DiscourseEvents::DiscourseEventsSyncer }
+
   let(:client) { "discourse_events" }
 
   fab!(:source) { Fabricate(:discourse_events_source) }
