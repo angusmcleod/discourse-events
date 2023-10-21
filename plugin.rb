@@ -198,28 +198,28 @@ after_initialize do
     event
   end
 
-  add_to_serializer(:topic_view, :event, false) do
+  add_to_serializer(
+    :topic_view,
+    :event,
+    include_condition: -> { object.topic.has_event? }
+  ) do
     object.topic.event
   end
 
-  add_to_serializer(:topic_view, :include_event?, false) do
-    object.topic.has_event?
-  end
-
-  add_to_serializer(:topic_list_item, :event, false) do
+  add_to_serializer(
+    :topic_list_item,
+    :event,
+    include_condition: -> { object.has_event? }
+  ) do
     object.event
   end
 
-  add_to_serializer(:topic_list_item, :include_event?, false) do
-    object.has_event?
-  end
-
-  add_to_serializer(:topic_list_item, :event_going_total) do
+  add_to_serializer(
+    :topic_list_item,
+    :event_going_total,
+    include_condition: -> { object.has_event? }
+  ) do
     object.event_going ? object.event_going.length : 0
-  end
-
-  add_to_serializer(:topic_list_item, :include_event_going_total?) do
-    include_event?
   end
 
   register_user_custom_field_type('calendar_first_day_week', :integer)
@@ -390,11 +390,12 @@ after_initialize do
   end
 
   # The discourse-calendar plugin uses "event" on the post model
-  add_to_serializer(:post, :connected_event) do
+  add_to_serializer(
+    :post,
+    :connected_event,
+    include_condition: -> { SiteSetting.events_enabled && object.event_connection.present? }
+  ) do
     DiscourseEvents::PostEventSerializer.new(object.event_connection.event, scope: scope, root: false).as_json
-  end
-  add_to_serializer(:post, :include_connected_event?) do
-    SiteSetting.events_enabled && object.event_connection.present?
   end
 
   add_to_class(:guardian, :can_manage_events?) do

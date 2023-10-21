@@ -8,3 +8,6 @@ AllCops:
   Exclude:
     - 'gems/**/*'
     - 'vendor/**/*'
+
+RSpec/NamedSubject:
+  Enabled: false
