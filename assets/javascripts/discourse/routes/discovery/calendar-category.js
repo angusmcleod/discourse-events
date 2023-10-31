@@ -18,7 +18,7 @@ export default class DiscoveryCalendarRoute extends buildCategoryRoute({ filter:
       this.setProperties({ start, end });
     }
 
-    this._super(transition);
+    super.beforeModel(transition);
   }
 
   setupController(controller, model) {
