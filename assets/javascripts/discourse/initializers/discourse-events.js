@@ -6,7 +6,6 @@ import {
 } from "discourse-common/utils/decorators";
 import DiscourseURL from "discourse/lib/url";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { calendarRange } from "../lib/date-utilities";
 import { CREATE_TOPIC } from "discourse/models/composer";
 import { bind, scheduleOnce } from "@ember/runloop";
 import EmberObject from "@ember/object";
@@ -242,66 +241,6 @@ export default {
 
           return views;
         },
-      });
-
-      const calendarRoutes = [
-        `calendar`,
-        `calendarCategory`,
-        `calendarCategoryNone`,
-      ];
-
-      calendarRoutes.forEach((route) => {
-        api.modifyClass(`route:discovery.${route}`, {
-          pluginId: "events",
-
-          beforeModel(transition) {
-            const routeName = this.routeName;
-            const queryParams = this.paramsFor(routeName);
-
-            if (!queryParams.start || !queryParams.end) {
-              const month = moment().month();
-              const year = moment().year();
-              const { start, end } = calendarRange(month, year);
-              this.setProperties({ start, end });
-            }
-
-            this._super(transition);
-          },
-
-          setupController(controller, model) {
-            const start = this.get("start");
-            const end = this.get("end");
-            let initialDateRange;
-
-            if (start || end) {
-              initialDateRange = {};
-              if (start) {
-                initialDateRange["start"] = start;
-              }
-              if (end) {
-                initialDateRange["end"] = end;
-              }
-            }
-
-            // respect discourse-layouts settings
-            const global = siteSettings.layouts_list_navigation_disabled_global;
-            const catGlobal =
-              model.category &&
-              model.category.get("layouts_list_navigation_disabled_global");
-            const showNavigation = !global && !catGlobal;
-
-            controller.setProperties({
-              initialDateRange,
-              showNavigation,
-            });
-
-            this._super(controller, model);
-          },
-
-          renderTemplate() {
-            this.render("discovery/calendar");
-          },
-        });
       });
 
       const categoryRoutes = ["category", "categoryNone"];
