@@ -2,7 +2,7 @@ import buildCategoryRoute from "discourse/routes/build-category-route";
 import { calendarRange } from "../../lib/date-utilities";
 import { inject as service } from "@ember/service";
 
-export default class DiscoveryCalendarRoute extends buildCategoryRoute({ filter: "default" }) {
+export default class DiscoveryCalendarCategoryRoute extends buildCategoryRoute({ filter: "calendar" }) {
   @service siteSettings;
 
   templateName = 'discovery/calendar'
