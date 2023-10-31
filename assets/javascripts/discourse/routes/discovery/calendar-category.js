@@ -1,9 +1,6 @@
 import buildCategoryRoute from "discourse/routes/build-category-route";
-import { popupAjaxError } from 'discourse/lib/ajax-error';
-import { ajax } from 'discourse/lib/ajax';
 import { calendarRange } from "../../lib/date-utilities";
 import { inject as service } from "@ember/service";
-import EmberObject from '@ember/object';
 
 export default class DiscoveryCalendarRoute extends buildCategoryRoute({ filter: "default" }) {
   @service siteSettings;
