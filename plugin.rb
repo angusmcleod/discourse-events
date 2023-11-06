@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.2.9
+# version: 0.2.10
 # authors: Angus McLeod
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -115,6 +115,7 @@ after_initialize do
     "events_min_trust_to_create",
     "events_required"
   ].each do |key|
+    CategoryList.preloaded_category_custom_fields << key if CategoryList.respond_to? :preloaded_category_custom_fields
     Site.preloaded_category_custom_fields << key if Site.respond_to? :preloaded_category_custom_fields
     add_to_class(:category, key.to_sym) { self.custom_fields[key] }
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
