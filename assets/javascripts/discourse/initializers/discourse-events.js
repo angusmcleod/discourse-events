@@ -344,23 +344,53 @@ export default {
       });
 
       if (siteSettings.events_hamburger_menu_calendar_link) {
-        api.decorateWidget("hamburger-menu:generalLinks", () => {
-          return {
-            route: "discovery.calendar",
-            className: "calendar-link",
-            label: "filters.calendar.title",
-          };
-        });
+        if (
+          api.addCommunitySectionLink &&
+          siteSettings.navigation_menu !== "legacy"
+        ) {
+          api.addCommunitySectionLink((baseSectionLink) => {
+            return class EventsCalendarSectionLink extends baseSectionLink {
+              name = "calendar-link";
+              route = "discovery.calendar";
+              text = I18n.t("filters.calendar.title");
+              title = I18n.t("filters.calendar.title");
+            };
+          });
+        } else {
+          // Remove this decoration and the if condition once Discourse 3.2.0 is released to stable
+          api.decorateWidget("hamburger-menu:generalLinks", () => {
+            return {
+              route: "discovery.calendar",
+              className: "calendar-link",
+              label: "filters.calendar.title",
+            };
+          });
+        }
       }
 
       if (siteSettings.events_hamburger_menu_agenda_link) {
-        api.decorateWidget("hamburger-menu:generalLinks", () => {
-          return {
-            route: "discovery.agenda",
-            className: "agenda-link",
-            label: "filters.agenda.title",
-          };
-        });
+        if (
+          api.addCommunitySectionLink &&
+          siteSettings.navigation_menu !== "legacy"
+        ) {
+          api.addCommunitySectionLink((baseSectionLink) => {
+            return class EventsAgendaSectionLink extends baseSectionLink {
+              name = "agenda-link";
+              route = "discovery.agenda";
+              text = I18n.t("filters.agenda.title");
+              title = I18n.t("filters.agenda.title");
+            };
+          });
+        } else {
+          // Remove this decoration and the if condition once Discourse 3.2.0 is released to stable
+          api.decorateWidget("hamburger-menu:generalLinks", () => {
+            return {
+              route: "discovery.agenda",
+              className: "agenda-link",
+              label: "filters.agenda.title",
+            };
+          });
+        }
       }
 
       const user = api.getCurrentUser();
