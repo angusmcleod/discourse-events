@@ -1,7 +1,10 @@
 @import "event-form";
 
 .add-event-modal {
-  &.modal-body {
+  .d-modal__container {
+    max-width: 630px;
+  }
+  .d-modal__body {
     padding: 20px;
   }
 

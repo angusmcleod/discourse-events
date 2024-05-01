@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.2.11
+# version: 0.3.0
 # authors: Angus McLeod
 # contact_emails: development@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -12,6 +12,7 @@ register_asset 'stylesheets/common/events.scss'
 register_asset 'stylesheets/common/admin.scss'
 register_asset 'stylesheets/desktop/events.scss', :desktop
 register_asset 'stylesheets/mobile/events.scss', :mobile
+register_asset 'lib/jquery-3.7.1.min.js'
 register_asset 'lib/jquery.timepicker.min.js'
 register_asset 'lib/jquery.timepicker.scss'
 

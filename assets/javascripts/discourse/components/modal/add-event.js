@@ -1,10 +1,9 @@
-import ModalFunctionality from "discourse/mixins/modal-functionality";
-import Controller from "@ember/controller";
+import Component from "@ember/component";
 import I18n from "I18n";
 import { action } from "@ember/object";
 
-export default Controller.extend(ModalFunctionality, {
-  title: "add_event.modal_title",
+export default Component.extend({
+  title: I18n.t("add_event.modal_title"),
 
   @action
   clear() {
@@ -16,9 +15,9 @@ export default Controller.extend(ModalFunctionality, {
     saveEvent() {
       if (this.valid) {
         this.get("model.update")(this.bufferedEvent);
-        this.send("closeModal");
+        this.closeModal();
       } else {
-        this.flash(I18n.t("add_event.error"), "error");
+        this.set("flash", I18n.t("add_event.error"));
       }
     },
 
