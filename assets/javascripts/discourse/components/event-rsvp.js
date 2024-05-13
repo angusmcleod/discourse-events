@@ -6,10 +6,13 @@ import Component from "@ember/component";
 import { equal, gt, notEmpty } from "@ember/object/computed";
 import I18n from "I18n";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
+import EventRsvp from "./modal/event-rsvp";
 
 export default Component.extend({
   classNames: "event-rsvp",
   goingSaving: false,
+  modal: service(),
 
   didReceiveAttrs() {
     const currentUser = this.currentUser;
@@ -107,7 +110,7 @@ export default Component.extend({
   @action
   openModal() {
     event?.preventDefault();
-    showModal("event-rsvp", {
+    this.modal.show(EventRsvp, {
       model: {
         topic: this.get("topic"),
       },

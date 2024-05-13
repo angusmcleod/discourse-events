@@ -48,7 +48,7 @@ class DiscourseEvents::RsvpController < ApplicationController
   end
 
   def users
-    if rsvp_params[:usernames].none?
+    if rsvp_params[:usernames].present?
       begin
         users = User.where(username: rsvp_params[:usernames])
         render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
