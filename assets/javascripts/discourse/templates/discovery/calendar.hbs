@@ -1,5 +1,45 @@
-{{events-calendar
-  topics=model.topics
-  category=category
-  loading=discovery.loading
-  initialDateRange=initialDateRange}}
+<Discovery::Layout
+  @model={{this.model}}
+  @createTopicDisabled={{this.createTopicDisabled}}
+>
+  <:navigation>
+    <Discovery::Navigation
+      @category={{this.model.category}}
+      @tag={{this.model.tag}}
+      @additionalTags={{this.model.additionalTags}}
+      @filterType={{this.model.filterType}}
+      @noSubcategories={{this.model.noSubcategories}}
+      @canBulkSelect={{this.canBulkSelect}}
+      @bulkSelectHelper={{this.bulkSelectHelper}}
+      @createTopic={{this.createTopic}}
+      @createTopicDisabled={{this.createTopicDisabled}}
+      @canCreateTopicOnTag={{this.model.canCreateTopicOnTag}}
+      @toggleTagInfo={{this.toggleTagInfo}}
+      @tagNotification={{this.model.tagNotification}}
+      @model={{this.model.list}}
+      @showDismissRead={{this.showDismissRead}}
+      @showResetNew={{this.showResetNew}}
+      @dismissRead={{this.dismissRead}}
+      @resetNew={{this.resetNew}}
+    />
+  </:navigation>
+
+  <:header>
+    {{#if this.model.subcategoryList}}
+      <Discovery::CategoriesDisplay
+        @categories={{this.model.subcategoryList.categories}}
+        @parentCategory={{this.model.subcategoryList.parentCategory}}
+      />
+    {{/if}}
+    {{#if (and this.showTagInfo this.model.tag)}}
+      <TagInfo @tag={{this.model.tag}} @list={{this.model.list}} />
+    {{/if}}
+  </:header>
+  <:list>
+    {{events-calendar
+      topics=model.list.topics
+      category=model.category
+      loading=discovery.loading
+      initialDateRange=initialDateRange}}
+  </:list>
+</Discovery::Layout>

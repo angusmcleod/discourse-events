@@ -1,7 +1,10 @@
 @import "event-form";
 
 .add-event-modal {
-  &.modal-body {
+  .d-modal__container {
+    max-width: 630px;
+  }
+  .d-modal__body {
     padding: 20px;
   }
 
@@ -562,7 +565,7 @@ ul.events-calendar-events {
   }
 }
 
-.modal-body.event-rsvp-modal {
+.event-rsvp-modal {
   overflow: hidden;
 
   .header {
@@ -582,7 +585,7 @@ ul.events-calendar-events {
 
       input {
         width: 150px;
-        margin-bottom: -1px;
+        min-height: 25px;
       }
     }
   }

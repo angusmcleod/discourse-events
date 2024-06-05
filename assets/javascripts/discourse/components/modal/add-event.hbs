@@ -1,0 +1,16 @@
+<DModal
+  class="add-event-modal"
+  @title={{this.title}}
+  @closeModal={{@closeModal}}
+  @flash={{this.flash}}
+>
+  <:body>
+    {{event-form
+      event=model.event
+      updateEvent=(action 'updateEvent')}}
+  </:body>
+  <:footer>
+    {{d-button action=(action "saveEvent") class="btn-primary" label="add_event.event_add"}}
+    <a href class="clear" {{on "click" (fn this.clear)}}>{{i18n 'add_event.event_clear'}}</a>
+  </:footer>
+</DModal>

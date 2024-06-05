@@ -6,7 +6,6 @@ import {
 } from "discourse-common/utils/decorators";
 import DiscourseURL from "discourse/lib/url";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { calendarRange } from "../lib/date-utilities";
 import { CREATE_TOPIC } from "discourse/models/composer";
 import { bind, scheduleOnce } from "@ember/runloop";
 import EmberObject from "@ember/object";
@@ -242,94 +241,6 @@ export default {
 
           return views;
         },
-      });
-
-      const calendarRoutes = [
-        `calendar`,
-        `calendarCategory`,
-        `calendarCategoryNone`,
-      ];
-
-      calendarRoutes.forEach((route) => {
-        api.modifyClass(`route:discovery.${route}`, {
-          pluginId: "events",
-
-          beforeModel(transition) {
-            const routeName = this.routeName;
-            const queryParams = this.paramsFor(routeName);
-
-            if (!queryParams.start || !queryParams.end) {
-              const month = moment().month();
-              const year = moment().year();
-              const { start, end } = calendarRange(month, year);
-              this.setProperties({ start, end });
-            }
-
-            this._super(transition);
-          },
-
-          setupController(controller, model) {
-            const start = this.get("start");
-            const end = this.get("end");
-
-            if (start || end) {
-              let initialDateRange = {};
-              if (start) {
-                initialDateRange["start"] = start;
-              }
-              if (end) {
-                initialDateRange["end"] = end;
-              }
-              this.controllerFor("discovery/topics").setProperties({
-                initialDateRange,
-              });
-            }
-
-            this._super(controller, model);
-          },
-
-          renderTemplate(controller, model) {
-            // respect discourse-layouts settings
-            const global = siteSettings.layouts_list_navigation_disabled_global;
-            const catGlobal =
-              model.category &&
-              model.category.get("layouts_list_navigation_disabled_global");
-            if (!global && !catGlobal) {
-              if (this.routeName.indexOf("Category") > -1) {
-                this.render("navigation/category", {
-                  outlet: "navigation-bar",
-                });
-              } else {
-                this.render("navigation/default", { outlet: "navigation-bar" });
-              }
-            }
-            this.render("discovery/calendar", {
-              outlet: "list-container",
-              controller: "discovery/topics",
-            });
-          },
-        });
-      });
-
-      const categoryRoutes = ["category", "categoryNone"];
-
-      categoryRoutes.forEach(function (route) {
-        api.modifyClass(`route:discovery.${route}`, {
-          pluginId: "events",
-
-          afterModel(model) {
-            const filter = this.filter(model.category);
-            if (filter === "calendar" || filter === "agenda") {
-              return this.replaceWith(
-                `/c/${Category.slugFor(model.category)}/l/${this.filter(
-                  model.category
-                )}`
-              );
-            } else {
-              return this._super(...arguments);
-            }
-          },
-        });
       });
 
       api.modifyClass("controller:preferences/interface", {

@@ -1,10 +1,12 @@
-import showModal from "discourse/lib/show-modal";
 import { eventLabel } from "../lib/date-utilities";
 import { default as discourseComputed } from "discourse-common/utils/decorators";
+import AddEvent from "./modal/add-event";
 import Component from "@ember/component";
+import { service } from "@ember/service";
 
 export default Component.extend({
   classNames: ["event-label"],
+  modal: service(),
 
   didInsertElement() {
     $(".title-and-category").toggleClass(
@@ -45,7 +47,7 @@ export default Component.extend({
 
   actions: {
     showAddEvent() {
-      showModal("add-event", {
+      this.modal.show(AddEvent, {
         model: {
           bufferedEvent: this.event,
           event: this.event,

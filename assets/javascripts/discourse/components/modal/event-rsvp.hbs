@@ -1,0 +1,39 @@
+<DModal
+  class="event-rsvp-modal"
+  @title={{this.title}}
+  @closeModal={{@closeModal}}
+  @flash={{this.flash}}
+>
+  <:body>
+    <div class="header">
+      <ul class="types nav nav-pills">
+        <li>
+          <a href {{on "click" (fn this.setType 'going')}} class={{this.goingNavClass}}>
+            {{i18n 'event_rsvp.going.label'}}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="list">
+      {{#if this.loadingList}}
+        {{loading-spinner size='small'}}
+      {{else}}
+        <ul>
+          {{#each this.filteredList as |user|}}
+            <li>
+              <UserInfo @user={{user}}>
+                {{#if this.currentUser.staff}}
+                  <DButton
+                    class='btn compose-pm'
+                    @action={{fn this.composePrivateMessage user}}
+                    @icon="envelope"
+                    @label='user.private_message' />
+                {{/if}}
+              </UserInfo>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </div>
+  </:body>
+</DModal>

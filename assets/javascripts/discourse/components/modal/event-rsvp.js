@@ -2,17 +2,21 @@ import {
   default as discourseComputed,
   observes,
 } from "discourse-common/utils/decorators";
-import { getOwner } from "discourse-common/lib/get-owner";
+import { getOwner } from "@ember/application";
 import { ajax } from "discourse/lib/ajax";
-import ModalFunctionality from "discourse/mixins/modal-functionality";
 import { extractError } from "discourse/lib/ajax-error";
-import Controller from "@ember/controller";
+import Component from "@ember/component";
 import { action } from "@ember/object";
+import User from "discourse/models/user";
 
-export default Controller.extend(ModalFunctionality, {
-  filter: null,
+export default Component.extend({
   userList: [],
   type: "going",
+  title: I18n.t('event_rsvp.modal.title'),
+
+  didReceiveAttrs() {
+    this.setUserList();
+  },
 
   @observes("type", "model.topic")
   setUserList() {
@@ -41,7 +45,7 @@ export default Controller.extend(ModalFunctionality, {
         });
       })
       .catch((e) => {
-        this.flash(extractError(e), "alert-error");
+        this.set("flash", extractError(e));
       })
       .finally(() => {
         this.setProperties({
@@ -55,12 +59,8 @@ export default Controller.extend(ModalFunctionality, {
     return type === "going" ? "active" : "";
   },
 
-  @discourseComputed("userList", "filter")
-  filteredList(userList, filter) {
-    if (filter) {
-      userList = userList.filter((u) => u.username.indexOf(filter) > -1);
-    }
-
+  @discourseComputed("userList")
+  filteredList(userList) {
     const currentUser = this.get("currentUser");
     if (currentUser) {
       userList.sort((a) => {
@@ -71,7 +71,6 @@ export default Controller.extend(ModalFunctionality, {
         }
       });
     }
-
     return userList;
   },
 
@@ -81,11 +80,10 @@ export default Controller.extend(ModalFunctionality, {
     this.set("type", type);
   },
 
-  actions: {
-    composePrivateMessage(user) {
-      const controller = getOwner(this).lookup("controller:application");
-      this.send("closeModal");
-      controller.send("composePrivateMessage", user);
-    },
+  @action
+  composePrivateMessage(user) {
+    const controller = getOwner(this).lookup("controller:application");
+    this.closeModal();
+    controller.send("composePrivateMessage", User.create(user));
   },
 });
