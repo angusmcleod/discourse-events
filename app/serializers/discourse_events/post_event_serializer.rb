@@ -2,8 +2,7 @@
 
 module DiscourseEvents
   class PostEventSerializer < BasicEventSerializer
-    attributes :admin_url,
-               :can_manage
+    attributes :admin_url, :can_manage
 
     def can_manage
       scope.can_manage_events?

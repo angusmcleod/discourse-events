@@ -1,11 +1,11 @@
-import selectKit from "discourse/tests/helpers/select-kit-helper";
+import { click, fillIn, visit } from "@ember/test-helpers";
+import { test } from "qunit";
 import {
   acceptance,
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
-import { test } from "qunit";
-import { settled, visit } from "@ember/test-helpers";
+import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
@@ -99,7 +99,7 @@ acceptance("Events | Connection", function (needs) {
     assert.ok(exists(".events.connection"), "it shows the connection route");
 
     assert.equal(
-      find(".admin-events-controls h2").eq(0).text().trim(),
+      query(".admin-events-controls h2").innerText.trim(),
       "Connections",
       "title displayed"
     );
@@ -114,15 +114,16 @@ acceptance("Events | Connection", function (needs) {
       exists("tr[data-connection-id=new]"),
       "it displays a new connection row"
     );
-    assert.ok(
-      find("tr[data-connection-id=new] .save-connection").prop("disabled"),
+    assert.strictEqual(
+      query("tr[data-connection-id=new] .save-connection").disabled,
+      true,
       "it disables the save button"
     );
 
     const userSelect = selectKit("tr[data-connection-id=new] .connection-user");
     await userSelect.expand();
     await fillIn(".connection-user input.filter-input", "angus");
-    await settled();
+
     await userSelect.selectRowByValue("angus");
 
     await selectKit("tr[data-connection-id=new] .connection-category").expand();
@@ -140,9 +141,9 @@ acceptance("Events | Connection", function (needs) {
       "tr[data-connection-id=new] .connection-client"
     ).selectRowByValue("events");
 
-    assert.ok(
-      find("tr[data-connection-id=new] .save-connection").prop("disabled") ===
-        false,
+    assert.strictEqual(
+      query("tr[data-connection-id=new] .save-connection").disabled,
+      false,
       "it enables the save button"
     );
 
@@ -157,9 +158,9 @@ acceptance("Events | Connection", function (needs) {
       "tr[data-connection-id='1'] .connection-category"
     ).selectRowByValue(1);
 
-    assert.ok(
-      find("tr[data-connection-id='1'] .save-connection").prop("disabled") ===
-        false,
+    assert.strictEqual(
+      query("tr[data-connection-id='1'] .save-connection").disabled,
+      false,
       "it enables the save button"
     );
 
@@ -170,6 +171,7 @@ acceptance("Events | Connection", function (needs) {
     await visit("/admin/events/connection");
 
     await click("tr[data-connection-id='1'] .btn.show-filters");
+
     assert.ok(
       exists(".events-connection-filters-modal"),
       "it shows the filter modal"
@@ -180,6 +182,7 @@ acceptance("Events | Connection", function (needs) {
       exists(".events-connection-filters-modal .filter-column"),
       "it shows the filter column"
     );
+
     assert.ok(
       exists(".events-connection-filters-modal .filter-value"),
       "it shows the filter value"

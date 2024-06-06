@@ -1,11 +1,9 @@
 {
-  "name": "discourse-events",
-  "version": "1.0.0",
-  "repository": "git@github.com:paviliondev/discourse-events.git",
-  "author": "Pavilion",
-  "license": "GPL V2",
+  "private": true,
   "devDependencies": {
-    "eslint-config-discourse": "^1.1.8",
-    "semver": "^7.3.5"
+    "@discourse/lint-configs": "1.3.9",
+    "ember-template-lint": "6.0.0",
+    "eslint": "8.57.0",
+    "prettier": "2.8.8"
   }
 }

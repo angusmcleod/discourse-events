@@ -1,7 +1,7 @@
 import Component from "@ember/component";
+import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
-import discourseComputed, { observes } from "discourse-common/utils/decorators";
 
 const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
@@ -40,6 +40,7 @@ export default Component.extend({
   SourceOptions: [],
 
   didReceiveAttrs() {
+    this._super();
     this.set("currentSource", JSON.parse(JSON.stringify(this.source)));
     this.setSourceOptions();
   },

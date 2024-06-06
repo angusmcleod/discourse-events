@@ -1,9 +1,9 @@
+import { A } from "@ember/array";
 import DiscourseRoute from "discourse/routes/discourse";
+import { contentsMap } from "../lib/events";
 import Connection from "../models/connection";
 import ConnectionFilter from "../models/connection-filter";
 import Source from "../models/source";
-import { A } from "@ember/array";
-import { contentsMap } from "../lib/events";
 
 export default DiscourseRoute.extend({
   model() {

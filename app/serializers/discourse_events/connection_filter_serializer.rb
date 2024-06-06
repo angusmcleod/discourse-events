@@ -2,8 +2,6 @@
 
 module DiscourseEvents
   class ConnectionFilterSerializer < ApplicationSerializer
-    attributes :id,
-               :query_column,
-               :query_value
+    attributes :id, :query_column, :query_value
   end
 end

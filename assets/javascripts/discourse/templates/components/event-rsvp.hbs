@@ -1,25 +1,29 @@
 {{#if canGo}}
-  <button class='btn btn-small btn-text {{goingClasses}}' {{action 'going'}} type="button">
+  <button
+    class="btn btn-small btn-text {{goingClasses}}"
+    {{action "going"}}
+    type="button"
+  >
     {{#if goingSaving}}
-      {{loading-spinner size='small'}}
+      {{loading-spinner size="small"}}
     {{else}}
-      {{d-icon 'check'}}
+      {{d-icon "check"}}
     {{/if}}
     <span class="d-button-label">
-      {{i18n 'event_rsvp.going.label'}}
+      {{i18n "event_rsvp.going.label"}}
     </span>
   </button>
 {{/if}}
 <div class="event-rsvp-details">
   {{#if hasGuests}}
     {{#if currentUser}}
-      <a href {{on "click" (fn this.openModal)}}>
+      <a href {{on "click" this.openModal}}>
         <span>{{goingTotal}}</span>
-        <span>{{i18n 'event_rsvp.going.label'}}</span>
+        <span>{{i18n "event_rsvp.going.label"}}</span>
       </a>
     {{else}}
       <span>{{goingTotal}}</span>
-      <span>{{i18n 'event_rsvp.going.label'}}</span>
+      <span>{{i18n "event_rsvp.going.label"}}</span>
     {{/if}}
   {{/if}}
   {{#if goingMessage}}

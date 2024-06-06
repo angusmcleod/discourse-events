@@ -1,8 +1,7 @@
-import Controller from "@ember/controller";
-import ModalFunctionality from "discourse/mixins/modal-functionality";
-import discourseComputed from "discourse-common/utils/decorators";
-import ConnectionFilter from "../models/connection-filter";
 import { A } from "@ember/array";
+import Component from "@ember/component";
+import discourseComputed from "discourse-common/utils/decorators";
+import ConnectionFilter from "../../models/connection-filter";
 
 const QUERY_COLUMNS = [
   {
@@ -11,13 +10,15 @@ const QUERY_COLUMNS = [
   },
 ];
 
-export default Controller.extend(ModalFunctionality, {
+export default Component.extend({
   @discourseComputed
   queryColumns() {
     return QUERY_COLUMNS;
   },
 
-  onShow() {
+  didInsertElement() {
+    this._super(...arguments);
+
     if (!this.model.connection.filters) {
       this.model.connection.set("filters", A());
     }

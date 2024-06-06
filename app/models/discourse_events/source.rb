@@ -2,35 +2,36 @@
 
 module DiscourseEvents
   class Source < ActiveRecord::Base
-    self.table_name = 'discourse_events_sources'
+    self.table_name = "discourse_events_sources"
 
     SOURCE_OPTIONS ||= {
       developer: {
-        'uri': /./
+        uri: /./,
       },
       icalendar: {
-        'uri': URI.regexp
+        uri: URI.regexp,
       },
       eventbrite: {
-        'organization_id': /\d/
+        organization_id: /\d/,
       },
       meetup: {
-        'group_urlname': /[a-z]/
+        group_urlname: /[a-z]/,
       },
-      humanitix: {},
-      eventzilla: {}
+      humanitix: {
+      },
+      eventzilla: {
+      },
     }
 
-    FIXED_SOURCE_OPTIONS ||= {
-      icalendar: {
-        expand_recurrences: true
-      }
-    }
+    FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
 
-    belongs_to :provider, foreign_key: 'provider_id', class_name: 'DiscourseEvents::Provider'
+    belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
 
-    has_many :events, foreign_key: 'source_id', class_name: 'DiscourseEvents::Event'
-    has_many :connections, foreign_key: 'source_id', class_name: 'DiscourseEvents::Connection', dependent: :destroy
+    has_many :events, foreign_key: "source_id", class_name: "DiscourseEvents::Event"
+    has_many :connections,
+             foreign_key: "source_id",
+             class_name: "DiscourseEvents::Connection",
+             dependent: :destroy
 
     validates_format_of :name, with: /\A[a-z0-9\_]+\Z/i
     validates :provider, presence: true
@@ -52,9 +53,7 @@ module DiscourseEvents
       opts = source_options_hash
 
       if fixed_opts = FIXED_SOURCE_OPTIONS[self.provider.provider_type.to_sym]
-        fixed_opts.each do |key, value|
-          opts[key] = value
-        end
+        fixed_opts.each { |key, value| opts[key] = value }
       end
 
       opts
@@ -78,8 +77,12 @@ module DiscourseEvents
       end
       return false if errors.present?
 
-      invalid = invalid_options(self.source_options_hash, SOURCE_OPTIONS[self.provider.provider_type.to_sym])
-      errors.add(:source_options, "invalid: #{invalid.join(',')}") if invalid.any?
+      invalid =
+        invalid_options(
+          self.source_options_hash,
+          SOURCE_OPTIONS[self.provider.provider_type.to_sym],
+        )
+      errors.add(:source_options, "invalid: #{invalid.join(",")}") if invalid.any?
     end
 
     def invalid_options(opts, valid_options)

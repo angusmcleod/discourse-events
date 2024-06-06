@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_dependency 'enum_site_setting'
+require_dependency "enum_site_setting"
 
 class DiscourseEventsTimezoneDefaultSiteSetting < EnumSiteSetting
   def self.valid_value?(val)
@@ -8,12 +8,10 @@ class DiscourseEventsTimezoneDefaultSiteSetting < EnumSiteSetting
   end
 
   def self.values
-    @values ||= self.timezones.map do |k, v|
-      {
-        name: "(GMT#{Time.now.in_time_zone(v).formatted_offset}) #{k}",
-        value: v
-      }
-    end
+    @values ||=
+      self.timezones.map do |k, v|
+        { name: "(GMT#{Time.now.in_time_zone(v).formatted_offset}) #{k}", value: v }
+      end
   end
 
   def self.timezones

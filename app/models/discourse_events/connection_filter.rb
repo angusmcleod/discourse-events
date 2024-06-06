@@ -2,22 +2,18 @@
 
 module DiscourseEvents
   class ConnectionFilter < ActiveRecord::Base
-    self.table_name = 'discourse_events_connection_filters'
+    self.table_name = "discourse_events_connection_filters"
 
-    belongs_to :connection, foreign_key: 'connection_id', class_name: 'DiscourseEvents::Connection'
+    belongs_to :connection, foreign_key: "connection_id", class_name: "DiscourseEvents::Connection"
 
-    enum :query_column, %i(name), prefix: true
+    enum :query_column, %i[name], prefix: true
 
-    OPERATORS = {
-      name: 'ILIKE'
-    }
+    OPERATORS = { name: "ILIKE" }
 
     validate :query_value_format
 
     def sql_value
-      if sql_operator === 'ILIKE'
-        "%#{self.query_value}%"
-      end
+      "%#{self.query_value}%" if sql_operator === "ILIKE"
     end
 
     def sql_operator
@@ -30,7 +26,7 @@ module DiscourseEvents
 
     def query_value_format
       if self.query_column === :name
-        errors.add(:query_value, 'invalid') unless self.query_value =~ /./
+        errors.add(:query_value, "invalid") unless self.query_value =~ /./
       end
     end
   end

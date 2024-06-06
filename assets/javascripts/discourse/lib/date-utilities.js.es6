@@ -1,8 +1,8 @@
-import { renderIcon } from "discourse-common/lib/icon-library";
-import Site from "discourse/models/site";
 import { htmlSafe } from "@ember/template";
-import I18n from "I18n";
+import Site from "discourse/models/site";
 import User from "discourse/models/user";
+import { renderIcon } from "discourse-common/lib/icon-library";
+import I18n from "I18n";
 
 const formDateFormat = "YYYY-MM-DD";
 const formTimeFormat = "HH:mm";

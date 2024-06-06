@@ -13,35 +13,36 @@ describe DiscourseEvents::Auth::Meetup do
   let(:refresh_token) { "123456" }
   let(:new_refresh_token) { "12345678910" }
   let(:expires_in) { 3600 }
-  let(:access_response) {
+  let(:access_response) do
     {
-      "access_token": access_token,
-      "token_type": "bearer",
-      "expires_in": expires_in,
-      "refresh_token": refresh_token
+      access_token: access_token,
+      token_type: "bearer",
+      expires_in: expires_in,
+      refresh_token: refresh_token,
     }
-  }
-  let(:refresh_response) {
+  end
+  let(:refresh_response) do
     {
-      "access_token": new_access_token,
-      "token_type": "bearer",
-      "expires_in": expires_in,
-      "refresh_token": new_refresh_token
+      access_token: new_access_token,
+      token_type: "bearer",
+      expires_in: expires_in,
+      refresh_token: new_refresh_token,
     }
-  }
-  let(:provider) {
-    Fabricate(:discourse_events_provider,
+  end
+  let(:provider) do
+    Fabricate(
+      :discourse_events_provider,
       provider_type: "meetup",
       client_id: client_id,
-      client_secret: client_secret
+      client_secret: client_secret,
     )
-  }
+  end
 
   it "generates an authorization url" do
     auth = DiscourseEvents::Auth::Meetup.new(provider.id)
 
     expect(auth.authorization_url(state)).to eq(
-      "https://secure.meetup.com/oauth2/authorize?client_id=#{provider.client_id}&response_type=code&redirect_uri=#{provider.redirect_uri}&state=#{state}"
+      "https://secure.meetup.com/oauth2/authorize?client_id=#{provider.client_id}&response_type=code&redirect_uri=#{provider.redirect_uri}&state=#{state}",
     )
   end
 
@@ -50,12 +51,21 @@ describe DiscourseEvents::Auth::Meetup do
 
     auth = DiscourseEvents::Auth::Meetup.new(provider.id)
 
-    stub_request(:post, "#{auth.base_url}/access")
-      .to_return(body: access_response.to_json, headers: { "Content-Type" => "application/json" }, status: 200)
+    stub_request(:post, "#{auth.base_url}/access").to_return(
+      body: access_response.to_json,
+      headers: {
+        "Content-Type" => "application/json",
+      },
+      status: 200,
+    )
 
-    expect_enqueued_with(job: :discourse_events_refresh_token, args: { provider_id: provider.id, current_site_id: "default" }) do
-      auth.request_token(code)
-    end
+    expect_enqueued_with(
+      job: :discourse_events_refresh_token,
+      args: {
+        provider_id: provider.id,
+        current_site_id: "default",
+      },
+    ) { auth.request_token(code) }
 
     provider.reload
     expect(provider.token).to eq(access_token)
@@ -74,12 +84,21 @@ describe DiscourseEvents::Auth::Meetup do
 
     auth = DiscourseEvents::Auth::Meetup.new(provider.id)
 
-    stub_request(:post, "#{auth.base_url}/access")
-      .to_return(body: refresh_response.to_json, headers: { "Content-Type" => "application/json" }, status: 200)
+    stub_request(:post, "#{auth.base_url}/access").to_return(
+      body: refresh_response.to_json,
+      headers: {
+        "Content-Type" => "application/json",
+      },
+      status: 200,
+    )
 
-    expect_enqueued_with(job: :discourse_events_refresh_token, args: { provider_id: provider.id, current_site_id: "default" }) do
-      auth.request_token(code)
-    end
+    expect_enqueued_with(
+      job: :discourse_events_refresh_token,
+      args: {
+        provider_id: provider.id,
+        current_site_id: "default",
+      },
+    ) { auth.request_token(code) }
 
     provider.reload
     expect(provider.token).to eq(new_access_token)
@@ -93,8 +112,12 @@ describe DiscourseEvents::Auth::Meetup do
 
     auth = DiscourseEvents::Auth::Meetup.new(provider.id)
 
-    stub_request(:post, "#{auth.base_url}/access")
-      .to_return(headers: { "Content-Type" => "application/json" }, status: 400)
+    stub_request(:post, "#{auth.base_url}/access").to_return(
+      headers: {
+        "Content-Type" => "application/json",
+      },
+      status: 400,
+    )
 
     auth.request_token(code)
 
@@ -103,7 +126,7 @@ describe DiscourseEvents::Auth::Meetup do
     expect(provider.refresh_token).to eq(nil)
     expect(provider.token_expires_at).to eq(nil)
     expect(provider.authenticated?).to eq(false)
-    expect(DiscourseEvents::Log.where(level: 'error').size).to eq(1)
+    expect(DiscourseEvents::Log.where(level: "error").size).to eq(1)
   end
 
   it "handles a failure to refresh a token" do
@@ -117,8 +140,12 @@ describe DiscourseEvents::Auth::Meetup do
 
     auth = DiscourseEvents::Auth::Meetup.new(provider.id)
 
-    stub_request(:post, "#{auth.base_url}/access")
-      .to_return(headers: { "Content-Type" => "application/json" }, status: 400)
+    stub_request(:post, "#{auth.base_url}/access").to_return(
+      headers: {
+        "Content-Type" => "application/json",
+      },
+      status: 400,
+    )
 
     auth.request_token(code)
 
@@ -129,6 +156,6 @@ describe DiscourseEvents::Auth::Meetup do
     expect(provider.refresh_token).to eq(refresh_token)
     expect(provider.token_expires_at).to eq_time(expires_at)
     expect(provider.authenticated?).to eq(false)
-    expect(DiscourseEvents::Log.where(level: 'error').size).to eq(1)
+    expect(DiscourseEvents::Log.where(level: "error").size).to eq(1)
   end
 end

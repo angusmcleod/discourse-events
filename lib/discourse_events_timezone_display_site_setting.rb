@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_dependency 'enum_site_setting'
+require_dependency "enum_site_setting"
 
 class DiscourseEventsTimezoneDisplaySiteSetting < EnumSiteSetting
   def self.valid_value?(val)
@@ -7,11 +7,9 @@ class DiscourseEventsTimezoneDisplaySiteSetting < EnumSiteSetting
   end
 
   def self.values
-    @values ||= ['default', 'event', 'different'].map do |v|
-      {
-        name: I18n.t("site_settings.events_timezone_display_#{v}"),
-        value: v
-      }
-    end
+    @values ||=
+      %w[default event different].map do |v|
+        { name: I18n.t("site_settings.events_timezone_display_#{v}"), value: v }
+      end
   end
 end

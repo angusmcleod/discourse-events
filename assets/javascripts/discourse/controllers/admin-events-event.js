@@ -1,9 +1,9 @@
+import { A } from "@ember/array";
 import Controller from "@ember/controller";
 import { notEmpty } from "@ember/object/computed";
 import showModal from "discourse/lib/show-modal";
 import discourseComputed from "discourse-common/utils/decorators";
 import Message from "../mixins/message";
-import { A } from "@ember/array";
 
 export default Controller.extend(Message, {
   hasEvents: notEmpty("events"),
@@ -11,7 +11,7 @@ export default Controller.extend(Message, {
   selectAll: false,
   order: null,
   asc: null,
-  view: "event",
+  viewName: "event",
 
   @discourseComputed("selectedEvents.[]", "hasEvents")
   deleteDisabled(selectedEvents, hasEvents) {

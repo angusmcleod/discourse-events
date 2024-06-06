@@ -38,10 +38,9 @@
 # seems to work fine (tested in Mozilla Thunderbird + Lightning).
 # Future goal would be making this better.
 
-
-require 'tzinfo'
+require "tzinfo"
 begin
-  require 'tzinfo/data'
+  require "tzinfo/data"
 rescue LoadError
   Icalendar.logger.info "Could not load tzinfo/data, hopefully tzinfo is accurate (ignore for tzinfo 0.x)"
 end
@@ -67,27 +66,28 @@ module Icalendar
       # but only as 1st X, 2nd X, 3rd X, or Last X
       start_week = ((start.day - 1) / 7).to_i + 1
       start_week = (start_week > 3) ? -1 : start_week
-      [sprintf(
-        'FREQ=YEARLY;BYMONTH=%d;BYDAY=%d%s',
-        start.month,
-        start_week,
-        start.strftime('%a').upcase[0,2]
-      )]
+      [
+        sprintf(
+          "FREQ=YEARLY;BYMONTH=%d;BYDAY=%d%s",
+          start.month,
+          start_week,
+          start.strftime("%a").upcase[0, 2],
+        ),
+      ]
     end
 
     def dtstart
-      local_start.to_datetime.strftime '%Y%m%dT%H%M%S'
+      local_start.to_datetime.strftime "%Y%m%dT%H%M%S"
     end
   end
 
   module TimezoneOffset
     def ical_offset
       o = utc_total_offset
-      sprintf '%+-2.2d%2.2d', (o / 3600).to_i, ((o / 60) % 60).to_i
+      sprintf "%+-2.2d%2.2d", (o / 3600).to_i, ((o / 60) % 60).to_i
     end
   end
 end
-
 
 module TZInfo
   class Timezone
@@ -107,7 +107,7 @@ module TZInfo
     end
   end
 
-  if defined? TimezoneTransitionInfo
+  if defined?(TimezoneTransitionInfo)
     class TimezoneTransitionInfo
       include Icalendar::TimezoneTransition
     end
@@ -117,7 +117,7 @@ module TZInfo
     end
   end
 
-  if defined? TimezoneOffsetInfo
+  if defined?(TimezoneOffsetInfo)
     class TimezoneOffsetInfo
       include Icalendar::TimezoneOffset
     end
@@ -128,7 +128,6 @@ module TZInfo
   end
 
   class TimezonePeriod
-
     # For DST, use the start_transition,
     # for standard TZ, use the following period (starting from the end_transition).
     def daylight
@@ -137,9 +136,7 @@ module TZInfo
       build_timezone(day, transition) do |tz|
         # rrule should not be set for the current [==DST/daylight] period
         # if there is no recurrence rule for the end transition
-        if !dst? || !end_transition.nil?
-          tz.rrule = transition.rrule
-        end
+        tz.rrule = transition.rrule if !dst? || !end_transition.nil?
       end
     end
 
@@ -149,9 +146,7 @@ module TZInfo
       transition = dst? ? end_transition : start_transition
       std = Icalendar::Timezone::Standard.new
       build_timezone(std, transition) do |tz|
-        if dst? || !end_transition.nil?
-          tz.rrule = transition.rrule
-        end
+        tz.rrule = transition.rrule if dst? || !end_transition.nil?
       end
     end
 
@@ -160,11 +155,12 @@ module TZInfo
         std.tzname = abbreviation.to_s
         std.tzoffsetfrom = offset.ical_offset
         std.tzoffsetto = offset.ical_offset
-        std.dtstart = DateTime.new(1970).strftime '%Y%m%dT%H%M%S'
+        std.dtstart = DateTime.new(1970).strftime "%Y%m%dT%H%M%S"
       end
     end
 
     private
+
     def build_timezone(timezone, transition)
       timezone.tap do |tz|
         tz.tzname = transition.offset_abbreviation

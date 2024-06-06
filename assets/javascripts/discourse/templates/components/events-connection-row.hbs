@@ -3,17 +3,16 @@
     @value={{connection.user.username}}
     @onChange={{action "updateUser"}}
     class="connection-user"
-    @options={{hash
-      maximum=1
-      excludeCurrentUser=false
-    }} />
+    @options={{hash maximum=1 excludeCurrentUser=false}}
+  />
 </td>
 
 <td>
   {{category-chooser
     value=connection.category_id
     class="connection-category"
-    onChange=(action (mut connection.category_id))}}
+    onChange=(action (mut connection.category_id))
+  }}
 </td>
 
 <td>
@@ -22,9 +21,8 @@
     content=sources
     onChange=(action (mut connection.source_id))
     class="connection-source"
-    options=(hash
-      none="admin.events.connection.source.select"
-    )}}
+    options=(hash none="admin.events.connection.source.select")
+  }}
 </td>
 
 <td>
@@ -33,9 +31,8 @@
     content=clients
     onChange=(action (mut connection.client))
     class="connection-client"
-    options=(hash
-      none="admin.events.connection.client.select"
-    )}}
+    options=(hash none="admin.events.connection.client.select")
+  }}
 </td>
 
 <td>
@@ -43,7 +40,8 @@
     icon="filter"
     title="admin.events.connection.filters.title"
     action=(action "openFilters")
-    class=filterClass}}
+    class=filterClass
+  }}
 </td>
 
 <td class="action-column">
@@ -54,19 +52,22 @@
     title="admin.events.connection.save.title"
     action=(action "saveConnection")
     disabled=saveDisabled
-    class=saveClass}}
+    class=saveClass
+  }}
 
   {{d-button
     action=removeConnection
     actionParam=connection
     icon="trash-alt"
     title="admin.events.connection.remove.title"
-    class="btn-danger"}}
+    class="btn-danger"
+  }}
 
   {{d-button
     action=(action "syncConnection")
     icon="sync"
     title="admin.events.connection.sync.title"
     class=syncClass
-    disabled=syncDisabled}}
+    disabled=syncDisabled
+  }}
 </td>

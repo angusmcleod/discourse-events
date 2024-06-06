@@ -1,16 +1,33 @@
-<DModalBody @class="delete-event-modal" @title="admin.events.event.delete.title">
+<DModalBody
+  @class="delete-event-modal"
+  @title="admin.events.event.delete.title"
+>
   <ul class="events">
     {{#each model.events as |event|}}
       <li class="event">{{event.name}}</li>
     {{/each}}
   </ul>
   <div class="target-control">
-    <ComboBox @content={{deleteTargets}} @value={{deleteTarget}} @onChange={{action (mut deleteTarget)}} />
+    <ComboBox
+      @content={{deleteTargets}}
+      @value={{deleteTarget}}
+      @onChange={{action (mut deleteTarget)}}
+    />
   </div>
 </DModalBody>
 
 <div class="modal-footer">
-  <DButton @class="btn-primary" @action={{action "delete"}} @label={{btnLabel}} disabled={{destroying}} />
-  <DButton @class="btn-danger" @label="composer.modal_cancel" @action={{action "cancel"}} disabled={{destroying}} />
+  <DButton
+    @class="btn-primary"
+    @action={{action "delete"}}
+    @label={{btnLabel}}
+    disabled={{destroying}}
+  />
+  <DButton
+    @class="btn-danger"
+    @label="composer.modal_cancel"
+    @action={{action "cancel"}}
+    disabled={{destroying}}
+  />
   {{conditional-loading-spinner condition=destroying size="small"}}
 </div>

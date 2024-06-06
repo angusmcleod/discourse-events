@@ -1,18 +1,20 @@
 <div class="header">
   <div class="events-calendar-navigation">
-    {{d-button label=todayLabel action=(action "today") icon='calendar'}}
-    {{d-button icon='chevron-left' action=(action "monthPrevious")}}
-    {{d-button icon='chevron-right' action=(action "monthNext")}}
+    {{d-button label=todayLabel action=(action "today") icon="calendar"}}
+    {{d-button icon="chevron-left" action=(action "monthPrevious")}}
+    {{d-button icon="chevron-right" action=(action "monthNext")}}
     {{combo-box
       content=months
       value=month
-      class='month-dropdown'
-      onChange=(action (mut month))}}
+      class="month-dropdown"
+      onChange=(action (mut month))
+    }}
     {{combo-box
       content=years
       value=year
-      class='year-dropdown'
-      onChange=(action (mut year))}}
+      class="year-dropdown"
+      onChange=(action (mut year))
+    }}
   </div>
   {{#if showSubscription}}
     <div class="events-calendar-subscription-links">
@@ -20,12 +22,14 @@
         {{d-button
           href="/my/preferences/webcal-keys"
           title="webcal_preferences.calendar_notice"
-          icon="key"}}
+          icon="key"
+        }}
       {{/if}}
       {{d-button
         href=webcalDocumentationURL
         title="webcal_preferences.calendar_usage"
-        icon="question-circle"}}
+        icon="question-circle"
+      }}
       {{events-calendar-subscription
         category=category
         userApiKeys=userApiKeys
@@ -34,7 +38,8 @@
           showFullTitle=showFullTitle
           icon="rss"
           none="events_calendar.subscribe"
-        )}}
+        )
+      }}
     </div>
   {{/if}}
 </div>
@@ -43,10 +48,11 @@
   topics=topics
   currentMonth=currentMonth
   currentDate=currentDate
-  selectDate=(action 'selectDate')
+  selectDate=(action "selectDate")
   canSelectDate=canSelectDate
   showEvents=showEvents
-  responsive=responsive}}
+  responsive=responsive
+}}
 {{#if eventsBelow}}
   <div class="events-below">
     {{events-calendar-events events=dateEvents responsive=responsive}}

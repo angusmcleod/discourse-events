@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe DiscourseEvents::DiscourseEventsSyncer do
   subject { DiscourseEvents::DiscourseEventsSyncer }
@@ -9,12 +9,14 @@ describe DiscourseEvents::DiscourseEventsSyncer do
 
   fab!(:source) { Fabricate(:discourse_events_source) }
   fab!(:event) { Fabricate(:discourse_events_event, source: source) }
-  fab!(:category) { Fabricate(:category) }
+  fab!(:category)
   fab!(:user) { Fabricate(:user, admin: true) }
-  fab!(:connection) { Fabricate(:discourse_events_connection, source: source, category: category, user: user) }
+  fab!(:connection) do
+    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
+  end
 
   before do
-    skip("Discourse Events is not installed") unless defined?(DiscoursePostEvent) == 'constant'
+    skip("Discourse Events is not installed") unless defined?(DiscoursePostEvent) == "constant"
 
     SiteSetting.calendar_enabled = true
     SiteSetting.discourse_post_event_enabled = true
@@ -34,7 +36,7 @@ describe DiscourseEvents::DiscourseEventsSyncer do
     post
   end
 
-  it 'creates client event data' do
+  it "creates client event data" do
     post = sync_events
     expect(post.topic.id).to eq(event.topics.first.id)
 
@@ -48,7 +50,7 @@ describe DiscourseEvents::DiscourseEventsSyncer do
     expect(event_dates.first.ends_at).to be_within(1.second).of(event.end_time)
   end
 
-  it 'updates client event data' do
+  it "updates client event data" do
     post = sync_events
 
     new_name = "New event name"

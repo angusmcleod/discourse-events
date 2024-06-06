@@ -2,26 +2,33 @@
 
 module DiscourseEvents
   class Connection < ActiveRecord::Base
-    self.table_name = 'discourse_events_connections'
+    self.table_name = "discourse_events_connections"
 
-    CLIENTS ||= {
-      events: "discourse-events",
-      discourse_events: "discourse-calendar"
-    }
+    CLIENTS ||= { events: "discourse-events", discourse_events: "discourse-calendar" }
 
     def self.client_names
       CLIENTS.keys.map(&:to_s)
     end
 
-    has_many :event_connections, foreign_key: 'connection_id', class_name: 'DiscourseEvents::EventConnection', dependent: :destroy
+    has_many :event_connections,
+             foreign_key: "connection_id",
+             class_name: "DiscourseEvents::EventConnection",
+             dependent: :destroy
     has_many :events, through: :event_connections, source: :event
-    has_many :filters, foreign_key: 'connection_id', class_name: 'DiscourseEvents::ConnectionFilter', dependent: :destroy
+    has_many :filters,
+             foreign_key: "connection_id",
+             class_name: "DiscourseEvents::ConnectionFilter",
+             dependent: :destroy
 
     belongs_to :user
     belongs_to :category
-    belongs_to :source, foreign_key: 'source_id', class_name: 'DiscourseEvents::Source'
+    belongs_to :source, foreign_key: "source_id", class_name: "DiscourseEvents::Source"
 
-    validates :client, inclusion: { in: Connection.client_names, message: "%{value} is not a valid connection client" }
+    validates :client,
+              inclusion: {
+                in: Connection.client_names,
+                message: "%{value} is not a valid connection client",
+              }
     validates :user, presence: true
     validates :category, presence: true
     validates :source, presence: true

@@ -1,5 +1,4 @@
 module Icalendar
-
   class Parser
     attr_writer :component_class
     attr_reader :source, :strict
@@ -8,9 +7,9 @@ module Icalendar
       if source.respond_to? :gets
         @source = source
       elsif source.respond_to? :to_s
-        @source = StringIO.new source.to_s, 'r'
+        @source = StringIO.new source.to_s, "r"
       else
-        msg = 'Icalendar::Parser.new must be called with a String or IO object'
+        msg = "Icalendar::Parser.new must be called with a String or IO object"
         Icalendar.fatal msg
         fail ArgumentError, msg
       end
@@ -24,7 +23,7 @@ module Icalendar
       components = []
       while (fields = next_fields)
         component = component_class.new
-        if fields[:name] == 'begin' && fields[:value].downcase == component.ical_name.downcase
+        if fields[:name] == "begin" && fields[:value].downcase == component.ical_name.downcase
           components << parse_component(component)
         end
       end
@@ -33,15 +32,16 @@ module Icalendar
 
     def parse_property(component, fields = nil)
       fields = next_fields if fields.nil?
-      prop_name = %w(class method).include?(fields[:name]) ? "ip_#{fields[:name]}" : fields[:name]
+      prop_name = %w[class method].include?(fields[:name]) ? "ip_#{fields[:name]}" : fields[:name]
       multi_property = component.class.multiple_properties.include? prop_name
       prop_value = wrap_property_value component, fields, multi_property
       begin
-        method_name = if multi_property
-          "append_#{prop_name}"
-        else
-          "#{prop_name}="
-        end
+        method_name =
+          if multi_property
+            "append_#{prop_name}"
+          else
+            "#{prop_name}="
+          end
         component.send method_name, prop_value
       rescue NoMethodError => nme
         if strict?
@@ -67,22 +67,24 @@ module Icalendar
       end
     rescue Icalendar::Values::DateTime::FormatError => fe
       raise fe if strict?
-      fields[:params]['value'] = ['DATE']
+      fields[:params]["value"] = ["DATE"]
       retry
     end
 
     def wrap_in_array?(klass, value, multi_property)
-      klass.value_type != 'RECUR' &&
+      klass.value_type != "RECUR" &&
         ((multi_property && value =~ /(?<!\\)[,;]/) || value =~ /(?<!\\);/)
     end
 
     def get_wrapper_class(component, fields)
       klass = component.class.default_property_types[fields[:name]]
-      if !fields[:params]['value'].nil?
-        klass_name = fields[:params].delete('value').first
+      if !fields[:params]["value"].nil?
+        klass_name = fields[:params].delete("value").first
         unless klass_name.upcase == klass.value_type
           klass_name = klass_name.downcase.gsub(/(?:\A|-)(.)/) { |m| m[-1].upcase }
-          klass = Icalendar::Values.const_get klass_name if Icalendar::Values.const_defined?(klass_name)
+          klass = Icalendar::Values.const_get klass_name if Icalendar::Values.const_defined?(
+            klass_name,
+          )
         end
       end
       klass
@@ -100,17 +102,19 @@ module Icalendar
 
     def parse_component(component)
       while (fields = next_fields)
-        if fields[:name] == 'end'
+        if fields[:name] == "end"
           break
-        elsif fields[:name] == 'begin'
-          klass_name = fields[:value].gsub(/\AV/, '').downcase.capitalize
+        elsif fields[:name] == "begin"
+          klass_name = fields[:value].gsub(/\AV/, "").downcase.capitalize
           Icalendar.logger.debug "Adding component #{klass_name}"
           if Icalendar.const_defined? klass_name
             component.add_component parse_component(Icalendar.const_get(klass_name).new)
           elsif Icalendar::Timezone.const_defined? klass_name
             component.add_component parse_component(Icalendar::Timezone.const_get(klass_name).new)
           else
-            component.add_component parse_component(Component.new klass_name.downcase, fields[:value])
+            component.add_component parse_component(
+                                      Component.new klass_name.downcase, fields[:value]
+                                    )
           end
         else
           parse_property component, fields
@@ -136,39 +140,35 @@ module Icalendar
       parse_fields line
     end
 
-    NAME = '[-a-zA-Z0-9]+'
+    NAME = "[-a-zA-Z0-9]+"
     QSTR = '"[^"]*"'
     PTEXT = '[^";:,]*'
     PVALUE = "(?:#{QSTR}|#{PTEXT})"
     PARAM = "(#{NAME})=(#{PVALUE}(?:,#{PVALUE})*)"
-    VALUE = '.*'
+    VALUE = ".*"
     LINE = "(?<name>#{NAME})(?<params>(?:;#{PARAM})*):(?<value>#{VALUE})"
     BAD_LINE = "(?<name>#{NAME})(?<params>(?:;#{PARAM})*)"
 
     def parse_fields(input)
-      if parts = %r{#{LINE}}.match(input)
+      if parts = /#{LINE}/.match(input)
         value = parts[:value]
       else
-        parts = %r{#{BAD_LINE}}.match(input) unless strict?
+        parts = /#{BAD_LINE}/.match(input) unless strict?
         parts or fail "Invalid iCalendar input line: #{input}"
         # Non-strict and bad line so use a value of empty string
-        value = ''
+        value = ""
       end
 
       params = {}
-      parts[:params].scan %r{#{PARAM}} do |match|
+      parts[:params].scan /#{PARAM}/ do |match|
         param_name = match[0].downcase
         params[param_name] ||= []
-        match[1].scan %r{#{PVALUE}} do |param_value|
-          params[param_name] << param_value.gsub(/\A"|"\z/, '') if param_value.size > 0
+        match[1].scan /#{PVALUE}/ do |param_value|
+          params[param_name] << param_value.gsub(/\A"|"\z/, "") if param_value.size > 0
         end
       end
       Icalendar.logger.debug "Found fields: #{parts.inspect} with params: #{params.inspect}"
-      {
-        name: parts[:name].downcase.gsub('-', '_'),
-        params: params,
-        value: value
-      }
+      { name: parts[:name].downcase.gsub("-", "_"), params: params, value: value }
     end
   end
 end

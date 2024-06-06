@@ -4,6 +4,9 @@ inherit_gem:
 Discourse/NoAddReferenceOrAliasesActiveRecordMigration:
   Enabled: false
 
+Discourse/TimeEqMatcher:
+  Enabled: false
+
 AllCops:
   Exclude:
     - 'gems/**/*'

@@ -1,8 +1,8 @@
 import Controller from "@ember/controller";
 import ModalFunctionality from "discourse/mixins/modal-functionality";
 import discourseComputed from "discourse-common/utils/decorators";
-import Event from "../models/event";
 import I18n from "I18n";
+import Event from "../models/event";
 
 const DELETE_TARGETS = ["events_only", "events_and_topics", "topics_only"];
 

@@ -1,12 +1,8 @@
 module Icalendar
-
   module HasComponents
-
     def self.included(base)
       base.extend ClassMethods
-      base.class_eval do
-        attr_reader :custom_components
-      end
+      base.class_eval { attr_reader :custom_components }
     end
 
     def initialize(*args)
@@ -35,7 +31,7 @@ module Icalendar
     end
 
     def respond_to_missing?(method_name, include_private = false)
-      method_name.to_s.start_with?('add_x_') || super
+      method_name.to_s.start_with?("add_x_") || super
     end
 
     module ClassMethods
@@ -58,21 +54,24 @@ module Icalendar
 
         define_method singular_name do |c = nil, &block|
           if c.nil?
-            c = begin
-              klass ||= Icalendar.const_get singular_name.capitalize
-              klass.new
-            rescue NameError => ne
-              Icalendar.logger.warn ne.message
-              Component.new singular_name
-            end
+            c =
+              begin
+                klass ||= Icalendar.const_get singular_name.capitalize
+                klass.new
+              rescue NameError => ne
+                Icalendar.logger.warn ne.message
+                Component.new singular_name
+              end
           end
 
           add_component c, &block
         end
 
-        define_method "find_#{singular_name}" do |id|
-          send(components).find { |c| c.send(find_by) == id }
-        end if find_by
+        if find_by
+          define_method "find_#{singular_name}" do |id|
+            send(components).find { |c| c.send(find_by) == id }
+          end
+        end
 
         define_method "add_#{singular_name}" do |c|
           send singular_name, c
@@ -84,5 +83,4 @@ module Icalendar
       end
     end
   end
-
 end

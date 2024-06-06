@@ -1,8 +1,9 @@
 import Component from "@ember/component";
-import Connection from "../models/connection";
-import discourseComputed from "discourse-common/utils/decorators";
-import showModal from "discourse/lib/show-modal";
 import { notEmpty, readOnly } from "@ember/object/computed";
+import { service } from "@ember/service";
+import discourseComputed from "discourse-common/utils/decorators";
+import Connection from "../models/connection";
+import EventsConnectionFilters from "./modal/events-connection-filters";
 
 function filtersMatch(filters1, filters2) {
   if ((filters1 && !filters2) || (!filters1 && filters2)) {
@@ -35,8 +36,10 @@ export default Component.extend({
   ],
   hasFilters: notEmpty("connection.filters"),
   hasChildCategory: readOnly("connection.category.parent_category_id"),
+  modal: service(),
 
   didReceiveAttrs() {
+    this._super();
     this.set("currentConnection", JSON.parse(JSON.stringify(this.connection)));
   },
 
@@ -127,7 +130,7 @@ export default Component.extend({
     },
 
     openFilters() {
-      showModal("events-connection-filters", {
+      this.modal.show(EventsConnectionFilters, {
         model: {
           connection: this.get("connection"),
         },

@@ -1,7 +1,11 @@
-import selectKit from "discourse/tests/helpers/select-kit-helper";
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
+import { click, fillIn, visit } from "@ember/test-helpers";
 import { test } from "qunit";
-import { visit } from "@ember/test-helpers";
+import {
+  acceptance,
+  exists,
+  query,
+} from "discourse/tests/helpers/qunit-helpers";
+import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { registerRoutes } from "../helpers/events-routes";
 
 function providerRoutes(needs) {
@@ -58,7 +62,7 @@ acceptance("Events | Provider", function (needs) {
     assert.ok(exists(".events.provider"), "it shows the provider route");
 
     assert.equal(
-      find(".admin-events-controls h2").eq(0).text().trim(),
+      query(".admin-events-controls h2").innerText.trim(),
       "Providers",
       "title displayed"
     );
@@ -73,17 +77,18 @@ acceptance("Events | Provider", function (needs) {
       exists("tr[data-provider-id=new]"),
       "it displays a new provider row"
     );
-    assert.ok(
-      find("tr[data-provider-id=new] .save-provider").prop("disabled"),
+    assert.strictEqual(
+      query("tr[data-provider-id=new] .save-provider").disabled,
+      true,
       "it disables the save button"
     );
 
     await fillIn("tr[data-provider-id=new] .provider-name", "my_provider");
 
-    assert.ok(
-      find("tr[data-provider-id=new] .save-provider").prop("disabled") ===
-        false,
-      "it enables the save button"
+    assert.strictEqual(
+      query("tr[data-provider-id=new] .save-provider").disabled,
+      false,
+      "it enabled the save button"
     );
 
     await click("tr[data-provider-id=new] .save-provider");
@@ -93,13 +98,14 @@ acceptance("Events | Provider", function (needs) {
     await visit("/admin/events/provider");
 
     await fillIn(
-      "tr[data-provider-id=1] .provider-name",
+      "tr[data-provider-id='1'] .provider-name",
       "my_updated_provider"
     );
 
-    assert.ok(
-      find("tr[data-provider-id=1] .save-provider").prop("disabled") === false,
-      "it enables the save button"
+    assert.strictEqual(
+      query("tr[data-provider-id='1'] .save-provider").disabled,
+      false,
+      "it enabled the save button"
     );
 
     await click(".save-provider");
@@ -108,8 +114,8 @@ acceptance("Events | Provider", function (needs) {
   test("Appropriate credential controls show for different provider types", async (assert) => {
     await visit("/admin/events/provider");
 
-    assert.ok(
-      find(".credentials-container").eq(0).text().trim(),
+    assert.equal(
+      query(".credentials-container").innerText.trim(),
       "No Credentials",
       "no credentials displayed"
     );
@@ -117,8 +123,8 @@ acceptance("Events | Provider", function (needs) {
     await selectKit(".provider-type").expand();
     await selectKit(".provider-type").selectRowByValue("icalendar");
 
-    assert.ok(
-      find("tr[data-provider-id=1] .credentials-container").eq(0).text().trim(),
+    assert.equal(
+      query("tr[data-provider-id='1'] .credentials-container").innerText.trim(),
       "No Credentials",
       "no credentials displayed"
     );

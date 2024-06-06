@@ -1,10 +1,11 @@
-<EventsHeader @view={{view}} @message={{message}}>
+<EventsHeader @viewName={{viewName}} @message={{message}}>
   {{d-button
     id="add-connection"
     action=(action "addConnection")
     label="admin.events.connection.add.label"
     title="admin.events.connection.add.title"
-    icon="plus"}}
+    icon="plus"
+  }}
 </EventsHeader>
 
 <div class="admin-events-container">
@@ -27,7 +28,8 @@
             sources=sources
             removeConnection=(action "removeConnection")
             clients=clients
-            setMessage=(action "setMessage")}}
+            setMessage=(action "setMessage")
+          }}
         {{/each}}
       </tbody>
     </table>

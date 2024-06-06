@@ -1,6 +1,6 @@
-import discourseComputed from "discourse-common/utils/decorators";
-import { not, notEmpty } from "@ember/object/computed";
 import Component from "@ember/component";
+import { not, notEmpty } from "@ember/object/computed";
+import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
 
 const icons = {
@@ -11,11 +11,11 @@ const icons = {
 };
 
 const urls = {
-  provider: "https://discourse.pluginmanager.org/t/539",
-  source: "https://discourse.pluginmanager.org/t/540",
-  connection: "https://discourse.pluginmanager.org/t/541",
-  event: "https://discourse.pluginmanager.org/t/543",
-  log: "https://discourse.pluginmanager.org/t/543",
+  provider: "https://coop.pavilion.tech/t/1220",
+  source: "https://coop.pavilion.tech/t/1221",
+  connection: "https://coop.pavilion.tech/t/1222",
+  event: "https://coop.pavilion.tech/t/1223",
+  log: "https://coop.pavilion.tech/t/1223",
 };
 
 export default Component.extend({
@@ -29,9 +29,9 @@ export default Component.extend({
     return icons[type] || "info-circle";
   },
 
-  @discourseComputed("message.key", "view", "message.opts")
-  text(key, view, opts) {
-    return I18n.t(`admin.events.message.${view}.${key}`, opts || {});
+  @discourseComputed("message.key", "viewName", "message.opts")
+  text(key, viewName, opts) {
+    return I18n.t(`admin.events.message.${viewName}.${key}`, opts || {});
   },
 
   @discourseComputed
@@ -39,10 +39,8 @@ export default Component.extend({
     return I18n.t(`admin.events.message.documentation`);
   },
 
-  @discourseComputed("view")
-  documentationUrl(view) {
-    return (
-      urls[view] || "https://discourse.pluginmanager.org/c/discourse-events"
-    );
+  @discourseComputed("viewName")
+  documentationUrl(viewName) {
+    return urls[viewName] || "https://coop.pavilion.tech/c/discourse-events";
   },
 });

@@ -1,9 +1,9 @@
+import { A } from "@ember/array";
 import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import Source from "../models/source";
 import Topic from "discourse/models/topic";
-import { A } from "@ember/array";
+import Source from "../models/source";
 
 const Event = EmberObject.extend();
 

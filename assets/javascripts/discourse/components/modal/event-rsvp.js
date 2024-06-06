@@ -1,20 +1,22 @@
+import { getOwner } from "@ember/application";
+import Component from "@ember/component";
+import { action } from "@ember/object";
+import { ajax } from "discourse/lib/ajax";
+import { extractError } from "discourse/lib/ajax-error";
+import User from "discourse/models/user";
 import {
   default as discourseComputed,
   observes,
 } from "discourse-common/utils/decorators";
-import { getOwner } from "@ember/application";
-import { ajax } from "discourse/lib/ajax";
-import { extractError } from "discourse/lib/ajax-error";
-import Component from "@ember/component";
-import { action } from "@ember/object";
-import User from "discourse/models/user";
+import I18n from "I18n";
 
 export default Component.extend({
   userList: [],
   type: "going",
-  title: I18n.t('event_rsvp.modal.title'),
+  title: I18n.t("event_rsvp.modal.title"),
 
   didReceiveAttrs() {
+    this._super();
     this.setUserList();
   },
 

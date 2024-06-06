@@ -1,7 +1,11 @@
-import selectKit from "discourse/tests/helpers/select-kit-helper";
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
+import { click, fillIn, visit } from "@ember/test-helpers";
 import { test } from "qunit";
-import { visit } from "@ember/test-helpers";
+import {
+  acceptance,
+  exists,
+  query,
+} from "discourse/tests/helpers/qunit-helpers";
+import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
@@ -74,7 +78,7 @@ acceptance("Events | Source", function (needs) {
     assert.ok(exists(".events.source"), "it shows the source route");
 
     assert.equal(
-      find(".admin-events-controls h2").eq(0).text().trim(),
+      query(".admin-events-controls h2").innerText.trim(),
       "Sources",
       "title displayed"
     );
@@ -86,8 +90,9 @@ acceptance("Events | Source", function (needs) {
     await click("#add-source");
 
     assert.ok(exists("tr[data-source-id=new]"), "it displays a new source row");
-    assert.ok(
-      find("tr[data-source-id=new] .save-source").prop("disabled"),
+    assert.strictEqual(
+      query("tr[data-source-id=new] .save-source").disabled,
+      true,
       "it disables the save button"
     );
 
@@ -98,8 +103,9 @@ acceptance("Events | Source", function (needs) {
       1
     );
 
-    assert.ok(
-      find("tr[data-source-id=new] .save-source").prop("disabled") === false,
+    assert.strictEqual(
+      query("tr[data-source-id=new] .save-source").disabled,
+      false,
       "it enables the save button"
     );
 
@@ -109,10 +115,11 @@ acceptance("Events | Source", function (needs) {
   test("Edit source works", async (assert) => {
     await visit("/admin/events/source");
 
-    await fillIn("tr[data-source-id=1] .source-name", "my_updated_source");
+    await fillIn("tr[data-source-id='1'] .source-name", "my_updated_source");
 
-    assert.ok(
-      find("tr[data-source-id=1] .save-source").prop("disabled") === false,
+    assert.strictEqual(
+      query("tr[data-source-id='1'] .save-source").disabled,
+      false,
       "it enables the save button"
     );
 

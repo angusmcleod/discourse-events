@@ -3,8 +3,7 @@
 module DiscourseEvents
   module Auth
     class Base
-      attr_reader :provider,
-                  :logger
+      attr_reader :provider, :logger
 
       def initialize(provider_id)
         @provider = Provider.find(provider_id)

@@ -2,11 +2,12 @@
 
 module DiscourseEvents
   class SyncManager
-    attr_reader :user,
-                :client
+    attr_reader :user, :client
 
     def initialize(user, client)
-      raise ArgumentError.new("Must pass a valid client") unless Connection.client_names.include?(client.to_s)
+      if Connection.client_names.exclude?(client.to_s)
+        raise ArgumentError.new("Must pass a valid client")
+      end
 
       @user = user
       @client = client.to_s
@@ -19,25 +20,29 @@ module DiscourseEvents
       source_name = syncer.connection.source.name
       category_name = syncer.connection.category.name
 
-      unless syncer&.class.ready?
-        message = I18n.t("log.sync_client_not_ready",
-          client_name: client_name,
-          source_name: source_name,
-          category_name: category_name
-        )
+      unless syncer&.class&.ready?
+        message =
+          I18n.t(
+            "log.sync_client_not_ready",
+            client_name: client_name,
+            source_name: source_name,
+            category_name: category_name,
+          )
         syncer.log(:error, message)
         return false
       end
 
       result = syncer.sync
 
-      message = I18n.t('log.sync_finished',
-        client_name: client.humanize,
-        source_name: source_name,
-        category_name: category_name,
-        created_count: result[:created_topics].size,
-        updated_count: result[:updated_topics].size
-      )
+      message =
+        I18n.t(
+          "log.sync_finished",
+          client_name: client.humanize,
+          source_name: source_name,
+          category_name: category_name,
+          created_count: result[:created_topics].size,
+          updated_count: result[:updated_topics].size,
+        )
       syncer.log(:info, message)
 
       result
@@ -45,18 +50,14 @@ module DiscourseEvents
 
     def self.sync_connection(connection_id)
       connection = Connection.find_by(id: connection_id)
-      return unless connection.present?
+      return if connection.blank?
 
       syncer = self.new(connection.user, connection.client)
       syncer.sync(connection)
     end
 
     def self.sync_all_connections
-      result = {
-        synced_connections: [],
-        created_topics: [],
-        updated_topics: []
-      }
+      result = { synced_connections: [], created_topics: [], updated_topics: [] }
 
       Connection.all.each do |connection|
         result[:synced_connections] << connection.id

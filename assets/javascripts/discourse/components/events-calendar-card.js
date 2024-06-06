@@ -1,9 +1,9 @@
-import DiscourseURL from "discourse/lib/url";
-import { cook } from "discourse/lib/text";
-import { on } from "discourse-common/utils/decorators";
-import { bind, next, scheduleOnce } from "@ember/runloop";
 import Component from "@ember/component";
 import { action } from "@ember/object";
+import { bind, next, scheduleOnce } from "@ember/runloop";
+import { cook } from "discourse/lib/text";
+import DiscourseURL from "discourse/lib/url";
+import { on } from "discourse-common/utils/decorators";
 
 export default Component.extend({
   classNames: "events-calendar-card",
@@ -18,6 +18,7 @@ export default Component.extend({
   },
 
   didInsertElement() {
+    this._super(...arguments);
     this.set("clickHandler", bind(this, this.documentClick));
 
     next(() => $(document).on("mousedown", this.get("clickHandler")));
@@ -61,6 +62,7 @@ export default Component.extend({
   },
 
   willDestroyElement() {
+    this._super(...arguments);
     $(document).off("mousedown", this.get("clickHandler"));
   },
 
