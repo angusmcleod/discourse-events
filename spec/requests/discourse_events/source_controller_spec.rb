@@ -5,65 +5,62 @@ describe DiscourseEvents::SourceController do
   fab!(:provider) { Fabricate(:discourse_events_provider) }
   fab!(:user) { Fabricate(:user, admin: true) }
 
-  before do
-    sign_in(user)
-  end
+  before { sign_in(user) }
 
   it "lists sources and providers" do
     get "/admin/events/source.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body['sources'].first['name']).to eq(source.name)
-    expect(response.parsed_body['providers'].first['name']).to eq(source.provider.name)
+    expect(response.parsed_body["sources"].first["name"]).to eq(source.name)
+    expect(response.parsed_body["providers"].first["name"]).to eq(source.provider.name)
   end
 
   it "creates sources" do
-    put "/admin/events/source/new.json", params: {
-      source: {
-        name: 'my_source',
-        provider_id: provider.id
-      }
-    }
+    put "/admin/events/source/new.json",
+        params: {
+          source: {
+            name: "my_source",
+            provider_id: provider.id,
+          },
+        }
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body['source']['name']).to eq('my_source')
-    expect(response.parsed_body['source']['provider_id']).to eq(provider.id)
+    expect(response.parsed_body["source"]["name"]).to eq("my_source")
+    expect(response.parsed_body["source"]["provider_id"]).to eq(provider.id)
   end
 
   it "handles invalid create params" do
-    put "/admin/events/source/new.json", params: {
-      source: {
-        name: 'inval$d source n4m3',
-        provider_id: provider.id
-      }
-    }
+    put "/admin/events/source/new.json",
+        params: {
+          source: {
+            name: "inval$d source n4m3",
+            provider_id: provider.id,
+          },
+        }
 
     expect(response.status).to eq(400)
-    expect(response.parsed_body['errors'].first).to eq("Name is invalid")
+    expect(response.parsed_body["errors"].first).to eq("Name is invalid")
   end
 
   it "updates sources" do
     new_name = "new_source_name"
 
-    put "/admin/events/source/#{source.id}.json", params: {
-      source: {
-        name: new_name
-      }
-    }
+    put "/admin/events/source/#{source.id}.json", params: { source: { name: new_name } }
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body['source']['name']).to eq(new_name)
+    expect(response.parsed_body["source"]["name"]).to eq(new_name)
   end
 
   it "handles invalid update params" do
-    put "/admin/events/source/#{source.id}.json", params: {
-      source: {
-        name: 'inval$d source n4m3',
-      }
-    }
+    put "/admin/events/source/#{source.id}.json",
+        params: {
+          source: {
+            name: "inval$d source n4m3",
+          },
+        }
 
     expect(response.status).to eq(400)
-    expect(response.parsed_body['errors'].first).to eq("Name is invalid")
+    expect(response.parsed_body["errors"].first).to eq("Name is invalid")
   end
 
   it "destroys sources" do

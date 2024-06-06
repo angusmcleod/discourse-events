@@ -2,19 +2,29 @@
 
 module DiscourseEvents
   class Event < ActiveRecord::Base
-    self.table_name = 'discourse_events_events'
+    self.table_name = "discourse_events_events"
 
-    has_many :event_connections, foreign_key: 'event_id', class_name: 'DiscourseEvents::EventConnection', dependent: :destroy
+    has_many :event_connections,
+             foreign_key: "event_id",
+             class_name: "DiscourseEvents::EventConnection",
+             dependent: :destroy
     has_many :connections, through: :event_connections, source: :connection
     has_many :topics, through: :event_connections
 
-    has_many :series_events, primary_key: "series_id", foreign_key: 'series_id', class_name: 'DiscourseEvents::EventConnection'
+    has_many :series_events,
+             primary_key: "series_id",
+             foreign_key: "series_id",
+             class_name: "DiscourseEvents::EventConnection"
     has_many :series_events_topics, through: :series_events, source: :topic
 
-    belongs_to :source, foreign_key: 'source_id', class_name: 'DiscourseEvents::Source'
-    belongs_to :provider, foreign_key: 'provider_id', class_name: 'DiscourseEvents::Provider'
+    belongs_to :source, foreign_key: "source_id", class_name: "DiscourseEvents::Source"
+    belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
 
-    validates :status, inclusion: { in: %w(draft published cancelled), message: "%{value} is not a valid event status" }
+    validates :status,
+              inclusion: {
+                in: %w[draft published cancelled],
+                message: "%{value} is not a valid event status",
+              }
   end
 end
 

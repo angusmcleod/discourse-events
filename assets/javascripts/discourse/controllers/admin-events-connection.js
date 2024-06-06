@@ -3,10 +3,12 @@ import Connection from "../models/connection";
 import { notEmpty } from "@ember/object/computed";
 import Message from "../mixins/message";
 import I18n from "I18n";
+import { service } from "@ember/service";
 
 export default Controller.extend(Message, {
   hasConnections: notEmpty("connections"),
   view: "connection",
+  dialog: service(),
 
   actions: {
     addConnection() {
@@ -26,18 +28,16 @@ export default Controller.extend(Message, {
       if (connection.id === "new") {
         this.get("connections").removeObject(connection);
       } else {
-        bootbox.confirm(
-          I18n.t("admin.events.connection.remove.confirm"),
-          I18n.t("cancel"),
-          I18n.t("admin.events.connection.remove.label"),
-          (result) => {
-            if (result) {
-              Connection.destroy(connection).then(() => {
-                this.get("connections").removeObject(connection);
-              });
-            }
-          }
-        );
+        this.dialog.confirm({
+          message: I18n.t("admin.events.connection.remove.confirm"),
+          confirmButtonLabel: "admin.events.connection.remove.label",
+          cancelButtonLabel: "cancel",
+          didConfirm: () => {
+            Connection.destroy(connection).then(() => {
+              this.get("connections").removeObject(connection);
+            });
+          },
+        });
       }
     },
   },

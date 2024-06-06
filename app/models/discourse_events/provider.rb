@@ -4,20 +4,30 @@ module DiscourseEvents
   class Provider < ActiveRecord::Base
     self.table_name = "discourse_events_providers"
 
-    NO_AUTH ||= %w(developer icalendar)
-    TOKEN ||= %w(eventbrite humanitix eventzilla)
-    OAUTH2 ||= %w(meetup)
+    NO_AUTH ||= %w[developer icalendar]
+    TOKEN ||= %w[eventbrite humanitix eventzilla]
+    OAUTH2 ||= %w[meetup]
     TYPES = NO_AUTH + TOKEN + OAUTH2
 
-    has_many :sources, foreign_key: "provider_id", class_name: "DiscourseEvents::Source", dependent: :destroy
+    has_many :sources,
+             foreign_key: "provider_id",
+             class_name: "DiscourseEvents::Source",
+             dependent: :destroy
 
-    validates :name, uniqueness: true, format: { with: /\A[a-z0-9\_]+\Z/i, message: "%{value} is not a valid name" }
-    validates :provider_type, inclusion: { in: TYPES, message: "%{value} is not a valid provider type" }
+    validates :name,
+              uniqueness: true,
+              format: {
+                with: /\A[a-z0-9\_]+\Z/i,
+                message: "%{value} is not a valid name",
+              }
+    validates :provider_type,
+              inclusion: {
+                in: TYPES,
+                message: "%{value} is not a valid provider type",
+              }
 
     def options
-      if (TOKEN + OAUTH2).include?(self.provider_type)
-        { token: self.token }
-      end
+      { token: self.token } if (TOKEN + OAUTH2).include?(self.provider_type)
     end
 
     def valid_token?
@@ -84,11 +94,12 @@ module DiscourseEvents
     end
 
     def auth
-      @auth ||= begin
-        klass = "DiscourseEvents::Auth::#{self.provider_type.camelize}"
-        return nil unless Module.const_get(klass)
-        klass.constantize.new(self.id)
-      end
+      @auth ||=
+        begin
+          klass = "DiscourseEvents::Auth::#{self.provider_type.camelize}"
+          return nil unless Module.const_get(klass)
+          klass.constantize.new(self.id)
+        end
     end
   end
 end

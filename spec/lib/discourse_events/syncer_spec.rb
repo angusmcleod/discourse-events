@@ -5,17 +5,14 @@ require "rails_helper"
 describe DiscourseEvents::Syncer do
   subject { DiscourseEvents::Syncer }
 
+  # rubocop:disable Discourse/Plugins/NoMonkeyPatching
   DiscourseEvents::Syncer.class_eval do
     def create_event_topic(event)
       create_event_post(event).topic
     end
 
     def update_event_topic(topic, event)
-      topic.update_columns(
-        title: event.name,
-        fancy_title: nil,
-        slug: nil
-      )
+      topic.update_columns(title: event.name, fancy_title: nil, slug: nil)
       topic.first_post.update_columns(raw: post_raw(event))
       topic
     end
@@ -24,14 +21,21 @@ describe DiscourseEvents::Syncer do
       event.description
     end
   end
+  # rubocop:enable Discourse/Plugins/NoMonkeyPatching
 
   fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:category) { Fabricate(:category) }
-  fab!(:user) { Fabricate(:user) }
+  fab!(:category)
+  fab!(:user)
   fab!(:admin) { Fabricate(:user, admin: true) }
-  fab!(:connection) { Fabricate(:discourse_events_connection, source: source, category: category, user: user) }
-  fab!(:event1) { Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1") }
-  fab!(:event2) { Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2") }
+  fab!(:connection) do
+    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
+  end
+  fab!(:event1) do
+    Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1")
+  end
+  fab!(:event2) do
+    Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2")
+  end
 
   describe "sync" do
     def sync_events(opts = {})
@@ -42,13 +46,13 @@ describe DiscourseEvents::Syncer do
       event2.reload
     end
 
-    it 'syncs event data' do
+    it "syncs event data" do
       sync_events
 
       expect(event1.topics.first.title).to eq(event1.name)
     end
 
-    it 'updates event data' do
+    it "updates event data" do
       new_name = "New event name"
       event1.name = new_name
       event1.save!
@@ -58,24 +62,19 @@ describe DiscourseEvents::Syncer do
       expect(event1.topics.first.title).to eq(new_name)
     end
 
-    it 'prevents the post from being edited by anyone' do
+    it "prevents the post from being edited by anyone" do
       sync_events
 
       expect(Guardian.new(admin).can_edit_post?(event1.topics.first.first_post)).to eq(false)
     end
 
-    it 'returns ids of created and updated topics' do
+    it "returns ids of created and updated topics" do
       syncer = subject.new(user, connection)
       syncer.stubs(:create_events).returns([1])
       syncer.stubs(:update_events).returns([2, 3])
       result = syncer.sync
 
-      expect(result).to eq(
-        {
-          created_topics: [1],
-          updated_topics: [2, 3]
-        }
-      )
+      expect(result).to eq({ created_topics: [1], updated_topics: [2, 3] })
     end
   end
 
@@ -140,7 +139,13 @@ describe DiscourseEvents::Syncer do
   end
 
   context "with filters" do
-    fab!(:filter1) { Fabricate(:discourse_events_connection_filter, connection: connection, query_value: event2.name) }
+    fab!(:filter1) do
+      Fabricate(
+        :discourse_events_connection_filter,
+        connection: connection,
+        query_value: event2.name,
+      )
+    end
 
     it "filters events" do
       syncer = subject.new(user, connection)

@@ -3,18 +3,19 @@ import buildTopicRoute from "discourse/routes/build-topic-route";
 import { calendarRange } from "../lib/date-utilities";
 
 export default function buildCalendarRoute(routeConfig) {
-  const klass = routeConfig.type === 'category' ? 
-    buildCategoryRoute({ filter: 'calendar' }) :
-    buildTopicRoute('calendar');
+  const klass =
+    routeConfig.type === "category"
+      ? buildCategoryRoute({ filter: "calendar" })
+      : buildTopicRoute("calendar");
 
   return class extends klass {
     templateName = "discovery/calendar";
-  
-    beforeModel(transition) {
+
+    beforeModel() {
       super.beforeModel(...arguments);
       const routeName = this.routeName;
       const queryParams = this.paramsFor(routeName);
-  
+
       if (!queryParams.start || !queryParams.end) {
         const month = moment().month();
         const year = moment().year();
@@ -22,12 +23,12 @@ export default function buildCalendarRoute(routeConfig) {
         this.setProperties({ start, end });
       }
     }
-  
-    setupController(controller, model) {
+
+    setupController() {
       super.setupController(...arguments);
       const start = this.get("start");
       const end = this.get("end");
-  
+
       if (start || end) {
         let initialDateRange = {};
         if (start) {
@@ -37,13 +38,14 @@ export default function buildCalendarRoute(routeConfig) {
           initialDateRange["end"] = end;
         }
 
-        const controllerName = this.routeConfig.type === "category" ?
-          "discovery.calendarCategory" :
-          "discovery.calendar";
+        const controllerName =
+          this.routeConfig.type === "category"
+            ? "discovery.calendarCategory"
+            : "discovery.calendar";
         this.controllerFor(controllerName).setProperties({
           initialDateRange,
         });
       }
     }
-  }
+  };
 }

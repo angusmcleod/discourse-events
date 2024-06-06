@@ -1,6 +1,5 @@
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { default as discourseComputed } from "discourse-common/utils/decorators";
-import showModal from "discourse/lib/show-modal";
 import { ajax } from "discourse/lib/ajax";
 import Component from "@ember/component";
 import { equal, gt, notEmpty } from "@ember/object/computed";

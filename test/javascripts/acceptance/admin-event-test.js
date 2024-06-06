@@ -1,4 +1,8 @@
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
+import {
+  acceptance,
+  exists,
+  query,
+} from "discourse/tests/helpers/qunit-helpers";
 import { test } from "qunit";
 import { visit } from "@ember/test-helpers";
 import { registerRoutes } from "../helpers/events-routes";
@@ -58,13 +62,13 @@ acceptance("Events | Event", function (needs) {
     assert.ok(exists(".events.event"), "it shows the event route");
 
     assert.equal(
-      find(".admin-events-controls h2").eq(0).text().trim(),
+      query(".admin-events-controls h2").innerText.trim(),
       "Events",
       "title displayed"
     );
 
     assert.equal(
-      find(".events-event-row .name").eq(0).text().trim(),
+      query(".events-event-row .name").innerText.trim(),
       "La Traviata",
       "Name displayed"
     );

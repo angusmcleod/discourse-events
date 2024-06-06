@@ -1,8 +1,8 @@
 <td class="name-column">
-  {{input
-    value=provider.name
-    placeholder=(i18n "admin.events.provider.name.placeholder")
-    class="provider-name"}}
+  <Input
+    @value={{provider.name}}
+    placeholder={{i18n "admin.events.provider.name.placeholder"}}
+    class="provider-name"/>
 </td>
 
 <td class="url-column">
@@ -64,12 +64,13 @@
 <td class="action-column">
   {{conditional-loading-spinner condition=saving size="small"}}
 
-  {{d-button
-    action=(action "saveProvider")
-    icon="save"
-    title="admin.events.provider.save.title"
-    disabled=saveDisabled
-    class=saveClass}}
+  <DButton
+    @action={{action "saveProvider"}}
+    @icon="save"
+    @class={{this.saveClass}}
+    @label="admin.events.connection.filters.add.label"
+    @title="admin.events.provider.save.title"
+    @disabled={{this.saveDisabled}}/>
 
   {{d-button
     action=removeProvider

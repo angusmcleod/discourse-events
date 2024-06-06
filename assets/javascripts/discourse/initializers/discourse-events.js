@@ -1,4 +1,3 @@
-import Category from "discourse/models/category";
 import {
   default as discourseComputed,
   observes,

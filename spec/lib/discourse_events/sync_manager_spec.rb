@@ -6,27 +6,28 @@ describe DiscourseEvents::SyncManager do
   subject { DiscourseEvents::SyncManager }
 
   fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:category) { Fabricate(:category) }
-  fab!(:user) { Fabricate(:user) }
-  fab!(:connection) { Fabricate(:discourse_events_connection, source: source, category: category, user: user) }
+  fab!(:category)
+  fab!(:user)
+  fab!(:connection) do
+    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
+  end
   fab!(:event) { Fabricate(:discourse_events_event, source: source) }
 
-  it 'syncs a connection' do
+  it "syncs a connection" do
     subject.sync_connection(connection.id)
 
     topic = Topic.find_by(title: event.name, category_id: category.id)
     expect(topic.id).to eq(event.topics.first.id)
   end
 
-  it 'syncs all syncable connections' do
+  it "syncs all syncable connections" do
     subject.sync_all_connections
 
     topic = Topic.find_by(title: event.name, category_id: category.id)
     expect(topic.id).to eq(event.topics.first.id)
   end
 
-  it 'does not sync a connection if the client changes' do
-
+  it "does not sync a connection if the client changes" do
     if SiteSetting.respond_to?(:calendar_enabled)
       SiteSetting.calendar_enabled = true
       SiteSetting.discourse_post_event_enabled = true
@@ -47,8 +48,12 @@ describe DiscourseEvents::SyncManager do
   end
 
   context "with event series" do
-    fab!(:event1) { Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1") }
-    fab!(:event2) { Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2") }
+    fab!(:event1) do
+      Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1")
+    end
+    fab!(:event2) do
+      Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2")
+    end
 
     before do
       DiscourseEvents::Source.any_instance.stubs(:supports_series).returns(true)

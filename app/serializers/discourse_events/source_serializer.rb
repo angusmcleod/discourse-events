@@ -2,12 +2,7 @@
 
 module DiscourseEvents
   class SourceSerializer < ApplicationSerializer
-    attributes :id,
-               :name,
-               :provider_id,
-               :source_options,
-               :from_time,
-               :to_time
+    attributes :id, :name, :provider_id, :source_options, :from_time, :to_time
 
     def source_options
       object.source_options_hash

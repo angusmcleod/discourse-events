@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 class DiscourseEvents::RsvpController < ApplicationController
   attr_accessor :topic
-  before_action :check_user_and_find_topic, only: [:add, :remove]
+  before_action :check_user_and_find_topic, only: %i[add remove]
   before_action :check_if_rsvp_enabled, except: [:users]
+
+  requires_plugin DiscourseEvents::PLUGIN_NAME
 
   def add
     prop = Hash.new
@@ -11,7 +13,7 @@ class DiscourseEvents::RsvpController < ApplicationController
     list = @topic.send(prop[:key]) || []
 
     if @topic.event_going_max && list.length >= @topic.event_going_max
-      raise I18n.t('event_rsvp.errors.going_max')
+      raise I18n.t("event_rsvp.errors.going_max")
     end
 
     list.push(User.find_by(username: rsvp_params[:usernames].first).id)
@@ -52,7 +54,7 @@ class DiscourseEvents::RsvpController < ApplicationController
       begin
         users = User.where(username: rsvp_params[:usernames])
         render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
-      rescue
+      rescue StandardError
         render_json_dump "[]"
       end
     else
@@ -67,9 +69,7 @@ class DiscourseEvents::RsvpController < ApplicationController
   end
 
   def check_user_and_find_topic
-    unless User.exists?(username: rsvp_params[:usernames].first)
-      raise Discourse::InvalidAccess.new
-    end
+    raise Discourse::InvalidAccess.new unless User.exists?(username: rsvp_params[:usernames].first)
 
     if topic = Topic.find_by(id: rsvp_params[:topic_id])
       @topic = topic
@@ -80,18 +80,14 @@ class DiscourseEvents::RsvpController < ApplicationController
 
   def check_if_rsvp_enabled
     unless SiteSetting.events_rsvp && @topic.event_rsvp
-      raise I18n.t('event_rsvp.errors.not_enabled')
+      raise I18n.t("event_rsvp.errors.not_enabled")
     end
   end
 
   def push_update(topic, prop)
     channel = "/calendar-events/#{topic.id}"
 
-    msg = {
-      current_user_id: current_user.id,
-      updated_at: Time.now,
-      type: "rsvp"
-    }
+    msg = { current_user_id: current_user.id, updated_at: Time.now, type: "rsvp" }
 
     msg[prop[:key]] = prop[:value]
 

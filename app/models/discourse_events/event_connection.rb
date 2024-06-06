@@ -2,14 +2,18 @@
 
 module DiscourseEvents
   class EventConnection < ActiveRecord::Base
-    self.table_name = 'discourse_events_event_connections'
+    self.table_name = "discourse_events_event_connections"
 
-    belongs_to :connection, foreign_key: 'connection_id', class_name: 'DiscourseEvents::Connection'
-    belongs_to :event, foreign_key: 'event_id', class_name: 'DiscourseEvents::Event'
+    belongs_to :connection, foreign_key: "connection_id", class_name: "DiscourseEvents::Connection"
+    belongs_to :event, foreign_key: "event_id", class_name: "DiscourseEvents::Event"
     belongs_to :topic
     belongs_to :post
 
-    validates :client, inclusion: { in: Connection.client_names, message: "%{value} is not a valid connection client" }
+    validates :client,
+              inclusion: {
+                in: Connection.client_names,
+                message: "%{value} is not a valid connection client",
+              }
   end
 end
 

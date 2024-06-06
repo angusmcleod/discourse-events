@@ -2,10 +2,10 @@
 
 module DiscourseEvents
   class Log < ActiveRecord::Base
-    self.table_name = 'discourse_events_logs'
+    self.table_name = "discourse_events_logs"
 
-    enum level: [ :info, :error ]
-    enum context: [ :import, :sync, :auth ]
+    enum level: { info: 0, error: 1 }
+    enum context: { import: 0, sync: 1, auth: 2 }
 
     validates :message, presence: true
     validates :level, presence: true

@@ -1,0 +1,42 @@
+<DModal
+  class="events-connection-filters-modal"
+  @title={{i18n "admin.events.connection.filters.title"}}
+>
+  <:body>
+    <div class="connection-filters">
+      <ul class="filters">
+        {{#each model.connection.filters as |filter|}}
+          <li class="filter">
+            <ComboBox
+              @content={{queryColumns}}
+              @value={{filter.query_column}}
+              @onChange={{action (mut filter.query_column)}}
+              class="filter-column"
+              @options={{hash none="admin.events.connection.filter.query_column.select"}}/>
+            <Input
+              @value={{filter.query_value}}
+              placeholder={{i18n "admin.events.connection.filter.query_value"}}
+              class="filter-value"/>
+            <DButton
+              @action={{action "removeFilter" filter}}
+              @icon="times"
+              @title="admin.events.connection.filter.remove.title"/>
+          </li>
+        {{/each}}
+      </ul>
+      <DButton
+        @action={{action "addFilter"}}
+        @icon="plus"
+        @class="add-filter"
+        @label="admin.events.connection.filters.add.label"
+        @title="admin.events.connection.filters.add.title"/>
+    </div>
+  </:body>
+  <:footer>
+      <DButton
+        @class="btn-primary"
+        @action={{@closeModal}}
+        @label="admin.events.connection.filters.done.label"
+        @title="admin.events.connection.filters.done.title"/>
+  </:footer>
+</DModal>

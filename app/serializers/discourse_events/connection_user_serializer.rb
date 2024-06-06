@@ -2,7 +2,6 @@
 
 module DiscourseEvents
   class ConnectionUserSerializer < ApplicationSerializer
-    attributes :id,
-               :username
+    attributes :id, :username
   end
 end

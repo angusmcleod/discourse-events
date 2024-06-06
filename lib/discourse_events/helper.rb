@@ -6,39 +6,28 @@ module DiscourseEvents
       event_start = event[:start].to_datetime
       event_end = event[:end].present? ? event[:end].to_datetime : nil
       format = event[:all_day] ? :date_only : :long
-      event_version  = event[:version] if event[:version]
+      event_version = event[:version] if event[:version]
 
       event_timezone = SiteSetting.events_timezone_default
       event_timezone = event[:timezone] if event[:timezone].present?
       event_timezone = timezone if timezone.present?
 
-      if event[:rsvp]
-        event_going = event[:going]
-      end
+      event_going = event[:going] if event[:rsvp]
 
       if event_timezone.present?
         event_start = event_start.in_time_zone(event_timezone)
 
-        if event_end
-          event_end = event_end.in_time_zone(event_timezone)
-        end
+        event_end = event_end.in_time_zone(event_timezone) if event_end
       end
 
-      result = {
-        start: event_start,
-        end: event_end,
-        format: format,
-        version: event_version
-      }
+      result = { start: event_start, end: event_end, format: format, version: event_version }
 
       if event_timezone.present?
         result[:timezone] = event_timezone
         result[:offset] = timezone_offset(event_timezone)
       end
 
-      if event_going.present?
-        result[:going] = event_going
-      end
+      result[:going] = event_going if event_going.present?
 
       result
     end
@@ -48,11 +37,12 @@ module DiscourseEvents
     end
 
     def self.timezone_label(event)
-      return '' if !event[:timezone]
+      return "" if !event[:timezone]
 
-      standard_tz = DiscourseEventsTimezoneDefaultSiteSetting.values.select do |tz|
-        tz[:value] === event[:timezone]
-      end
+      standard_tz =
+        DiscourseEventsTimezoneDefaultSiteSetting.values.select do |tz|
+          tz[:value] === event[:timezone]
+        end
 
       if standard_tz.first
         label = standard_tz.first[:name]

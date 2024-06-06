@@ -3,10 +3,8 @@
 module DiscourseEvents
   class DiscourseEventsSyncer < DiscourseEvents::Syncer
     def self.ready?
-      defined?(DiscoursePostEvent) == 'constant' &&
-        DiscoursePostEvent.class == Module &&
-        ::SiteSetting.calendar_enabled &&
-        ::SiteSetting.discourse_post_event_enabled
+      defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
+        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
     end
 
     def create_event_topic(event)
@@ -16,11 +14,7 @@ module DiscourseEvents
 
     def update_event_topic(topic, event)
       # No validations or callbacks can be triggered when updating this data
-      topic.update_columns(
-        title: event.name,
-        fancy_title: nil,
-        slug: nil,
-      )
+      topic.update_columns(title: event.name, fancy_title: nil, slug: nil)
       topic.first_post.update_columns(raw: post_raw(event))
 
       if topic.first_post.event

@@ -9,7 +9,7 @@
   </thead>
   <tbody>
     {{#each logs as |log|}}
-      {{events-log-row log=log}}
+      <EventsLogRow @log={{log}} />
     {{/each}}
   </tbody>
 </table>

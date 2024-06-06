@@ -2,7 +2,6 @@
 
 module DiscourseEvents
   class LogController < AdminController
-
     PAGE_LIMIT = 30
 
     def index
@@ -11,14 +10,9 @@ module DiscourseEvents
       direction = ActiveRecord::Type::Boolean.new.cast(params[:asc]) ? "ASC" : "DESC"
       offset = page * PAGE_LIMIT
 
-      logs = Log.order("#{order} #{direction}")
-        .offset(offset)
-        .limit(PAGE_LIMIT)
+      logs = Log.order("#{order} #{direction}").offset(offset).limit(PAGE_LIMIT)
 
-      render_json_dump(
-        page: page,
-        logs: serialize_data(logs, LogSerializer, root: false)
-      )
+      render_json_dump(page: page, logs: serialize_data(logs, LogSerializer, root: false))
     end
   end
 end

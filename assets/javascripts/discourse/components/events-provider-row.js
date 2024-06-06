@@ -23,12 +23,7 @@ export default Component.extend({
     this.set("currentProvider", JSON.parse(JSON.stringify(this.provider)));
   },
 
-  @discourseComputed(
-    "provider.name",
-    "provider.url",
-    "provider.provider_type",
-    "provider.url"
-  )
+  @discourseComputed("provider.name", "provider.url", "provider.provider_type")
   providerChanged(name, url, type) {
     const cp = this.currentProvider;
     return cp.name !== name || cp.url !== url || cp.provider_type !== type;

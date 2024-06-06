@@ -8,11 +8,12 @@ import { extractError } from "discourse/lib/ajax-error";
 import Component from "@ember/component";
 import { action } from "@ember/object";
 import User from "discourse/models/user";
+import I18n from "I18n";
 
 export default Component.extend({
   userList: [],
   type: "going",
-  title: I18n.t('event_rsvp.modal.title'),
+  title: I18n.t("event_rsvp.modal.title"),
 
   didReceiveAttrs() {
     this.setUserList();

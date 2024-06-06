@@ -17,7 +17,7 @@ module DiscourseEvents
           client_secret: provider.client_secret,
           grant_type: "authorization_code",
           redirect_uri: provider.redirect_uri,
-          code: code
+          code: code,
         }
         perform_request(body)
       end
@@ -27,7 +27,7 @@ module DiscourseEvents
           client_id: provider.client_id,
           client_secret: provider.client_secret,
           grant_type: "refresh_token",
-          refresh_token: provider.refresh_token
+          refresh_token: provider.refresh_token,
         }
         perform_request(body)
       end
@@ -35,10 +35,14 @@ module DiscourseEvents
       protected
 
       def perform_request(body)
-        response = Excon.post("#{base_url}/access",
-          headers: { "Content-Type" => "application/x-www-form-urlencoded" },
-          body: URI.encode_www_form(body)
-        )
+        response =
+          Excon.post(
+            "#{base_url}/access",
+            headers: {
+              "Content-Type" => "application/x-www-form-urlencoded",
+            },
+            body: URI.encode_www_form(body),
+          )
 
         begin
           raise StandardError unless response.status == 200
@@ -48,9 +52,9 @@ module DiscourseEvents
           return false
         end
 
-        provider.token = data['access_token']
-        provider.token_expires_at = Time.now + data['expires_in'].seconds
-        provider.refresh_token = data['refresh_token']
+        provider.token = data["access_token"]
+        provider.token_expires_at = Time.now + data["expires_in"].seconds
+        provider.refresh_token = data["refresh_token"]
 
         if provider.save!
           refresh_at = provider.reload.token_expires_at.to_time - 10.minutes

@@ -7,24 +7,21 @@ module DiscourseEvents
     end
 
     def create_event_topic(event)
-      post = create_event_post(event,
-        featured_link: event.url,
-        custom_fields: {
-          "event_start": event.start_time.to_i,
-          "event_end": event.end_time.to_i
-        }
-      )
+      post =
+        create_event_post(
+          event,
+          featured_link: event.url,
+          custom_fields: {
+            event_start: event.start_time.to_i,
+            event_end: event.end_time.to_i,
+          },
+        )
       post.topic
     end
 
     def update_event_topic(topic, event)
       # No validations or callbacks can be triggered when updating this data
-      topic.update_columns(
-        title: event.name,
-        fancy_title: nil,
-        slug: nil,
-        featured_link: event.url
-      )
+      topic.update_columns(title: event.name, fancy_title: nil, slug: nil, featured_link: event.url)
       topic.first_post.update_columns(raw: post_raw(event))
       topic.custom_fields["event_start"] = event.start_time.to_i
       topic.custom_fields["event_end"] = event.end_time.to_i

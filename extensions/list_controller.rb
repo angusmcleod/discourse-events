@@ -10,44 +10,42 @@ module ListControllerEventsExtension
     if params.key?(USER_API_KEY)
       request.env[Auth::DefaultCurrentUserProvider::USER_API_KEY] = params[USER_API_KEY]
       if params.key?(USER_API_CLIENT_ID)
-        request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[USER_API_CLIENT_ID]
+        request.env[Auth::DefaultCurrentUserProvider::USER_API_CLIENT_ID] = params[
+          USER_API_CLIENT_ID
+        ]
       end
     end
     super
   end
 end
 
-require 'icalendar/tzinfo'
+require "icalendar/tzinfo"
 class ::ListController
-  skip_before_action :ensure_logged_in, only: [:calendar_ics, :calendar_feed]
-  skip_before_action :set_category, only: [
-    :agenda_feed,
-    :calendar_ics,
-    :calendar_feed,
-  ]
+  skip_before_action :ensure_logged_in, only: %i[calendar_ics calendar_feed]
+  skip_before_action :set_category, only: %i[agenda_feed calendar_ics calendar_feed]
 
   def agenda_feed
-    self.send('event_ics', name: 'agenda')
+    self.send("event_ics", name: "agenda")
   end
 
   def calendar_feed
-    self.send('event_feed', name: 'calendar')
+    self.send("event_feed", name: "calendar")
   end
 
   def calendar_ics
-    self.send('event_ics', name: 'calendar')
+    self.send("event_ics", name: "calendar")
   end
 
   def agenda_feed_category
-    self.send('event_feed', name: 'agenda')
+    self.send("event_feed", name: "agenda")
   end
 
   def calendar_feed_category
-    self.send('event_feed', name: 'calendar')
+    self.send("event_feed", name: "calendar")
   end
 
   def calendar_ics_category
-    self.send('event_ics', name: 'calendar')
+    self.send("event_ics", name: "calendar")
   end
 
   def event_feed(opts = {})
@@ -66,7 +64,7 @@ class ::ListController
     @description = I18n.t("rss_description.events")
     @topic_list = TopicQuery.new(nil, list_opts).list_agenda
 
-    render 'list', formats: [:rss]
+    render "list", formats: [:rss]
   end
 
   def event_ics(opts = {})
@@ -81,13 +79,16 @@ class ::ListController
     list_opts[:category] = @category.id if @category
     list_opts[:tags] = params[:tags] if params[:tags]
 
-    if current_user &&
-       SiteSetting.respond_to?(:assign_enabled) &&
-       SiteSetting.assign_enabled
+    if current_user && SiteSetting.respond_to?(:assign_enabled) && SiteSetting.assign_enabled
       list_opts[:assigned] = current_user.username if params[:assigned]
     end
 
-    tzid = params[:time_zone] || (SiteSetting.respond_to?(:events_timezone_default) && SiteSetting.events_timezone_default.present? && SiteSetting.events_timezone_default) || "Etc/UTC"
+    tzid =
+      params[:time_zone] ||
+        (
+          SiteSetting.respond_to?(:events_timezone_default) &&
+            SiteSetting.events_timezone_default.present? && SiteSetting.events_timezone_default
+        ) || "Etc/UTC"
     tz = TZInfo::Timezone.get tzid
 
     cal = Icalendar::Calendar.new
@@ -111,33 +112,29 @@ class ::ListController
           event[:end] = (event[:end].to_date + 1).strftime "%Y%m%d" if event[:end]
         end
 
-        if event[:going].present?
-          going_emails = User.where(username: event[:going]).map(&:email)
-        end
+        going_emails = User.where(username: event[:going]).map(&:email) if event[:going].present?
 
         cal.event do |e|
-          e.dtstart = Icalendar::Values::DateOrDateTime.new(event[:start], 'tzid' => tzid).call
+          e.dtstart = Icalendar::Values::DateOrDateTime.new(event[:start], "tzid" => tzid).call
           if event[:end]
-            e.dtend = Icalendar::Values::DateOrDateTime.new(event[:end], 'tzid' => tzid).call
+            e.dtend = Icalendar::Values::DateOrDateTime.new(event[:end], "tzid" => tzid).call
           end
           e.summary = t.title
           e.description = t.url << "\n\n" << t.excerpt #add url to event body
           e.url = t.url #most calendar clients don't display this field
-          e.uid = t.id.to_s + "@" + Discourse.base_url.sub(/^https?\:\/\/(www.)?/, '')
+          e.uid = t.id.to_s + "@" + Discourse.base_url.sub(%r{^https?\://(www.)?}, "")
           e.sequence = event[:version]
 
-          if going_emails
-            going_emails.each do |email|
-              e.append_attendee "mailto:#{email}"
-            end
-          end
+          going_emails.each { |email| e.append_attendee "mailto:#{email}" } if going_emails
         end
       end
     end
 
     cal.publish
 
-    render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar") unless performed?
+    unless performed?
+      render body: cal.to_ical, formats: [:ics], content_type: Mime::Type.lookup("text/calendar")
+    end
   end
 
   prepend ListControllerEventsExtension

@@ -9,9 +9,11 @@ describe DiscourseEvents::EventsSyncer do
 
   fab!(:source) { Fabricate(:discourse_events_source) }
   fab!(:event) { Fabricate(:discourse_events_event, source: source) }
-  fab!(:category) { Fabricate(:category) }
-  fab!(:user) { Fabricate(:user) }
-  fab!(:connection) { Fabricate(:discourse_events_connection, source: source, category: category, user: user) }
+  fab!(:category)
+  fab!(:user)
+  fab!(:connection) do
+    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
+  end
 
   before do
     skip("Client not installed") unless subject.ready?
@@ -27,14 +29,14 @@ describe DiscourseEvents::EventsSyncer do
     Topic.find(event.event_connections.first.topic_id)
   end
 
-  it 'creates client event data' do
+  it "creates client event data" do
     topic = sync_events
 
-    expect(topic.custom_fields['event_start']).to eq(event.start_time.to_i)
-    expect(topic.custom_fields['event_end']).to eq(event.end_time.to_i)
+    expect(topic.custom_fields["event_start"]).to eq(event.start_time.to_i)
+    expect(topic.custom_fields["event_end"]).to eq(event.end_time.to_i)
   end
 
-  it 'updates client event data' do
+  it "updates client event data" do
     topic = sync_events
 
     new_name = "New event name"
@@ -51,7 +53,7 @@ describe DiscourseEvents::EventsSyncer do
     expect(Topic.all.size).to eq(1)
     expect(topic.title).to eq(new_name)
     expect(topic.fancy_title).to eq(new_name)
-    expect(topic.custom_fields['event_start']).to eq(new_start_time.to_i)
-    expect(topic.custom_fields['event_end']).to eq(new_end_time.to_i)
+    expect(topic.custom_fields["event_start"]).to eq(new_start_time.to_i)
+    expect(topic.custom_fields["event_end"]).to eq(new_end_time.to_i)
   end
 end
