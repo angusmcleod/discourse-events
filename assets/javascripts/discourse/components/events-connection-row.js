@@ -1,8 +1,8 @@
 import Component from "@ember/component";
-import Connection from "../models/connection";
-import discourseComputed from "discourse-common/utils/decorators";
 import { notEmpty, readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
+import discourseComputed from "discourse-common/utils/decorators";
+import Connection from "../models/connection";
 import EventsConnectionFilters from "./modal/events-connection-filters";
 
 function filtersMatch(filters1, filters2) {
@@ -39,6 +39,7 @@ export default Component.extend({
   modal: service(),
 
   didReceiveAttrs() {
+    this._super();
     this.set("currentConnection", JSON.parse(JSON.stringify(this.connection)));
   },
 

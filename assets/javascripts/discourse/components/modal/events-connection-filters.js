@@ -1,7 +1,7 @@
+import { A } from "@ember/array";
 import Component from "@ember/component";
 import discourseComputed from "discourse-common/utils/decorators";
 import ConnectionFilter from "../../models/connection-filter";
-import { A } from "@ember/array";
 
 const QUERY_COLUMNS = [
   {

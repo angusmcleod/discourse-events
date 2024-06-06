@@ -1,6 +1,6 @@
-import DiscourseURL from "discourse/lib/url";
 import Component from "@ember/component";
 import { action } from "@ember/object";
+import DiscourseURL from "discourse/lib/url";
 
 export default Component.extend({
   tagName: "li",

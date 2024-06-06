@@ -1,8 +1,8 @@
 import Component from "@ember/component";
-import Provider from "../models/provider";
+import { or } from "@ember/object/computed";
 import discourseComputed from "discourse-common/utils/decorators";
 import { contentsMap } from "../lib/events";
-import { or } from "@ember/object/computed";
+import Provider from "../models/provider";
 
 const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
 
@@ -20,6 +20,7 @@ export default Component.extend({
   hasSecretCredentials: or("showToken", "showClientCredentials"),
 
   didReceiveAttrs() {
+    this._super();
     this.set("currentProvider", JSON.parse(JSON.stringify(this.provider)));
   },
 

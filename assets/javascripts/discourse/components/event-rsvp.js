@@ -1,11 +1,11 @@
+import Component from "@ember/component";
+import { action } from "@ember/object";
+import { equal, gt, notEmpty } from "@ember/object/computed";
+import { service } from "@ember/service";
+import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { default as discourseComputed } from "discourse-common/utils/decorators";
-import { ajax } from "discourse/lib/ajax";
-import Component from "@ember/component";
-import { equal, gt, notEmpty } from "@ember/object/computed";
 import I18n from "I18n";
-import { action } from "@ember/object";
-import { service } from "@ember/service";
 import EventRsvp from "./modal/event-rsvp";
 
 export default Component.extend({
@@ -14,6 +14,7 @@ export default Component.extend({
   modal: service(),
 
   didReceiveAttrs() {
+    this._super();
     const currentUser = this.currentUser;
     const eventGoing = this.topic.event.going;
 

@@ -1,11 +1,11 @@
-import selectKit from "discourse/tests/helpers/select-kit-helper";
+import { click, fillIn, visit } from "@ember/test-helpers";
+import { test } from "qunit";
 import {
   acceptance,
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
-import { test } from "qunit";
-import { click, fillIn, visit } from "@ember/test-helpers";
+import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { registerRoutes } from "../helpers/events-routes";
 
 function providerRoutes(needs) {

@@ -1,10 +1,10 @@
-import DatePicker from "discourse/components/date-picker";
-import { observes, on } from "discourse-common/utils/decorators";
-import loadScript from "discourse/lib/load-script";
-import { firstDayOfWeek } from "../lib/date-utilities";
 import { next } from "@ember/runloop";
-import I18n from "I18n";
+import DatePicker from "discourse/components/date-picker";
+import loadScript from "discourse/lib/load-script";
 import { deepMerge } from "discourse-common/lib/object";
+import { observes, on } from "discourse-common/utils/decorators";
+import I18n from "I18n";
+import { firstDayOfWeek } from "../lib/date-utilities";
 
 export default DatePicker.extend({
   layoutName: "components/date-picker",

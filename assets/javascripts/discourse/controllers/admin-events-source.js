@@ -1,10 +1,10 @@
 import Controller from "@ember/controller";
+import { notEmpty } from "@ember/object/computed";
+import { service } from "@ember/service";
+import I18n from "I18n";
+import Message from "../mixins/message";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
-import { notEmpty } from "@ember/object/computed";
-import Message from "../mixins/message";
-import I18n from "I18n";
-import { service } from "@ember/service";
 
 export default Controller.extend(Message, {
   hasSources: notEmpty("sources"),

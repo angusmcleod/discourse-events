@@ -1,19 +1,19 @@
+import Component from "@ember/component";
+import { alias, not, or } from "@ember/object/computed";
+import { bind, scheduleOnce } from "@ember/runloop";
+import { inject as service } from "@ember/service";
+import Category from "discourse/models/category";
 import {
   default as discourseComputed,
   observes,
   on,
 } from "discourse-common/utils/decorators";
+import I18n from "I18n";
 import {
   calendarDays,
   calendarRange,
   eventsForDay,
 } from "../lib/date-utilities";
-import { alias, not, or } from "@ember/object/computed";
-import Category from "discourse/models/category";
-import Component from "@ember/component";
-import { bind, scheduleOnce } from "@ember/runloop";
-import { inject as service } from "@ember/service";
-import I18n from "I18n";
 
 const RESPONSIVE_BREAKPOINT = 800;
 const YEARS = [

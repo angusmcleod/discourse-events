@@ -1,6 +1,6 @@
 import Component from "@ember/component";
-import I18n from "I18n";
 import { action } from "@ember/object";
+import I18n from "I18n";
 
 export default Component.extend({
   title: I18n.t("add_event.modal_title"),

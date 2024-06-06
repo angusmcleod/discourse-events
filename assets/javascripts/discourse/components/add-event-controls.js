@@ -1,14 +1,15 @@
-import { eventLabel } from "../lib/date-utilities";
-import { default as discourseComputed } from "discourse-common/utils/decorators";
-import AddEvent from "./modal/add-event";
 import Component from "@ember/component";
 import { service } from "@ember/service";
+import { default as discourseComputed } from "discourse-common/utils/decorators";
+import { eventLabel } from "../lib/date-utilities";
+import AddEvent from "./modal/add-event";
 
 export default Component.extend({
   classNames: ["event-label"],
   modal: service(),
 
   didInsertElement() {
+    this._super(...arguments);
     $(".title-and-category").toggleClass(
       "event-add-no-text",
       this.get("iconOnly")

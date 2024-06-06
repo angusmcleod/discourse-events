@@ -1,8 +1,8 @@
-import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
-import discourseComputed from "discourse-common/utils/decorators";
 import Category from "discourse/models/category";
-import I18n from "I18n";
 import getURL from "discourse-common/lib/get-url";
+import discourseComputed from "discourse-common/utils/decorators";
+import I18n from "I18n";
+import DropdownSelectBoxComponent from "select-kit/components/dropdown-select-box";
 
 export default DropdownSelectBoxComponent.extend({
   classNames: ["events-calendar-subscription"],

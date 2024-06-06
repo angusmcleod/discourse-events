@@ -1,6 +1,6 @@
+import { A } from "@ember/array";
 import DiscourseRoute from "discourse/routes/discourse";
 import Log from "../models/log";
-import { A } from "@ember/array";
 
 export default DiscourseRoute.extend({
   queryParams: {

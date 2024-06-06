@@ -1,13 +1,13 @@
+import Component from "@ember/component";
+import { gt } from "@ember/object/computed";
+import { bind } from "@ember/runloop";
+import { htmlSafe } from "@ember/template";
 import {
   default as discourseComputed,
   observes,
   on,
 } from "discourse-common/utils/decorators";
 import { eventsForDay } from "../lib/date-utilities";
-import { gt } from "@ember/object/computed";
-import { bind } from "@ember/runloop";
-import Component from "@ember/component";
-import { htmlSafe } from "@ember/template";
 
 const MAX_EVENTS = 4;
 
@@ -62,11 +62,13 @@ export default Component.extend({
   },
 
   didInsertElement() {
+    this._super(...arguments);
     this.set("clickHandler", bind(this, this.documentClick));
     $(document).on("click", this.get("clickHandler"));
   },
 
   willDestroyElement() {
+    this._super(...arguments);
     $(document).off("click", this.get("clickHandler"));
   },
 

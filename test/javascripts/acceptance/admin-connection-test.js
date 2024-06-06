@@ -1,11 +1,11 @@
-import selectKit from "discourse/tests/helpers/select-kit-helper";
+import { click, fillIn, visit } from "@ember/test-helpers";
+import { test } from "qunit";
 import {
   acceptance,
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
-import { test } from "qunit";
-import { click, fillIn, settled, visit } from "@ember/test-helpers";
+import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
@@ -123,7 +123,7 @@ acceptance("Events | Connection", function (needs) {
     const userSelect = selectKit("tr[data-connection-id=new] .connection-user");
     await userSelect.expand();
     await fillIn(".connection-user input.filter-input", "angus");
-    await settled();
+
     await userSelect.selectRowByValue("angus");
 
     await selectKit("tr[data-connection-id=new] .connection-category").expand();

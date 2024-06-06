@@ -1,9 +1,9 @@
 import Component from "@ember/component";
+import { later, scheduleOnce } from "@ember/runloop";
 import {
   default as discourseComputed,
   observes,
 } from "discourse-common/utils/decorators";
-import { later, scheduleOnce } from "@ember/runloop";
 import {
   compileEvent,
   formTimeFormat,
@@ -19,6 +19,7 @@ export default Component.extend({
   showTimezone: false,
 
   didInsertElement() {
+    this._super(...arguments);
     const props = setupEventForm(this.event, {
       siteSettings: this.siteSettings,
     });

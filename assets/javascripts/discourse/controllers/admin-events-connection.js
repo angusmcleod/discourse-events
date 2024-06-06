@@ -1,9 +1,9 @@
 import Controller from "@ember/controller";
-import Connection from "../models/connection";
 import { notEmpty } from "@ember/object/computed";
-import Message from "../mixins/message";
-import I18n from "I18n";
 import { service } from "@ember/service";
+import I18n from "I18n";
+import Message from "../mixins/message";
+import Connection from "../models/connection";
 
 export default Controller.extend(Message, {
   hasConnections: notEmpty("connections"),

@@ -1,5 +1,5 @@
-import { helperContext, registerRawHelper } from "discourse-common/lib/helpers";
 import { htmlSafe } from "@ember/template";
+import { helperContext, registerRawHelper } from "discourse-common/lib/helpers";
 import { eventLabel } from "../lib/date-utilities";
 
 registerRawHelper("event-label", eventLabelHelper);

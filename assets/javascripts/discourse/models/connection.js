@@ -1,8 +1,8 @@
 import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import discourseComputed from "discourse-common/utils/decorators";
 import Site from "discourse/models/site";
+import discourseComputed from "discourse-common/utils/decorators";
 
 const Connection = EmberObject.extend({
   @discourseComputed("category_id")

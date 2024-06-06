@@ -1,13 +1,13 @@
+import EmberObject from "@ember/object";
+import { bind, scheduleOnce } from "@ember/runloop";
+import { withPluginApi } from "discourse/lib/plugin-api";
+import DiscourseURL from "discourse/lib/url";
+import { CREATE_TOPIC } from "discourse/models/composer";
 import {
   default as discourseComputed,
   observes,
   on,
 } from "discourse-common/utils/decorators";
-import DiscourseURL from "discourse/lib/url";
-import { withPluginApi } from "discourse/lib/plugin-api";
-import { CREATE_TOPIC } from "discourse/models/composer";
-import { bind, scheduleOnce } from "@ember/runloop";
-import EmberObject from "@ember/object";
 import I18n from "I18n";
 
 export default {

@@ -1,8 +1,8 @@
-import DiscourseRoute from "discourse/routes/discourse";
-import Source from "../models/source";
-import Provider from "../models/provider";
-import SourceOptions from "../models/source-options";
 import { A } from "@ember/array";
+import DiscourseRoute from "discourse/routes/discourse";
+import Provider from "../models/provider";
+import Source from "../models/source";
+import SourceOptions from "../models/source-options";
 
 export default DiscourseRoute.extend({
   model() {
