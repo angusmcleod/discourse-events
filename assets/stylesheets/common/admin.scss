@@ -24,6 +24,10 @@ $pavilion_primary: #3c1c8c;
     min-height: 30px;
   }
 
+  table {
+    min-width: 100%;
+  }
+
   .admin-controls > nav > ul > li.settings {
     margin-left: auto;
   }
@@ -86,7 +90,6 @@ $pavilion_primary: #3c1c8c;
   }
 
   .credentials-column {
-    min-width: 270px;
 
     .credentials-container {
       display: inline-flex;

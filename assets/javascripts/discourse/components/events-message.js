@@ -11,11 +11,11 @@ const icons = {
 };
 
 const urls = {
-  provider: "https://discourse.pluginmanager.org/t/539",
-  source: "https://discourse.pluginmanager.org/t/540",
-  connection: "https://discourse.pluginmanager.org/t/541",
-  event: "https://discourse.pluginmanager.org/t/543",
-  log: "https://discourse.pluginmanager.org/t/543",
+  provider: "https://coop.pavilion.tech/t/1220",
+  source: "https://coop.pavilion.tech/t/1221",
+  connection: "https://coop.pavilion.tech/t/1222",
+  event: "https://coop.pavilion.tech/t/1223",
+  log: "https://coop.pavilion.tech/t/1223",
 };
 
 export default Component.extend({
@@ -42,7 +42,7 @@ export default Component.extend({
   @discourseComputed("view")
   documentationUrl(view) {
     return (
-      urls[view] || "https://discourse.pluginmanager.org/c/discourse-events"
+      urls[view] || "https://coop.pavilion.tech/c/discourse-events"
     );
   },
 });
