@@ -1,8 +1,16 @@
 {{#if apiKey}}
-    <div class="events-webcal-api">
-      <label class="webcal-label">{{i18n 'webcal_preferences.api_key'}}</label><pre>{{apiKey}}</pre>
-      <label class="webcal-label">{{i18n 'webcal_preferences.client_id'}}</label><pre>{{clientID}}</pre>
-      <p class="webcal-notice">{{i18n 'webcal_preferences.notice'}}</p>
-    </div>
+  <div class="events-webcal-api">
+    <label class="webcal-label">{{i18n
+        "webcal_preferences.api_key"
+      }}</label><pre>{{apiKey}}</pre>
+    <label class="webcal-label">{{i18n
+        "webcal_preferences.client_id"
+      }}</label><pre>{{clientID}}</pre>
+    <p class="webcal-notice">{{i18n "webcal_preferences.notice"}}</p>
+  </div>
 {{/if}}
-{{d-button action=(action "show") class="btn-primary" label="webcal_preferences.generate"}}
+{{d-button
+  action=(action "show")
+  class="btn-primary"
+  label="webcal_preferences.generate"
+}}

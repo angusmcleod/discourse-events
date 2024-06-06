@@ -1,12 +1,15 @@
-require 'uri'
+require "uri"
 
 module Icalendar
   module Values
-
     class Uri < Value
-
       def initialize(value, params = {})
-        parsed = URI.parse value rescue value
+        parsed =
+          begin
+            URI.parse value
+          rescue StandardError
+            value
+          end
         super parsed, params
       end
 
@@ -14,6 +17,5 @@ module Icalendar
         value.to_s
       end
     end
-
   end
 end

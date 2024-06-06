@@ -1,17 +1,16 @@
-require 'date'
-require_relative 'time_with_zone'
+require "date"
+require_relative "time_with_zone"
 
 module Icalendar
   module Values
-
     class DateTime < Value
       include TimeWithZone
 
-      FORMAT = '%Y%m%dT%H%M%S'
+      FORMAT = "%Y%m%dT%H%M%S"
 
       def initialize(value, params = {})
         if value.is_a? String
-          params['tzid'] = 'UTC' if value.end_with? 'Z'
+          params["tzid"] = "UTC" if value.end_with? "Z"
 
           begin
             parsed_date = ::DateTime.strptime(value, FORMAT)
@@ -46,6 +45,5 @@ module Icalendar
       class FormatError < ArgumentError
       end
     end
-
   end
 end

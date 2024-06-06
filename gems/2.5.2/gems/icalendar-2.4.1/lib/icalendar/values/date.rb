@@ -1,10 +1,9 @@
-require 'date'
+require "date"
 
 module Icalendar
   module Values
-
     class Date < Value
-      FORMAT = '%Y%m%d'
+      FORMAT = "%Y%m%d"
 
       def initialize(value, params = {})
         if value.is_a? String
@@ -37,6 +36,5 @@ module Icalendar
       class FormatError < ArgumentError
       end
     end
-
   end
 end

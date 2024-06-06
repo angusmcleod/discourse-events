@@ -1,10 +1,10 @@
 module Icalendar
-
   class Todo < Component
     required_property :dtstamp, Icalendar::Values::DateTime
     required_property :uid
     # dtstart only required if duration is specified
-    required_property :dtstart, Icalendar::Values::DateTime,
+    required_property :dtstart,
+                      Icalendar::Values::DateTime,
                       ->(todo, dtstart) { !(!todo.duration.nil? && dtstart.nil?) }
 
     optional_single_property :due, Icalendar::Values::DateTime
@@ -42,11 +42,9 @@ module Icalendar
     component :alarm, false
 
     def initialize
-      super 'todo'
-      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, 'tzid' => 'UTC'
+      super "todo"
+      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, "tzid" => "UTC"
       self.uid = new_uid
     end
-
   end
-
 end

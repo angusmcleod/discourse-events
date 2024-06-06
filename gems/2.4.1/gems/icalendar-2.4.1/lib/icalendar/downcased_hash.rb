@@ -1,13 +1,10 @@
-require 'delegate'
+require "delegate"
 
 module Icalendar
   class DowncasedHash < ::SimpleDelegator
-
     def initialize(base)
       super Hash.new
-      base.each do |key, value|
-        self[key] = value
-      end
+      base.each { |key, value| self[key] = value }
     end
 
     def []=(key, value)
@@ -31,8 +28,10 @@ module Icalendar
 
   def self.DowncasedHash(base)
     case base
-    when Icalendar::DowncasedHash then base
-    when Hash then Icalendar::DowncasedHash.new(base)
+    when Icalendar::DowncasedHash
+      base
+    when Hash
+      Icalendar::DowncasedHash.new(base)
     else
       fail ArgumentError
     end

@@ -1,7 +1,5 @@
 module Icalendar
-
   class Journal < Component
-
     required_property :dtstamp, Icalendar::Values::DateTime
     required_property :uid
 
@@ -29,11 +27,9 @@ module Icalendar
     optional_property :rdate, Icalendar::Values::DateTime
 
     def initialize
-      super 'journal'
-      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, 'tzid' => 'UTC'
+      super "journal"
+      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, "tzid" => "UTC"
       self.uid = new_uid
     end
-
   end
-
 end

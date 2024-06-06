@@ -1,13 +1,11 @@
-require 'base64'
+require "base64"
 
 module Icalendar
   module Values
-
     class Binary < Value
-
       def params_ical
-        ical_param :value, 'BINARY'
-        ical_param :encoding, 'BASE64'
+        ical_param :value, "BINARY"
+        ical_param :encoding, "BASE64"
         super
       end
 
@@ -23,9 +21,9 @@ module Icalendar
 
       def base64?
         value.is_a?(String) &&
-            value =~ /\A(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{4}|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}==)\z/
+          value =~
+            /\A(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{4}|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}==)\z/
       end
     end
-
   end
 end

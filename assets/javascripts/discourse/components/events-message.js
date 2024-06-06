@@ -41,8 +41,6 @@ export default Component.extend({
 
   @discourseComputed("view")
   documentationUrl(view) {
-    return (
-      urls[view] || "https://coop.pavilion.tech/c/discourse-events"
-    );
+    return urls[view] || "https://coop.pavilion.tech/c/discourse-events";
   },
 });

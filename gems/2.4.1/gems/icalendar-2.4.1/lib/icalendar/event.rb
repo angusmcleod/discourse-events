@@ -1,11 +1,13 @@
 module Icalendar
-
   class Event < Component
     required_property :dtstamp, Icalendar::Values::DateTime
     required_property :uid
     # dtstart only required if calendar's method is nil
-    required_property :dtstart, Icalendar::Values::DateTime,
-                      ->(event, dtstart) { !dtstart.nil? || !(event.parent.nil? || event.parent.ip_method.nil?) }
+    required_property :dtstart,
+                      Icalendar::Values::DateTime,
+                      ->(event, dtstart) do
+                        !dtstart.nil? || !(event.parent.nil? || event.parent.ip_method.nil?)
+                      end
 
     optional_single_property :dtend, Icalendar::Values::DateTime
     optional_single_property :duration, Icalendar::Values::Duration
@@ -41,11 +43,9 @@ module Icalendar
     component :alarm, false
 
     def initialize
-      super 'event'
-      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, 'tzid' => 'UTC'
+      super "event"
+      self.dtstamp = Icalendar::Values::DateTime.new Time.now.utc, "tzid" => "UTC"
       self.uid = new_uid
     end
-
   end
-
 end

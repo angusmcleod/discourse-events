@@ -1,8 +1,8 @@
 begin
-  require 'active_support/time'
+  require "active_support/time"
 
   if defined?(ActiveSupport::TimeWithZone)
-    require 'icalendar/values/active_support_time_with_zone_adapter'
+    require "icalendar/values/active_support_time_with_zone_adapter"
   end
 rescue LoadError
   # tis ok, just a bit less fancy
@@ -14,11 +14,12 @@ module Icalendar
       attr_reader :tz_utc
 
       def initialize(value, params = {})
-        params = Icalendar::DowncasedHash(params)
-        @tz_utc = params['tzid'] == 'UTC'
+        params = Icalendar.DowncasedHash(params)
+        @tz_utc = params["tzid"] == "UTC"
 
-        if defined?(ActiveSupport::TimeZone) && defined?(ActiveSupportTimeWithZoneAdapter) && !params['tzid'].nil?
-          tzid = params['tzid'].is_a?(::Array) ? params['tzid'].first : params['tzid']
+        if defined?(ActiveSupport::TimeZone) && defined?(ActiveSupportTimeWithZoneAdapter) &&
+             !params["tzid"].nil?
+          tzid = params["tzid"].is_a?(::Array) ? params["tzid"].first : params["tzid"]
           zone = ActiveSupport::TimeZone[tzid]
           value = ActiveSupportTimeWithZoneAdapter.new nil, zone, value unless zone.nil?
           super value, params
@@ -28,7 +29,7 @@ module Icalendar
       end
 
       def params_ical
-        ical_params.delete 'tzid' if tz_utc
+        ical_params.delete "tzid" if tz_utc
         super
       end
     end

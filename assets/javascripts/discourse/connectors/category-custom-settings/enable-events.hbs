@@ -1,42 +1,54 @@
-<h3>{{i18n 'category.events_setting_heading'}}</h3>
-<section class='field'>
+<h3>{{i18n "category.events_setting_heading"}}</h3>
+<section class="field">
   <label>
     {{input type="checkbox" checked=category.custom_fields.events_enabled}}
-    {{i18n 'category.enable_events'}}
+    {{i18n "category.enable_events"}}
   </label>
 </section>
 
-<section class='field min-trust'>
+<section class="field min-trust">
   <label>
-    {{i18n 'category.events_min_trust_to_create'}}
-    {{input type="number" value=category.custom_fields.events_min_trust_to_create}}
+    {{i18n "category.events_min_trust_to_create"}}
+    {{input
+      type="number"
+      value=category.custom_fields.events_min_trust_to_create
+    }}
   </label>
 </section>
 
-<section class='field'>
+<section class="field">
   <label>
-    {{input type="checkbox" checked=category.custom_fields.events_agenda_enabled}}
-    {{i18n 'category.enable_events_agenda'}}
+    {{input
+      type="checkbox"
+      checked=category.custom_fields.events_agenda_enabled
+    }}
+    {{i18n "category.enable_events_agenda"}}
   </label>
 </section>
 
-<section class='field'>
+<section class="field">
   <label>
-    {{input type="checkbox" checked=category.custom_fields.events_calendar_enabled}}
-    {{i18n 'category.enable_events_calendar'}}
+    {{input
+      type="checkbox"
+      checked=category.custom_fields.events_calendar_enabled
+    }}
+    {{i18n "category.enable_events_calendar"}}
   </label>
 </section>
 
-<section class='field'>
+<section class="field">
   <label>
-    {{input type="checkbox" checked=category.custom_fields.events_event_label_no_text}}
-    {{i18n 'category.events_event_label_no_text'}}
+    {{input
+      type="checkbox"
+      checked=category.custom_fields.events_event_label_no_text
+    }}
+    {{i18n "category.events_event_label_no_text"}}
   </label>
 </section>
 
-<section class='field'>
+<section class="field">
   <label>
     {{input type="checkbox" checked=category.custom_fields.events_required}}
-    {{i18n 'category.require_event'}}
+    {{i18n "category.require_event"}}
   </label>
 </section>

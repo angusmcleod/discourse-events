@@ -1,5 +1,4 @@
 module Icalendar
-
   class Timezone < Component
     module TzProperties
       def self.included(base)
@@ -19,17 +18,16 @@ module Icalendar
       include TzProperties
 
       def initialize
-        super 'daylight', 'DAYLIGHT'
+        super "daylight", "DAYLIGHT"
       end
     end
     class Standard < Component
       include TzProperties
 
       def initialize
-        super 'standard', 'STANDARD'
+        super "standard", "STANDARD"
       end
     end
-
 
     required_property :tzid
 
@@ -40,7 +38,7 @@ module Icalendar
     component :standard, false, Icalendar::Timezone::Standard
 
     def initialize
-      super 'timezone'
+      super "timezone"
     end
 
     def valid?(strict = false)

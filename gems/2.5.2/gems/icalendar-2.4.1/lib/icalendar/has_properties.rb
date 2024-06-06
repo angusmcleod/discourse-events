@@ -1,12 +1,8 @@
 module Icalendar
-
   module HasProperties
-
     def self.included(base)
       base.extend ClassMethods
-      base.class_eval do
-        attr_reader :custom_properties
-      end
+      base.class_eval { attr_reader :custom_properties }
     end
 
     def initialize(*args)
@@ -53,9 +49,9 @@ module Icalendar
 
     def method_missing(method, *args, &block)
       method_name = method.to_s
-      if method_name.start_with? 'x_'
-        if method_name.end_with? '='
-          append_custom_property method_name.chomp('='), args.first
+      if method_name.start_with? "x_"
+        if method_name.end_with? "="
+          append_custom_property method_name.chomp("="), args.first
         else
           custom_property method_name
         end
@@ -65,7 +61,7 @@ module Icalendar
     end
 
     def respond_to_missing?(method, include_private = false)
-      method.to_s.start_with?('x_') || super
+      method.to_s.start_with?("x_") || super
     end
 
     module ClassMethods
@@ -94,7 +90,7 @@ module Icalendar
       end
 
       def default_property_types
-        @default_property_types ||= Hash.new { |h,k| Icalendar::Values::Text }
+        @default_property_types ||= Hash.new { |h, k| Icalendar::Values::Text }
       end
 
       def required_property(prop, klass = Icalendar::Values::Text, validator = nil)
@@ -169,11 +165,10 @@ module Icalendar
       if value.nil? || value.is_a?(Icalendar::Value)
         value
       elsif value.is_a? ::Array
-        Icalendar::Values::Array.new value, klass, {}, {delimiter: (multi_valued ? ',' : ';')}
+        Icalendar::Values::Array.new value, klass, {}, { delimiter: (multi_valued ? "," : ";") }
       else
         klass.new value
       end
     end
-
   end
 end
