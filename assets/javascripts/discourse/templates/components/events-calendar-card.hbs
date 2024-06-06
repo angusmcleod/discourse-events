@@ -1,8 +1,8 @@
-<a class="topic-link" href {{on "click" (fn this.goToTopic)}}>
+<a class="topic-link" href {{on "click" this.goToTopic}}>
   {{cookedTitle}}
 </a>
 
-<a class="close" href {{on "click" (fn this.close)}}>
+<a class="close" href {{on "click" this.close}}>
   {{d-icon "times"}}
 </a>
 
@@ -11,10 +11,10 @@
   {{discourse-tags topic mode="list"}}
 </div>
 
-<a href class="topic-event event-label" {{on "click" (fn this.goToTopic)}}>
+<a href class="topic-event event-label" {{on "click" this.goToTopic}}>
   {{event-label topic.event}}
 </a>
 
-<a href class="topic-excerpt" {{on "click" (fn this.goToTopic)}}>
+<a href class="topic-excerpt" {{on "click" this.goToTopic}}>
   {{cookedExcerpt}}
 </a>

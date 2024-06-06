@@ -6,5 +6,5 @@ export default Controller.extend(Message, {
   hasLogs: notEmpty("logs"),
   order: null,
   asc: null,
-  view: "log",
+  viewName: "log",
 });

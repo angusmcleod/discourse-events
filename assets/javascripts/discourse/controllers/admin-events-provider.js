@@ -7,7 +7,7 @@ import Provider from "../models/provider";
 
 export default Controller.extend(Message, {
   hasProviders: notEmpty("providers"),
-  view: "provider",
+  viewName: "provider",
   dialog: service(),
 
   actions: {

@@ -29,9 +29,9 @@ export default Component.extend({
     return icons[type] || "info-circle";
   },
 
-  @discourseComputed("message.key", "view", "message.opts")
-  text(key, view, opts) {
-    return I18n.t(`admin.events.message.${view}.${key}`, opts || {});
+  @discourseComputed("message.key", "viewName", "message.opts")
+  text(key, viewName, opts) {
+    return I18n.t(`admin.events.message.${viewName}.${key}`, opts || {});
   },
 
   @discourseComputed
@@ -39,8 +39,8 @@ export default Component.extend({
     return I18n.t(`admin.events.message.documentation`);
   },
 
-  @discourseComputed("view")
-  documentationUrl(view) {
-    return urls[view] || "https://coop.pavilion.tech/c/discourse-events";
+  @discourseComputed("viewName")
+  documentationUrl(viewName) {
+    return urls[viewName] || "https://coop.pavilion.tech/c/discourse-events";
   },
 });

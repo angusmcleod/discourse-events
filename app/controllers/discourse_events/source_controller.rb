@@ -56,8 +56,7 @@ module DiscourseEvents
         :to_time,
         :status,
         :taxonomy,
-        source_options: {
-        },
+        source_options: {},
       )
     end
   end

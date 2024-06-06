@@ -7,7 +7,7 @@ import Connection from "../models/connection";
 
 export default Controller.extend(Message, {
   hasConnections: notEmpty("connections"),
-  view: "connection",
+  viewName: "connection",
   dialog: service(),
 
   actions: {

@@ -17,7 +17,7 @@
 <div class="event-rsvp-details">
   {{#if hasGuests}}
     {{#if currentUser}}
-      <a href {{on "click" (fn this.openModal)}}>
+      <a href {{on "click" this.openModal}}>
         <span>{{goingTotal}}</span>
         <span>{{i18n "event_rsvp.going.label"}}</span>
       </a>

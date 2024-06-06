@@ -11,7 +11,7 @@ export default Controller.extend(Message, {
   selectAll: false,
   order: null,
   asc: null,
-  view: "event",
+  viewName: "event",
 
   @discourseComputed("selectedEvents.[]", "hasEvents")
   deleteDisabled(selectedEvents, hasEvents) {

@@ -8,7 +8,7 @@ import SourceOptions from "../models/source-options";
 
 export default Controller.extend(Message, {
   hasSources: notEmpty("sources"),
-  view: "source",
+  viewName: "source",
   dialog: service(),
 
   actions: {
