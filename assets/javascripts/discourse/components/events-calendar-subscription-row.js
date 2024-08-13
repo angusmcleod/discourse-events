@@ -1,4 +1,5 @@
 import { later } from "@ember/runloop";
+import $ from "jquery";
 import copyText from "discourse/lib/copy-text";
 import DropdownSelectBoxRowComponent from "select-kit/components/dropdown-select-box/dropdown-select-box-row";
 

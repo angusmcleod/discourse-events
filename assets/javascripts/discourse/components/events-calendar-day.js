@@ -2,6 +2,7 @@ import Component from "@ember/component";
 import { gt } from "@ember/object/computed";
 import { bind } from "@ember/runloop";
 import { htmlSafe } from "@ember/template";
+import $ from "jquery";
 import {
   default as discourseComputed,
   observes,

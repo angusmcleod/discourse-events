@@ -6,7 +6,6 @@ import {
   query,
 } from "discourse/tests/helpers/qunit-helpers";
 import selectKit from "discourse/tests/helpers/select-kit-helper";
-import { registerRoutes } from "../helpers/events-routes";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
@@ -90,7 +89,6 @@ acceptance("Events | Connection", function (needs) {
   needs.user({ username: "angus" });
   needs.settings({ events_enabled: true });
 
-  registerRoutes(needs);
   sourceRoutes(needs);
 
   test("Displays the connection admin", async (assert) => {

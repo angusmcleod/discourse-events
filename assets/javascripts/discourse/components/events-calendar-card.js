@@ -1,6 +1,7 @@
 import Component from "@ember/component";
 import { action } from "@ember/object";
 import { bind, next, scheduleOnce } from "@ember/runloop";
+import $ from "jquery";
 import { cook } from "discourse/lib/text";
 import DiscourseURL from "discourse/lib/url";
 import { on } from "discourse-common/utils/decorators";
@@ -23,42 +24,7 @@ export default Component.extend({
 
     next(() => $(document).on("mousedown", this.get("clickHandler")));
 
-    scheduleOnce("afterRender", () => {
-      const offsetLeft = this.element.closest(".day").offsetLeft;
-      const offsetTop = this.element.closest(".day").offsetTop;
-      const windowWidth = $(window).width();
-      const windowHeight = $(window).height();
-
-      let styles;
-
-      if (offsetLeft > windowWidth / 2) {
-        styles = {
-          left: "-390px",
-          right: "initial",
-        };
-      } else {
-        styles = {
-          right: "-390px",
-          left: "initial",
-        };
-      }
-
-      if (offsetTop > windowHeight / 2) {
-        styles = Object.assign(styles, {
-          bottom: "-15px",
-          top: "initial",
-        });
-      } else {
-        styles = Object.assign(styles, {
-          top: "-15px",
-          bottom: "initial",
-        });
-      }
-
-      Object.keys(styles).forEach((key) => {
-        this.element.style[key] = styles[key];
-      });
-    });
+    scheduleOnce("afterRender", this, this.positionCard);
   },
 
   willDestroyElement() {
@@ -78,6 +44,43 @@ export default Component.extend({
 
   clickOutside() {
     this.close();
+  },
+
+  positionCard() {
+    const offsetLeft = this.element.closest(".day").offsetLeft;
+    const offsetTop = this.element.closest(".day").offsetTop;
+    const windowWidth = $(window).width();
+    const windowHeight = $(window).height();
+
+    let styles;
+
+    if (offsetLeft > windowWidth / 2) {
+      styles = {
+        left: "-390px",
+        right: "initial",
+      };
+    } else {
+      styles = {
+        right: "-390px",
+        left: "initial",
+      };
+    }
+
+    if (offsetTop > windowHeight / 2) {
+      styles = Object.assign(styles, {
+        bottom: "-15px",
+        top: "initial",
+      });
+    } else {
+      styles = Object.assign(styles, {
+        top: "-15px",
+        bottom: "initial",
+      });
+    }
+
+    Object.keys(styles).forEach((key) => {
+      this.element.style[key] = styles[key];
+    });
   },
 
   @action

@@ -1,5 +1,6 @@
 import EmberObject from "@ember/object";
 import { bind, scheduleOnce } from "@ember/runloop";
+import $ from "jquery";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import DiscourseURL from "discourse/lib/url";
 import { CREATE_TOPIC } from "discourse/models/composer";
@@ -65,26 +66,25 @@ export default {
           this.composerResized();
         },
 
+        showEventControls() {
+          const showControls = this.get("composer.showEventControls");
+          const $container = $(".composer-fields .title-and-category");
+
+          $container.toggleClass("show-event-controls", Boolean(showControls));
+
+          if (showControls) {
+            const $anchor = this.site.mobileView
+              ? $container.find(".title-input")
+              : $container;
+            $(".composer-controls-event").appendTo($anchor);
+          }
+
+          this.composerResized();
+        },
+
         @observes("composer.showEventControls", "composer.composeState")
         applyEventInlineClass() {
-          scheduleOnce("afterRender", this, () => {
-            const showEventControls = this.get("composer.showEventControls");
-            const $container = $(".composer-fields .title-and-category");
-
-            $container.toggleClass(
-              "show-event-controls",
-              Boolean(showEventControls)
-            );
-
-            if (showEventControls) {
-              const $anchor = this.site.mobileView
-                ? $container.find(".title-input")
-                : $container;
-              $(".composer-controls-event").appendTo($anchor);
-            }
-
-            this.composerResized();
-          });
+          scheduleOnce("afterRender", this, this.showEventControls);
         },
       });
 
@@ -164,22 +164,28 @@ export default {
       api.modifyClass("component:topic-list-item", {
         pluginId: "events",
 
-        @on("didInsertElement")
-        setupEventLink() {
-          scheduleOnce("afterRender", this, () => {
-            $(".event-link", this.element).on(
-              "click",
-              bind(this, this.handleEventLabelClick)
-            );
-          });
+        setupEventLinkClick() {
+          $(".event-link", this.element).on(
+            "click",
+            bind(this, this.handleEventLabelClick)
+          );
         },
 
-        @on("willDestroyElement")
-        teardownEventLink() {
+        teardownEventLinkClick() {
           $(".event-link", this.element).off(
             "click",
             bind(this, this.handleEventLabelClick)
           );
+        },
+
+        @on("didInsertElement")
+        setupEventLink() {
+          scheduleOnce("afterRender", this, this.setupEventLinkClick);
+        },
+
+        @on("willDestroyElement")
+        teardownEventLink() {
+          this.teardownEventLinkClick();
         },
 
         handleEventLabelClick(e) {
@@ -190,30 +196,30 @@ export default {
           DiscourseURL.routeTo(href);
         },
 
-        @on("didRender")
-        moveElements() {
+        handleMoveElements() {
           const topic = this.get("topic");
 
-          scheduleOnce("afterRender", () => {
-            const $linkTopLine = $(".link-top-line", this.element);
-            let rowBelowTitle = false;
+          const $linkTopLine = $(".link-top-line", this.element);
+          let rowBelowTitle = false;
 
-            if (topic.event && topic.event.rsvp) {
-              $(".topic-list-event-rsvp", this.element).insertAfter(
-                $linkTopLine
-              );
-              rowBelowTitle = true;
-            }
+          if (topic.event && topic.event.rsvp) {
+            $(".topic-list-event-rsvp", this.element).insertAfter($linkTopLine);
+            rowBelowTitle = true;
+          }
 
-            if (this.siteSettings.events_event_label_short_after_title) {
-              $(".date-time-container", this.element).insertAfter($linkTopLine);
-              rowBelowTitle = true;
-            }
+          if (this.siteSettings.events_event_label_short_after_title) {
+            $(".date-time-container", this.element).insertAfter($linkTopLine);
+            rowBelowTitle = true;
+          }
 
-            if (rowBelowTitle) {
-              $(".main-link", this.element).addClass("row-below-title");
-            }
-          });
+          if (rowBelowTitle) {
+            $(".main-link", this.element).addClass("row-below-title");
+          }
+        },
+
+        @on("didRender")
+        moveElements() {
+          scheduleOnce("afterRender", this, this.handleMoveElements);
         },
       });
 

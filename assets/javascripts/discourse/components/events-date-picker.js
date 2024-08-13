@@ -39,8 +39,8 @@ export default DatePicker.extend({
           onSelect: (date) => {
             const formattedDate = moment(date).format("YYYY-MM-DD");
 
-            if (this.attrs.onSelect) {
-              this.attrs.onSelect(formattedDate);
+            if (this.onSelect) {
+              this.onSelect(formattedDate);
             }
 
             if (!this.element || this.isDestroying || this.isDestroyed) {

@@ -1,5 +1,6 @@
 import Component from "@ember/component";
 import { service } from "@ember/service";
+import $ from "jquery";
 import { default as discourseComputed } from "discourse-common/utils/decorators";
 import { eventLabel } from "../lib/date-utilities";
 import AddEvent from "./modal/add-event";

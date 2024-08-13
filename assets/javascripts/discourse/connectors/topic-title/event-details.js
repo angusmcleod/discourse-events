@@ -1,4 +1,8 @@
 export default {
+  shouldRender(_, ctx) {
+    return ctx.siteSettings.events_enabled;
+  },
+
   setupComponent(attrs, component) {
     const topic = attrs.model;
     let showRsvp =

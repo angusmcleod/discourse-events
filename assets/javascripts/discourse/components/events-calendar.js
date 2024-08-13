@@ -2,6 +2,7 @@ import Component from "@ember/component";
 import { alias, not, or } from "@ember/object/computed";
 import { bind, scheduleOnce } from "@ember/runloop";
 import { inject as service } from "@ember/service";
+import $ from "jquery";
 import Category from "discourse/models/category";
 import {
   default as discourseComputed,
@@ -26,10 +27,8 @@ export default Component.extend({
   classNameBindings: [":events-calendar", "responsive"],
   showEvents: not("eventsBelow"),
   canSelectDate: alias("eventsBelow"),
-  routing: service("-routing"),
-  queryParams: alias(
-    "routing.router.currentState.routerJsState.fullQueryParams"
-  ),
+  router: service(),
+  queryParams: alias("router.currentRoute.queryParams"),
   years: YEARS.map((y) => ({ id: y, name: y })),
   layoutName: "components/events-calendar",
   webcalDocumentationURL: "https://coop.pavilion.tech/t/1447",
@@ -39,11 +38,7 @@ export default Component.extend({
     this._super();
     moment.locale(I18n.locale);
 
-    scheduleOnce("afterRender", () => {
-      this.handleResize();
-      $(window).on("resize", bind(this, this.handleResize));
-      $("body").addClass("calendar");
-    });
+    scheduleOnce("afterRender", this, this.positionCalendar);
 
     let currentDate = moment().date();
     let currentMonth = moment().month();
@@ -76,6 +71,12 @@ export default Component.extend({
     let year = currentYear;
 
     this.setProperties({ currentDate, currentMonth, currentYear, month, year });
+  },
+
+  positionCalendar() {
+    this.handleResize();
+    $(window).on("resize", bind(this, this.handleResize));
+    $("body").addClass("calendar");
   },
 
   @discourseComputed("siteSettings.login_required", "category.read_restricted")
@@ -135,14 +136,14 @@ export default Component.extend({
     return days;
   },
 
-  @discourseComputed("category")
+  @discourseComputed()
   showSubscription() {
-    return true; // !category || !category.read_restricted;
+    return !this.site.mobileView;
   },
 
   transitionToMonth(month, year) {
     const { start, end } = calendarRange(month, year);
-    const router = this.get("routing.router");
+    const router = this.get("router");
 
     if (this.get("loading")) {
       return;

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.4.0
+# version: 0.5.0
 # authors: Angus McLeod
-# contact_emails: development@pavilion.tech
+# contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
 
 enabled_site_setting :events_enabled

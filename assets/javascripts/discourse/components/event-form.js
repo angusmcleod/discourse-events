@@ -1,12 +1,10 @@
 import Component from "@ember/component";
-import { later, scheduleOnce } from "@ember/runloop";
 import {
   default as discourseComputed,
   observes,
 } from "discourse-common/utils/decorators";
 import {
   compileEvent,
-  formTimeFormat,
   nextInterval,
   setupEventForm,
   timezoneLabel,
@@ -18,15 +16,12 @@ export default Component.extend({
   allDay: false,
   showTimezone: false,
 
-  didInsertElement() {
+  didReceiveAttrs() {
     this._super(...arguments);
     const props = setupEventForm(this.event, {
       siteSettings: this.siteSettings,
     });
     this.setProperties(props);
-    this.setupTimePicker("start");
-    this.setupTimePicker("end");
-
     if (
       this.siteSettings.events_add_default_end_time &&
       !this.event &&
@@ -69,22 +64,6 @@ export default Component.extend({
     this.updateEvent(event, this.eventValid(event));
   },
 
-  setupTimePicker(type) {
-    const time = this.get(`${type}Time`);
-    later(this, () => {
-      scheduleOnce("afterRender", this, () => {
-        const $timePicker = $(`#${type}-time-picker`);
-        $timePicker.timepicker({
-          timeFormat: this.siteSettings.events_event_timepicker_format,
-        });
-        $timePicker.timepicker("setTime", time);
-        $timePicker.change(() => {
-          this.set(`${type}Time`, $timePicker.timepicker("getTime"));
-        });
-      });
-    });
-  },
-
   @discourseComputed()
   timezones() {
     const eventTimezones =
@@ -103,6 +82,14 @@ export default Component.extend({
   },
 
   actions: {
+    onChangeStartTime(time) {
+      this.set("startTime", moment(time));
+    },
+
+    onChangeEndTime(time) {
+      this.set("endTime", moment(time));
+    },
+
     toggleEndEnabled(value) {
       this.set("endEnabled", value);
 
@@ -113,14 +100,11 @@ export default Component.extend({
 
         if (!this.allDay) {
           if (!this.endTime) {
-            let start = moment(this.startDate + " " + this.startTime);
-            this.set(
-              "endTime",
-              moment(start).add(1, "hours").format(formTimeFormat)
+            let start = moment(
+              this.startDate + " " + this.startTime.format("HH:mm")
             );
+            this.set("endTime", moment(start).add(1, "hours"));
           }
-
-          this.setupTimePicker("end");
         }
       } else {
         this.setProperties({
@@ -135,15 +119,10 @@ export default Component.extend({
 
       if (!value) {
         const start = nextInterval();
-
-        this.set("startTime", start.format(formTimeFormat));
-        this.setupTimePicker("start");
+        this.set("startTime", start);
 
         if (this.endEnabled) {
-          const end = moment(start).add(1, "hours");
-
-          this.set("endTime", end.format(formTimeFormat));
-          this.setupTimePicker("end");
+          this.set("endTime", moment(start).add(1, "hours"));
         }
       }
     },
