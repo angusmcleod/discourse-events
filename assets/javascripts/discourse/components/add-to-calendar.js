@@ -1,5 +1,6 @@
 import Component from "@ember/component";
 import { bind } from "@ember/runloop";
+import $ from "jquery";
 import { default as discourseComputed } from "discourse-common/utils/decorators";
 import { googleUri, icsUri } from "../lib/date-utilities";
 

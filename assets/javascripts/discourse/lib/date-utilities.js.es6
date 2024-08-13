@@ -5,7 +5,6 @@ import { renderIcon } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
 
 const formDateFormat = "YYYY-MM-DD";
-const formTimeFormat = "HH:mm";
 const RANGE_FORMAT = "YYYY-MM-DD";
 
 function getDefaultTimezone(args) {
@@ -446,18 +445,17 @@ function setupEventForm(event, args = {}) {
     };
   } else if (start) {
     props["startDate"] = start.format(formDateFormat);
-    props["startTime"] = start.format(formTimeFormat);
+    props["startTime"] = start;
 
     if (end) {
       let endDate = end.format(formDateFormat);
-      let endTime = end.format(formTimeFormat);
       props["endDate"] = endDate;
-      props["endTime"] = endTime;
+      props["endTime"] = end;
       props["endEnabled"] = true;
     }
   } else {
     props["startDate"] = moment().format(formDateFormat);
-    props["startTime"] = nextInterval().format(formTimeFormat);
+    props["startTime"] = nextInterval();
   }
 
   props["timezone"] = timezone || args.siteSettings.events_timezone_default;
@@ -596,7 +594,6 @@ export {
   calendarDays,
   calendarRange,
   getTimezone,
-  formTimeFormat,
   nextInterval,
   eventCalculations,
 };

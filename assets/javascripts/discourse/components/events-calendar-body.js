@@ -1,4 +1,5 @@
 import Component from "@ember/component";
+import $ from "jquery";
 import {
   default as discourseComputed,
   observes,

@@ -84,7 +84,8 @@
         .pika-next,
         input,
         .pika-lendar,
-        .is-selected .pika-button {
+        .is-selected .pika-button,
+        .d-time-input {
           color: var(--primary-low);
           background-image: initial;
           background: initial;
@@ -94,7 +95,8 @@
         }
 
         input,
-        .pika-lendar {
+        .pika-lendar,
+        .time-area .d-time-input .combo-box summary {
           border: 1px solid var(--primary-low) !important;
         }
       }
@@ -116,29 +118,37 @@
       padding-top: 10px;
       display: flex;
       flex-direction: row;
+      gap: 10px;
 
       .date-area {
         order: 1;
+        flex: 1;
+        max-width: 50%;
       }
 
       .time-area {
         order: 2;
-        margin-left: 10px;
+        flex: 1;
+        max-width: 50%;
 
-        .modal-time {
-          width: 127px;
+        .d-time-input {
+          width: 100%;
+
+          .combo-box {
+            width: 100%;
+
+            summary {
+              border: 1px solid var(--primary-medium);
+            }
+          }
         }
       }
 
       input {
-        padding: 4px 10px;
         font-size: 1em;
-        line-height: 1;
         color: var(--primary);
         border: 1px solid var(--primary-medium);
-        min-height: 30px;
-        width: 130px;
-        margin: 10px 0;
+        width: 100%;
       }
     }
 

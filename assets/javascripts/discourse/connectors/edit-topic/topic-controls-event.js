@@ -1,7 +1,11 @@
 import Category from "discourse/models/category";
 
 export default {
-  setupComponent(attrs, component) {
+  shouldRender(_, ctx) {
+    return ctx.siteSettings.events_enabled;
+  },
+
+  setupComponent(_, component) {
     const buffered = this.get("buffered");
     const user = component.currentUser;
     const showEventControls = (category) => {

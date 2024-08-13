@@ -1,8 +1,12 @@
-import { getOwner } from "discourse-common/lib/get-owner";
+import { getOwner } from "@ember/application";
 import I18n from "I18n";
 
 export default {
-  setupComponent(attrs, component) {
+  shouldRender(_, ctx) {
+    return ctx.siteSettings.events_enabled;
+  },
+
+  setupComponent(_, component) {
     const controller = getOwner(this).lookup(
       "controller:preferences/interface"
     );

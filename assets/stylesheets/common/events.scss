@@ -116,7 +116,9 @@
 }
 
 .events-calendar-navigation {
-  display: inline-block;
+  display: inline-flex;
+  max-width: 100%;
+  gap: 0.5em;
 }
 
 .events-calendar-subscription-links {
@@ -186,12 +188,6 @@
 .select-kit.year-dropdown {
   width: 150px;
   min-width: 150px;
-  height: 28px;
-  vertical-align: top;
-
-  .select-kit-header {
-    line-height: 1.3;
-  }
 }
 
 .events-calendar .header {
@@ -200,23 +196,15 @@
 
 .events-calendar.responsive {
   .month-dropdown {
-    width: 90px;
-    min-width: 90px;
+    min-width: 120px;
   }
 
   .year-dropdown {
-    width: 50px;
-    min-width: 50px;
+    min-width: 60px;
   }
 
   .month-dropdown,
   .year-dropdown {
-    height: 30px;
-
-    .select-kit-header {
-      line-height: 1.35;
-    }
-
     &:not(.is-expanded) .select-kit-header {
       width: inherit;
     }
@@ -645,6 +633,7 @@ ul.events-calendar-events {
 
 .composer-controls-event {
   position: relative;
+  margin-left: 8px;
 
   .popup-tip {
     left: 0;
