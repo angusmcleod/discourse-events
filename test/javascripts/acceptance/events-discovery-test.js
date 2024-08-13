@@ -47,6 +47,8 @@ acceptance("Events | topic list with an event", function (needs) {
   });
 
   test("shows event", async function (assert) {
+    this.siteSettings.events_timezone_include_in_topic_list = true;
+    this.siteSettings.events_timezone_display = "event";
     await visit("/c/dev");
 
     assert.ok(
