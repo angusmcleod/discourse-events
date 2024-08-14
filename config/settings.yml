@@ -51,10 +51,10 @@ plugins:
     default: 'default'
     enum: "DiscourseEventsTimezoneDisplaySiteSetting"
   events_timezone_include_in_topic:
-    default: true
+    default: false
     client: true
   events_timezone_include_in_topic_list:
-    default: true
+    default: false
     client: true
   events_timezone_include_in_email:
     default: true

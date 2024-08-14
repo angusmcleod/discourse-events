@@ -1,9 +1,7 @@
 {{#unless model.editingTopic}}
   {{#if model.event}}
     <div class="event-date-mobile">
-      <div class="event-label">
-        {{event-label model.event topic="true"}}
-      </div>
+      {{event-label model.event topic="true"}}
       {{#if siteSettings.events_add_to_calendar}}
         {{add-to-calendar topic=model}}
       {{/if}}

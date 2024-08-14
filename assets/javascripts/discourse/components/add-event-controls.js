@@ -6,7 +6,7 @@ import { eventLabel } from "../lib/date-utilities";
 import AddEvent from "./modal/add-event";
 
 export default Component.extend({
-  classNames: ["event-label"],
+  classNames: ["add-event-controls"],
   modal: service(),
 
   didInsertElement() {
@@ -30,6 +30,7 @@ export default Component.extend({
   valueLabel(event) {
     return eventLabel(event, {
       noText: this.get("noText"),
+      noContainer: true,
       useEventTimezone: true,
       showRsvp: true,
       siteSettings: this.siteSettings,

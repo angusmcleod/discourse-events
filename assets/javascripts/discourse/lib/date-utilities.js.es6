@@ -364,6 +364,10 @@ function eventLabel(event, args = {}) {
     }
   }
 
+  if (!args.noContainer) {
+    label = `<span class='event-label'>${label}</span>`;
+  }
+
   return label;
 }
 
