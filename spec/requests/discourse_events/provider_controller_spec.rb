@@ -45,7 +45,12 @@ describe DiscourseEvents::ProviderController do
   it "updates providers" do
     new_name = "new_provider_name"
 
-    put "/admin/plugins/events/provider/#{provider.id}.json", params: { provider: { name: new_name } }
+    put "/admin/plugins/events/provider/#{provider.id}.json",
+        params: {
+          provider: {
+            name: new_name,
+          },
+        }
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["provider"]["name"]).to eq(new_name)
@@ -96,7 +101,11 @@ describe DiscourseEvents::ProviderController do
       DiscourseEvents::Provider.any_instance.stubs(:request_token).returns(nil)
       DiscourseEvents::Provider.any_instance.expects(:request_token).with(code).once
 
-      get "/admin/plugins/events/provider/#{provider.id}/redirect", params: { state: state, code: code }
+      get "/admin/plugins/events/provider/#{provider.id}/redirect",
+          params: {
+            state: state,
+            code: code,
+          }
 
       expect(response.status).to eq(302)
       expect(response).to redirect_to("/admin/plugins/events/provider")

@@ -1,2 +1,16 @@
 inherit_gem:
   rubocop-discourse: stree-compat.yml
+
+Discourse/NoAddReferenceOrAliasesActiveRecordMigration:
+  Enabled: false
+
+Discourse/TimeEqMatcher:
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - 'gems/**/*'
+    - 'vendor/**/*'
+
+RSpec/NamedSubject:
+  Enabled: false

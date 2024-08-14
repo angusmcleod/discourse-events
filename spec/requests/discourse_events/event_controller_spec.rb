@@ -26,7 +26,11 @@ describe DiscourseEvents::EventController do
       post_id = post.id
       event_id = event.id
 
-      delete "/admin/plugins/events/event.json", params: { event_ids: [event_id], target: "events_only" }
+      delete "/admin/plugins/events/event.json",
+             params: {
+               event_ids: [event_id],
+               target: "events_only",
+             }
 
       expect(response.status).to eq(200)
       expect(response.parsed_body["destroyed_topics_event_ids"].blank?).to eq(true)
@@ -62,7 +66,11 @@ describe DiscourseEvents::EventController do
       post_id = post.id
       event_id = event.id
 
-      delete "/admin/plugins/events/event.json", params: { event_ids: [event_id], target: "topics_only" }
+      delete "/admin/plugins/events/event.json",
+             params: {
+               event_ids: [event_id],
+               target: "topics_only",
+             }
 
       expect(response.status).to eq(200)
       expect(response.parsed_body["destroyed_topics_event_ids"]).to eq([event_id])
