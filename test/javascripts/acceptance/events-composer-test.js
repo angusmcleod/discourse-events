@@ -1,4 +1,4 @@
-import { click, fillIn,visit } from "@ember/test-helpers";
+import { click, fillIn, visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import Category from "discourse/models/category";
 import {
@@ -12,7 +12,7 @@ import { default as Timezones } from "../fixtures/timezone-fixtures";
 acceptance("Events | Composer", function (needs) {
   needs.user();
   needs.site({
-    "event_timezones": Timezones['event_timezones']
+    event_timezones: Timezones["event_timezones"],
   });
 
   test("not in an events category", async function (assert) {
@@ -44,10 +44,7 @@ acceptance("Events | Composer", function (needs) {
 
     await click(".add-event");
 
-    assert.ok(
-      exists(".add-event-modal"),
-      "the add-event-modal is visible"
-    );
+    assert.ok(exists(".add-event-modal"), "the add-event-modal is visible");
 
     const tzChooser = selectKit("#add-event-select-timezone");
     await tzChooser.expand();

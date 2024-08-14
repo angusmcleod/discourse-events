@@ -21,27 +21,24 @@ const setupServer = (needs, attrs = {}) => {
 
 acceptance("Events | topic without an event", function (needs) {
   needs.user();
-  needs.site({"event_timezones": Timezones['event_timezones']});
+  needs.site({ event_timezones: Timezones["event_timezones"] });
   setupServer(needs);
 
   test("does not show event", async function (assert) {
     await visit("/t/280");
 
-    assert.ok(
-      !exists(".event-label"),
-      "the event-label is not visible"
-    );
+    assert.ok(!exists(".event-label"), "the event-label is not visible");
   });
 });
 
 acceptance("Events | topic with an event", function (needs) {
   needs.user();
-  needs.site({"event_timezones": Timezones['event_timezones']});
+  needs.site({ event_timezones: Timezones["event_timezones"] });
   setupServer(needs, {
     event: {
       start: "2022-11-06T12:00:00.000Z",
-      timezone: "Australia/Perth"
-    }
+      timezone: "Australia/Perth",
+    },
   });
 
   test("shows event", async function (assert) {
@@ -49,10 +46,7 @@ acceptance("Events | topic with an event", function (needs) {
     this.siteSettings.events_timezone_display = "event";
     await visit("/t/280");
 
-    assert.ok(
-      exists(".event-label"),
-      "the event-label is visible"
-    );
+    assert.ok(exists(".event-label"), "the event-label is visible");
     assert.strictEqual(
       query(".event-label .date").innerText.trim(),
       "November 6th, 20:00, (GMT+08:00) Perth",

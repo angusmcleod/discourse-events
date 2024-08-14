@@ -17,8 +17,10 @@ module DiscourseEvents
       meetup: {
         group_urlname: /[a-z]/,
       },
-      humanitix: {},
-      eventzilla: {},
+      humanitix: {
+      },
+      eventzilla: {
+      },
     }
 
     FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
