@@ -6,11 +6,11 @@ const Provider = EmberObject.extend();
 
 Provider.reopenClass({
   all() {
-    return ajax("/admin/events/provider").catch(popupAjaxError);
+    return ajax("/admin/plugins/events/provider").catch(popupAjaxError);
   },
 
   update(provider) {
-    return ajax(`/admin/events/provider/${provider.id}`, {
+    return ajax(`/admin/plugins/events/provider/${provider.id}`, {
       type: "PUT",
       data: {
         provider,
@@ -19,7 +19,7 @@ Provider.reopenClass({
   },
 
   destroy(provider) {
-    return ajax(`/admin/events/provider/${provider.id}`, {
+    return ajax(`/admin/plugins/events/provider/${provider.id}`, {
       type: "DELETE",
     }).catch(popupAjaxError);
   },

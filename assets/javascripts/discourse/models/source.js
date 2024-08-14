@@ -6,11 +6,11 @@ const Source = EmberObject.extend();
 
 Source.reopenClass({
   all() {
-    return ajax("/admin/events/source").catch(popupAjaxError);
+    return ajax("/admin/plugins/events/source").catch(popupAjaxError);
   },
 
   update(source) {
-    return ajax(`/admin/events/source/${source.id}`, {
+    return ajax(`/admin/plugins/events/source/${source.id}`, {
       type: "PUT",
       data: {
         source,
@@ -19,13 +19,13 @@ Source.reopenClass({
   },
 
   import(source) {
-    return ajax(`/admin/events/source/${source.id}`, {
+    return ajax(`/admin/plugins/events/source/${source.id}`, {
       type: "POST",
     }).catch(popupAjaxError);
   },
 
   destroy(source) {
-    return ajax(`/admin/events/source/${source.id}`, {
+    return ajax(`/admin/plugins/events/source/${source.id}`, {
       type: "DELETE",
     }).catch(popupAjaxError);
   },

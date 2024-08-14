@@ -1,0 +1,33 @@
+<AdminNav>
+  {{nav-item
+    route="adminPlugins.events.connection"
+    label="admin.events.connection.title"
+  }}
+  {{nav-item
+    route="adminPlugins.events.source"
+    label="admin.events.source.title"
+  }}
+  {{nav-item
+    route="adminPlugins.events.provider"
+    label="admin.events.provider.title"
+  }}
+  {{nav-item
+    route="adminPlugins.events.event"
+    label="admin.events.event.title"
+  }}
+  {{nav-item route="adminPlugins.events.log" label="admin.events.log.title"}}
+
+  <li class="settings">
+    <DButton
+      @class="btn-default"
+      @action={{route-action "showSettings"}}
+      @actionParam={{plugin}}
+      @icon="cog"
+      @label="admin.plugins.change_settings_short"
+    />
+  </li>
+</AdminNav>
+
+<div class="admin-container">
+  {{outlet}}
+</div>

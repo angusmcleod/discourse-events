@@ -8,6 +8,8 @@
 
 enabled_site_setting :events_enabled
 
+add_admin_route "admin.events.title", "events"
+
 register_asset "stylesheets/common/events.scss"
 register_asset "stylesheets/common/admin.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop

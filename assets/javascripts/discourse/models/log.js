@@ -6,7 +6,7 @@ const Log = EmberObject.extend();
 
 Log.reopenClass({
   list(data = {}) {
-    return ajax("/admin/events/log", {
+    return ajax("/admin/plugins/events/log", {
       type: "GET",
       data,
     }).catch(popupAjaxError);

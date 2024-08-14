@@ -113,7 +113,7 @@ export default Component.extend({
     },
 
     authenticateProvider() {
-      window.location.href = `/admin/events/provider/${this.provider.id}/authorize`;
+      window.location.href = `/admin/plugins/events/provider/${this.provider.id}/authorize`;
     },
   },
 });

@@ -9,14 +9,14 @@ const Event = EmberObject.extend();
 
 Event.reopenClass({
   list(data = {}) {
-    return ajax("/admin/events/event", {
+    return ajax("/admin/plugins/events/event", {
       type: "GET",
       data,
     }).catch(popupAjaxError);
   },
 
   destroy(data) {
-    return ajax("/admin/events/event", {
+    return ajax("/admin/plugins/events/event", {
       type: "DELETE",
       data,
     }).catch(popupAjaxError);

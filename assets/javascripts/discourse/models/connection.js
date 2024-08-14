@@ -14,11 +14,11 @@ const Connection = EmberObject.extend({
 
 Connection.reopenClass({
   all() {
-    return ajax("/admin/events/connection").catch(popupAjaxError);
+    return ajax("/admin/plugins/events/connection").catch(popupAjaxError);
   },
 
   update(connection) {
-    return ajax(`/admin/events/connection/${connection.id}`, {
+    return ajax(`/admin/plugins/events/connection/${connection.id}`, {
       type: "PUT",
       contentType: "application/json",
       data: JSON.stringify({ connection }),
@@ -26,13 +26,13 @@ Connection.reopenClass({
   },
 
   sync(connection) {
-    return ajax(`/admin/events/connection/${connection.id}`, {
+    return ajax(`/admin/plugins/events/connection/${connection.id}`, {
       type: "POST",
     }).catch(popupAjaxError);
   },
 
   destroy(connection) {
-    return ajax(`/admin/events/connection/${connection.id}`, {
+    return ajax(`/admin/plugins/events/connection/${connection.id}`, {
       type: "DELETE",
     }).catch(popupAjaxError);
   },

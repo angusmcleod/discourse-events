@@ -1,5 +1,6 @@
 export default {
-  resource: "admin",
+  resource: "admin.adminPlugins",
+  path: "/plugins",
   map() {
     this.route("events", function () {
       this.route("provider");
