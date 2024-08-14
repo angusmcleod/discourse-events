@@ -1,13 +1,15 @@
 import { A } from "@ember/array";
 import Controller from "@ember/controller";
 import { notEmpty } from "@ember/object/computed";
-import showModal from "discourse/lib/show-modal";
+import { inject as service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
+import ConfirmEventDeletion from "../components/modal/events-confirm-event-deletion";
 import Message from "../mixins/message";
 
 export default Controller.extend(Message, {
   hasEvents: notEmpty("events"),
   selectedEvents: A(),
+  modal: service(),
   selectAll: false,
   order: null,
   asc: null,
@@ -24,17 +26,6 @@ export default Controller.extend(Message, {
   },
 
   actions: {
-    showSelect() {
-      this.toggleProperty("showSelect");
-
-      if (!this.showSelect) {
-        this.setProperties({
-          selectedEvents: A(),
-          selectAll: false,
-        });
-      }
-    },
-
     modifySelection(events, checked) {
       if (checked) {
         this.get("selectedEvents").pushObjects(events);
@@ -44,35 +35,31 @@ export default Controller.extend(Message, {
     },
 
     openDelete() {
-      const modal = showModal("events-confirm-event-deletion", {
+      this.modal.show(ConfirmEventDeletion, {
         model: {
           events: this.selectedEvents,
-        },
-      });
+          onDestroyEvents: (
+            destroyedEvents = null,
+            destroyedTopicsEvents = null
+          ) => {
+            this.set("selectedEvents", A());
 
-      modal.setProperties({
-        onDestroyEvents: (
-          destroyedEvents = null,
-          destroyedTopicsEvents = null
-        ) => {
-          if (destroyedEvents) {
-            this.get("events").removeObjects(destroyedEvents);
-          }
+            if (destroyedEvents) {
+              this.get("events").removeObjects(destroyedEvents);
+            }
 
-          if (destroyedTopicsEvents) {
-            const destroyedTopicsEventIds = destroyedTopicsEvents.map(
-              (e) => e.id
-            );
+            if (destroyedTopicsEvents) {
+              const destroyedTopicsEventIds = destroyedTopicsEvents.map(
+                (e) => e.id
+              );
 
-            this.get("events").forEach((event) => {
-              if (destroyedTopicsEventIds.includes(event.id)) {
-                event.set("topics", null);
-              }
-            });
-          }
-        },
-        onCloseModal: () => {
-          this.send("showSelect");
+              this.get("events").forEach((event) => {
+                if (destroyedTopicsEventIds.includes(event.id)) {
+                  event.set("topics", null);
+                }
+              });
+            }
+          },
         },
       });
     },

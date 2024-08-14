@@ -209,7 +209,7 @@ en:
 
         event:
           title: Events
-          select_all: Select All
+          select_all: Select all
           show_select: Show event select
           start_time: Start Time
           name: Name

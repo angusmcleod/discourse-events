@@ -38,6 +38,7 @@ $pavilion_primary: #3c1c8c;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5em;
+  min-height: 37px;
 
   .buttons {
     display: flex;
@@ -221,17 +222,10 @@ $pavilion_primary: #3c1c8c;
 
   tr {
     .select-event {
-      display: none;
-      text-align: center;
+      text-align: right;
 
       input {
-        margin-left: 1rem;
-      }
-    }
-
-    &.show-select {
-      .select-event {
-        display: block;
+        margin: 0 0.5rem;
       }
     }
   }
@@ -248,13 +242,36 @@ $pavilion_primary: #3c1c8c;
     }
   }
 
+  td.start-time {
+    min-width: 170px;
+  }
+
   td.topic {
     min-width: 350px;
     max-width: 350px;
   }
 
+  th {
+    height: 45px;
+    box-sizing: border-box;
+  }
+
   th.event-actions {
     text-align: right;
+
+    .btn,
+    .btn:active,
+    .btn:hover {
+      background: unset !important;
+      color: var(--primary) !important;
+      padding: unset;
+      min-width: 95px;
+
+      .d-icon {
+        color: var(--primary) !important;
+        margin-right: 0.3em;
+      }
+    }
   }
 }
 
@@ -363,6 +380,10 @@ $pavilion_primary: #3c1c8c;
 
       input {
         margin: 0;
+      }
+
+      .select-kit {
+        min-width: 150px;
       }
     }
   }

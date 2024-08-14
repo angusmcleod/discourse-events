@@ -1,11 +1,5 @@
 <EventsHeader @viewName={{viewName}} @message={{message}}>
   {{d-button
-    icon="cog"
-    title="admin.events.event.show_select"
-    action=(action "showSelect")
-    disabled=selectDisabled
-  }}
-  {{d-button
     action=(action "openDelete")
     label="admin.events.event.delete.label"
     title="admin.events.event.delete.title"
@@ -22,7 +16,6 @@
       page=page
       order=order
       asc=asc
-      showSelect=showSelect
       modifySelection=(action "modifySelection")
       selectAll=selectAll
     }}

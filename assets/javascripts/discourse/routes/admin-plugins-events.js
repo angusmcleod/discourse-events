@@ -2,8 +2,8 @@ import DiscourseRoute from "discourse/routes/discourse";
 
 export default DiscourseRoute.extend({
   afterModel(model, transition) {
-    if (transition.to.name === "admin.events.index") {
-      this.router.transitionTo("admin.events.provider");
+    if (transition.to.name === "adminPlugins.events.index") {
+      this.router.transitionTo("adminPlugins.events.event");
     }
   },
 

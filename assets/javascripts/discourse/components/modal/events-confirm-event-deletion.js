@@ -1,12 +1,11 @@
-import Controller from "@ember/controller";
-import ModalFunctionality from "discourse/mixins/modal-functionality";
+import Component from "@ember/component";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
-import Event from "../models/event";
+import Event from "../../models/event";
 
 const DELETE_TARGETS = ["events_only", "events_and_topics", "topics_only"];
 
-export default Controller.extend(ModalFunctionality, {
+export default Component.extend({
   deleteTargets: DELETE_TARGETS.map((t) => ({
     id: t,
     name: I18n.t(`admin.events.event.delete.${t}`),
@@ -39,14 +38,13 @@ export default Controller.extend(ModalFunctionality, {
       Event.destroy(opts)
         .then((result) => {
           if (result.success) {
-            this.onDestroyEvents(
+            this.model.onDestroyEvents(
               events.filter((e) => result.destroyed_event_ids.includes(e.id)),
               events.filter((e) =>
                 result.destroyed_topics_event_ids.includes(e.id)
               )
             );
-            this.onCloseModal();
-            this.send("closeModal");
+            this.closeModal();
           } else {
             this.set("model.error", result.error);
           }
@@ -55,8 +53,7 @@ export default Controller.extend(ModalFunctionality, {
     },
 
     cancel() {
-      this.onCloseModal();
-      this.send("closeModal");
+      this.closeModal();
     },
   },
 });
