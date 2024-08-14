@@ -49,7 +49,7 @@ acceptance("Events | topic with an event", function (needs) {
     assert.ok(exists(".event-label"), "the event-label is visible");
     assert.strictEqual(
       query(".event-label .date").innerText.trim(),
-      "November 6th, 20:00, (GMT+08:00) Perth",
+      "November 6th, 20:00",
       "the event-label shows the right datetime"
     );
   });

@@ -71,7 +71,7 @@ module DiscourseEvents
 
       provider.request_token(params[:code])
 
-      redirect_to "/admin/events/provider"
+      redirect_to "/admin/plugins/events/provider"
     end
 
     protected

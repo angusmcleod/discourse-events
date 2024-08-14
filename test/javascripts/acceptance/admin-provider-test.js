@@ -9,10 +9,10 @@ import selectKit from "discourse/tests/helpers/select-kit-helper";
 
 function providerRoutes(needs) {
   needs.pretender((server, helper) => {
-    server.get("/admin/events", () => {
+    server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
-    server.get("/admin/events/provider", () => {
+    server.get("/admin/plugins/events/provider", () => {
       return helper.response({
         providers: [
           {
@@ -22,7 +22,7 @@ function providerRoutes(needs) {
         ],
       });
     });
-    server.put("/admin/events/provider/new", () => {
+    server.put("/admin/plugins/events/provider/new", () => {
       return helper.response({
         provider: {
           id: 2,
@@ -32,7 +32,7 @@ function providerRoutes(needs) {
         },
       });
     });
-    server.put("/admin/events/provider/:id", () => {
+    server.put("/admin/plugins/events/provider/:id", () => {
       return helper.response({
         provider: {
           id: 1,
@@ -42,7 +42,7 @@ function providerRoutes(needs) {
         },
       });
     });
-    server.delete("/admin/events/provider/:id", () => {
+    server.delete("/admin/plugins/events/provider/:id", () => {
       return helper.response({ success: "OK" });
     });
   });
@@ -55,7 +55,7 @@ acceptance("Events | Provider", function (needs) {
   providerRoutes(needs);
 
   test("Displays the provider admin", async (assert) => {
-    await visit("/admin/events/provider");
+    await visit("/admin/plugins/events/provider");
 
     assert.ok(exists(".events.provider"), "it shows the provider route");
 
@@ -67,7 +67,7 @@ acceptance("Events | Provider", function (needs) {
   });
 
   test("Add provider works", async (assert) => {
-    await visit("/admin/events/provider");
+    await visit("/admin/plugins/events/provider");
 
     await click("#add-provider");
 
@@ -93,7 +93,7 @@ acceptance("Events | Provider", function (needs) {
   });
 
   test("Edit provider works", async (assert) => {
-    await visit("/admin/events/provider");
+    await visit("/admin/plugins/events/provider");
 
     await fillIn(
       "tr[data-provider-id='1'] .provider-name",
@@ -110,7 +110,7 @@ acceptance("Events | Provider", function (needs) {
   });
 
   test("Appropriate credential controls show for different provider types", async (assert) => {
-    await visit("/admin/events/provider");
+    await visit("/admin/plugins/events/provider");
 
     assert.equal(
       query(".credentials-container").innerText.trim(),

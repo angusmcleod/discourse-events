@@ -236,11 +236,11 @@ de:
           documentation: "Schau dir die Dokumentation an"
           connection:
             info: "Verbindungen sind der Ort, an dem du deine Veranstaltungen zeigst"
-            sync_started: "Sync started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             sync_failed_to_start: "Die Synchronisierung konnte nicht gestartet werden."
           source:
             info: "Mit den Quellen importierst du Veranstaltungen von einem Anbieter"
-            import_started: "Der Import hat begonnen. Überprüfe das Ergebnis in den <a href='/admin/events/log'>Logs</a>."
+            import_started: "Der Import hat begonnen. Überprüfe das Ergebnis in den <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Der Import konnte nicht gestartet werden."
           event:
             info: "Die Veranstaltungen, die du importiert hast"

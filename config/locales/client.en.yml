@@ -236,11 +236,11 @@ en:
           documentation: "Check out the documentation"
           connection:
             info: "Connections are where you show your events"
-            sync_started: "Sync started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             sync_failed_to_start: "Sync failed to start."
           source:
             info: "Sources are how you import events from a provider"
-            import_started: "Import started. Check the result in the <a href='/admin/events/log'>Logs</a>."
+            import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Import failed to start."
           event:
             info: "The events you've imported"

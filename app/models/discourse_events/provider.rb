@@ -86,7 +86,7 @@ module DiscourseEvents
 
     def redirect_uri
       return nil unless oauth2_type?
-      "#{DiscourseEvents.base_url}/admin/events/provider/#{self.id}/redirect"
+      "#{DiscourseEvents.base_url}/admin/plugins/events/provider/#{self.id}/redirect"
     end
 
     def request_token(code)

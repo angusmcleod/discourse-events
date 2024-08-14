@@ -9,10 +9,10 @@ import selectKit from "discourse/tests/helpers/select-kit-helper";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
-    server.get("/admin/events", () => {
+    server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
-    server.get("/admin/events/connection", () => {
+    server.get("/admin/plugins/events/connection", () => {
       return helper.response({
         sources: [
           {
@@ -39,7 +39,7 @@ function sourceRoutes(needs) {
         clients: ["events"],
       });
     });
-    server.put("/admin/events/connection/new", () => {
+    server.put("/admin/plugins/events/connection/new", () => {
       return helper.response({
         connection: {
           id: 1,
@@ -53,7 +53,7 @@ function sourceRoutes(needs) {
         },
       });
     });
-    server.put("/admin/events/connection/:id", () => {
+    server.put("/admin/plugins/events/connection/:id", () => {
       return helper.response({
         connection: {
           id: 1,
@@ -67,7 +67,7 @@ function sourceRoutes(needs) {
         },
       });
     });
-    server.delete("/admin/events/connection/:id", () => {
+    server.delete("/admin/plugins/events/connection/:id", () => {
       return helper.response({ success: "OK" });
     });
     server.get("/u/search/users", () => {
@@ -92,7 +92,7 @@ acceptance("Events | Connection", function (needs) {
   sourceRoutes(needs);
 
   test("Displays the connection admin", async (assert) => {
-    await visit("/admin/events/connection");
+    await visit("/admin/plugins/events/connection");
 
     assert.ok(exists(".events.connection"), "it shows the connection route");
 
@@ -104,7 +104,7 @@ acceptance("Events | Connection", function (needs) {
   });
 
   test("Add connection works", async (assert) => {
-    await visit("/admin/events/connection");
+    await visit("/admin/plugins/events/connection");
 
     await click("#add-connection");
 
@@ -149,7 +149,7 @@ acceptance("Events | Connection", function (needs) {
   });
 
   test("Edit connection works", async (assert) => {
-    await visit("/admin/events/connection");
+    await visit("/admin/plugins/events/connection");
 
     await selectKit("tr[data-connection-id='1'] .connection-category").expand();
     await selectKit(
@@ -166,7 +166,7 @@ acceptance("Events | Connection", function (needs) {
   });
 
   test("Filter modal works", async (assert) => {
-    await visit("/admin/events/connection");
+    await visit("/admin/plugins/events/connection");
 
     await click("tr[data-connection-id='1'] .btn.show-filters");
 

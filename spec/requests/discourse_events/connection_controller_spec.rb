@@ -10,7 +10,7 @@ describe DiscourseEvents::ConnectionController do
   before { sign_in(user) }
 
   it "lists connections and sources" do
-    get "/admin/events/connection.json"
+    get "/admin/plugins/events/connection.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["connections"].first["id"]).to eq(connection.id)
@@ -25,14 +25,14 @@ describe DiscourseEvents::ConnectionController do
 
     skip("Discourse Events is not installed") unless DiscourseEvents::DiscourseEventsSyncer.ready?
 
-    get "/admin/events/connection.json"
+    get "/admin/plugins/events/connection.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["clients"]).to match_array(%w[discourse_events events])
   end
 
   it "creates connections" do
-    put "/admin/events/connection/new.json",
+    put "/admin/plugins/events/connection/new.json",
         params: {
           connection: {
             user: {
@@ -51,7 +51,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "handles invalid create params" do
-    put "/admin/events/connection/new.json",
+    put "/admin/plugins/events/connection/new.json",
         params: {
           connection: {
             user: {
@@ -70,7 +70,7 @@ describe DiscourseEvents::ConnectionController do
   it "updates connections" do
     new_client = "discourse_events"
 
-    put "/admin/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
             client: new_client,
@@ -82,7 +82,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "handles invalid update params" do
-    put "/admin/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
             client: "invalid_client",
@@ -96,7 +96,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "destroys connections" do
-    delete "/admin/events/connection/#{connection.id}.json"
+    delete "/admin/plugins/events/connection/#{connection.id}.json"
 
     expect(response.status).to eq(200)
     expect(DiscourseEvents::Connection.exists?(connection.id)).to eq(false)
@@ -108,13 +108,13 @@ describe DiscourseEvents::ConnectionController do
       args: {
         connection_id: connection.id,
       },
-    ) { post "/admin/events/connection/#{connection.id}.json" }
+    ) { post "/admin/plugins/events/connection/#{connection.id}.json" }
 
     expect(response.status).to eq(200)
   end
 
   it "creates filters" do
-    put "/admin/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
             client: "discourse_events",
@@ -132,7 +132,7 @@ describe DiscourseEvents::ConnectionController do
     filter1 = Fabricate(:discourse_events_connection_filter, connection: connection)
     filter2 = Fabricate(:discourse_events_connection_filter, connection: connection)
 
-    put "/admin/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
             client: "discourse_events",

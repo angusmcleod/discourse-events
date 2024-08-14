@@ -7,7 +7,7 @@ describe DiscourseEvents::LogController do
   before { sign_in(user) }
 
   it "lists logs" do
-    get "/admin/events/log.json"
+    get "/admin/plugins/events/log.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["logs"].first["id"]).to eq(log.id)

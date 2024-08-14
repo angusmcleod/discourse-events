@@ -9,10 +9,10 @@ import selectKit from "discourse/tests/helpers/select-kit-helper";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
-    server.get("/admin/events", () => {
+    server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
-    server.get("/admin/events/source", () => {
+    server.get("/admin/plugins/events/source", () => {
       return helper.response({
         providers: [
           {
@@ -34,7 +34,7 @@ function sourceRoutes(needs) {
         ],
       });
     });
-    server.put("/admin/events/source/new", () => {
+    server.put("/admin/plugins/events/source/new", () => {
       return helper.response({
         source: {
           id: 2,
@@ -46,7 +46,7 @@ function sourceRoutes(needs) {
         },
       });
     });
-    server.put("/admin/events/source/:id", () => {
+    server.put("/admin/plugins/events/source/:id", () => {
       return helper.response({
         source: {
           id: 1,
@@ -58,7 +58,7 @@ function sourceRoutes(needs) {
         },
       });
     });
-    server.delete("/admin/events/source/:id", () => {
+    server.delete("/admin/plugins/events/source/:id", () => {
       return helper.response({ success: "OK" });
     });
   });
@@ -71,7 +71,7 @@ acceptance("Events | Source", function (needs) {
   sourceRoutes(needs);
 
   test("Displays the source admin", async (assert) => {
-    await visit("/admin/events/source");
+    await visit("/admin/plugins/events/source");
 
     assert.ok(exists(".events.source"), "it shows the source route");
 
@@ -83,7 +83,7 @@ acceptance("Events | Source", function (needs) {
   });
 
   test("Add source works", async (assert) => {
-    await visit("/admin/events/source");
+    await visit("/admin/plugins/events/source");
 
     await click("#add-source");
 
@@ -111,7 +111,7 @@ acceptance("Events | Source", function (needs) {
   });
 
   test("Edit source works", async (assert) => {
-    await visit("/admin/events/source");
+    await visit("/admin/plugins/events/source");
 
     await fillIn("tr[data-source-id='1'] .source-name", "my_updated_source");
 
@@ -125,7 +125,7 @@ acceptance("Events | Source", function (needs) {
   });
 
   test("Appropriate options show for source providers", async (assert) => {
-    await visit("/admin/events/source");
+    await visit("/admin/plugins/events/source");
 
     await selectKit(".source-provider").expand();
     await selectKit(".source-provider").selectRowByValue(1);

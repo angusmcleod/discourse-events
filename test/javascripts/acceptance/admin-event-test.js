@@ -8,10 +8,10 @@ import {
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
-    server.get("/admin/events", () => {
+    server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
-    server.get("/admin/events/event", () => {
+    server.get("/admin/plugins/events/event", () => {
       return helper.response({
         events: [
           {
@@ -42,7 +42,7 @@ function sourceRoutes(needs) {
         page: 1,
       });
     });
-    server.delete("/admin/events/event", () => {
+    server.delete("/admin/plugins/events/event", () => {
       return helper.response({ success: "OK" });
     });
   });
@@ -55,7 +55,7 @@ acceptance("Events | Event", function (needs) {
   sourceRoutes(needs);
 
   test("Displays the event admin", async (assert) => {
-    await visit("/admin/events/event");
+    await visit("/admin/plugins/events/event");
 
     assert.ok(exists(".events.event"), "it shows the event route");
 

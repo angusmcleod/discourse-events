@@ -8,10 +8,10 @@ import {
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
-    server.get("/admin/events", () => {
+    server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
-    server.get("/admin/events/log", () => {
+    server.get("/admin/plugins/events/log", () => {
       return helper.response({
         logs: [
           {
@@ -26,7 +26,7 @@ function sourceRoutes(needs) {
         page: 1,
       });
     });
-    server.delete("/admin/events/log", () => {
+    server.delete("/admin/plugins/events/log", () => {
       return helper.response({ success: "OK" });
     });
   });
@@ -39,7 +39,7 @@ acceptance("Events | log", function (needs) {
   sourceRoutes(needs);
 
   test("Displays the log admin", async (assert) => {
-    await visit("/admin/events/log");
+    await visit("/admin/plugins/events/log");
 
     assert.ok(exists(".events.log"), "it shows the log route");
 
