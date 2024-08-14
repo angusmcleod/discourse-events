@@ -619,6 +619,7 @@ ul.events-calendar-events {
 
 .composer-controls-event {
   position: relative;
+  margin-left: 8px;
 
   .add-event-controls {
     display: flex;
@@ -635,6 +636,11 @@ ul.events-calendar-events {
     border-color: var(--primary-400);
     background-color: unset;
     color: var(--primary-high);
+  }
+
+  .d-icon {
+    color: var(--primary-high);
+    font-size: var(--font-down-1);
   }
 }
 
