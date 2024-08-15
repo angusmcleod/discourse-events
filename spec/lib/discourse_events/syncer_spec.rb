@@ -140,11 +140,7 @@ describe DiscourseEvents::Syncer do
 
   context "with filters" do
     fab!(:filter1) do
-      Fabricate(
-        :discourse_events_filter,
-        model: connection,
-        query_value: event2.name,
-      )
+      Fabricate(:discourse_events_filter, model: connection, query_value: event2.name)
     end
 
     it "filters events" do

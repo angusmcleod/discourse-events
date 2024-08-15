@@ -123,8 +123,8 @@ describe DiscourseEvents::ConnectionController do
                 id: "new",
                 query_column: "name",
                 query_operator: "like",
-                query_value: "Development"
-              }
+                query_value: "Development",
+              },
             ],
           },
         }
@@ -148,7 +148,7 @@ describe DiscourseEvents::ConnectionController do
                 id: filter1.id,
                 query_column: filter1.query_column,
                 query_operator: filter1.query_operator,
-                query_value: "New Value"
+                query_value: "New Value",
               },
             ],
           },
