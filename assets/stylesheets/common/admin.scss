@@ -190,7 +190,7 @@ $pavilion_primary: #3c1c8c;
     }
 
     .provider-type {
-      width: 150px;
+      width: 130px;
     }
 
     .status-column {
@@ -366,25 +366,21 @@ $pavilion_primary: #3c1c8c;
   }
 }
 
-.connection-filters {
-  min-width: 500px;
+.events-filters-modal {
+  table {
+    width: 100%;
+    margin-bottom: 1em;
 
-  ul {
-    margin: 0;
-    list-style: none;
-
-    li {
-      display: flex;
-      margin-bottom: 1em;
-      gap: 1em;
-
-      input {
-        margin: 0;
-      }
-
-      .select-kit {
-        min-width: 150px;
-      }
+    td {
+      padding: 1em 0.5em;
     }
+  }
+
+  input {
+    margin: 0;
+  }
+
+  .select-kit {
+    min-width: 150px;
   }
 }

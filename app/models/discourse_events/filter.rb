@@ -1,23 +1,27 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  class ConnectionFilter < ActiveRecord::Base
-    self.table_name = "discourse_events_connection_filters"
+  class Filter < ActiveRecord::Base
+    self.table_name = "discourse_events_filters"
 
-    belongs_to :connection, foreign_key: "connection_id", class_name: "DiscourseEvents::Connection"
+    MODEL_TYPES = %w[DiscourseEvents::Connection]
+
+    belongs_to :model, polymorphic: true
 
     enum :query_column, %i[name], prefix: true
+    enum :query_operator, %i[like], prefix: true
 
-    OPERATORS = { name: "ILIKE" }
+    OPERATORS = { like: "ILIKE" }
 
     validate :query_value_format
+    validates :model_type, inclusion: { in: MODEL_TYPES }
 
     def sql_value
-      "%#{self.query_value}%" if sql_operator === "ILIKE"
+      "%#{self.query_value}%" if query_operator_like?
     end
 
     def sql_operator
-      OPERATORS[self.query_column.to_sym]
+      OPERATORS[self.query_operator.to_sym]
     end
 
     def sql_column
@@ -34,7 +38,7 @@ end
 
 # == Schema Information
 #
-# Table name: discourse_events_connection_filters
+# Table name: discourse_events_filters
 #
 #  id            :bigint           not null, primary key
 #  connection_id :bigint           not null

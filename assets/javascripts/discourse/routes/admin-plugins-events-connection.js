@@ -2,7 +2,7 @@ import { A } from "@ember/array";
 import DiscourseRoute from "discourse/routes/discourse";
 import { contentsMap } from "../lib/events";
 import Connection from "../models/connection";
-import ConnectionFilter from "../models/connection-filter";
+import Filter from "../models/filter";
 import Source from "../models/source";
 
 export default DiscourseRoute.extend({
@@ -17,7 +17,7 @@ export default DiscourseRoute.extend({
           if (c.filters) {
             c.filters = A(
               c.filters.map((f) => {
-                return ConnectionFilter.create(f);
+                return Filter.create(f);
               })
             );
           }

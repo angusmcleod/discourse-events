@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.5.5
+# version: 0.5.6
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -60,7 +60,7 @@ after_initialize do
   require_relative "lib/discourse_events/syncer/events.rb"
   require_relative "lib/discourse_events/auth/base.rb"
   require_relative "lib/discourse_events/auth/meetup.rb"
-  require_relative "app/models/discourse_events/connection_filter.rb"
+  require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/connection.rb"
   require_relative "app/models/discourse_events/event_connection.rb"
   require_relative "app/models/discourse_events/event.rb"
@@ -76,7 +76,7 @@ after_initialize do
   require_relative "app/controllers/discourse_events/provider_controller.rb"
   require_relative "app/controllers/discourse_events/source_controller.rb"
   require_relative "app/serializers/discourse_events/basic_event_serializer.rb"
-  require_relative "app/serializers/discourse_events/connection_filter_serializer.rb"
+  require_relative "app/serializers/discourse_events/filter_serializer.rb"
   require_relative "app/serializers/discourse_events/connection_serializer.rb"
   require_relative "app/serializers/discourse_events/connection_user_serializer.rb"
   require_relative "app/serializers/discourse_events/source_serializer.rb"
