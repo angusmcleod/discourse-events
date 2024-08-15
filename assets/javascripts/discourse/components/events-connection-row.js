@@ -3,7 +3,7 @@ import { notEmpty, readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Connection from "../models/connection";
-import EventsConnectionFilters from "./modal/events-connection-filters";
+import EventsFilters from "./modal/events-filters";
 
 function filtersMatch(filters1, filters2) {
   if ((filters1 && !filters2) || (!filters1 && filters2)) {
@@ -21,7 +21,9 @@ function filtersMatch(filters1, filters2) {
   return filters1.every((f1) =>
     filters2.some((f2) => {
       return (
-        f2.query_column === f1.query_column && f2.query_value === f1.query_value
+        f2.query_column === f1.query_column &&
+        f2.query_operator === f2.query_operator &&
+        f2.query_value === f1.query_value
       );
     })
   );
@@ -57,6 +59,7 @@ export default Component.extend({
     "connection.to_time",
     "connection.filters.[]",
     "connection.filters.@each.query_column",
+    "connection.filters.@each.query_operator",
     "connection.filters.@each.query_value"
   )
   connectionChanged(
@@ -130,10 +133,8 @@ export default Component.extend({
     },
 
     openFilters() {
-      this.modal.show(EventsConnectionFilters, {
-        model: {
-          connection: this.get("connection"),
-        },
+      this.modal.show(EventsFilters, {
+        model: this.get("connection"),
       });
     },
 

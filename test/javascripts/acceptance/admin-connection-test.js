@@ -170,33 +170,31 @@ acceptance("Events | Connection", function (needs) {
 
     await click("tr[data-connection-id='1'] .btn.show-filters");
 
-    assert.ok(
-      exists(".events-connection-filters-modal"),
-      "it shows the filter modal"
-    );
+    assert.ok(exists(".events-filters-modal"), "it shows the filter modal");
 
-    await click(".events-connection-filters-modal .add-filter");
+    await click(".events-filters-modal .add-filter");
     assert.ok(
-      exists(".events-connection-filters-modal .filter-column"),
+      exists(".events-filters-modal .filter-column"),
       "it shows the filter column"
     );
-
     assert.ok(
-      exists(".events-connection-filters-modal .filter-value"),
+      exists(".events-filters-modal .filter-value"),
       "it shows the filter value"
     );
 
-    await selectKit(".events-connection-filters-modal .filter-column").expand();
-    await selectKit(
-      ".events-connection-filters-modal .filter-column"
-    ).selectRowByValue("name");
-
-    await fillIn(
-      ".events-connection-filters-modal .filter-value",
-      "Event Name"
+    await selectKit(".events-filters-modal .filter-column").expand();
+    await selectKit(".events-filters-modal .filter-column").selectRowByValue(
+      "name"
     );
 
-    await click(".events-connection-filters-modal .btn-primary");
+    await selectKit(".events-filters-modal .filter-operator").expand();
+    await selectKit(".events-filters-modal .filter-operator").selectRowByValue(
+      "like"
+    );
+
+    await fillIn(".events-filters-modal .filter-value", "Event Name");
+
+    await click(".events-filters-modal .btn-primary");
 
     assert.ok(
       exists("tr[data-connection-id='1'] .btn-primary.show-filters"),
@@ -206,21 +204,20 @@ acceptance("Events | Connection", function (needs) {
     await click("#add-connection");
 
     await click("tr[data-connection-id='new'] .btn.show-filters");
-    assert.ok(
-      exists(".events-connection-filters-modal"),
-      "it shows the filter modal"
-    );
+    assert.ok(exists(".events-filters-modal"), "it shows the filter modal");
 
-    await click(".events-connection-filters-modal .add-filter");
+    await click(".events-filters-modal .add-filter");
 
     assert.blank(
-      selectKit(".events-connection-filters-modal .filter-column")
-        .header()
-        .value(),
+      selectKit(".events-filters-modal .filter-column").header().value(),
       "filter column is blank"
     );
     assert.blank(
-      query(".events-connection-filters-modal .filter-value").value,
+      selectKit(".events-filters-modal .filter-operator").header().value(),
+      "filter operator is blank"
+    );
+    assert.blank(
+      query(".events-filters-modal .filter-value").value,
       "filter value is blank"
     );
   });

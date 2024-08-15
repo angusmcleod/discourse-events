@@ -60,7 +60,7 @@ module DiscourseEvents
             :category_id,
             :source_id,
             :client,
-            filters: %i[id query_column query_value],
+            filters: %i[id query_column query_operator query_value],
           )
           .to_h
 
@@ -95,7 +95,8 @@ module DiscourseEvents
         if connection_params[:filters].present?
           valid_filters =
             connection_params[:filters].select do |filter|
-              has_keys = %i[id query_column query_value].all? { |key| filter.key?(key) }
+              has_keys =
+                %i[id query_column query_operator query_value].all? { |key| filter.key?(key) }
               has_values = filter.values.all?(&:present?)
               has_keys && has_values
             end
@@ -103,10 +104,15 @@ module DiscourseEvents
           saved_ids = []
 
           valid_filters.each do |f|
-            params = f.slice(:query_column, :query_value)
+            params = f.slice(:query_column, :query_operator, :query_value)
 
             if f[:id] === "new"
-              filter = @connection.filters.create(params)
+              filter =
+                DiscourseEvents::Filter.create(
+                  model_id: @connection.id,
+                  model_type: "DiscourseEvents::Connection",
+                  **params,
+                )
             else
               filter = @connection.filters.update(f[:id].to_i, params)
             end

@@ -118,7 +118,14 @@ describe DiscourseEvents::ConnectionController do
         params: {
           connection: {
             client: "discourse_events",
-            filters: [{ id: "new", query_column: "name", query_value: "Development" }],
+            filters: [
+              {
+                id: "new",
+                query_column: "name",
+                query_operator: "like",
+                query_value: "Development"
+              }
+            ],
           },
         }
     expect(response.status).to eq(200)
@@ -129,15 +136,20 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "updates filters" do
-    filter1 = Fabricate(:discourse_events_connection_filter, connection: connection)
-    filter2 = Fabricate(:discourse_events_connection_filter, connection: connection)
+    filter1 = Fabricate(:discourse_events_filter, model: connection)
+    filter2 = Fabricate(:discourse_events_filter, model: connection)
 
     put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
             client: "discourse_events",
             filters: [
-              { id: filter1.id, query_column: filter1.query_column, query_value: "New Value" },
+              {
+                id: filter1.id,
+                query_column: filter1.query_column,
+                query_operator: filter1.query_operator,
+                query_value: "New Value"
+              },
             ],
           },
         }

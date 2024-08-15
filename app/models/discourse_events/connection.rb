@@ -16,8 +16,8 @@ module DiscourseEvents
              dependent: :destroy
     has_many :events, through: :event_connections, source: :event
     has_many :filters,
-             foreign_key: "connection_id",
-             class_name: "DiscourseEvents::ConnectionFilter",
+             foreign_key: "model_id",
+             class_name: "DiscourseEvents::Filter",
              dependent: :destroy
 
     belongs_to :user
