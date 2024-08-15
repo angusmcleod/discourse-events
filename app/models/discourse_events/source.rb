@@ -32,6 +32,11 @@ module DiscourseEvents
              foreign_key: "source_id",
              class_name: "DiscourseEvents::Connection",
              dependent: :destroy
+    has_many :filters,
+             -> { where(model_type: "DiscourseEvents::Source") },
+             foreign_key: "model_id",
+             class_name: "DiscourseEvents::Filter",
+             dependent: :destroy
 
     validates_format_of :name, with: /\A[a-z0-9\_]+\Z/i
     validates :provider, presence: true
@@ -61,6 +66,30 @@ module DiscourseEvents
 
     def supports_series
       self.provider.provider_type.to_sym === :icalendar
+    end
+
+    def from_time
+      @from_time ||=
+        begin
+          filter =
+            filters.find_by(
+              query_column: DiscourseEvents::Filter.query_columns[:start_time],
+              query_operator: DiscourseEvents::Filter.query_operators[:greater_than],
+            )
+          filter ? filter.query_value.to_datetime : nil
+        end
+    end
+
+    def to_time
+      @to_time ||=
+        begin
+          filter =
+            filters.find_by(
+              query_column: DiscourseEvents::Filter.query_columns[:start_time],
+              query_operator: DiscourseEvents::Filter.query_operators[:less_than],
+            )
+          filter ? filter.query_value.to_datetime : nil
+        end
     end
 
     private
@@ -106,16 +135,16 @@ end
 #
 # Table name: discourse_events_sources
 #
-#  id            :bigint           not null, primary key
-#  name          :string           not null
-#  provider_id   :bigint           not null
+#  id             :bigint           not null, primary key
+#  name           :string           not null
+#  provider_id    :bigint           not null
 #  source_options :json
-#  from_time     :datetime
-#  to_time       :datetime
-#  status        :string
-#  taxonomy      :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  from_time      :datetime
+#  to_time        :datetime
+#  status         :string
+#  taxonomy       :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #

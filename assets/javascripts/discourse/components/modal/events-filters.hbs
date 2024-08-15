@@ -13,34 +13,10 @@
         </thead>
         <tbody>
           {{#each model.filters as |filter|}}
-            <tr class="filter">
-              <td>
-                <ComboBox
-                  @content={{queryColumns}}
-                  @value={{filter.query_column}}
-                  @onChange={{action (mut filter.query_column)}}
-                  class="filter-column"
-                />
-              </td>
-              <td>
-                <ComboBox
-                  @content={{queryOperators}}
-                  @value={{filter.query_operator}}
-                  @onChange={{action (mut filter.query_operator)}}
-                  class="filter-operator"
-                />
-              </td>
-              <td>
-                <Input @value={{filter.query_value}} class="filter-value" />
-              </td>
-              <td>
-                <DButton
-                  @action={{action "removeFilter" filter}}
-                  @icon="times"
-                  @title="admin.events.filter.remove.title"
-                />
-              </td>
-            </tr>
+            <EventFilterRow
+              @filter={{filter}}
+              @removeFilter={{action "removeFilter"}}
+            />
           {{/each}}
         </tbody>
       </table>

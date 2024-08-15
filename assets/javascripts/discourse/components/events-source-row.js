@@ -1,7 +1,12 @@
+import { A } from "@ember/array";
 import Component from "@ember/component";
+import { notEmpty } from "@ember/object/computed";
+import { service } from "@ember/service";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
+import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
+import EventsFilters from "./modal/events-filters";
 
 const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
@@ -38,6 +43,8 @@ export default Component.extend({
   classNames: ["events-source-row"],
   attributeBindings: ["source.id:data-source-id"],
   SourceOptions: [],
+  hasFilters: notEmpty("source.filters"),
+  modal: service(),
 
   didReceiveAttrs() {
     this._super();
@@ -54,17 +61,18 @@ export default Component.extend({
     "source.name",
     "source.provider_id",
     "source.source_options.@each",
-    "source.from_time",
-    "source.to_time"
+    "source.filters.[]",
+    "source.filters.@each.query_column",
+    "source.filters.@each.query_operator",
+    "source.filters.@each.query_value"
   )
-  sourceChanged(name, providerId, sourceOptions, fromTime, toTime) {
+  sourceChanged(sourceName, providerId, sourceOptions, filters) {
     const cs = this.currentSource;
     return (
-      cs.name !== name ||
+      cs.name !== sourceName ||
       cs.provider_id !== providerId ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
-      cs.from_time !== fromTime ||
-      cs.to_time !== toTime
+      !filtersMatch(filters, cs.filters)
     );
   },
 
@@ -135,7 +143,22 @@ export default Component.extend({
     this.set("sourceOptions", sourceOptions);
   },
 
+  @discourseComputed("hasFilters")
+  filterClass(hasFilters) {
+    let classes = "show-filters";
+    if (hasFilters) {
+      classes += " btn-primary";
+    }
+    return classes;
+  },
+
   actions: {
+    openFilters() {
+      this.modal.show(EventsFilters, {
+        model: this.get("source"),
+      });
+    },
+
     updateProvider(provider_id) {
       this.set("source.provider_id", provider_id);
     },
@@ -156,15 +179,21 @@ export default Component.extend({
       Source.update(source)
         .then((result) => {
           if (result) {
+            let source_params = Object.assign(result.source, {
+              source_options: SourceOptions.create(
+                result.source.source_options
+              ),
+            });
+            if (result.source.filters) {
+              source_params.filters = A(
+                result.source.filters.map((f) => {
+                  return Filter.create(f);
+                })
+              );
+            }
             this.setProperties({
               currentSource: result.source,
-              source: Source.create(
-                Object.assign(result.source, {
-                  source_options: SourceOptions.create(
-                    result.source.source_options
-                  ),
-                })
-              ),
+              source: Source.create(source_params),
             });
           } else if (this.currentSource.id !== "new") {
             this.set("source", JSON.parse(JSON.stringify(this.currentSource)));
@@ -194,13 +223,6 @@ export default Component.extend({
             }
           }, 5000);
         });
-    },
-
-    onChangeTimeRange(range) {
-      this.get("source").setProperties({
-        from_time: range.from,
-        to_time: range.to,
-      });
     },
   },
 });

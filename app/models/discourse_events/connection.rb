@@ -16,6 +16,7 @@ module DiscourseEvents
              dependent: :destroy
     has_many :events, through: :event_connections, source: :event
     has_many :filters,
+             -> { where(model_type: "DiscourseEvents::Connection") },
              foreign_key: "model_id",
              class_name: "DiscourseEvents::Filter",
              dependent: :destroy
@@ -49,17 +50,15 @@ end
 #
 #  id          :bigint           not null, primary key
 #  user_id     :bigint
-#  category_id :bigint
 #  source_id   :bigint           not null
+#  category_id :bigint
 #  client      :string
-#  from_time   :datetime
-#  to_time     :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
 # Indexes
 #
-#  events_connections_category_source                 (category_id,source_id) UNIQUE
+#  events_source_category_connection_index            (source_id,category_id) UNIQUE
 #  index_discourse_events_connections_on_category_id  (category_id)
 #  index_discourse_events_connections_on_source_id    (source_id)
 #  index_discourse_events_connections_on_user_id      (user_id)

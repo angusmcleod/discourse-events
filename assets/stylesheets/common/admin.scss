@@ -70,7 +70,7 @@ $pavilion_primary: #3c1c8c;
 
   input[type="text"],
   input[type="password"] {
-    width: 200px;
+    width: 100%;
 
     &.small {
       width: 150px;
@@ -164,12 +164,12 @@ $pavilion_primary: #3c1c8c;
 
   .events-source-row {
     td.source-options {
-      min-width: 200px;
-      max-width: 200px;
+      min-width: 250px;
+      box-sizing: border-box;
     }
 
     .source-provider {
-      width: 130px;
+      width: 170px;
     }
   }
 
@@ -381,6 +381,10 @@ $pavilion_primary: #3c1c8c;
   }
 
   .select-kit {
+    min-width: 150px;
+  }
+
+  .d-date-input {
     min-width: 150px;
   }
 }

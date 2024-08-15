@@ -63,6 +63,51 @@ describe DiscourseEvents::SourceController do
     expect(response.parsed_body["errors"].first).to eq("Name is invalid")
   end
 
+  it "creates filters" do
+    put "/admin/plugins/events/source/new.json",
+        params: {
+          source: {
+            name: "my_source",
+            provider_id: provider.id,
+            filters: [
+              {
+                id: "new",
+                query_column: "name",
+                query_operator: "like",
+                query_value: "Development",
+              },
+            ],
+          },
+        }
+    expect(response.status).to eq(200)
+    expect(response.parsed_body["source"]["filters"][0]['query_column']).to eq("name")
+    expect(response.parsed_body["source"]["filters"][0]['query_value']).to eq('Development')
+  end
+
+  it "updates filters" do
+    filter1 = Fabricate(:discourse_events_filter, model: source)
+    filter2 = Fabricate(:discourse_events_filter, model: source)
+
+    put "/admin/plugins/events/source/#{source.id}.json",
+        params: {
+          source: {
+            filters: [
+              {
+                id: filter1.id,
+                query_column: filter1.query_column,
+                query_operator: filter1.query_operator,
+                query_value: "New Value",
+              },
+            ],
+          },
+        }
+    expect(response.status).to eq(200)
+
+    source.reload
+    expect(source.filters.size).to eq(1)
+    expect(source.filters.first.query_value).to eq("New Value")
+  end
+
   it "destroys sources" do
     delete "/admin/plugins/events/source/#{source.id}.json"
 

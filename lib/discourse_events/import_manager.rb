@@ -64,31 +64,25 @@ module DiscourseEvents
       { events_count: events_count, created_count: created_count, updated_count: updated_count }
     end
 
+    def self.import(source)
+      return unless source&.ready?
+      manager = self.new(source.provider, source)
+
+      opts = source.source_options_with_fixed
+      opts[:from_time] = source.from_time if source.from_time.present?
+      opts[:to_time] = source.to_time if source.to_time.present?
+
+      manager.import(opts)
+    end
+
     def self.import_source(source_id)
       source = Source.find_by(id: source_id)
-      return if source.blank?
-
-      manager = self.new(source.provider, source)
-      manager.import(
-        source.source_options_with_fixed.merge(
-          from_time: source.from_time,
-          to_time: source.to_time,
-        ),
-      )
+      return unless source.present?
+      import(source)
     end
 
     def self.import_all_sources
-      Source.all.each do |source|
-        if source.ready?
-          manager = self.new(source.provider, source)
-          manager.import(
-            source.source_options_with_fixed.merge(
-              from_time: source.from_time,
-              to_time: source.to_time,
-            ),
-          )
-        end
-      end
+      Source.all.each { |source| import(source) }
     end
   end
 end

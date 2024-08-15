@@ -37,13 +37,12 @@
 </td>
 
 <td>
-  <DateTimeInputRange
-    @from={{source.from_time}}
-    @to={{source.to_time}}
-    @showFromTime={{false}}
-    @showToTime={{false}}
-    @onChange={{action "onChangeTimeRange"}}
-  />
+  {{d-button
+    icon="filter"
+    title="admin.events.filters.title"
+    action=(action "openFilters")
+    class=filterClass
+  }}
 </td>
 
 <td class="action-column">

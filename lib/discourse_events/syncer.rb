@@ -111,6 +111,9 @@ module DiscourseEvents
           connection.filters.each do |filter|
             events = events.where("#{filter.sql_column} #{filter.sql_operator} ?", filter.sql_value)
           end
+          connection.source.filters.each do |filter|
+            events = events.where("#{filter.sql_column} #{filter.sql_operator} ?", filter.sql_value)
+          end
           events
         end
     end

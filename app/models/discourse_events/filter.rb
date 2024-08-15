@@ -4,20 +4,21 @@ module DiscourseEvents
   class Filter < ActiveRecord::Base
     self.table_name = "discourse_events_filters"
 
-    MODEL_TYPES = %w[DiscourseEvents::Connection]
+    MODEL_TYPES = %w[DiscourseEvents::Connection DiscourseEvents::Source]
 
     belongs_to :model, polymorphic: true
 
-    enum :query_column, %i[name], prefix: true
-    enum :query_operator, %i[like], prefix: true
+    enum :query_column, %i[name start_time], prefix: true
+    enum :query_operator, %i[like greater_than less_than], prefix: true
 
-    OPERATORS = { like: "ILIKE" }
+    OPERATORS = { like: "ILIKE", greater_than: ">", less_than: "<" }
 
     validate :query_value_format
     validates :model_type, inclusion: { in: MODEL_TYPES }
 
     def sql_value
-      "%#{self.query_value}%" if query_operator_like?
+      return "%#{self.query_value}%" if query_operator_like?
+      self.query_value.to_s
     end
 
     def sql_operator
@@ -30,7 +31,14 @@ module DiscourseEvents
 
     def query_value_format
       if self.query_column === :name
-        errors.add(:query_value, "invalid") unless self.query_value =~ /./
+        errors.add(:query_value, "invalid") unless self.query_value =~ /[a-zA-Z0-9]/
+      end
+      if self.query_column === :start_time
+        begin
+          DateTime.parse self.query_value
+        rescue ArgumentError
+          errors.add(:query_value, "invalid")
+        end
       end
     end
   end
@@ -40,18 +48,16 @@ end
 #
 # Table name: discourse_events_filters
 #
-#  id            :bigint           not null, primary key
-#  connection_id :bigint           not null
-#  query_column  :integer
-#  query_value   :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id             :bigint           not null, primary key
+#  model_id       :integer
+#  model_type     :string
+#  query_column   :integer
+#  query_operator :integer
+#  query_value    :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 # Indexes
 #
-#  idx_events_connection_filter_column_value  (query_column,query_value) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (connection_id => discourse_events_connections.id)
+#  idx_events_filter_column_operator_value  (query_column,query_operator,query_value) UNIQUE
 #

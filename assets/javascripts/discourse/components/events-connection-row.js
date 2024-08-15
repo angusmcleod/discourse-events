@@ -3,31 +3,8 @@ import { notEmpty, readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Connection from "../models/connection";
+import { filtersMatch } from "../models/filter";
 import EventsFilters from "./modal/events-filters";
-
-function filtersMatch(filters1, filters2) {
-  if ((filters1 && !filters2) || (!filters1 && filters2)) {
-    return false;
-  }
-
-  if (!filters1 && !filters2) {
-    return true;
-  }
-
-  if (filters1.length !== filters2.length) {
-    return false;
-  }
-
-  return filters1.every((f1) =>
-    filters2.some((f2) => {
-      return (
-        f2.query_column === f1.query_column &&
-        f2.query_operator === f2.query_operator &&
-        f2.query_value === f1.query_value
-      );
-    })
-  );
-}
 
 export default Component.extend({
   tagName: "tr",
@@ -55,22 +32,12 @@ export default Component.extend({
     "connection.category_id",
     "connection.source_id",
     "connection.client",
-    "connection.from_time",
-    "connection.to_time",
     "connection.filters.[]",
     "connection.filters.@each.query_column",
     "connection.filters.@each.query_operator",
     "connection.filters.@each.query_value"
   )
-  connectionChanged(
-    username,
-    categoryId,
-    sourceId,
-    client,
-    fromTime,
-    toTime,
-    filters
-  ) {
+  connectionChanged(username, categoryId, sourceId, client, filters) {
     const cc = this.currentConnection;
     return (
       (!cc.user && username) ||
@@ -78,8 +45,6 @@ export default Component.extend({
       cc.category_id !== categoryId ||
       cc.source_id !== sourceId ||
       cc.client !== client ||
-      cc.from_time !== fromTime ||
-      cc.to_time !== toTime ||
       !filtersMatch(filters, cc.filters)
     );
   },

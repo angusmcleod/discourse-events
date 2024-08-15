@@ -108,17 +108,19 @@ end
 #
 # Table name: discourse_events_providers
 #
-#  id            :bigint           not null, primary key
-#  name          :string           not null
-#  provider_type :string           not null
-#  username      :string
-#  password      :string
-#  token         :string
-#  client_id     :string
-#  client_secret :string
-#  authenticated :boolean
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id               :bigint           not null, primary key
+#  name             :string           not null
+#  provider_type    :string           not null
+#  url              :string
+#  username         :string
+#  password         :string
+#  token            :string
+#  token_expires_at :datetime
+#  client_id        :string
+#  client_secret    :string
+#  refresh_token    :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 # Indexes
 #
