@@ -31,7 +31,6 @@ export default Component.extend({
     "connection.user.username",
     "connection.category_id",
     "connection.source_id",
-    "connection.client",
     "connection.filters.[]",
     "connection.filters.@each.query_column",
     "connection.filters.@each.query_operator",
@@ -53,12 +52,11 @@ export default Component.extend({
     "connectionChanged",
     "connection.user.username",
     "connection.category_id",
-    "connection.source_id",
-    "connection.client"
+    "connection.source_id"
   )
-  saveDisabled(connectionChanged, username, categoryId, sourceId, client) {
+  saveDisabled(connectionChanged, username, categoryId, sourceId) {
     return (
-      !connectionChanged || !username || !categoryId || !sourceId || !client
+      !connectionChanged || !username || !categoryId || !sourceId
     );
   },
 
@@ -113,7 +111,6 @@ export default Component.extend({
       const data = {
         id: connection.id,
         category_id: connection.category_id,
-        client: connection.client,
         source_id: connection.source_id,
         user: connection.user,
       };

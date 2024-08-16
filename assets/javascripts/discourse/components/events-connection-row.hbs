@@ -26,16 +26,6 @@
 </td>
 
 <td>
-  {{combo-box
-    value=connection.client
-    content=clients
-    onChange=(action (mut connection.client))
-    class="connection-client"
-    options=(hash none="admin.events.connection.client.select")
-  }}
-</td>
-
-<td>
   {{d-button
     icon="filter"
     title="admin.events.filters.title"

@@ -27,7 +27,7 @@
 
 .add-event,
 .add-event + button {
-  border: 1px solid var(--primary-medium);
+  border: 1px solid var(--primary-300);
 }
 
 .form-element + span {
@@ -39,7 +39,9 @@
   align-items: center;
   gap: 0.5em;
   background-color: var(--primary-100);
-  padding: 0.15em 0.35em;
+  padding: .25em .5em;
+  height: 30px;
+  box-sizing: border-box;
 
   .d-icon {
     font-size: var(--font-down-1);
@@ -50,10 +52,7 @@
 .event-details {
   display: flex;
   flex-flow: wrap;
-
-  .event-label {
-    margin-top: 7px;
-  }
+  margin-top: .5em;
 
   .event-rsvp {
     margin-left: 10px;
@@ -64,11 +63,12 @@
 .add-to-calendar {
   position: relative;
   display: inline-block;
-  margin-right: 10px;
-  margin-top: 6px;
 
   .dropdown-header {
-    min-height: initial;
+    padding: .25em .5em;
+    height: 30px;
+    box-sizing: border-box;
+    background-color: var(--primary-100);
   }
 
   .dropdown-menu {
@@ -79,7 +79,7 @@
     display: none;
     background-color: var(--secondary);
     z-index: 100;
-    box-shadow: shadow("dropdown");
+    box-shadow: var(--shadow-dropdown);
     border-top: 1px solid var(--primary-very-low);
 
     &.show {
@@ -436,7 +436,7 @@ ul.events-calendar-events {
   width: 350px;
   z-index: 997;
   background-color: var(--secondary);
-  box-shadow: shadow("card");
+  box-shadow: var(--shadow-card);
   border: 1px solid var(--primary-low);
   padding: 15px;
   border-radius: 4px;
@@ -617,14 +617,14 @@ ul.events-calendar-events {
   }
 }
 
+.add-event-controls {
+  display: flex;
+  align-items: center;
+}
+
 .composer-controls-event {
   position: relative;
   margin-left: 8px;
-
-  .add-event-controls {
-    display: flex;
-    align-items: center;
-  }
 
   .popup-tip {
     left: 0;
@@ -704,4 +704,13 @@ nav.post-controls .actions .manage-event {
   .d-icon {
     margin-right: var(--control-icon-space);
   }
+}
+
+.topic-controls-event {
+  margin-bottom: 1em;
+}
+
+.topic-event-label {
+  display: flex;
+  gap: .5em;
 }
