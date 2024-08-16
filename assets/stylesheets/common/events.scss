@@ -39,7 +39,7 @@
   align-items: center;
   gap: 0.5em;
   background-color: var(--primary-100);
-  padding: .25em .5em;
+  padding: 0.25em 0.5em;
   height: 30px;
   box-sizing: border-box;
 
@@ -52,7 +52,7 @@
 .event-details {
   display: flex;
   flex-flow: wrap;
-  margin-top: .5em;
+  margin-top: 0.5em;
 
   .event-rsvp {
     margin-left: 10px;
@@ -65,7 +65,7 @@
   display: inline-block;
 
   .dropdown-header {
-    padding: .25em .5em;
+    padding: 0.25em 0.5em;
     height: 30px;
     box-sizing: border-box;
     background-color: var(--primary-100);
@@ -712,5 +712,11 @@ nav.post-controls .actions .manage-event {
 
 .topic-event-label {
   display: flex;
-  gap: .5em;
+  gap: 0.5em;
+
+  button {
+    background-color: var(--primary-100);
+    padding: 0.25em 0.5em;
+    height: 30px;
+  }
 }

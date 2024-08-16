@@ -36,9 +36,14 @@ export default Component.extend({
     return QUERY_COLUMNS;
   },
 
-  @discourseComputed
-  queryOperators() {
-    return QUERY_OPERATORS;
+  @discourseComputed("filter.query_column")
+  queryOperators(queryColumn) {
+    const operators = QUERY_OPERATORS;
+    if (queryColumn === "name") {
+      return operators.filter((o) => o.id === "like");
+    } else {
+      return operators;
+    }
   },
 
   @discourseComputed("filter.query_column")

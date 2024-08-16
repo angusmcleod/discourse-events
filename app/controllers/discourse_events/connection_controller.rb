@@ -9,7 +9,7 @@ module DiscourseEvents
 
       render_json_dump(
         connections: serialize_data(connections, ConnectionSerializer, root: false),
-        sources: serialize_data(Source.all, SourceSerializer, root: false)
+        sources: serialize_data(Source.all, SourceSerializer, root: false),
       )
     end
 
@@ -77,8 +77,7 @@ module DiscourseEvents
 
       ActiveRecord::Base.transaction do
         if action_name === "create"
-          @model =
-            Connection.create(connection_params.slice(:user_id, :category_id, :source_id))
+          @model = Connection.create(connection_params.slice(:user_id, :category_id, :source_id))
         else
           @model =
             Connection.update(

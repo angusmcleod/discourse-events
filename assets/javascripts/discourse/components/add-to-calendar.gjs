@@ -32,6 +32,7 @@ export default class AddToCalendar extends Component {
 
   <template>
     <DMenu
+      @identifier="add-to-calendar"
       @icon="far-calendar-plus"
       @label={{i18n "add_to_calendar.label"}}
       @autofocus={{true}}
@@ -48,7 +49,8 @@ export default class AddToCalendar extends Component {
                 @label={{concat "add_to_calendar." c.label}}
                 @href={{c.uri}}
                 rel="noopener noreferrer"
-                target="_blank" />
+                target="_blank"
+              />
             {{/each}}
           </dropdown.item>
         </DropdownMenu>

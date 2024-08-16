@@ -55,9 +55,7 @@ export default Component.extend({
     "connection.source_id"
   )
   saveDisabled(connectionChanged, username, categoryId, sourceId) {
-    return (
-      !connectionChanged || !username || !categoryId || !sourceId
-    );
+    return !connectionChanged || !username || !categoryId || !sourceId;
   },
 
   @discourseComputed("connectionChanged")
