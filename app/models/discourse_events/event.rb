@@ -41,18 +41,18 @@ end
 #  status        :string           default("published")
 #  taxonomy      :string
 #  url           :string
+#  series_id     :string
+#  occurrence_id :string
 #  source_id     :bigint
 #  provider_id   :bigint
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  series_id     :string
-#  occurrence_id :string
 #
 # Indexes
 #
+#  discourse_events_event_id_index               (uid,provider_id) UNIQUE
 #  index_discourse_events_events_on_provider_id  (provider_id)
 #  index_discourse_events_events_on_source_id    (source_id)
-#  event_id_index                                (uid,provider_id) UNIQUE
 #
 # Foreign Keys
 #

@@ -1,0 +1,33 @@
+<td>
+  <ComboBox
+    @content={{queryColumns}}
+    @value={{this.filter.query_column}}
+    @onChange={{action (mut this.filter.query_column)}}
+    class="filter-column"
+  />
+</td>
+<td>
+  <ComboBox
+    @content={{queryOperators}}
+    @value={{this.filter.query_operator}}
+    @onChange={{action (mut this.filter.query_operator)}}
+    class="filter-operator"
+  />
+</td>
+<td>
+  {{#if this.dateQueryColumn}}
+    <DateInput
+      @date={{this.filter.query_value}}
+      @onChange={{action "onChangeDateQueryValue"}}
+    />
+  {{else}}
+    <Input @value={{this.filter.query_value}} class="filter-value" />
+  {{/if}}
+</td>
+<td>
+  <DButton
+    @action={{action "removeFilter"}}
+    @icon="times"
+    @title="admin.events.filter.remove.title"
+  />
+</td>

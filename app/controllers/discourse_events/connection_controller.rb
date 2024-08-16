@@ -2,13 +2,14 @@
 
 module DiscourseEvents
   class ConnectionController < AdminController
+    include DiscourseEvents::Filters
+
     def index
       connections = Connection.includes(:user)
 
       render_json_dump(
         connections: serialize_data(connections, ConnectionSerializer, root: false),
         sources: serialize_data(Source.all, SourceSerializer, root: false),
-        clients: DiscourseEvents::Connection.available_clients,
       )
     end
 
@@ -16,7 +17,7 @@ module DiscourseEvents
       create_or_update
 
       if @errors.blank?
-        render_serialized(@connection, ConnectionSerializer, root: "connection")
+        render_serialized(@model, ConnectionSerializer, root: "connection")
       else
         render json: failed_json.merge(errors: @errors.map(&:full_messages).flatten), status: 400
       end
@@ -26,7 +27,7 @@ module DiscourseEvents
       create_or_update
 
       if @errors.blank?
-        render_serialized(@connection, ConnectionSerializer, root: "connection")
+        render_serialized(@model, ConnectionSerializer, root: "connection")
       else
         render json: failed_json.merge(errors: @errors.map(&:full_messages).flatten), status: 400
       end
@@ -59,7 +60,6 @@ module DiscourseEvents
             :user_id,
             :category_id,
             :source_id,
-            :client,
             filters: %i[id query_column query_operator query_value],
           )
           .to_h
@@ -77,57 +77,34 @@ module DiscourseEvents
 
       ActiveRecord::Base.transaction do
         if action_name === "create"
-          @connection =
-            Connection.create(connection_params.slice(:user_id, :category_id, :source_id, :client))
+          @model = Connection.create(connection_params.slice(:user_id, :category_id, :source_id))
         else
-          @connection =
+          @model =
             Connection.update(
               params[:id],
-              connection_params.slice(:user_id, :category_id, :source_id, :client),
+              connection_params.slice(:user_id, :category_id, :source_id),
             )
         end
 
-        if @connection.errors.any?
-          @errors << @connection.errors
+        if @model.errors.any?
+          @errors << @model.errors
           raise ActiveRecord::Rollback
         end
 
-        if connection_params[:filters].present?
-          valid_filters =
-            connection_params[:filters].select do |filter|
-              has_keys =
-                %i[id query_column query_operator query_value].all? { |key| filter.key?(key) }
-              has_values = filter.values.all?(&:present?)
-              has_keys && has_values
-            end
-
-          saved_ids = []
-
-          valid_filters.each do |f|
-            params = f.slice(:query_column, :query_operator, :query_value)
-
-            if f[:id] === "new"
-              filter =
-                DiscourseEvents::Filter.create(
-                  model_id: @connection.id,
-                  model_type: "DiscourseEvents::Connection",
-                  **params,
-                )
-            else
-              filter = @connection.filters.update(f[:id].to_i, params)
-            end
-
-            if filter.errors.any?
-              @errors << filter.errors
-              raise ActiveRecord::Rollback
-            end
-
-            saved_ids << filter.id
-          end
-
-          @connection.filters.where.not(id: saved_ids).destroy_all
-        end
+        save_filters
       end
+    end
+
+    def valid_filters
+      @valid_filters ||=
+        begin
+          (connection_params[:filters] || []).select do |filter|
+            has_keys =
+              %i[id query_column query_operator query_value].all? { |key| filter.key?(key) }
+            has_values = filter.values.all?(&:present?)
+            has_keys && has_values
+          end
+        end
     end
   end
 end

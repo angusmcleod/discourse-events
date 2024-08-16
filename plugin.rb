@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.5.6
+# version: 0.5.7
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -67,6 +67,7 @@ after_initialize do
   require_relative "app/models/discourse_events/log.rb"
   require_relative "app/models/discourse_events/provider.rb"
   require_relative "app/models/discourse_events/source.rb"
+  require_relative "app/controllers/concerns/discourse_events/filters.rb"
   require_relative "app/controllers/discourse_events/admin_controller.rb"
   require_relative "app/controllers/discourse_events/api_keys_controller.rb"
   require_relative "app/controllers/discourse_events/connection_controller.rb"

@@ -26,9 +26,10 @@ end
 #  connection_id :bigint           not null
 #  topic_id      :bigint
 #  post_id       :bigint
+#  series_id     :string
+#  client        :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  series_id     :string
 #
 # Indexes
 #

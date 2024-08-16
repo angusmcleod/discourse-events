@@ -58,23 +58,13 @@ $pavilion_primary: #3c1c8c;
 }
 
 .admin-events-container {
-  .select-kit,
-  .select-kit.category-chooser,
-  .select-kit.multi-select {
-    width: 180px;
-  }
-
   input {
     margin: 0;
   }
 
   input[type="text"],
   input[type="password"] {
-    width: 200px;
-
-    &.small {
-      width: 150px;
-    }
+    width: 100%;
   }
 
   .d-date-time-input-range {
@@ -98,12 +88,7 @@ $pavilion_primary: #3c1c8c;
 
     .client-id,
     .client-secret {
-      width: 110px;
-    }
-
-    .btn {
-      display: inline-block;
-      max-height: 34px;
+      width: 120px;
     }
   }
 
@@ -122,20 +107,13 @@ $pavilion_primary: #3c1c8c;
   }
 
   .events-connection-row {
-    .select-kit.multi-select {
-      width: 150px;
-    }
-
     .select-kit {
-      width: 180px;
+      width: 200px;
     }
 
     .select-kit.category-chooser {
-      width: 230px;
-    }
-
-    .d-date-input {
-      min-width: 110px;
+      width: 350px;
+      height: 36px;
     }
 
     &.has-child-category {
@@ -164,12 +142,12 @@ $pavilion_primary: #3c1c8c;
 
   .events-source-row {
     td.source-options {
-      min-width: 200px;
-      max-width: 200px;
+      min-width: 400px;
+      box-sizing: border-box;
     }
 
     .source-provider {
-      width: 130px;
+      width: 200px;
     }
   }
 
@@ -185,7 +163,7 @@ $pavilion_primary: #3c1c8c;
 
     .url-column {
       input {
-        width: 180px;
+        width: 100%;
       }
     }
 
@@ -381,6 +359,10 @@ $pavilion_primary: #3c1c8c;
   }
 
   .select-kit {
+    min-width: 150px;
+  }
+
+  .d-date-input {
     min-width: 150px;
   }
 }

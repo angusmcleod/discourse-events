@@ -9,8 +9,8 @@ describe DiscourseEvents::ImportManager do
     File.join(File.expand_path("../../..", __dir__), "spec", "fixtures", "list_events.json")
   end
   let(:raw_data) { JSON.parse(File.open(uri).read).to_h }
-  let(:provider) { Fabricate(:discourse_events_provider) }
-  let(:source) { Fabricate(:discourse_events_source, source_options: { uri: uri }) }
+  let!(:provider) { Fabricate(:discourse_events_provider) }
+  let!(:source) { Fabricate(:discourse_events_source, source_options: { uri: uri }) }
 
   def event_uids
     raw_data["events"].map { |event| event["id"] }
@@ -23,7 +23,6 @@ describe DiscourseEvents::ImportManager do
   end
 
   it "imports all active sources" do
-    source
     subject.import_all_sources
 
     events = DiscourseEvents::Event.all
@@ -43,5 +42,25 @@ describe DiscourseEvents::ImportManager do
         updated_count: 0,
       ),
     )
+  end
+
+  context "with a filter" do
+    let!(:filter) do
+      Fabricate(
+        :discourse_events_filter,
+        model: source,
+        query_column: DiscourseEvents::Filter.query_columns[:start_time],
+        query_operator: DiscourseEvents::Filter.query_operators[:greater_than],
+        query_value: "2022-8-18T12:30:00+02:00",
+      )
+    end
+
+    it "applies the filter" do
+      subject.import_all_sources
+
+      events = DiscourseEvents::Event.all
+      expect(events.size).to eq(1)
+      expect(events.first.uid).to eq(event_uids.second)
+    end
   end
 end

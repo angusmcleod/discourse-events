@@ -40,7 +40,6 @@ describe DiscourseEvents::ConnectionController do
             },
             category_id: category.id,
             source_id: source.id,
-            client: "events",
           },
         }
 
@@ -59,7 +58,6 @@ describe DiscourseEvents::ConnectionController do
             },
             category_id: -1,
             source_id: source.id,
-            client: "events",
           },
         }
 
@@ -68,31 +66,29 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "updates connections" do
-    new_client = "discourse_events"
+    new_cat = Fabricate(:category)
 
     put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
-            client: new_client,
+            category_id: new_cat.id,
           },
         }
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["connection"]["client"]).to eq(new_client)
+    expect(response.parsed_body["connection"]["category_id"]).to eq(new_cat.id)
   end
 
   it "handles invalid update params" do
     put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
-            client: "invalid_client",
+            category_id: -1,
           },
         }
 
     expect(response.status).to eq(400)
-    expect(response.parsed_body["errors"].first).to eq(
-      "Client invalid_client is not a valid connection client",
-    )
+    expect(response.parsed_body["errors"].first).to eq("Category can't be blank")
   end
 
   it "destroys connections" do
@@ -117,7 +113,6 @@ describe DiscourseEvents::ConnectionController do
     put "/admin/plugins/events/connection/#{connection.id}.json",
         params: {
           connection: {
-            client: "discourse_events",
             filters: [
               {
                 id: "new",

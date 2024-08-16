@@ -33,10 +33,8 @@ function sourceRoutes(needs) {
             },
             category_id: 2,
             source_id: 1,
-            client: "events",
           },
         ],
-        clients: ["events"],
       });
     });
     server.put("/admin/plugins/events/connection/new", () => {
@@ -49,7 +47,6 @@ function sourceRoutes(needs) {
           },
           category_id: 2,
           source_id: 2,
-          client: "events",
         },
       });
     });
@@ -63,7 +60,6 @@ function sourceRoutes(needs) {
           },
           category_id: 2,
           source_id: 3,
-          client: "events",
         },
       });
     });
@@ -133,11 +129,6 @@ acceptance("Events | Connection", function (needs) {
     await selectKit(
       "tr[data-connection-id=new] .connection-source"
     ).selectRowByValue(1);
-
-    await selectKit("tr[data-connection-id=new] .connection-client").expand();
-    await selectKit(
-      "tr[data-connection-id=new] .connection-client"
-    ).selectRowByValue("events");
 
     assert.strictEqual(
       query("tr[data-connection-id=new] .save-connection").disabled,

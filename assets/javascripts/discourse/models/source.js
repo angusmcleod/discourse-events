@@ -12,9 +12,8 @@ Source.reopenClass({
   update(source) {
     return ajax(`/admin/plugins/events/source/${source.id}`, {
       type: "PUT",
-      data: {
-        source,
-      },
+      contentType: "application/json",
+      data: JSON.stringify({ source }),
     }).catch(popupAjaxError);
   },
 

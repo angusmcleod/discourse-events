@@ -2,6 +2,8 @@
 
 module DiscourseEvents
   class SourceController < AdminController
+    include DiscourseEvents::Filters
+
     def index
       render_json_dump(
         sources: serialize_data(Source.all, SourceSerializer, root: false),
@@ -10,22 +12,51 @@ module DiscourseEvents
     end
 
     def create
-      source = Source.create(source_params)
+      @errors = []
 
-      if source.errors.blank?
-        render_serialized(source, SourceSerializer, root: "source")
+      ActiveRecord::Base.transaction do
+        @model =
+          Source.create(
+            source_params.slice(:name, :provider_id, :status, :taxonomy, :source_options),
+          )
+
+        if @model.errors.any?
+          @errors += @model.errors.full_messages
+          raise ActiveRecord::Rollback
+        end
+
+        save_filters
+      end
+
+      if @errors.blank?
+        render_serialized(@model, SourceSerializer, root: "source")
       else
-        render json: failed_json.merge(errors: source.errors.full_messages), status: 400
+        render json: failed_json.merge(errors: @errors), status: 400
       end
     end
 
     def update
-      source = Source.update(params[:id], source_params)
+      @errors = []
 
-      if source.errors.blank?
-        render_serialized(source, SourceSerializer, root: "source")
+      ActiveRecord::Base.transaction do
+        @model =
+          Source.update(
+            params[:id],
+            source_params.slice(:name, :provider_id, :status, :taxonomy, :source_options),
+          )
+
+        if @model.errors.any?
+          @errors += @model.errors.full_messages
+          raise ActiveRecord::Rollback
+        end
+
+        save_filters
+      end
+
+      if @errors.blank?
+        render_serialized(@model, SourceSerializer, root: "source")
       else
-        render json: failed_json.merge(errors: source.errors.full_messages), status: 400
+        render json: failed_json.merge(errors: @errors), status: 400
       end
     end
 
@@ -49,16 +80,33 @@ module DiscourseEvents
     protected
 
     def source_params
-      params.require(:source).permit(
-        :name,
-        :provider_id,
-        :from_time,
-        :to_time,
-        :status,
-        :taxonomy,
-        source_options: {
-        },
-      )
+      @source_params ||=
+        begin
+          params
+            .require(:source)
+            .permit(
+              :name,
+              :provider_id,
+              :status,
+              :taxonomy,
+              source_options: {
+              },
+              filters: %i[id query_column query_operator query_value],
+            )
+            .to_h
+        end
+    end
+
+    def valid_filters
+      @valid_filters ||=
+        begin
+          (source_params[:filters] || []).select do |filter|
+            has_keys =
+              %i[id query_column query_operator query_value].all? { |key| filter.key?(key) }
+            has_values = filter.values.all?(&:present?)
+            has_keys && has_values
+          end
+        end
     end
   end
 end

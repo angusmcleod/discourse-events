@@ -138,10 +138,20 @@ describe DiscourseEvents::Syncer do
     end
   end
 
-  context "with filters" do
+  context "with a connection filter" do
     fab!(:filter1) do
       Fabricate(:discourse_events_filter, model: connection, query_value: event2.name)
     end
+
+    it "filters events" do
+      syncer = subject.new(user, connection)
+      expect(syncer.standard_events.size).to eq(1)
+      expect(syncer.standard_events.first.name).to eq(event2.name)
+    end
+  end
+
+  context "with a source filter" do
+    fab!(:filter1) { Fabricate(:discourse_events_filter, model: source, query_value: event2.name) }
 
     it "filters events" do
       syncer = subject.new(user, connection)
