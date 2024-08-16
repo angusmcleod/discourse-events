@@ -45,14 +45,15 @@ describe DiscourseEvents::ImportManager do
   end
 
   context "with a filter" do
-    let!(:filter) {
-      Fabricate(:discourse_events_filter,
+    let!(:filter) do
+      Fabricate(
+        :discourse_events_filter,
         model: source,
         query_column: DiscourseEvents::Filter.query_columns[:start_time],
         query_operator: DiscourseEvents::Filter.query_operators[:greater_than],
-        query_value: "2022-8-18T12:30:00+02:00"
+        query_value: "2022-8-18T12:30:00+02:00",
       )
-    }
+    end
 
     it "applies the filter" do
       subject.import_all_sources

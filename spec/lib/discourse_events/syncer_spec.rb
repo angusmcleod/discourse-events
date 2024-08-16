@@ -151,9 +151,7 @@ describe DiscourseEvents::Syncer do
   end
 
   context "with a source filter" do
-    fab!(:filter1) do
-      Fabricate(:discourse_events_filter, model: source, query_value: event2.name)
-    end
+    fab!(:filter1) { Fabricate(:discourse_events_filter, model: source, query_value: event2.name) }
 
     it "filters events" do
       syncer = subject.new(user, connection)

@@ -80,8 +80,8 @@ describe DiscourseEvents::SourceController do
           },
         }
     expect(response.status).to eq(200)
-    expect(response.parsed_body["source"]["filters"][0]['query_column']).to eq("name")
-    expect(response.parsed_body["source"]["filters"][0]['query_value']).to eq('Development')
+    expect(response.parsed_body["source"]["filters"][0]["query_column"]).to eq("name")
+    expect(response.parsed_body["source"]["filters"][0]["query_value"]).to eq("Development")
   end
 
   it "updates filters" do

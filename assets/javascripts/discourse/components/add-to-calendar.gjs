@@ -1,12 +1,11 @@
 import Component from "@glimmer/component";
-import i18n from "discourse-common/helpers/i18n";
-import DMenu from "float-kit/components/d-menu";
-import DButton from "discourse/components/d-button";
-import icon from "discourse-common/helpers/d-icon";
-import DropdownMenu from "discourse/components/dropdown-menu";
-import { googleUri, icsUri } from "../lib/date-utilities";
 import { concat } from "@ember/helper";
 import { service } from "@ember/service";
+import DButton from "discourse/components/d-button";
+import DropdownMenu from "discourse/components/dropdown-menu";
+import i18n from "discourse-common/helpers/i18n";
+import DMenu from "float-kit/components/d-menu";
+import { googleUri, icsUri } from "../lib/date-utilities";
 
 export default class AddToCalendar extends Component {
   @service site;
