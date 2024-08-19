@@ -15,13 +15,13 @@
 </td>
 
 <td>
-  {{combo-box
-    value=provider.provider_type
-    content=providerTypes
-    onChange=(action (mut provider.provider_type))
+  <ComboBox
+    @value={{provider.provider_type}}
+    @content={{providerTypes}}
+    @onChange={{action (mut provider.provider_type)}}
     class="provider-type"
-    options=(hash none="admin.events.provider.provider_type.select")
-  }}
+    options={{hash none="admin.events.provider.provider_type.select"}}
+  />
 </td>
 
 <td class="credentials-column">
@@ -98,8 +98,7 @@
 </td>
 
 <td class="action-column">
-  {{conditional-loading-spinner condition=saving size="small"}}
-
+  <ConditionalLoadingSpinner @condition={{saving}} @size="small" />
   <DButton
     @action={{action "saveProvider"}}
     @icon="save"
@@ -107,20 +106,18 @@
     @title="admin.events.provider.save.title"
     @disabled={{this.saveDisabled}}
   />
-
-  {{d-button
-    action=removeProvider
-    actionParam=provider
-    icon="trash-alt"
-    title="admin.events.provider.remove.title"
+  <DButton
+    @action={{removeProvider}}
+    @actionParam={{provider}}
+    @icon="trash-alt"
+    @title="admin.events.provider.remove.title"
     class="remove-provider btn-danger"
-  }}
-
-  {{d-button
-    action=(action "authenticateProvider")
-    icon="fingerprint"
-    title="admin.events.provider.authenticate.title"
-    disabled=authenticateDisabled
-    class=authenticateClass
-  }}
+  />
+  <DButton
+    @action={{action "authenticateProvider"}}
+    @icon="fingerprint"
+    @title="admin.events.provider.authenticate.title"
+    @disabled={{authenticateDisabled}}
+    class={{authenticateClass}}
+  />
 </td>

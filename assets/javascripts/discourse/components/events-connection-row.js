@@ -36,14 +36,13 @@ export default Component.extend({
     "connection.filters.@each.query_operator",
     "connection.filters.@each.query_value"
   )
-  connectionChanged(username, categoryId, sourceId, client, filters) {
+  connectionChanged(username, categoryId, sourceId, filters) {
     const cc = this.currentConnection;
     return (
       (!cc.user && username) ||
       (cc.user && cc.user.username !== username) ||
       cc.category_id !== categoryId ||
       cc.source_id !== sourceId ||
-      cc.client !== client ||
       !filtersMatch(filters, cc.filters)
     );
   },
