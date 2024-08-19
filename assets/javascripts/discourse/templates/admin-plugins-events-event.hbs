@@ -1,24 +1,24 @@
 <EventsHeader @viewName={{viewName}} @message={{message}}>
-  {{d-button
-    action=(action "openDelete")
-    label="admin.events.event.delete.label"
-    title="admin.events.event.delete.title"
-    disabled=deleteDisabled
+  <DButton
+    @action={{action "openDelete"}}
+    @label="admin.events.event.delete.label"
+    @title="admin.events.event.delete.title"
+    @disabled={{deleteDisabled}}
     class="btn-danger"
-    icon="trash-alt"
-  }}
+    @icon="trash-alt"
+  />
 </EventsHeader>
 
 <div class="admin-events-container">
   {{#if hasEvents}}
-    {{events-event-table
-      events=events
-      page=page
-      order=order
-      asc=asc
-      modifySelection=(action "modifySelection")
-      selectAll=selectAll
-    }}
+    <EventsEventTable
+      @events={{events}}
+      @page={{page}}
+      @order={{order}}
+      @asc={{asc}}
+      @modifySelection={{action "modifySelection"}}
+      @selectAll={{selectAll}}
+    />
   {{else}}
     <p>{{i18n "admin.events.event.none"}}</p>
   {{/if}}

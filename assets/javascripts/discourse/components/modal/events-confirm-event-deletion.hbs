@@ -31,6 +31,6 @@
       @action={{action "cancel"}}
       disabled={{destroying}}
     />
-    {{conditional-loading-spinner condition=destroying size="small"}}
+    <ConditionalLoadingSpinner @condition={{destroying}} @size="small" />
   </:footer>
 </DModal>

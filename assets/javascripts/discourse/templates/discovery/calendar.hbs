@@ -36,11 +36,11 @@
     {{/if}}
   </:header>
   <:list>
-    {{events-calendar
-      topics=model.list.topics
-      category=model.category
-      loading=discovery.loading
-      initialDateRange=initialDateRange
-    }}
+    <EventsCalendar
+      @topics={{model.list.topics}}
+      @category={{model.category}}
+      @loading={{discovery.loading}}
+      @initialDateRange={{initialDateRange}}
+    />
   </:list>
 </Discovery::Layout>

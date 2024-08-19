@@ -13,7 +13,7 @@ plugins:
     default: false
   events_event_label_icon:
     client: true
-    default: 'calendar'
+    default: 'far-calendar'
   events_event_label_no_text:
     client: true
     default: false

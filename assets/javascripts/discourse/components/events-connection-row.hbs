@@ -8,56 +8,53 @@
 </td>
 
 <td>
-  {{category-chooser
-    value=connection.category_id
+  <CategoryChooser
+    @value={{connection.category_id}}
     class="connection-category"
-    onChange=(action (mut connection.category_id))
-  }}
+    onChange={{action (mut connection.category_id)}}
+  />
 </td>
 
 <td>
-  {{combo-box
-    value=connection.source_id
-    content=sources
-    onChange=(action (mut connection.source_id))
+  <ComboBox
+    @value={{connection.source_id}}
+    @content={{sources}}
+    @onChange={{action (mut connection.source_id)}}
     class="connection-source"
-    options=(hash none="admin.events.connection.source.select")
-  }}
+    options={{hash none="admin.events.connection.source.select"}}
+  />
 </td>
 
 <td>
-  {{d-button
-    icon="filter"
-    title="admin.events.filters.title"
-    action=(action "openFilters")
-    class=filterClass
-  }}
+  <DButton
+    @icon="filter"
+    @title="admin.events.filters.title"
+    @action={{action "openFilters"}}
+    class={{filterClass}}
+  />
 </td>
 
 <td class="action-column">
-  {{conditional-loading-spinner condition=loading size="small"}}
-
-  {{d-button
-    icon="save"
-    title="admin.events.connection.save.title"
-    action=(action "saveConnection")
-    disabled=saveDisabled
-    class=saveClass
-  }}
-
-  {{d-button
-    action=removeConnection
-    actionParam=connection
-    icon="trash-alt"
-    title="admin.events.connection.remove.title"
+  <ConditionalLoadingSpinner @condition={{loading}} @size="small" />
+  <DButton
+    @icon="save"
+    @title="admin.events.connection.save.title"
+    @action={{action "saveConnection"}}
+    @disabled={{saveDisabled}}
+    class={{saveClass}}
+  />
+  <DButton
+    @action={{removeConnection}}
+    @actionParam={{connection}}
+    @icon="trash-alt"
+    @title="admin.events.connection.remove.title"
     class="btn-danger"
-  }}
-
-  {{d-button
-    action=(action "syncConnection")
-    icon="sync"
-    title="admin.events.connection.sync.title"
-    class=syncClass
-    disabled=syncDisabled
-  }}
+  />
+  <DButton
+    @action={{action "syncConnection"}}
+    @icon="sync"
+    @title="admin.events.connection.sync.title"
+    class={{syncClass}}
+    @disabled={{syncDisabled}}
+  />
 </td>

@@ -1,11 +1,11 @@
 <EventsHeader @viewName={{viewName}} @message={{message}}>
-  {{d-button
-    id="add-source"
-    action=(action "addSource")
-    label="admin.events.source.add.label"
-    title="admin.events.source.add.title"
-    icon="plus"
-  }}
+  <DButton
+    @id="add-source"
+    @action={{action "addSource"}}
+    @label="admin.events.source.add.label"
+    @title="admin.events.source.add.title"
+    @icon="plus"
+  />
 </EventsHeader>
 
 <div class="admin-events-container">
@@ -22,13 +22,13 @@
       </thead>
       <tbody>
         {{#each sources as |source|}}
-          {{events-source-row
-            source=source
-            providers=providers
-            authTypes=authTypes
-            removeSource=(action "removeSource")
-            setMessage=(action "setMessage")
-          }}
+          <EventsSourceRow
+            @source={{source}}
+            @providers={{providers}}
+            @authTypes={{authTypes}}
+            @removeSource={{action "removeSource"}}
+            @setMessage={{action "setMessage"}}
+          />
         {{/each}}
       </tbody>
     </table>

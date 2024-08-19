@@ -3,29 +3,67 @@
     <div class="date">
       <label>{{date}}</label>
     </div>
-
-    {{#if expanded}}
-      <a
-        href
-        class="close"
-        {{on "click" (fn this.setExpandedDate null)}}
-      >{{d-icon "times"}}</a>
-    {{/if}}
   </div>
 
   {{#if events}}
     {{#if showEvents}}
       <div class="events">
-        {{events-calendar-events events=events}}
+        <ul class="events-calendar-events">
+          {{#each events as |event|}}
+            <li><EventsCalendarCard @event={{event}} /></li>
+          {{/each}}
+        </ul>
       </div>
       {{#if hasHidden}}
         <div class="hidden-events">
-          {{d-button
-            class="btn-small"
-            translatedLabel=(i18n "events_calendar.hidden" count=hidden)
-            action=setExpandedDate
-            actionParam=date
-          }}
+          <DTooltip
+            @interactive={{true}}
+            @triggers={{array "click"}}
+            @identifier={{concat-class
+              "events-calendar-day-hidden"
+              (concat "day-" date)
+            }}
+            @arrow={{false}}
+            @onShow={{this.onShowHiddenEvents}}
+          >
+            <:trigger>
+              <DButton
+                @class="btn-small"
+                @translatedLabel={{i18n
+                  "events_calendar.hidden"
+                  count=this.hidden
+                }}
+              />
+            </:trigger>
+            <:content>
+              <ul class="events-calendar-events">
+                {{#each this.allEvents as |event|}}
+                  <li>
+                    <a
+                      href={{event.topic.url}}
+                      class={{event.classes}}
+                      style={{event.listStyle}}
+                    >
+                      {{#unless event.allDay}}
+                        <span style={{event.dotStyle}}>{{d-icon
+                            "circle"
+                          }}</span>
+                      {{/unless}}
+                      {{#if event.time}}
+                        <span class="time">{{event.time}}</span>
+                      {{/if}}
+                      {{#if event.title}}
+                        <span
+                          class="title"
+                          style={{event.titleStyle}}
+                        >{{replace-emoji event.title}}</span>
+                      {{/if}}
+                    </a>
+                  </li>
+                {{/each}}
+              </ul>
+            </:content>
+          </DTooltip>
         </div>
       {{/if}}
     {{else}}

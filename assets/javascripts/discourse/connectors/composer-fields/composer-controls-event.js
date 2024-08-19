@@ -15,4 +15,11 @@ export default {
       component.set("eventValidation", controller.get("eventValidation"));
     });
   },
+
+  actions: {
+    updateEvent(event) {
+      const controller = getOwner(this).lookup("controller:composer");
+      controller.set("model.event", event);
+    },
+  },
 };

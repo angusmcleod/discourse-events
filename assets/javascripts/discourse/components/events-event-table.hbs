@@ -41,12 +41,12 @@
   </thead>
   <tbody>
     {{#each events as |event|}}
-      {{events-event-row
-        event=event
-        modifySelection=modifySelection
-        selectAll=selectAll
-      }}
+      <EventsEventRow
+        @event={{event}}
+        @modifySelection={{modifySelection}}
+        @selectAll={{selectAll}}
+      />
     {{/each}}
   </tbody>
 </table>
-{{conditional-loading-spinner condition=loading}}
+<ConditionalLoadingSpinner @condition={{loading}} />

@@ -64,7 +64,12 @@
 .topic-event-label {
   display: flex;
   justify-content: space-between;
+  flex-flow: wrap;
   width: 100%;
+
+  .event-label {
+    flex: unset;
+  }
 }
 
 .topic-list-item .date-time-container {

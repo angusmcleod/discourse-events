@@ -1,10 +1,10 @@
 import Component from "@ember/component";
 import { alias, not, or } from "@ember/object/computed";
-import { bind, scheduleOnce } from "@ember/runloop";
+import { scheduleOnce } from "@ember/runloop";
 import { inject as service } from "@ember/service";
-import $ from "jquery";
 import Category from "discourse/models/category";
 import {
+  bind,
   default as discourseComputed,
   observes,
   on,
@@ -75,8 +75,7 @@ export default Component.extend({
 
   positionCalendar() {
     this.handleResize();
-    $(window).on("resize", bind(this, this.handleResize));
-    $("body").addClass("calendar");
+    window.addEventListener("resize", this.handleResize, false);
   },
 
   @discourseComputed("siteSettings.login_required", "category.read_restricted")
@@ -86,15 +85,15 @@ export default Component.extend({
 
   @on("willDestroy")
   teardown() {
-    $(window).off("resize", bind(this, this.handleResize));
-    $("body").removeClass("calendar");
+    window.removeEventListener("resize", this.handleResize);
   },
 
+  @bind
   handleResize() {
     if (this._state === "destroying") {
       return;
     }
-    this.set("responsiveBreak", $(window).width() < RESPONSIVE_BREAKPOINT);
+    this.set("responsiveBreak", window.innerWidth < RESPONSIVE_BREAKPOINT);
   },
 
   forceResponsive: false,

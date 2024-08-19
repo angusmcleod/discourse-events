@@ -1,11 +1,11 @@
 <EventsHeader @viewName={{viewName}} @message={{message}}>
-  {{d-button
-    id="add-connection"
-    action=(action "addConnection")
-    label="admin.events.connection.add.label"
-    title="admin.events.connection.add.title"
-    icon="plus"
-  }}
+  <DButton
+    @id="add-connection"
+    @action={{action "addConnection"}}
+    @label="admin.events.connection.add.label"
+    @title="admin.events.connection.add.title"
+    @icon="plus"
+  />
 </EventsHeader>
 
 <div class="admin-events-container">
@@ -22,12 +22,12 @@
       </thead>
       <tbody>
         {{#each connections as |connection|}}
-          {{events-connection-row
-            connection=connection
-            sources=sources
-            removeConnection=(action "removeConnection")
-            setMessage=(action "setMessage")
-          }}
+          <EventsConnectionRow
+            @connection={{connection}}
+            @sources={{sources}}
+            @removeConnection={{action "removeConnection"}}
+            @setMessage={{action "setMessage"}}
+          />
         {{/each}}
       </tbody>
     </table>
