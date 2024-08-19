@@ -7,7 +7,7 @@
       {{/if}}
     </div>
     {{#if showRsvp}}
-      {{event-rsvp topic=model}}
+      <EventRsvp @topic={{model}} />
     {{/if}}
   {{/if}}
 {{/unless}}

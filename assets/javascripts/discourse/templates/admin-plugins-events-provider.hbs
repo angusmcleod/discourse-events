@@ -1,11 +1,11 @@
 <EventsHeader @viewName={{viewName}} @message={{message}}>
-  {{d-button
-    id="add-provider"
-    action=(action "addProvider")
-    label="admin.events.provider.add.label"
-    title="admin.events.provider.add.title"
-    icon="plus"
-  }}
+  <DButton
+    @id="add-provider"
+    @action={{action "addProvider"}}
+    @label="admin.events.provider.add.label"
+    @title="admin.events.provider.add.title"
+    @icon="plus"
+  />
 </EventsHeader>
 
 <div class="admin-events-container">
@@ -23,10 +23,10 @@
       </thead>
       <tbody>
         {{#each providers as |provider|}}
-          {{events-provider-row
-            provider=provider
-            removeProvider=(action "removeProvider")
-          }}
+          <EventsProviderRow
+            @provider={{provider}}
+            @removeProvider={{action "removeProvider"}}
+          />
         {{/each}}
       </tbody>
     </table>
