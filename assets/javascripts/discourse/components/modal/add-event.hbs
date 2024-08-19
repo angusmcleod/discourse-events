@@ -5,14 +5,14 @@
   @flash={{this.flash}}
 >
   <:body>
-    {{event-form event=model.event updateEvent=(action "updateEvent")}}
+    <EventForm @event={{model.event}} @updateEvent={{action "updateEvent"}} />
   </:body>
   <:footer>
-    {{d-button
-      action=(action "saveEvent")
+    <DButton
       class="btn-primary"
-      label="add_event.event_add"
-    }}
+      @action={{action "saveEvent"}}
+      @label="add_event.event_add"
+    />
     <a href class="clear" {{on "click" this.clear}}>{{i18n
         "add_event.event_clear"
       }}</a>

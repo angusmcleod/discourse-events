@@ -1,8 +1,9 @@
-{{#if model.showEventControls}}
-  {{add-event-controls
-    event=model.event
-    category=model.category
-    noText=site.mobileView
-  }}
+{{#if this.model.showEventControls}}
+  <AddEventControls
+    @event={{this.model.event}}
+    @category={{this.model.category}}
+    @noText={{this.site.mobileView}}
+    @updateEvent={{this.updateEvent}}
+  />
   {{popup-input-tip validation=eventValidation}}
 {{/if}}

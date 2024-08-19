@@ -1,3 +1,4 @@
+import { getOwner } from "@ember/application";
 import Category from "discourse/models/category";
 
 export default {
@@ -26,5 +27,12 @@ export default {
       let category = Category.findById(this.get("buffered.category_id"));
       component.set("showEventControls", showEventControls(category));
     });
+  },
+
+  actions: {
+    updateEvent(event) {
+      const controller = getOwner(this).lookup("controller:topic");
+      controller.set("buffered.event", event);
+    },
   },
 };

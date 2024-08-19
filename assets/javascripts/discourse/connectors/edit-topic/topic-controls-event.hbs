@@ -1,7 +1,8 @@
-{{#if showEventControls}}
-  {{add-event-controls
-    event=buffered.event
-    category=buffered.category
-    noText=site.mobileView
-  }}
+{{#if this.showEventControls}}
+  <AddEventControls
+    @event={{this.buffered.event}}
+    @category={{this.buffered.category}}
+    @noText={{this.site.mobileView}}
+    @updateEvent={{this.updateEvent}}
+  />
 {{/if}}

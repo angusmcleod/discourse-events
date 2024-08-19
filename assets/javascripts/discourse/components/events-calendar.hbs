@@ -1,60 +1,70 @@
+{{body-class "calendar"}}
+
 <div class="header">
   <div class="events-calendar-navigation">
-    {{d-button label=todayLabel action=(action "today") icon="calendar"}}
-    {{d-button icon="chevron-left" action=(action "monthPrevious")}}
-    {{d-button icon="chevron-right" action=(action "monthNext")}}
-    {{combo-box
-      content=months
-      value=month
+    <DButton
+      @label={{todayLabel}}
+      @action={{action "today"}}
+      @icon="far-calendar"
+    />
+    <DButton @icon="chevron-left" @action={{action "monthPrevious"}} />
+    <DButton @icon="chevron-right" @action={{action "monthNext"}} />
+    <ComboBox
+      @content={{months}}
+      @value={{month}}
       class="month-dropdown"
-      onChange=(action (mut month))
-    }}
-    {{combo-box
-      content=years
-      value=year
+      @onChange={{action (mut month)}}
+    />
+    <ComboBox
+      @content={{years}}
+      @value={{year}}
       class="year-dropdown"
-      onChange=(action (mut year))
-    }}
+      @onChange={{action (mut year)}}
+    />
   </div>
   {{#if showSubscription}}
     <div class="events-calendar-subscription-links">
       {{#if showNotice}}
-        {{d-button
-          href="/my/preferences/webcal-keys"
-          title="webcal_preferences.calendar_notice"
-          icon="key"
-        }}
+        <DButton
+          @href="/my/preferences/webcal-keys"
+          @title="webcal_preferences.calendar_notice"
+          @icon="key"
+        />
       {{/if}}
-      {{d-button
-        href=webcalDocumentationURL
-        title="webcal_preferences.calendar_usage"
-        icon="question-circle"
-      }}
-      {{events-calendar-subscription
-        category=category
-        userApiKeys=userApiKeys
-        onChange=(action "changeSubscription")
-        options=(hash
+      <DButton
+        @href={{webcalDocumentationURL}}
+        @title="webcal_preferences.calendar_usage"
+        @icon="question-circle"
+      />
+      <EventsCalendarSubscription
+        @category={{category}}
+        @userApiKeys={{userApiKeys}}
+        @onChange={{action "changeSubscription"}}
+        @options={{hash
           showFullTitle=showFullTitle
           icon="rss"
           none="events_calendar.subscribe"
-        )
-      }}
+        }}
+      />
     </div>
   {{/if}}
 </div>
-{{events-calendar-body
-  days=days
-  topics=topics
-  currentMonth=currentMonth
-  currentDate=currentDate
-  selectDate=(action "selectDate")
-  canSelectDate=canSelectDate
-  showEvents=showEvents
-  responsive=responsive
-}}
+<EventsCalendarBody
+  @days={{days}}
+  @topics={{topics}}
+  @currentMonth={{currentMonth}}
+  @currentDate={{currentDate}}
+  @selectDate={{action "selectDate"}}
+  @canSelectDate={{canSelectDate}}
+  @showEvents={{showEvents}}
+  @responsive={{responsive}}
+/>
 {{#if eventsBelow}}
   <div class="events-below">
-    {{events-calendar-events events=dateEvents responsive=responsive}}
+    <ul class="events-calendar-events">
+      {{#each dateEvents as |event|}}
+        <li><EventsCalendarCard @event={{event}} /></li>
+      {{/each}}
+    </ul>
   </div>
 {{/if}}

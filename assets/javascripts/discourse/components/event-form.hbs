@@ -19,14 +19,14 @@
 
   {{#unless allDay}}
     <div class="control full-width">
-      {{combo-box
-        id="add-event-select-timezone"
-        value=timezone
-        valueProperty="value"
-        onChange=(action (mut timezone))
-        content=timezones
-        options=(hash filterable=true none="add_event.no_timezone")
-      }}
+      <ComboBox
+        @id="add-event-select-timezone"
+        @value={{timezone}}
+        @valueProperty="value"
+        @onChange={{action (mut timezone)}}
+        @content={{timezones}}
+        @options={{hash filterable=true none="add_event.no_timezone"}}
+      />
     </div>
   {{/unless}}
 </div>
@@ -37,7 +37,7 @@
       {{i18n "add_event.event_start"}}
     </span>
 
-    {{input-tip validation=startDateTimeValidation}}
+    <InputTip @validation={{startDateTimeValidation}} />
 
     <div class="date-time-set">
       <div class="date-area">
@@ -45,10 +45,10 @@
           {{i18n "add_event.event_date"}}
         </label>
 
-        {{events-date-picker
-          value=startDate
-          containerId="date-container-start"
-        }}
+        <EventsDatePicker
+          @value={{startDate}}
+          @containerId="date-container-start"
+        />
       </div>
 
       {{#unless allDay}}
@@ -72,7 +72,7 @@
       {{i18n "add_event.event_end"}}
     </span>
 
-    {{input-tip validation=scheduleDateTimeValidation}}
+    <InputTip @validation={{scheduleDateTimeValidation}} />
 
     <div class="date-time-set">
       <div class="date-area">
@@ -80,7 +80,10 @@
           {{i18n "add_event.event_date"}}
         </label>
 
-        {{events-date-picker value=endDate containerId="date-container-end"}}
+        <EventsDatePicker
+          @value={{endDate}}
+          @containerId="date-container-end"
+        />
       </div>
 
       {{#unless allDay}}
@@ -116,12 +119,12 @@
 
         <div class="control full-width">
           <span>{{i18n "add_event.going"}}</span>
-          {{email-group-user-chooser
-            value=usersGoing
-            onChange=(action (mut usersGoing))
+          <EmailGroupUserChooser
+            @value={{usersGoing}}
+            @onChange={{action (mut usersGoing)}}
             class="user-selector"
-            placeholderKey="composer.users_placeholder"
-          }}
+            @options={{hash filterPlaceholder="composer.users_placeholder"}}
+          />
         </div>
       </div>
     {{/if}}

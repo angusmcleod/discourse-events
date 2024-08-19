@@ -40,7 +40,7 @@
   gap: 0.5em;
   background-color: var(--primary-100);
   padding: 0.25em 0.5em;
-  height: 30px;
+  min-height: 30px;
   box-sizing: border-box;
 
   .d-icon {
@@ -53,11 +53,7 @@
   display: flex;
   flex-flow: wrap;
   margin-top: 0.5em;
-
-  .event-rsvp {
-    margin-left: 10px;
-    margin-top: 6px;
-  }
+  gap: 0.5em;
 }
 
 .add-to-calendar {
@@ -313,6 +309,7 @@
       overflow: visible;
       border: 1px solid var(--primary-low);
       box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
+      background-color: var(--secondary);
 
       .events {
         padding: 3px 4px;
@@ -342,15 +339,17 @@
       position: absolute;
       right: 3px;
       top: -3px;
+
+      .d-icon {
+        color: var(--primary);
+      }
     }
 
     .hidden-events {
-      margin: 2px 5px;
+      padding-left: 7px;
 
       .btn {
-        font-size: 0.9em;
-        border-radius: 4px;
-        line-height: 1;
+        padding: 2px 4px;
       }
     }
 
@@ -365,16 +364,24 @@ ul.events-calendar-events {
   list-style: none;
 
   li {
-    margin: 2px 0;
     position: relative;
-    height: 16px;
+    margin: 1px 0;
+
+    .fk-d-tooltip__trigger,
+    .fk-d-tooltip__trigger-container {
+      width: 100%;
+      height: 20px;
+      vertical-align: top;
+    }
 
     .event {
       padding: 0 7px;
+      width: 100%;
       height: inherit;
-      line-height: 16px;
+      line-height: 18px;
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
+      box-sizing: border-box;
       white-space: nowrap;
       overflow: hidden;
       cursor: pointer;
@@ -430,16 +437,7 @@ ul.events-calendar-events {
 }
 
 .events-calendar-card {
-  position: absolute;
-  top: -15px;
-  left: -390px;
-  width: 350px;
-  z-index: 997;
-  background-color: var(--secondary);
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--primary-low);
-  padding: 15px;
-  border-radius: 4px;
+  padding: 0.5em;
 
   .topic-link {
     font-size: 1.3em;
@@ -447,14 +445,6 @@ ul.events-calendar-events {
 
     p {
       margin: 0;
-    }
-  }
-
-  .close {
-    color: var(--primary-500);
-
-    .fa {
-      vertical-align: top;
     }
   }
 
@@ -489,10 +479,16 @@ ul.events-calendar-events {
   }
 }
 
-.events-calendar-events .events-calendar-card .close {
-  position: absolute;
-  right: 5px;
-  top: 5px;
+.events-calendar-day-hidden {
+  ul.events-calendar-events {
+    li {
+      margin: 0.5em 0;
+
+      a {
+        box-sizing: border-box;
+      }
+    }
+  }
 }
 
 .events-below {
@@ -527,6 +523,13 @@ ul.events-calendar-events {
   button {
     min-height: initial;
     margin-right: 7px;
+    background-color: var(--primary-100);
+    padding: 0.25em 0.5em;
+    height: 30px;
+
+    &.btn-primary {
+      background-color: var(--tertiary);
+    }
   }
 
   .spinner {
@@ -608,7 +611,14 @@ ul.events-calendar-events {
 .topic-list {
   .topic-list-item-event {
     margin-top: 0.25em;
-    font-size: var(--font-down-1);
+    font-size: var(--font-down-2);
+  }
+
+  .topic-list-item-event-time {
+    .event-label {
+      padding: 0em 0.75em;
+      height: 25px;
+    }
   }
 
   .topic-list-item-event-rsvp {
