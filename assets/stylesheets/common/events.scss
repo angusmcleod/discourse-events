@@ -617,7 +617,7 @@ ul.events-calendar-events {
   .topic-list-item-event-time {
     .event-label {
       padding: 0em 0.75em;
-      height: 25px;
+      min-height: 25px;
     }
   }
 

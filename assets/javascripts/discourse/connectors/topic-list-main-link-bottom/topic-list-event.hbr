@@ -13,7 +13,7 @@
         <div class="topic-list-item-event-rsvp">
           <a
             href={{context.topic.lastUnreadUrl}}
-            class={{context.topic.topicListItemClasses}}
+            class="{{context.topic.topicListItemClasses}}"
           >
             <span>{{context.topic.event_going_total}}</span>
             <span>{{i18n "event_rsvp.going.label"}}</span>
