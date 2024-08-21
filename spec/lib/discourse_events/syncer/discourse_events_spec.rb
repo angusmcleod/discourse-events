@@ -20,6 +20,7 @@ describe DiscourseEvents::DiscourseEventsSyncer do
 
     SiteSetting.calendar_enabled = true
     SiteSetting.discourse_post_event_enabled = true
+    SiteSetting.events_event_client = "discourse_events"
   end
 
   def sync_events(opts = {})

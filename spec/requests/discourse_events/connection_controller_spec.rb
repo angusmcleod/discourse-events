@@ -17,20 +17,6 @@ describe DiscourseEvents::ConnectionController do
     expect(response.parsed_body["sources"].first["name"]).to eq(connection.source.name)
   end
 
-  it "lists clients" do
-    if SiteSetting.respond_to?(:calendar_enabled)
-      SiteSetting.calendar_enabled = true
-      SiteSetting.discourse_post_event_enabled = true
-    end
-
-    skip("Discourse Events is not installed") unless DiscourseEvents::DiscourseEventsSyncer.ready?
-
-    get "/admin/plugins/events/connection.json"
-
-    expect(response.status).to eq(200)
-    expect(response.parsed_body["clients"]).to match_array(%w[discourse_events events])
-  end
-
   it "creates connections" do
     put "/admin/plugins/events/connection/new.json",
         params: {
@@ -44,7 +30,6 @@ describe DiscourseEvents::ConnectionController do
         }
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["connection"]["client"]).to eq("events")
     expect(response.parsed_body["connection"]["source_id"]).to eq(source.id)
     expect(response.parsed_body["connection"]["category_id"]).to eq(category.id)
   end

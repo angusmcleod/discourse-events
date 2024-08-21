@@ -69,21 +69,20 @@ module DiscourseEvents
         result[:user_id] = user.id
       end
 
+      result[:client] = SiteSetting.events_event_client
+
       result
     end
 
     def create_or_update
       @errors = []
+      opts = connection_params.slice(:user_id, :category_id, :source_id, :client)
 
       ActiveRecord::Base.transaction do
         if action_name === "create"
-          @model = Connection.create(connection_params.slice(:user_id, :category_id, :source_id))
+          @model = Connection.create(opts)
         else
-          @model =
-            Connection.update(
-              params[:id],
-              connection_params.slice(:user_id, :category_id, :source_id),
-            )
+          @model = Connection.update(params[:id], opts)
         end
 
         if @model.errors.any?
