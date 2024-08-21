@@ -4,7 +4,7 @@ require_dependency "enum_site_setting"
 class DiscourseEventsClientSiteSetting < EnumSiteSetting
   def self.valid_value?(val)
     return false unless DiscourseEvents::Connection.available_clients.include?(val.to_s)
-    if val == 'discourse_events'
+    if val == "discourse_events"
       SiteSetting.calendar_enabled && SiteSetting.discourse_post_event_enabled
     else
       true
