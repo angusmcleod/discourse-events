@@ -9,14 +9,15 @@ module DiscourseEvents
 
       def authorization_url(state)
         uri = URI.parse("#{base_url}/common/oauth2/v2.0/authorize")
-        uri.query = URI.encode_www_form(
-          client_id: provider.client_id,
-          response_type: "code",
-          redirect_uri: provider.redirect_uri,
-          state: state,
-          scope: "Calendars.ReadWrite"
-        )
-        uri.to_s        
+        uri.query =
+          URI.encode_www_form(
+            client_id: provider.client_id,
+            response_type: "code",
+            redirect_uri: provider.redirect_uri,
+            state: state,
+            scope: "Calendars.ReadWrite",
+          )
+        uri.to_s
       end
 
       def request_token(code)
