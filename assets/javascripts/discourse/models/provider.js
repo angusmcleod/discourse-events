@@ -1,8 +1,14 @@
 import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
+import discourseComputed from "discourse-common/utils/decorators";
 
-const Provider = EmberObject.extend();
+const Provider = EmberObject.extend({
+  @discourseComputed("id")
+  stored(providerId) {
+    return providerId && providerId !== "new";
+  },
+});
 
 Provider.reopenClass({
   all() {

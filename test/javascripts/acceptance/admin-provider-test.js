@@ -18,6 +18,7 @@ function providerRoutes(needs) {
           {
             id: 1,
             name: "my_provider",
+            provider_type: "icalendar",
           },
         ],
       });
@@ -82,6 +83,10 @@ acceptance("Events | Provider", function (needs) {
     );
 
     await fillIn("tr[data-provider-id=new] .provider-name", "my_provider");
+    await selectKit("tr[data-provider-id=new] .provider-type").expand();
+    await selectKit("tr[data-provider-id=new] .provider-type").selectRowByValue(
+      "icalendar"
+    );
 
     assert.strictEqual(
       query("tr[data-provider-id=new] .save-provider").disabled,
@@ -113,16 +118,7 @@ acceptance("Events | Provider", function (needs) {
     await visit("/admin/plugins/events/provider");
 
     assert.equal(
-      query(".credentials-container").innerText.trim(),
-      "No Credentials",
-      "no credentials displayed"
-    );
-
-    await selectKit(".provider-type").expand();
-    await selectKit(".provider-type").selectRowByValue("icalendar");
-
-    assert.equal(
-      query("tr[data-provider-id='1'] .credentials-container").innerText.trim(),
+      query("tr[data-provider-id='1'] .credentials-column").innerText.trim(),
       "No Credentials",
       "no credentials displayed"
     );
@@ -130,9 +126,16 @@ acceptance("Events | Provider", function (needs) {
     await selectKit(".provider-type").expand();
     await selectKit(".provider-type").selectRowByValue("eventbrite");
 
-    assert.ok(exists("input.token"), "it displays the token input");
+    await click(".open-credentials-modal");
+
     assert.ok(
-      exists(".btn.toggle-secret-visibility"),
+      exists(".events-provider-credentials-modal input.token"),
+      "it displays the token input"
+    );
+    assert.ok(
+      exists(
+        ".events-provider-credentials-modal .btn.toggle-secret-visibility"
+      ),
       "it displays the secret visibility toggle"
     );
   });

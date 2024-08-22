@@ -29,6 +29,7 @@ gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
+gem "omnievent-outlook", "0.1.0.pre1", require_name: "omnievent/outlook"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -61,6 +62,7 @@ after_initialize do
   require_relative "lib/discourse_events/syncer/events.rb"
   require_relative "lib/discourse_events/auth/base.rb"
   require_relative "lib/discourse_events/auth/meetup.rb"
+  require_relative "lib/discourse_events/auth/outlook.rb"
   require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/connection.rb"
   require_relative "app/models/discourse_events/event_connection.rb"

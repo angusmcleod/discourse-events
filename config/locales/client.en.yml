@@ -136,9 +136,20 @@ en:
           add:
             label: Add
             title: Add Provider
-          status: Status
-          ready: Ready
-          not_ready: Not Ready
+          status:
+            label: Status
+            ready:
+              label: Ready
+              title: Provider is ready.
+            not_ready:
+              label: Not Ready
+              title: Provider is not ready.
+            authenticated: 
+              label: Authenticated
+              title: Provider is authenticated.
+            not_authenticated:
+              label: Not Authenticated
+              title: Provider is not authenticated.
           name:
             label: Name
             placeholder: underscored
@@ -149,13 +160,18 @@ en:
             label: Type
             select: Select a type...
           method: Method
-          credentials: Credentials
-          no_credentials: No Credentials
-          username: Username
-          password: Password
-          token: Token
-          client_id: Client ID
-          client_secret: Client Secret
+          credentials:
+            label: Credentials
+            none: No Credentials
+            update: Set Credentials
+            username: Username
+            password: Password
+            token: Token
+            client_id: Client ID
+            client_secret: Client Secret
+            done:
+              label: Set Credentials
+              title: Close
           save:
             label: Save
             title: Save Provider

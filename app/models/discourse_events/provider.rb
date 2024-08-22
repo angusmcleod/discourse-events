@@ -6,7 +6,7 @@ module DiscourseEvents
 
     NO_AUTH ||= %w[developer icalendar]
     TOKEN ||= %w[eventbrite humanitix eventzilla]
-    OAUTH2 ||= %w[meetup]
+    OAUTH2 ||= %w[meetup outlook]
     TYPES = NO_AUTH + TOKEN + OAUTH2
 
     has_many :sources,
@@ -86,7 +86,7 @@ module DiscourseEvents
 
     def redirect_uri
       return nil unless oauth2_type?
-      "#{DiscourseEvents.base_url}/admin/plugins/events/provider/#{self.id}/redirect"
+      "#{DiscourseEvents.base_url}/admin/plugins/events/provider/redirect"
     end
 
     def request_token(code)

@@ -77,16 +77,16 @@ module DiscourseEvents
     protected
 
     def provider_params
-      params.require(:provider).permit(
-        :name,
-        :provider_type,
-        :url,
-        :username,
-        :password,
-        :token,
-        :client_id,
-        :client_secret,
-      )
+      result =
+        params.require(:provider).permit(
+          :name,
+          :provider_type,
+          :username,
+          :password,
+          :token,
+          :client_id,
+          :client_secret,
+        )
     end
   end
 end

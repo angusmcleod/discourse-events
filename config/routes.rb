@@ -34,7 +34,7 @@ Discourse::Application.routes.prepend do
       put "events/provider/new" => "provider#create"
       put "events/provider/:id" => "provider#update"
       get "events/provider/:id/authorize" => "provider#authorize"
-      get "events/provider/:id/redirect" => "provider#redirect"
+      get "events/provider/redirect" => "provider#redirect"
       delete "events/provider/:id" => "provider#destroy"
       get "events/source" => "source#index"
       put "events/source/new" => "source#create"

@@ -11,7 +11,7 @@ module DiscourseEvents
   USER_API_KEY_SCOPE = "calendar_events"
 
   def self.base_url
-    if Rails.env.development?
+    if Rails.env.development? && ENV["RAILS_DEVELOPMENT_HOSTS"]
       "https://#{ENV["RAILS_DEVELOPMENT_HOSTS"].split(",").first}"
     else
       Discourse.base_url

@@ -36,6 +36,18 @@ const SOURCE_OPTIONS = {
       default: "",
     },
   ],
+  outlook: [
+    {
+      name: "user_id",
+      type: "text",
+      defualt: "",
+    },
+    {
+      name: "calendar_id",
+      type: "text",
+      default: "",
+    },
+  ],
 };
 
 export default Component.extend({

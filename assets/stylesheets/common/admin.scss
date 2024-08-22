@@ -80,18 +80,6 @@ $pavilion_primary: #3c1c8c;
     }
   }
 
-  .credentials-column {
-    .credentials-container {
-      display: inline-flex;
-      gap: 0.5em;
-    }
-
-    .client-id,
-    .client-secret {
-      width: 120px;
-    }
-  }
-
   .action-column {
     display: flex;
     justify-content: flex-end;
@@ -153,8 +141,8 @@ $pavilion_primary: #3c1c8c;
 
   .events-provider-row {
     .name-column {
-      max-width: 140px;
-      min-width: 140px;
+      max-width: 180px;
+      min-width: 180px;
 
       input {
         width: 100%;
@@ -168,12 +156,11 @@ $pavilion_primary: #3c1c8c;
     }
 
     .provider-type {
-      width: 130px;
+      width: 150px;
     }
 
     .status-column {
-      min-width: 40px;
-      text-align: center;
+      min-width: 170px;
     }
 
     .status {
@@ -183,11 +170,13 @@ $pavilion_primary: #3c1c8c;
       display: inline-block;
       vertical-align: middle;
 
-      &.authenticated {
+      &.authenticated,
+      &.ready {
         background: var(--success);
       }
 
-      &.not-authenticated {
+      &.not-authenticated,
+      &.not-ready {
         background: var(--danger);
       }
 
@@ -365,4 +354,27 @@ $pavilion_primary: #3c1c8c;
   .d-date-input {
     min-width: 150px;
   }
+}
+
+.events-provider-credentials-modal {
+  input {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .provider-credentials-secret {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .client-id {
+    margin-bottom: 1em;
+  }
+}
+
+.events-provider-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
 }

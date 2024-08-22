@@ -1,38 +1,60 @@
 import Component from "@ember/component";
-import { or } from "@ember/object/computed";
+import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import { contentsMap } from "../lib/events";
 import Provider from "../models/provider";
+import EventsProviderCredentials from "./modal/events-provider-credentials";
 
-const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
+export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
 
-const NO_AUTH_TYPES = ["icalendar"];
+export const NO_AUTH_TYPES = ["icalendar"];
 
-const OAUTH2_TYPES = ["meetup"];
+export const OAUTH2_TYPES = ["meetup", "outlook"];
 
-const PROVIDER_TYPES = [...NO_AUTH_TYPES, ...TOKEN_TYPES, ...OAUTH2_TYPES];
+export const PROVIDER_TYPES = [
+  ...NO_AUTH_TYPES,
+  ...TOKEN_TYPES,
+  ...OAUTH2_TYPES,
+];
 
 export default Component.extend({
   tagName: "tr",
   classNames: ["events-provider-row"],
   attributeBindings: ["provider.id:data-provider-id"],
-  hideCredentials: true,
-  hasSecretCredentials: or("showToken", "showClientCredentials"),
+  modal: service(),
 
   didReceiveAttrs() {
     this._super();
     this.set("currentProvider", JSON.parse(JSON.stringify(this.provider)));
   },
 
-  @discourseComputed("provider.name", "provider.url", "provider.provider_type")
-  providerChanged(name, url, type) {
-    const cp = this.currentProvider;
-    return cp.name !== name || cp.url !== url || cp.provider_type !== type;
+  @discourseComputed(
+    "provider.name",
+    "provider.url",
+    "provider.provider_type",
+    "provider.token",
+    "provider.client_id",
+    "provider.client_secret"
+  )
+  providerChanged(name, url, type, token, clientId, clientSecret) {
+    const current = this.currentProvider;
+    return (
+      current.name !== name ||
+      current.url !== url ||
+      current.provider_type !== type ||
+      current.token !== token ||
+      current.client_id !== clientId ||
+      current.client_secret !== clientSecret
+    );
   },
 
-  @discourseComputed("providerChanged")
-  saveDisabled(providerChanged) {
-    return !providerChanged;
+  @discourseComputed(
+    "provider.name",
+    "provider.provider_type",
+    "providerChanged"
+  )
+  saveDisabled(providerName, providerType, providerChanged) {
+    return !providerName || !providerType || !providerChanged;
   },
 
   @discourseComputed("providerChanged")
@@ -65,23 +87,15 @@ export default Component.extend({
   },
 
   @discourseComputed("provider.provider_type")
-  showToken(providerType) {
-    return providerType && TOKEN_TYPES.includes(providerType);
-  },
-
-  @discourseComputed("provider.provider_type")
-  showNoAuth(providerType) {
+  noCredentials(providerType) {
     return !providerType || NO_AUTH_TYPES.includes(providerType);
   },
 
-  @discourseComputed("provider.provider_type")
-  showClientCredentials(providerType) {
-    return providerType && OAUTH2_TYPES.includes(providerType);
-  },
-
   actions: {
-    toggleHideCredentials() {
-      this.toggleProperty("hideCredentials");
+    openCredentials() {
+      this.modal.show(EventsProviderCredentials, {
+        model: this.get("provider"),
+      });
     },
 
     saveProvider() {
@@ -100,7 +114,7 @@ export default Component.extend({
               currentProvider: result.provider,
               provider: Provider.create(result.provider),
             });
-          } else if (this.currentSource.id !== "new") {
+          } else if (this.currentProvider.id !== "new") {
             this.set(
               "provider",
               JSON.parse(JSON.stringify(this.currentProvider))
