@@ -125,6 +125,19 @@ export default {
         },
       });
 
+      api.modifyClass("route:discovery.category", {
+        pluginId: "events",
+
+        afterModel(model) {
+          if (
+            model.filterType === "calendar" &&
+            this.templateName === "discovery/list"
+          ) {
+            this.templateName = "discovery/calendar";
+          }
+        },
+      });
+
       api.addNavigationBarItem({
         name: "calendar",
         displayName: "Calendar",
