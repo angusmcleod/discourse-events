@@ -187,11 +187,6 @@ acceptance("Events | Connection", function (needs) {
 
     await click(".events-filters-modal .btn-primary");
 
-    assert.ok(
-      exists("tr[data-connection-id='1'] .btn-primary.show-filters"),
-      "the filter content is indicated by a btn-primary class"
-    );
-
     await click("#add-connection");
 
     await click("tr[data-connection-id='new'] .btn.show-filters");

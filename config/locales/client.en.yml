@@ -125,7 +125,16 @@ en:
             title: Save Source
           source_options:
             label: Options
+            title: Set source options.
             none: No options
+            uri: URI
+            organization_id: Organization ID
+            group_urlname: Group Urlname
+            user_id: User ID
+            calendar_id: Calendar ID
+            done:
+              label: Set Options
+              title: Set source options.
           date_range: Date Range
           import:
             label: Import
@@ -159,6 +168,12 @@ en:
           provider_type:
             label: Type
             select: Select a type...
+            icalendar: iCalendar
+            eventbrite: Eventbrite
+            eventzilla: Eventzilla
+            meetup: Meetup
+            outlook: Outlook
+            humanitix: Humanitix
           method: Method
           credentials:
             label: Credentials

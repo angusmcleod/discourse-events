@@ -100,7 +100,7 @@ $pavilion_primary: #3c1c8c;
     }
 
     .select-kit.category-chooser {
-      width: 350px;
+      width: 280px;
       height: 36px;
     }
 
@@ -129,13 +129,9 @@ $pavilion_primary: #3c1c8c;
   }
 
   .events-source-row {
-    td.source-options {
-      min-width: 400px;
-      box-sizing: border-box;
-    }
-
+    input.source-name,
     .source-provider {
-      width: 200px;
+      width: 300px;
     }
   }
 
@@ -155,8 +151,13 @@ $pavilion_primary: #3c1c8c;
       }
     }
 
-    .provider-type {
-      width: 150px;
+    .provider-type-column {
+      max-width: 200px;
+      box-sizing: border-box;
+
+      .provider-type {
+        width: 210px;
+      }
     }
 
     .status-column {

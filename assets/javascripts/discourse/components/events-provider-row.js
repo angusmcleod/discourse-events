@@ -1,7 +1,7 @@
 import Component from "@ember/component";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
-import { contentsMap } from "../lib/events";
+import I18n from "I18n";
 import Provider from "../models/provider";
 import EventsProviderCredentials from "./modal/events-provider-credentials";
 
@@ -64,7 +64,12 @@ export default Component.extend({
 
   @discourseComputed
   providerTypes() {
-    return contentsMap(PROVIDER_TYPES);
+    return PROVIDER_TYPES.map((type) => {
+      return {
+        id: type,
+        name: I18n.t(`admin.events.provider.provider_type.${type}`),
+      };
+    });
   },
 
   @discourseComputed(

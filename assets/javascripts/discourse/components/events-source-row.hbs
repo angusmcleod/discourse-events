@@ -17,20 +17,14 @@
 </td>
 
 <td class="source-options">
-  {{#if sourceOptionsMap}}
-    {{#each sourceOptionsMap as |opts|}}
-      <Input
-        class="source-option"
-        @type={{opts.type}}
-        name={{opts.name}}
-        @value={{opts.value}}
-        placeholder={{opts.name}}
-        {{on
-          "change"
-          (action "updateSourceOptions" source.source_options opts.name)
-        }}
-      />
-    {{/each}}
+  {{#if showSourceOptions}}
+    <DButton
+      @action={{action "openSourceOptions"}}
+      @label="admin.events.source.source_options.label"
+      @title="admin.events.source.source_options.title"
+      @icon="cog"
+      class="open-source-options-modal"
+    />
   {{else}}
     {{i18n "admin.events.source.source_options.none"}}
   {{/if}}
@@ -39,9 +33,10 @@
 <td>
   <DButton
     @icon="filter"
+    @label="admin.events.filters.label"
     @title="admin.events.filters.title"
     @action={{action "openFilters"}}
-    class={{filterClass}}
+    class="show-filters"
   />
 </td>
 

@@ -1,0 +1,31 @@
+<DModal
+  class="events-source-options-modal"
+  @closeModal={{@closeModal}}
+  @title={{this.title}}
+>
+  <:body>
+    {{#each model.sourceOptionFields as |field|}}
+      <div class="control-group">
+        <label class="control-label">
+          {{i18n (concat "admin.events.source.source_options." field.name)}}
+        </label>
+        <Input
+          class="source-option"
+          @type={{field.type}}
+          name={{field.name}}
+          @value={{field.value}}
+          placeholder={{field.name}}
+          {{on "change" (action "updateSourceOptions" field.name)}}
+        />
+      </div>
+    {{/each}}
+  </:body>
+  <:footer>
+    <DButton
+      @class="btn-primary"
+      @action={{@closeModal}}
+      @label="admin.events.source.source_options.done.label"
+      @title="admin.events.source.source_options.done.title"
+    />
+  </:footer>
+</DModal>
