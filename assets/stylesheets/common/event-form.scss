@@ -78,15 +78,9 @@
       &.disabled {
         span,
         label,
-        .pika-label,
-        .pika-table th,
-        .pika-button,
-        .pika-prev,
-        .pika-next,
         input,
-        .pika-lendar,
-        .is-selected .pika-button,
-        .d-time-input {
+        .d-time-input,
+        .d-date-input .date-picker::after {
           color: var(--primary-low);
           background-image: initial;
           background: initial;
@@ -96,7 +90,6 @@
         }
 
         input,
-        .pika-lendar,
         .time-area .d-time-input .combo-box summary {
           border: 1px solid var(--primary-low) !important;
         }
@@ -109,7 +102,7 @@
     }
 
     .sub-title {
-      font-size: 1.2em;
+      font-size: 1.1em;
       font-weight: bold;
       padding-bottom: 2px;
       padding-right: 10px;
@@ -153,32 +146,15 @@
       }
     }
 
-    #date-container-start,
-    #date-container-end {
-      height: 250px;
-    }
-
     .ui-timepicker-input {
       width: 105px;
       text-align: center;
     }
-
-    .pika-single {
-      position: relative !important;
-      border: none;
-      z-index: 100;
-
-      .pika-lendar {
-        border: 1px solid var(--primary-medium);
-        padding: 14px;
-        margin: 0;
-        float: none;
-        width: auto;
-      }
-    }
   }
 
   .rsvp-controls {
+    margin-top: 1.5em;
+
     .rsvp-container {
       display: flex;
       flex-flow: wrap;

@@ -82,6 +82,14 @@ export default Component.extend({
   },
 
   actions: {
+    onChangeStartDate(date) {
+      this.set("startDate", moment(date));
+    },
+
+    onChangeEndDate(date) {
+      this.set("endDate", moment(date));
+    },
+
     onChangeStartTime(time) {
       this.set("startTime", moment(time));
     },
@@ -101,7 +109,9 @@ export default Component.extend({
         if (!this.allDay) {
           if (!this.endTime) {
             let start = moment(
-              this.startDate + " " + this.startTime.format("HH:mm")
+              moment(this.startDate).format("YYYY-MM-DD") +
+                " " +
+                this.startTime.format("HH:mm")
             );
             this.set("endTime", moment(start).add(1, "hours"));
           }

@@ -45,9 +45,10 @@
           {{i18n "add_event.event_date"}}
         </label>
 
-        <EventsDatePicker
-          @value={{startDate}}
-          @containerId="date-container-start"
+        <DateInput
+          @date={{this.startDate}}
+          @onChange={{action "onChangeStartDate"}}
+          @useGlobalPickerContainer={{true}}
         />
       </div>
 
@@ -56,6 +57,7 @@
           <label class="input-group-label">
             {{i18n "add_event.event_time"}}
           </label>
+
           <TimeInput
             @date={{this.startTime}}
             @onChange={{action "onChangeStartTime"}}
@@ -63,8 +65,6 @@
         </div>
       {{/unless}}
     </div>
-
-    <div id="date-container-start" />
   </div>
 
   <div class="end-card date-time-card {{endClass}}">
@@ -80,9 +80,10 @@
           {{i18n "add_event.event_date"}}
         </label>
 
-        <EventsDatePicker
-          @value={{endDate}}
-          @containerId="date-container-end"
+        <DateInput
+          @date={{this.endDate}}
+          @onChange={{action "onChangeEndDate"}}
+          @useGlobalPickerContainer={{true}}
         />
       </div>
 
@@ -91,6 +92,7 @@
           <label class="input-group-label">
             {{i18n "add_event.event_time"}}
           </label>
+
           <TimeInput
             @date={{this.endTime}}
             @onChange={{action "onChangeEndTime"}}
@@ -98,8 +100,6 @@
         </div>
       {{/unless}}
     </div>
-
-    <div id="date-container-end" />
   </div>
 </div>
 

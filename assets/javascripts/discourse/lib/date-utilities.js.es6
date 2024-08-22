@@ -4,7 +4,6 @@ import User from "discourse/models/user";
 import { renderIcon } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
 
-const formDateFormat = "YYYY-MM-DD";
 const RANGE_FORMAT = "YYYY-MM-DD";
 
 function getDefaultTimezone(args) {
@@ -437,8 +436,8 @@ function setupEventForm(event, args = {}) {
   let props = {};
 
   if (allDay) {
-    let startDate = start.format(formDateFormat);
-    let endDate = end ? end.format(formDateFormat) : startDate;
+    let startDate = start;
+    let endDate = end ? end : startDate;
     let endEnabled = moment(endDate).isAfter(startDate, "day");
 
     props = {
@@ -448,17 +447,17 @@ function setupEventForm(event, args = {}) {
       endEnabled,
     };
   } else if (start) {
-    props["startDate"] = start.format(formDateFormat);
+    props["startDate"] = start;
     props["startTime"] = start;
 
     if (end) {
-      let endDate = end.format(formDateFormat);
+      let endDate = end;
       props["endDate"] = endDate;
       props["endTime"] = end;
       props["endEnabled"] = true;
     }
   } else {
-    props["startDate"] = moment().format(formDateFormat);
+    props["startDate"] = moment();
     props["startTime"] = nextInterval();
   }
 
