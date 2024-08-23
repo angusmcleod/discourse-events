@@ -379,3 +379,9 @@ $pavilion_primary: #3c1c8c;
   align-items: center;
   gap: 0.25em;
 }
+
+.events-source-options-modal {
+  input.source-option {
+    width: 100%;
+  }
+}
