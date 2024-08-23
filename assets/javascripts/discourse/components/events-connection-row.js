@@ -74,15 +74,6 @@ export default Component.extend({
     return connectionChanged || loading;
   },
 
-  @discourseComputed("hasFilters")
-  filterClass(hasFilters) {
-    let classes = "show-filters";
-    if (hasFilters) {
-      classes += " btn-primary";
-    }
-    return classes;
-  },
-
   actions: {
     updateUser(usernames) {
       const connection = this.connection;

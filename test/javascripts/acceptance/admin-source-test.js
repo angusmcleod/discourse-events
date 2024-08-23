@@ -130,6 +130,8 @@ acceptance("Events | Source", function (needs) {
     await selectKit(".source-provider").expand();
     await selectKit(".source-provider").selectRowByValue(1);
 
+    await click(".open-source-options-modal");
+
     assert.ok(
       exists("[name=organization_id]"),
       "it displays the appropriate option"

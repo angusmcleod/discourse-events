@@ -2,17 +2,18 @@ import { A } from "@ember/array";
 import Component from "@ember/component";
 import { notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
-import discourseComputed, { observes } from "discourse-common/utils/decorators";
+import discourseComputed from "discourse-common/utils/decorators";
 import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
 import EventsFilters from "./modal/events-filters";
+import EventsSourceOptions from "./modal/events-source-options";
 
 const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 };
 
-const SOURCE_OPTIONS = {
+export const SOURCE_OPTIONS = {
   icalendar: [
     {
       name: "uri",
@@ -36,20 +37,30 @@ const SOURCE_OPTIONS = {
       default: "",
     },
   ],
+  outlook: [
+    {
+      name: "user_id",
+      type: "text",
+      defualt: "",
+    },
+    {
+      name: "calendar_id",
+      type: "text",
+      default: "",
+    },
+  ],
 };
 
 export default Component.extend({
   tagName: "tr",
   classNames: ["events-source-row"],
   attributeBindings: ["source.id:data-source-id"],
-  SourceOptions: [],
   hasFilters: notEmpty("source.filters"),
   modal: service(),
 
   didReceiveAttrs() {
     this._super();
     this.set("currentSource", JSON.parse(JSON.stringify(this.source)));
-    this.setSourceOptions();
   },
 
   willDestroyElement() {
@@ -101,56 +112,17 @@ export default Component.extend({
     return sourceChanged || sourceId === "new" || loading;
   },
 
-  @discourseComputed("source.source_options.@each")
-  sourceOptionsMap(source_options) {
-    return this.sourceOptions.map((opt) => {
-      return {
-        name: opt.name,
-        value: source_options[opt.name],
-        type: opt.type,
-      };
-    });
+  @discourseComputed("source.provider_id")
+  provider(providerId) {
+    return this.providers?.find((p) => p.id === providerId);
   },
 
-  resetProvider() {
-    this.get("source").setProperties({
-      provider_id: null,
-      source_options: SourceOptions.create(),
-    });
-    this.set("sourceOptions", []);
+  @discourseComputed("provider.provider_type")
+  sourceOptionFields(providerType) {
+    return SOURCE_OPTIONS[providerType];
   },
 
-  @observes("source.provider_id")
-  setSourceOptions() {
-    const providerId = this.source.provider_id;
-    const providers = this.providers;
-    const provider = providers.find((p) => p.id === providerId);
-
-    if (!providers || !provider) {
-      this.resetProvider();
-      return;
-    }
-
-    const sourceOptions = SOURCE_OPTIONS[provider.provider_type];
-    const currentSourceOptions = this.currentSource.source_options || {};
-    const source_options = {};
-
-    sourceOptions.forEach((opt) => {
-      source_options[opt.name] = currentSourceOptions[opt.name] || opt.default;
-    });
-
-    this.set("source.source_options", SourceOptions.create(source_options));
-    this.set("sourceOptions", sourceOptions);
-  },
-
-  @discourseComputed("hasFilters")
-  filterClass(hasFilters) {
-    let classes = "show-filters";
-    if (hasFilters) {
-      classes += " btn-primary";
-    }
-    return classes;
-  },
+  showSourceOptions: notEmpty("sourceOptionFields"),
 
   actions: {
     openFilters() {
@@ -159,12 +131,18 @@ export default Component.extend({
       });
     },
 
-    updateProvider(provider_id) {
-      this.set("source.provider_id", provider_id);
+    openSourceOptions() {
+      this.modal.show(EventsSourceOptions, {
+        model: {
+          source: this.get("source"),
+          sourceOptionFields: this.get("sourceOptionFields"),
+          providerType: this.get("provider.provider_type"),
+        },
+      });
     },
 
-    updateSourceOptions(source_options, name, event) {
-      source_options.set(name, event.target.value);
+    updateProvider(provider_id) {
+      this.set("source.provider_id", provider_id);
     },
 
     saveSource() {

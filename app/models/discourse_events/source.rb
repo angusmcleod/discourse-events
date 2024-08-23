@@ -21,6 +21,10 @@ module DiscourseEvents
       },
       eventzilla: {
       },
+      outlook: {
+        user_id: /[0-9a-zA-Z]/,
+        calendar_id: /[0-9a-zA-Z=-]/,
+      },
     }
 
     FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
@@ -104,6 +108,7 @@ module DiscourseEvents
           errors.add(:source_options, "are not valid")
         end
       end
+
       return false if errors.present?
 
       invalid =

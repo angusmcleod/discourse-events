@@ -80,18 +80,6 @@ $pavilion_primary: #3c1c8c;
     }
   }
 
-  .credentials-column {
-    .credentials-container {
-      display: inline-flex;
-      gap: 0.5em;
-    }
-
-    .client-id,
-    .client-secret {
-      width: 120px;
-    }
-  }
-
   .action-column {
     display: flex;
     justify-content: flex-end;
@@ -112,7 +100,7 @@ $pavilion_primary: #3c1c8c;
     }
 
     .select-kit.category-chooser {
-      width: 350px;
+      width: 280px;
       height: 36px;
     }
 
@@ -141,20 +129,16 @@ $pavilion_primary: #3c1c8c;
   }
 
   .events-source-row {
-    td.source-options {
-      min-width: 400px;
-      box-sizing: border-box;
-    }
-
+    input.source-name,
     .source-provider {
-      width: 200px;
+      width: 280px;
     }
   }
 
   .events-provider-row {
     .name-column {
-      max-width: 140px;
-      min-width: 140px;
+      max-width: 180px;
+      min-width: 180px;
 
       input {
         width: 100%;
@@ -167,13 +151,17 @@ $pavilion_primary: #3c1c8c;
       }
     }
 
-    .provider-type {
-      width: 130px;
+    .provider-type-column {
+      max-width: 200px;
+      box-sizing: border-box;
+
+      .provider-type {
+        width: 210px;
+      }
     }
 
     .status-column {
-      min-width: 40px;
-      text-align: center;
+      min-width: 170px;
     }
 
     .status {
@@ -183,11 +171,13 @@ $pavilion_primary: #3c1c8c;
       display: inline-block;
       vertical-align: middle;
 
-      &.authenticated {
+      &.authenticated,
+      &.ready {
         background: var(--success);
       }
 
-      &.not-authenticated {
+      &.not-authenticated,
+      &.not-ready {
         background: var(--danger);
       }
 
@@ -364,5 +354,34 @@ $pavilion_primary: #3c1c8c;
 
   .d-date-input {
     min-width: 150px;
+  }
+}
+
+.events-provider-credentials-modal {
+  input {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .provider-credentials-secret {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .client-id {
+    margin-bottom: 1em;
+  }
+}
+
+.events-provider-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.events-source-options-modal {
+  input.source-option {
+    width: 100%;
   }
 }

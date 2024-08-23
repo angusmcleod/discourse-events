@@ -6,15 +6,7 @@
   />
 </td>
 
-<td class="url-column">
-  {{input
-    value=provider.url
-    placeholder=(i18n "admin.events.provider.url.placeholder")
-    class="provider-name"
-  }}
-</td>
-
-<td>
+<td class="provider-type-column">
   <ComboBox
     @value={{provider.provider_type}}
     @content={{providerTypes}}
@@ -25,76 +17,53 @@
 </td>
 
 <td class="credentials-column">
-  <div class="credentials-container">
-    {{#if showToken}}
-      {{#if hideCredentials}}
-        <Input
-          @type="password"
-          @value={{provider.token}}
-          class="token"
-          placeholder={{i18n "admin.events.provider.token"}}
-        />
-      {{else}}
-        <Input
-          @type="text"
-          @value={{provider.token}}
-          class="token"
-          placeholder={{i18n "admin.events.provider.token"}}
-        />
-      {{/if}}
-    {{/if}}
-
-    {{#if showClientCredentials}}
-      <Input
-        @type="text"
-        @value={{provider.client_id}}
-        class="client-id"
-        placeholder={{i18n "admin.events.provider.client_id"}}
-      />
-
-      {{#if hideCredentials}}
-        <Input
-          @type="password"
-          @value={{provider.client_secret}}
-          class="client-secret"
-          placeholder={{i18n "admin.events.provider.client_secret"}}
-        />
-      {{else}}
-        <Input
-          @type="text"
-          @value={{provider.client_secret}}
-          class="client-secret"
-          placeholder={{i18n "admin.events.provider.client_secret"}}
-        />
-      {{/if}}
-    {{/if}}
-
-    {{#if hasSecretCredentials}}
-      <DButton
-        @action={{action "toggleHideCredentials"}}
-        class="toggle-secret-visibility"
-        @icon="far-eye-slash"
-      />
-    {{/if}}
-
-    {{#if showNoAuth}}
-      {{i18n "admin.events.provider.no_credentials"}}
-    {{/if}}
-  </div>
+  {{#if noCredentials}}
+    {{i18n "admin.events.provider.credentials.none"}}
+  {{else}}
+    <DButton
+      @action={{action "openCredentials"}}
+      @label="admin.events.provider.credentials.label"
+      @title="admin.events.provider.credentials.label"
+      @icon="id-card"
+      class="open-credentials-modal"
+    />
+  {{/if}}
 </td>
 
 <td class="status-column">
-  {{#if provider.authenticated}}
-    <span
-      class="status authenticated"
-      title={{i18n "admin.events.provider.ready"}}
-    ></span>
-  {{else}}
-    <span
-      class="status not-authenticated"
-      title={{i18n "admin.events.provider.not_ready"}}
-    ></span>
-  {{/if}}
+  <div class="events-provider-status">
+    {{#if noCredentials}}
+      {{#if provider.stored}}
+        <span
+          class="status ready"
+          title={{i18n "admin.events.provider.status.ready.title"}}
+        ></span>
+        <span>{{i18n "admin.events.provider.status.ready.label"}}</span>
+      {{else}}
+        <span
+          class="status not-ready"
+          title={{i18n "admin.events.provider.status.not_ready.title"}}
+        ></span>
+        <span>{{i18n "admin.events.provider.status.not_ready.label"}}</span>
+      {{/if}}
+    {{else}}
+      {{#if provider.authenticated}}
+        <span
+          class="status authenticated"
+          title={{i18n "admin.events.provider.status.authenticated.title"}}
+        ></span>
+        <span>{{i18n "admin.events.provider.status.authenticated.label"}}</span>
+      {{else}}
+        <span
+          class="status not-authenticated"
+          title={{i18n "admin.events.provider.status.not_authenticated.title"}}
+        ></span>
+        <span>{{i18n
+            "admin.events.provider.status.not_authenticated.label"
+          }}</span>
+      {{/if}}
+    {{/if}}
+  </div>
 </td>
 
 <td class="action-column">

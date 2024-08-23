@@ -101,11 +101,7 @@ describe DiscourseEvents::ProviderController do
       DiscourseEvents::Provider.any_instance.stubs(:request_token).returns(nil)
       DiscourseEvents::Provider.any_instance.expects(:request_token).with(code).once
 
-      get "/admin/plugins/events/provider/#{provider.id}/redirect",
-          params: {
-            state: state,
-            code: code,
-          }
+      get "/admin/plugins/events/provider/redirect", params: { state: state, code: code }
 
       expect(response.status).to eq(302)
       expect(response).to redirect_to("/admin/plugins/events/provider")

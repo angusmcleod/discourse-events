@@ -125,7 +125,16 @@ en:
             title: Save Source
           source_options:
             label: Options
+            title: Set source options.
             none: No options
+            uri: URI
+            organization_id: Organization ID
+            group_urlname: Group Urlname
+            user_id: User ID
+            calendar_id: Calendar ID
+            done:
+              label: Set Options
+              title: Set source options.
           date_range: Date Range
           import:
             label: Import
@@ -136,9 +145,20 @@ en:
           add:
             label: Add
             title: Add Provider
-          status: Status
-          ready: Ready
-          not_ready: Not Ready
+          status:
+            label: Status
+            ready:
+              label: Ready
+              title: Provider is ready.
+            not_ready:
+              label: Not Ready
+              title: Provider is not ready.
+            authenticated: 
+              label: Authenticated
+              title: Provider is authenticated.
+            not_authenticated:
+              label: Not Authenticated
+              title: Provider is not authenticated.
           name:
             label: Name
             placeholder: underscored
@@ -148,14 +168,25 @@ en:
           provider_type:
             label: Type
             select: Select a type...
+            icalendar: iCalendar
+            eventbrite: Eventbrite
+            eventzilla: Eventzilla
+            meetup: Meetup
+            outlook: Outlook
+            humanitix: Humanitix
           method: Method
-          credentials: Credentials
-          no_credentials: No Credentials
-          username: Username
-          password: Password
-          token: Token
-          client_id: Client ID
-          client_secret: Client Secret
+          credentials:
+            label: Credentials
+            none: No Credentials
+            update: Set Credentials
+            username: Username
+            password: Password
+            token: Token
+            client_id: Client ID
+            client_secret: Client Secret
+            done:
+              label: Set Credentials
+              title: Close
           save:
             label: Save
             title: Save Provider
