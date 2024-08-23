@@ -4,18 +4,18 @@
   @title={{this.title}}
 >
   <:body>
-    {{#each model.sourceOptionFields as |field|}}
+    {{#each this.sourceOptions as |option|}}
       <div class="control-group">
         <label class="control-label">
-          {{i18n (concat "admin.events.source.source_options." field.name)}}
+          {{i18n (concat "admin.events.source.source_options." option.name)}}
         </label>
         <Input
           class="source-option"
-          @type={{field.type}}
-          name={{field.name}}
-          @value={{field.value}}
-          placeholder={{field.name}}
-          {{on "change" (action "updateSourceOptions" field.name)}}
+          @type={{option.type}}
+          name={{option.name}}
+          @value={{option.value}}
+          placeholder={{option.name}}
+          {{on "change" (action "updateSourceOptions" option.name)}}
         />
       </div>
     {{/each}}

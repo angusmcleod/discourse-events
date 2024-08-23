@@ -29,7 +29,7 @@ gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
-gem "omnievent-outlook", "0.1.0.pre1", require_name: "omnievent/outlook"
+gem "omnievent-outlook", "0.1.0.pre2", require_name: "omnievent/outlook"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
