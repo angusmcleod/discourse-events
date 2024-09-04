@@ -1,19 +1,18 @@
 // app/components/event-form.gjs
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
-import { hash } from "rsvp";
 import { tracked } from '@glimmer/tracking';
+import { on } from "@ember/modifier";
+import { action } from '@ember/object';
 import { service } from "@ember/service";
-import { fn, on } from "@ember/modifier";
+import { hash } from "rsvp";
+import DateInput from "discourse/components/date-input";
+import InputTip from "discourse/components/input-tip";
+import TimeInput from "discourse/components/time-input";
 import concatClass from "discourse/helpers/concat-class";
 // import moment from 'moment';
 import i18n from "discourse-common/helpers/i18n";
 import ComboBox from "select-kit/components/combo-box";
-import InputTip from "discourse/components/input-tip";
-import DateInput from "discourse/components/date-input";
-import TimeInput from "discourse/components/time-input";
 import EmailGroupUserChooser from "select-kit/components/email-group-user-chooser";
-
 import { compileEvent, nextInterval, setupEventForm, timezoneLabel } from '../lib/date-utilities';
 
 export default class EventForm extends Component {
@@ -67,7 +66,7 @@ export default class EventForm extends Component {
   }
 
   get showDeadlineToggle() {
-    return this.siteSettings.events_support_deadlines
+    return this.siteSettings.events_support_deadlines;
   }
 
   @action

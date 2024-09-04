@@ -1,7 +1,7 @@
+import { tracked } from "@glimmer/tracking";
 import Component from "@ember/component";
 import { action } from "@ember/object";
 import I18n from "I18n";
-import { tracked } from '@glimmer/tracking';
 
 export default class AddEvent extends Component {
   @tracked bufferedEvent = this.args.model.event;
@@ -28,4 +28,4 @@ export default class AddEvent extends Component {
     this.bufferedEvent = event;
     this.valid = valid;
   }
-};
+}
