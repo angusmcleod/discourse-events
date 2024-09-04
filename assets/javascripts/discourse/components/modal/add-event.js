@@ -1,29 +1,31 @@
 import Component from "@ember/component";
 import { action } from "@ember/object";
 import I18n from "I18n";
+import { tracked } from '@glimmer/tracking';
 
-export default Component.extend({
-  title: I18n.t("add_event.modal_title"),
+export default class AddEvent extends Component {
+  @tracked bufferedEvent = this.args.model.event;
+  title = I18n.t("add_event.modal_title");
 
   @action
   clear() {
-    event?.preventDefault();
-    this.set("bufferedEvent", null);
-  },
+    this.args.model.event?.preventDefault();
+    this.bufferedEvent = null;
+  }
 
-  actions: {
-    saveEvent() {
-      if (this.valid) {
-        this.get("model.update")(this.bufferedEvent);
-        this.closeModal();
-      } else {
-        this.set("flash", I18n.t("add_event.error"));
-      }
-    },
+  @action
+  saveEvent() {
+    if (this.valid) {
+      this.get("model.update")(this.bufferedEvent);
+      this.closeModal();
+    } else {
+      this.flash = I18n.t("add_event.error");
+    }
+  }
 
-    updateEvent(event, valid) {
-      this.set("bufferedEvent", event);
-      this.set("valid", valid);
-    },
-  },
-});
+  @action
+  updateEvent(event, valid) {
+    this.bufferedEvent = event;
+    this.valid = valid;
+  }
+};
