@@ -295,6 +295,8 @@ function compileEvent(params) {
     }
   }
 
+  event.deadline = params.deadline || false;
+
   return event;
 }
 
@@ -374,12 +376,14 @@ function setupEvent(event, args = {}) {
   let start;
   let end;
   let allDay;
+  let deadline;
   let multiDay;
   let timezone;
 
   if (event) {
     start = moment(event["start"]);
     allDay = isAllDay(event);
+    deadline = event["deadline"] || false;
 
     if (event["end"]) {
       end = moment(event["end"]);
@@ -399,7 +403,7 @@ function setupEvent(event, args = {}) {
     }
   }
 
-  return { start, end, allDay, multiDay, timezone };
+  return { start, end, allDay, deadline, multiDay, timezone };
 }
 
 function timezoneLabel(tz, args = {}) {
@@ -429,7 +433,7 @@ function timezoneLabel(tz, args = {}) {
 }
 
 function setupEventForm(event, args = {}) {
-  const { start, end, allDay, timezone } = setupEvent(
+  const { start, end, allDay, deadline, timezone } = setupEvent(
     event,
     Object.assign(args, { useEventTimezone: true })
   );
@@ -473,6 +477,10 @@ function setupEventForm(event, args = {}) {
     if (event.going) {
       props["usersGoing"] = event.going;
     }
+  }
+
+  if (event && event.deadline) {
+    props["deadline"] = deadline;
   }
 
   return props;

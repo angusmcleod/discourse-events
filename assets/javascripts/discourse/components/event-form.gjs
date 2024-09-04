@@ -21,6 +21,7 @@ export default class EventForm extends Component {
   @service site;
   @tracked endEnabled = false;
   @tracked allDay = false;
+  @tracked deadline = false;
   @tracked showTimezone = false;
   @tracked startDate;
   @tracked startTime;
@@ -48,7 +49,12 @@ export default class EventForm extends Component {
       !this.endDate &&
       !this.endTime
     ) {
-      this.toggleEndEnabled(true);
+      this.endEnabled = true;
+    }
+    if (
+      this.siteSettings.events_support_deadlines
+    ) {
+      this.toggleDeadlineEnabled;
     }
   }
 
@@ -58,6 +64,10 @@ export default class EventForm extends Component {
       value: tz.value,
       name: timezoneLabel(tz.value, { siteSettings: this.siteSettings }),
     }));
+  }
+
+  get showDeadlineToggle() {
+    return this.siteSettings.events_support_deadlines
   }
 
   @action
@@ -118,6 +128,19 @@ export default class EventForm extends Component {
   }
 
   @action
+  toggleDeadline(event) {
+    this.deadline = event.target.checked;
+    // if (!this.allDay) {
+    //   const start = nextInterval();
+    //   this.startTime = start;
+    //   if (this.endEnabled) {
+    //     this.endTime = moment(start).add(1, 'hours');
+    //   }
+    // }
+    this.updateEvent();
+  }
+
+  @action
   updateEvent() {
     const event = compileEvent({
       startDate: this.startDate,
@@ -126,6 +149,7 @@ export default class EventForm extends Component {
       endTime: this.endTime,
       endEnabled: this.endEnabled,
       allDay: this.allDay,
+      deadline: this.deadline,
       timezone: this.timezone,
       rsvpEnabled: this.rsvpEnabled,
       goingMax: this.goingMax,
@@ -140,138 +164,150 @@ export default class EventForm extends Component {
   }
   <template>
     <div class="event-form">
-    <div class="event-controls">
-      <div class="control">
-        <input
-          type="checkbox"
-          checked={{this.endEnabled}}
-          {{on "click" this.toggleEndEnabled}}
-        />
-        <span>{{i18n "add_event.end_enabled"}}</span>
-      </div>
-
-      <div class="control">
-        <input
-          type="checkbox"
-          checked={{this.allDay}}
-          {{on "click" this.toggleAllDay}}
-        />
-        <span>{{i18n "add_event.all_day"}}</span>
-      </div>
-
-      {{#unless this.allDay}}
-        <div class="control full-width">
-          <ComboBox
-            @id="add-event-select-timezone"
-            @value={{this.timezone}}
-            @valueProperty="value"
-            @onChange={{mut this.timezone}}
-            @content={{this.timezones}}
-            @options={{hash filterable=true none="add_event.no_timezone"}}
-          />
-        </div>
-      {{/unless}}
-    </div>
-
-    <div class="datetime-controls">
-      <div class="start-card date-time-card">
-        <span class="sub-title">
-          {{i18n "add_event.event_start"}}
-        </span>
-
-        <InputTip @validation={{this.startDateTimeValidation}} />
-
-        <div class="date-time-set">
-          <div class="date-area">
-            <label class="input-group-label">
-              {{i18n "add_event.event_date"}}
-            </label>
-
-            <DateInput
-              @date={{this.startDate}}
-              @onChange={{this.onChangeStartDate}}
-              @useGlobalPickerContainer={{true}}
-            />
-          </div>
-
-          {{#unless this.allDay}}
-            <div class="time-area">
-              <label class="input-group-label">
-                {{i18n "add_event.event_time"}}
-              </label>
-
-              <TimeInput
-                @date={{this.startTime}}
-                @onChange={{this.onChangeStartTime}}
-              />
-            </div>
-          {{/unless}}
-        </div>
-      </div>
-
-      <div class={{concatClass "end-card date-time-card" (unless this.endEnabled "disabled")}}>
-        <span class="sub-title">
-          {{i18n "add_event.event_end"}}
-        </span>
-
-        <InputTip @validation={{this.scheduleDateTimeValidation}} />
-
-        <div class="date-time-set">
-          <div class="date-area">
-            <label class="input-group-label">
-              {{i18n "add_event.event_date"}}
-            </label>
-
-            <DateInput
-              @date={{this.endDate}}
-              @onChange={{this.onChangeEndDate}}
-              @useGlobalPickerContainer={{true}}
-            />
-          </div>
-
-          {{#unless this.allDay}}
-            <div class="time-area">
-              <label class="input-group-label">
-                {{i18n "add_event.event_time"}}
-              </label>
-
-              <TimeInput
-                @date={{this.endTime}}
-                @onChange={{this.onChangeEndTime}}
-              />
-            </div>
-          {{/unless}}
-        </div>
-      </div>
-    </div>
-
-    {{#if this.siteSettings.events_rsvp}}
-      <div class="rsvp-controls">
+      <div class="event-controls">
         <div class="control">
-          {{input type="checkbox" checked=this.rsvpEnabled}}
-          <span>{{i18n "add_event.rsvp_enabled"}}</span>
+          <input
+            type="checkbox"
+            checked={{this.endEnabled}}
+            {{on "change" this.toggleEndEnabled}}
+          />
+          <span>{{i18n "add_event.end_enabled"}}</span>
         </div>
 
-        {{#if this.rsvpEnabled}}
-          <div class="rsvp-container">
-            <div class="control">
-              <span>{{i18n "add_event.going_max"}}</span>
-              {{input type="number" value=this.goingMax}}
-            </div>
+        <div class="control">
+          <input
+            type="checkbox"
+            checked={{this.allDay}}
+            {{on "change" this.toggleAllDay}}
+          />
+          <span>{{i18n "add_event.all_day"}}</span>
+        </div>
 
-            <div class="control full-width">
-              <span>{{i18n "add_event.going"}}</span>
-              <EmailGroupUserChooser
-                @value={{this.usersGoing}}
-                @onChange={{action (mut this.usersGoing)}}
-                class="user-selector"
-                @options={{hash filterPlaceholder="composer.users_placeholder"}}
-              />
-            </div>
+        {{#if this.showDeadlineToggle}}
+          <div class="control">
+            <input
+              type="checkbox"
+              checked={{this.deadline}}
+              title={{i18n "add_event.deadline.title"}}
+              {{on "click" this.toggleDeadline}}
+            />
+            <span title={{i18n "add_event.deadline.title"}}>{{i18n "add_event.deadline.label"}}</span>
           </div>
         {{/if}}
+
+        {{#unless this.allDay}}
+          <div class="control full-width">
+            <ComboBox
+              @id="add-event-select-timezone"
+              @value={{this.timezone}}
+              @valueProperty="value"
+              @onChange={{mut this.timezone}}
+              @content={{this.timezones}}
+              @options={{hash filterable=true none="add_event.no_timezone"}}
+            />
+          </div>
+        {{/unless}}
       </div>
-    {{/if}}
+
+      <div class="datetime-controls">
+        <div class="start-card date-time-card">
+          <span class="sub-title">
+            {{i18n "add_event.event_start"}}
+          </span>
+
+          <InputTip @validation={{this.startDateTimeValidation}} />
+
+          <div class="date-time-set">
+            <div class="date-area">
+              <label class="input-group-label">
+                {{i18n "add_event.event_date"}}
+              </label>
+
+              <DateInput
+                @date={{this.startDate}}
+                @onChange={{this.onChangeStartDate}}
+                @useGlobalPickerContainer={{true}}
+              />
+            </div>
+
+            {{#unless this.allDay}}
+              <div class="time-area">
+                <label class="input-group-label">
+                  {{i18n "add_event.event_time"}}
+                </label>
+
+                <TimeInput
+                  @date={{this.startTime}}
+                  @onChange={{this.onChangeStartTime}}
+                />
+              </div>
+            {{/unless}}
+          </div>
+        </div>
+
+        <div class={{concatClass "end-card date-time-card" (unless this.endEnabled "disabled")}}>
+          <span class="sub-title">
+            {{i18n "add_event.event_end"}}
+          </span>
+
+          <InputTip @validation={{this.scheduleDateTimeValidation}} />
+
+          <div class="date-time-set">
+            <div class="date-area">
+              <label class="input-group-label">
+                {{i18n "add_event.event_date"}}
+              </label>
+
+              <DateInput
+                @date={{this.endDate}}
+                @onChange={{this.onChangeEndDate}}
+                @useGlobalPickerContainer={{true}}
+              />
+            </div>
+
+            {{#unless this.allDay}}
+              <div class="time-area">
+                <label class="input-group-label">
+                  {{i18n "add_event.event_time"}}
+                </label>
+
+                <TimeInput
+                  @date={{this.endTime}}
+                  @onChange={{this.onChangeEndTime}}
+                />
+              </div>
+            {{/unless}}
+          </div>
+        </div>
+      </div>
+
+      {{#if this.siteSettings.events_rsvp}}
+        <div class="rsvp-controls">
+          <div class="control">
+            {{input type="checkbox" checked=this.rsvpEnabled}}
+            <span>{{i18n "add_event.rsvp_enabled"}}</span>
+          </div>
+
+          {{#if this.rsvpEnabled}}
+            <div class="rsvp-container">
+              <div class="control">
+                <span>{{i18n "add_event.going_max"}}</span>
+                {{input type="number" value=this.goingMax}}
+              </div>
+
+              <div class="control full-width">
+                <span>{{i18n "add_event.going"}}</span>
+                <EmailGroupUserChooser
+                  @value={{this.usersGoing}}
+                  @onChange={{action (mut this.usersGoing)}}
+                  class="user-selector"
+                  @options={{hash filterPlaceholder="composer.users_placeholder"}}
+                />
+              </div>
+            </div>
+          {{/if}}
+        </div>
+      {{/if}}
     </div>
   </template>
 }

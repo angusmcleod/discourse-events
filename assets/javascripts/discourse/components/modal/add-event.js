@@ -9,7 +9,7 @@ export default class AddEvent extends Component {
 
   @action
   clear() {
-    this.args.model.event?.preventDefault();
+    event?.preventDefault();
     this.bufferedEvent = null;
   }
 
