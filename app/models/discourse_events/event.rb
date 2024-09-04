@@ -25,6 +25,16 @@ module DiscourseEvents
                 in: %w[draft published cancelled],
                 message: "%{value} is not a valid event status",
               }
+
+    before_create { self.uid = generate_uid if local? }
+
+    def generate_uid
+      SecureRandom.hex(16)
+    end
+
+    def local?
+      source_id.blank?
+    end
   end
 end
 

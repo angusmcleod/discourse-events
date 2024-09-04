@@ -46,6 +46,8 @@ module DiscourseEvents
     validates :provider, presence: true
     validate :valid_source_options?
 
+    enum sync_type: { import: 0, import_publish: 1 }
+
     def ready?
       provider.authenticated?
     end

@@ -25,6 +25,8 @@ module DiscourseEvents
     belongs_to :category
     belongs_to :source, foreign_key: "source_id", class_name: "DiscourseEvents::Source"
 
+    delegate :sync_type, to: :source
+
     validates :client,
               inclusion: {
                 in: Connection.client_names,
@@ -33,6 +35,10 @@ module DiscourseEvents
     validates :user, presence: true
     validates :category, presence: true
     validates :source, presence: true
+
+    def publish?
+      sync_type == "import_publish"
+    end
 
     def self.available_clients
       CLIENTS.select { |client, plugin| plugins.include?(plugin) }.keys.map(&:to_s)

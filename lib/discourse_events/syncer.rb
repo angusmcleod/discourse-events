@@ -16,18 +16,17 @@ module DiscourseEvents
       @logger = Logger.new(:sync)
     end
 
-    ## Implemented by children
-
     def create_event_topic(event)
+      raise NotImplementedError
     end
 
     def update_event_topic(topic, event)
+      raise NotImplementedError
     end
 
     def post_raw(event)
+      raise NotImplementedError
     end
-
-    ##
 
     def sync(_opts = {})
       @opts = _opts
