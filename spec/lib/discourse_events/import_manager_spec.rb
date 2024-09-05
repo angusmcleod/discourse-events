@@ -22,6 +22,20 @@ describe DiscourseEvents::ImportManager do
     expect(events.map(&:uid)).to match_array(event_uids)
   end
 
+  it "does not import a connected event" do
+    event = Fabricate(:discourse_events_event, start_time: "2017-09-18T16:00:00+08:00")
+    connection = Fabricate(:discourse_events_connection, source: source)
+    event_connection =
+      Fabricate(
+        :discourse_events_event_connection,
+        connection: connection,
+        event: event,
+        external_id: raw_data["events"][0]["id"],
+      )
+    subject.import_source(source.id)
+    expect(DiscourseEvents::Event.all.map(&:uid).include?(raw_data["events"][0]["id"])).to eq(false)
+  end
+
   it "imports all active sources" do
     subject.import_all_sources
 

@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 module DiscourseEvents
   class Publisher::EventData
-    attr_reader :start_time,
-                :end_time,
-                :name,
-                :description,
-                :url,
-                :uid,
-                :created_at,
-                :updated_at,
-                :language,
-                :status,
-                :taxonomies,
-                :sequence,
-                :series_id,
-                :occurrence_id
+    attr_accessor :start_time,
+                  :end_time,
+                  :name,
+                  :description,
+                  :url,
+                  :uid,
+                  :created_at,
+                  :updated_at,
+                  :language,
+                  :status,
+                  :taxonomies,
+                  :sequence,
+                  :series_id,
+                  :occurrence_id
 
     def initialize(params = {})
       @start_time = params[:start_time]
@@ -79,16 +79,26 @@ module DiscourseEvents
       }.compact
     end
 
-    def create_event_hash
-      @create_event_hash ||= OmniEvent::EventHash.new(data: data)
+    def event_hash(action, provider_type)
+      send("#{action}_event_hash", provider_type)
     end
 
-    def update_event_hash
-      @update_event_hash ||= OmniEvent::EventHash.new(data: data.compact)
+    def create_event_hash(provider_type)
+      @create_event_hash ||= OmniEvent::EventHash.new(provider: provider_type, data: data)
     end
 
-    def destroy_event_hash
-      @update_event_hash ||= OmniEvent::EventHash.new(metadata: metadata)
+    def update_event_hash(provider_type)
+      @update_event_hash ||=
+        OmniEvent::EventHash.new(
+          provider: provider_type,
+          data: data.compact,
+          metadata: metadata.compact,
+        )
+    end
+
+    def destroy_event_hash(provider_type)
+      @update_event_hash ||=
+        OmniEvent::EventHash.new(provider: provider_type, metadata: metadata.compact)
     end
   end
 end

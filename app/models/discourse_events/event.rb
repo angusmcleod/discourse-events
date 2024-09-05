@@ -28,12 +28,18 @@ module DiscourseEvents
 
     before_create { self.uid = generate_uid if local? }
 
+    scope :remote, -> { where.not(source_id: nil) }
+
     def generate_uid
       SecureRandom.hex(16)
     end
 
     def local?
       source_id.blank?
+    end
+
+    def remote?
+      !local?
     end
   end
 end

@@ -30,6 +30,7 @@ end
 #  client        :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  external_id   :string
 #
 # Indexes
 #

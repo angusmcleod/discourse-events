@@ -32,6 +32,8 @@ module DiscourseEvents
             data
           end
 
+      events = map_connected_external_events(events)
+
       events_count = 0
       created_count = 0
       updated_count = 0
@@ -62,6 +64,30 @@ module DiscourseEvents
       end
 
       { events_count: events_count, created_count: created_count, updated_count: updated_count }
+    end
+
+    # This handles events that were created locally then published, i.e. we update the local version.
+    def map_connected_external_events(events)
+      events_by_uid = {}
+
+      events.each { |event| events_by_uid[event[:uid]] = event }
+
+      DiscourseEvents::EventConnection
+        .where(external_id: events_by_uid.keys)
+        .each do |ec|
+          event = events_by_uid[ec.external_id]
+
+          # Use the local id
+          event[:uid] = ec.event.uid
+
+          # Local events don't have a provider or source
+          event[:source_id] = nil
+          event[:provider_id] = nil
+
+          events_by_uid[ec.external_id] = event
+        end
+
+      events_by_uid.values
     end
 
     def self.import(source)

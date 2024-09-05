@@ -135,6 +135,11 @@ en:
             done:
               label: Set Options
               title: Set source options.
+          sync_type:
+            label: Sync Type
+            title: The type of sync with the source.
+            import: Import
+            import_publish: Import and Publish
           date_range: Date Range
           import:
             label: Import

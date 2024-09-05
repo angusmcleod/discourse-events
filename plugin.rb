@@ -23,13 +23,13 @@ gem "icalendar-recurrence", "1.1.3"
 gem "date", "3.3.4"
 gem "time", "0.2.0"
 gem "stringio", "3.1.1"
-gem "omnievent", "0.1.0.pre5", require_name: "omnievent"
+gem "omnievent", "0.1.0.pre6", require_name: "omnievent"
 gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
 gem "omnievent-api", "0.1.0.pre3", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
-gem "omnievent-outlook", "0.1.0.pre3", require_name: "omnievent/outlook"
+gem "omnievent-outlook", "0.1.0.pre6", require_name: "omnievent/outlook"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -91,7 +91,7 @@ after_initialize do
   require_relative "app/serializers/discourse_events/source_serializer.rb"
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
-  require_relative "app/serializers/discourse_events/post_event_serializer.rb"
+  require_relative "app/serializers/discourse_events/topic_event_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
   require_relative "app/jobs/discourse_events/scheduled/update_events.rb"
   require_relative "app/jobs/discourse_events/regular/import_source.rb"
@@ -102,7 +102,6 @@ after_initialize do
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
   require_relative "extensions/guardian.rb"
-  require_relative "extensions/topic.rb"
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -146,7 +145,6 @@ after_initialize do
   register_topic_custom_field_type("event_going", :json)
   register_topic_custom_field_type("event_going_max", :integer)
   register_topic_custom_field_type("event_version", :integer)
-  register_topic_custom_field_type("event_id", :integer)
 
   if TopicList.respond_to? :preloaded_custom_fields
     preloaded_custom_fields = %w[
@@ -172,7 +170,7 @@ after_initialize do
     add_to_class(:topic, key.to_sym) { self.custom_fields[key] || false }
   end
 
-  add_to_class(:topic, :event_view) do
+  add_to_class(:topic, :event) do
     return nil unless has_event?
     event = { start: Time.at(custom_fields["event_start"]).iso8601 }
 
@@ -197,15 +195,30 @@ after_initialize do
     event
   end
 
-  Topic.prepend DiscourseEventsTopicExtension
+  Topic.has_one :event_connection, class_name: "DiscourseEvents::EventConnection"
+  Topic.has_one :event_record,
+                through: :event_connection,
+                source: :event,
+                class_name: "DiscourseEvents::Event"
   Topic.attr_accessor :include_excerpt
 
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
-    object.topic.event_view
+    object.topic.event
+  end
+  add_to_serializer(
+    :topic_view,
+    :event_record,
+    include_condition: -> { object.topic.event_record.present? },
+  ) do
+    DiscourseEvents::TopicEventSerializer.new(
+      object.topic.event_record,
+      scope: scope,
+      root: false,
+    ).as_json
   end
 
   add_to_serializer(:topic_list_item, :event, include_condition: -> { object.has_event? }) do
-    object.event_view
+    object.event
   end
 
   add_to_serializer(
@@ -246,9 +259,7 @@ after_initialize do
   ListableTopicSerializer.prepend ListableTopicSerializerEventsExtension
 
   on(:post_created) do |post, opts, user|
-    event_creator = DiscourseEvents::EventCreator.new(post, opts, user)
-    event_creator.create
-
+    DiscourseEvents::EventCreator.create(post, opts, user)
     DiscourseEvents::PublishManager.perform(post, "create")
   end
 
@@ -392,28 +403,13 @@ after_initialize do
   Post.has_many :event_connections,
                 class_name: "DiscourseEvents::EventConnection",
                 dependent: :destroy
+  Post.has_many :remote_events,
+                -> { remote },
+                through: :event_connections,
+                source: :event,
+                class_name: "DiscourseEvents::Event"
 
   Guardian.prepend EventsGuardianExtension
-
-  TopicView.attr_writer :posts
-  TopicView.on_preload do |topic_view|
-    if SiteSetting.events_enabled
-      topic_view.posts = topic_view.posts.includes({ event_connection: :event })
-    end
-  end
-
-  # The discourse-calendar plugin uses "event" on the post model
-  add_to_serializer(
-    :post,
-    :connected_event,
-    include_condition: -> { SiteSetting.events_enabled && object.event_connection.present? },
-  ) do
-    DiscourseEvents::PostEventSerializer.new(
-      object.event_connection.event,
-      scope: scope,
-      root: false,
-    ).as_json
-  end
 
   add_to_class(:guardian, :can_manage_events?) do
     return false unless SiteSetting.events_enabled
@@ -427,7 +423,7 @@ after_initialize do
     self
       .class
       .define_method(:can_act_on_discourse_post_event?) do |event|
-        return false if event.post.event_connections.present?
+        return false if event.post.remote_events.present?
 
         # "super" doesn't work here so this is lifted directly from discourse-calendar
         return @can_act_on_discourse_post_event if defined?(@can_act_on_discourse_post_event)

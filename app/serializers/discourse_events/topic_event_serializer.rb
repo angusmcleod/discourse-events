@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  class PostEventSerializer < BasicEventSerializer
-    attributes :admin_url, :can_manage
+  class TopicEventSerializer < BasicEventSerializer
+    attributes :remote, :admin_url, :can_manage
+
+    def remote
+      object.remote?
+    end
 
     def can_manage
       scope.can_manage_events?
@@ -13,7 +17,7 @@ module DiscourseEvents
     end
 
     def include_admin_url?
-      scope.can_manage_events?
+      scope.can_manage_events? && object.provider
     end
   end
 end

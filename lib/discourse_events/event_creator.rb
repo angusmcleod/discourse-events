@@ -52,5 +52,9 @@ module DiscourseEvents
         topic.save_custom_fields(true)
       end
     end
+
+    def self.create(post, opts, user)
+      new(post, opts, user).create
+    end
   end
 end

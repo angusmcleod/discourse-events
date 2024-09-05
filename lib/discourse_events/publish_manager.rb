@@ -2,27 +2,22 @@
 
 module DiscourseEvents
   class PublishManager
-    attr_reader :post
-    attr_accessor :publisher, :publication_type, :connections, :event_data, :published_events
+    attr_reader :post, :logger
+    attr_accessor :publisher, :publication_type
 
     def initialize(post, publication_type)
       @post = post
       @publication_type = publication_type
-      @connections = []
-      @published_events = {}
+      @logger = Logger.new(:publish)
     end
 
     def ready?
-      publisher.present? && connections.present?
+      publisher.present?
     end
 
     def perform
       @publisher = get_publisher
-
-      setup_connections
-
       return false unless ready?
-      return false unless publish_events
 
       send("#{publication_type}_event")
     end
@@ -34,65 +29,100 @@ module DiscourseEvents
     protected
 
     def create_event
+      data = publisher.get_event_data(post)
+      return false unless data&.valid?
+
+      connections = []
+
+      post.topic&.category&.discourse_events_connections&.each do |connection|
+        next unless connection.publish?
+        connections << connection
+      end
+      return unless connections.present?
+
+      published_events = {}
+
+      connections.each do |connection|
+        publisher.setup_provider(connection.source.provider)
+
+        begin
+          published_event =
+            publisher.create_event(data: data, opts: connection.source.source_options_hash)
+        rescue => error
+          logger.error(error.message)
+        end
+
+        published_events[connection.id] = published_event if published_event.present?
+      end
+
       event = nil
 
       ActiveRecord::Base.transaction do
-        event = Event.create!(event_data.create_params)
+        event = Event.create!(data.create_params)
 
         connections.each do |connection|
-          if published_events[connection.id].present?
-            params = get_event_connection_params(event, connection)
+          published_event = published_events[connection.id]
+
+          if published_event.present?
+            params = {
+              event_id: event.id,
+              connection_id: connection.id,
+              topic_id: post.topic.id,
+              post_id: post.id,
+              client: connection.client,
+              external_id: published_event.metadata.uid,
+            }
+            params[:series_id] = event.series_id if event.series_id
             EventConnection.create!(params)
           end
         end
-
-        publisher.after_publish(post, event)
       end
 
       event.present? ? event : false
     end
 
     def update_event
-      ActiveRecord::Base.transaction { post.topic.event.update!(event_data.update_params) }
+      data = publisher.get_event_data(post)
+      return false unless data&.valid?
+
+      post
+        .event_connections
+        .where.not(external_id: nil)
+        .each do |event_connection|
+          source = event_connection.connection.source
+          publisher.setup_provider(source.provider)
+
+          connection_data = data.dup
+          connection_data.uid = event_connection.external_id
+
+          begin
+            publisher.update_event(data: connection_data, opts: source.source_options_hash)
+          rescue => error
+            logger.error(error.message)
+          end
+        end
+
+      ActiveRecord::Base.transaction { post.topic.event_record.update!(data.update_params) }
     end
 
     def destroy_event
-      ActiveRecord::Base.transaction { post.topic.event.destroy! }
-    end
+      post
+        .event_connections
+        .where.not(external_id: nil)
+        .each do |event_connection|
+          source = event_connection.connection.source
+          publisher.setup_provider(source.provider)
 
-    def setup_connections
-      if publication_type == "create"
-        ## We inherent the category connections on create
-        post.topic&.category&.discourse_events_connections&.each do |connection|
-          next unless connection.publish?
-          @connections << connection
+          data = Publisher::EventData.new(uid: event_connection.external_id)
+
+          begin
+            publisher.destroy_event(data: data, opts: source.source_options_hash)
+          rescue => error
+            logger.error(error.message)
+          end
         end
-      end
 
-      if %w[update destroy].include?(publication_type)
-        ## We only update or destroy the established connections.
-        post.event_connections.each do |event_connection|
-          connection = event_connection.connection
-          next unless connection.publish?
-          @connections << connection
-        end
-      end
-    end
-
-    def publish_events
-      @event_data = publisher.get_event_data(post)
-      return false unless event_data&.valid?
-      publish_event_to_connection_sources
-      @published_events.present?
-    end
-
-    def publish_event_to_connection_sources
-      connections.each do |connection|
-        publisher.setup_provider(connection.source.provider)
-        event = publisher.send("#{publication_type}_event", event_data)
-        @published_events[connection.id] ||= []
-        @published_events[connection.id] << event if event.present?
-      end
+      ActiveRecord::Base.transaction { post.topic.event_record.destroy! }
     end
 
     def get_publisher
@@ -113,18 +143,6 @@ module DiscourseEvents
       else
         nil
       end
-    end
-
-    def get_event_connection_params(event, connection)
-      params = {
-        event_id: event.id,
-        connection_id: connection.id,
-        topic_id: post.topic.id,
-        post_id: post.id,
-        client: connection.client,
-      }
-      params[:series_id] = event.series_id if event.series_id
-      params
     end
   end
 end

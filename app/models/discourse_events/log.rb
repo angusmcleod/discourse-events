@@ -5,7 +5,7 @@ module DiscourseEvents
     self.table_name = "discourse_events_logs"
 
     enum level: { info: 0, error: 1 }
-    enum context: { import: 0, sync: 1, auth: 2 }
+    enum context: { import: 0, sync: 1, auth: 2, publish: 3 }
 
     validates :message, presence: true
     validates :level, presence: true

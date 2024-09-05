@@ -76,6 +76,21 @@ describe DiscourseEvents::PublishManager do
               manager.perform
               expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
             end
+
+            it "creates event connections" do
+              manager.perform
+              event = DiscourseEvents::Event.find_by(start_time: event_start)
+              expect(
+                DiscourseEvents::EventConnection.exists?(
+                  event_id: event.id,
+                  connection_id: connection.id,
+                  topic_id: post.topic.id,
+                  post_id: post.id,
+                  client: "events",
+                  external_id: "12345",
+                ),
+              ).to eq(true)
+            end
           end
         end
       end
@@ -98,6 +113,8 @@ describe DiscourseEvents::PublishManager do
           event: event,
           connection: connection,
           post: post,
+          topic: post.topic,
+          external_id: event_hash.metadata.uid,
         )
       end
       let!(:updated_event_start) { "2017-10-13T18:00:00+08:00" }
@@ -149,6 +166,8 @@ describe DiscourseEvents::PublishManager do
           event: event,
           connection: connection,
           post: post,
+          topic: post.topic,
+          external_id: event_hash.metadata.uid,
         )
       end
 

@@ -58,7 +58,7 @@ end
 #  user_id     :bigint
 #  source_id   :bigint           not null
 #  category_id :bigint
-#  client      :string
+#  client      :string           default("events")
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

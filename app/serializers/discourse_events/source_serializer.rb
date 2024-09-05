@@ -2,7 +2,7 @@
 
 module DiscourseEvents
   class SourceSerializer < ApplicationSerializer
-    attributes :id, :name, :provider_id, :source_options
+    attributes :id, :name, :provider_id, :source_options, :sync_type
 
     has_many :filters, serializer: FilterSerializer, embed: :objects
 

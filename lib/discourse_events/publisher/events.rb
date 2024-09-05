@@ -7,21 +7,16 @@ module DiscourseEvents
     end
 
     def get_event_data(post)
-      return nil unless post.topic.event_view.present?
-      event = post.topic.event_view
+      return nil unless post.topic.event.present?
+      event = post.topic.event
 
       Publisher::EventData.new(
         start_time: event[:start],
         end_time: event[:end],
-        name: event[:name],
-        description: event[:description],
+        name: post.topic.title,
+        description: post.topic.excerpt,
         url: event[:url],
       )
-    end
-
-    def after_publish(post, event)
-      post.topic.custom_fields["event_id"] = event.id
-      post.topic.save_custom_fields(true)
     end
   end
 end

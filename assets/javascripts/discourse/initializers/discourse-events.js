@@ -386,23 +386,27 @@ export default {
         },
       });
 
-      api.includePostAttributes("connected_event", "connected_event");
+      api.includePostAttributes("event_record", "topic.event_record");
 
       api.addPostClassesCallback((attrs) => {
-        if (attrs.post_number === 1 && attrs.connected_event) {
-          return ["for-event"];
+        if (attrs.post_number === 1 && attrs.topic.event_record?.remote) {
+          return ["remote-event"];
         }
       });
 
       api.decorateWidget("post-menu:before-extra-controls", (helper) => {
         const post = helper.getModel();
 
-        if (post.connected_event && post.connected_event.can_manage) {
+        if (
+          post.topic.event_record?.remote &&
+          post.topic.event_record.can_manage &&
+          post.topic.event_record.admin_url
+        ) {
           return helper.attach("link", {
             attributes: {
               target: "_blank",
             },
-            href: post.connected_event.admin_url,
+            href: post.topic.event_record.admin_url,
             className: "manage-event",
             icon: "external-link-alt",
             label: "post.event.manage.label",
