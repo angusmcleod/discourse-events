@@ -16,18 +16,17 @@ module DiscourseEvents
       @logger = Logger.new(:sync)
     end
 
-    ## Implemented by children
-
     def create_event_topic(event)
+      raise NotImplementedError
     end
 
     def update_event_topic(topic, event)
+      raise NotImplementedError
     end
 
     def post_raw(event)
+      raise NotImplementedError
     end
-
-    ##
 
     def sync(_opts = {})
       @opts = _opts
@@ -48,7 +47,7 @@ module DiscourseEvents
       topics_updated = []
 
       synced_events
-        .includes(event_connections: %i[topic post])
+        .includes(event_connections: %i[topic])
         .each do |event|
           ActiveRecord::Base.transaction do
             event
@@ -93,11 +92,11 @@ module DiscourseEvents
     end
 
     def synced_events
-      standard_events.where("id IN (#{event_connections_sql})")
+      standard_events.where("discourse_events_events.id IN (#{event_connections_sql})")
     end
 
     def unsynced_events
-      standard_events.where("id NOT IN (#{event_connections_sql})")
+      standard_events.where("discourse_events_events.id NOT IN (#{event_connections_sql})")
     end
 
     def event_connections_sql
@@ -107,7 +106,10 @@ module DiscourseEvents
     def source_events
       @source_events ||=
         begin
-          events = Event.where("discourse_events_events.source_id = #{connection.source.id}")
+          events =
+            Event.joins(:event_sources).where(
+              "discourse_events_event_sources.source_id = #{connection.source.id}",
+            )
           connection.filters.each do |filter|
             events = events.where("#{filter.sql_column} #{filter.sql_operator} ?", filter.sql_value)
           end
@@ -153,6 +155,7 @@ module DiscourseEvents
         topic_opts: topic_opts,
         raw: post_raw(event),
         skip_validations: true,
+        skip_event_publication: true,
       )
     end
 
@@ -161,12 +164,10 @@ module DiscourseEvents
         event_id: event.id,
         connection_id: connection.id,
         topic_id: topic.id,
-        post_id: topic.first_post.id,
         client: connection.client,
       }
 
       params[:series_id] = event.series_id if event.series_id
-
       EventConnection.create!(params)
     end
 

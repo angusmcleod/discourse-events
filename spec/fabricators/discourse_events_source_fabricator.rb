@@ -5,4 +5,5 @@ Fabricator(:discourse_events_source, from: "DiscourseEvents::Source") do
   provider { Fabricate(:discourse_events_provider) }
   taxonomy { "cats" }
   status { "published" }
+  sync_type { DiscourseEvents::Source.sync_types[:import] }
 end

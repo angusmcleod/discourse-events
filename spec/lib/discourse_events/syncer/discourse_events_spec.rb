@@ -8,7 +8,8 @@ describe DiscourseEvents::DiscourseEventsSyncer do
   let(:client) { "discourse_events" }
 
   fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:event) { Fabricate(:discourse_events_event, source: source) }
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
   fab!(:category)
   fab!(:user) { Fabricate(:user, admin: true) }
   fab!(:connection) do

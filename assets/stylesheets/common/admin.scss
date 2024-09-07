@@ -131,7 +131,10 @@ $pavilion_primary: #3c1c8c;
   .events-source-row {
     input.source-name,
     .source-provider {
-      width: 280px;
+      width: 200px;
+    }
+    .source-sync-type {
+      width: 180px;
     }
   }
 

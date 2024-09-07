@@ -31,7 +31,8 @@ module DiscourseEvents
 
     belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
 
-    has_many :events, foreign_key: "source_id", class_name: "DiscourseEvents::Event"
+    has_many :event_sources, foreign_key: "source_id", class_name: "DiscourseEvents::EventSource"
+    has_many :events, through: :event_sources, class_name: "DiscourseEvents::Event"
     has_many :connections,
              foreign_key: "source_id",
              class_name: "DiscourseEvents::Connection",
@@ -46,8 +47,14 @@ module DiscourseEvents
     validates :provider, presence: true
     validate :valid_source_options?
 
+    enum sync_type: { import: 0, import_publish: 1, publish: 2 }
+
     def ready?
       provider.authenticated?
+    end
+
+    def import?
+      sync_type == "import" || sync_type == "import_publish"
     end
 
     def source_options_hash
@@ -150,6 +157,7 @@ end
 #  taxonomy       :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  sync_type      :integer
 #
 # Indexes
 #

@@ -17,7 +17,14 @@ module DiscourseEvents
       ActiveRecord::Base.transaction do
         @model =
           Source.create(
-            source_params.slice(:name, :provider_id, :status, :taxonomy, :source_options),
+            source_params.slice(
+              :name,
+              :provider_id,
+              :status,
+              :taxonomy,
+              :source_options,
+              :sync_type,
+            ),
           )
 
         if @model.errors.any?
@@ -42,7 +49,14 @@ module DiscourseEvents
         @model =
           Source.update(
             params[:id],
-            source_params.slice(:name, :provider_id, :status, :taxonomy, :source_options),
+            source_params.slice(
+              :name,
+              :provider_id,
+              :status,
+              :taxonomy,
+              :source_options,
+              :sync_type,
+            ),
           )
 
         if @model.errors.any?
@@ -89,6 +103,7 @@ module DiscourseEvents
               :provider_id,
               :status,
               :taxonomy,
+              :sync_type,
               source_options: {
               },
               filters: %i[id query_column query_operator query_value],

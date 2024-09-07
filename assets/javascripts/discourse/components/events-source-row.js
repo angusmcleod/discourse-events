@@ -3,6 +3,7 @@ import Component from "@ember/component";
 import { notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
+import I18n from "I18n";
 import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
@@ -51,6 +52,8 @@ export const SOURCE_OPTIONS = {
   ],
 };
 
+const SYNC_TYPES = ["import", "import_publish", "publish"];
+
 export default Component.extend({
   tagName: "tr",
   classNames: ["events-source-row"],
@@ -71,19 +74,21 @@ export default Component.extend({
   @discourseComputed(
     "source.name",
     "source.provider_id",
+    "source.sync_type",
     "source.source_options.@each",
     "source.filters.[]",
     "source.filters.@each.query_column",
     "source.filters.@each.query_operator",
     "source.filters.@each.query_value"
   )
-  sourceChanged(sourceName, providerId, sourceOptions, filters) {
+  sourceChanged(sourceName, providerId, syncType, sourceOptions, filters) {
     const cs = this.currentSource;
     return (
       cs.name !== sourceName ||
       cs.provider_id !== providerId ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
-      !filtersMatch(filters, cs.filters)
+      !filtersMatch(filters, cs.filters) ||
+      cs.sync_type !== syncType
     );
   },
 
@@ -107,9 +112,17 @@ export default Component.extend({
     return importDisabled ? "import-source" : "btn-primary import-source";
   },
 
-  @discourseComputed("sourceChanged", "source.id", "loading")
-  importDisabled(sourceChanged, sourceId, loading) {
-    return sourceChanged || sourceId === "new" || loading;
+  @discourseComputed(
+    "sourceChanged",
+    "source.id",
+    "loading",
+    "source.ready",
+    "source.canImport"
+  )
+  importDisabled(sourceChanged, sourceId, loading, ready, canImport) {
+    return (
+      sourceChanged || sourceId === "new" || loading || !ready || !canImport
+    );
   },
 
   @discourseComputed("source.provider_id")
@@ -123,6 +136,16 @@ export default Component.extend({
   },
 
   showSourceOptions: notEmpty("sourceOptionFields"),
+
+  @discourseComputed
+  syncTypes() {
+    return SYNC_TYPES.map((syncType) => {
+      return {
+        id: syncType,
+        name: I18n.t(`admin.events.source.sync_type.${syncType}`),
+      };
+    });
+  },
 
   actions: {
     openFilters() {

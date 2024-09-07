@@ -12,7 +12,7 @@ module DiscourseEvents
 
       events =
         Event
-          .includes(:source, event_connections: [:topic])
+          .includes(:sources, event_connections: [:topic])
           .order("#{order} #{direction}")
           .offset(offset)
           .limit(PAGE_LIMIT)
@@ -33,8 +33,7 @@ module DiscourseEvents
             .includes(:event_connections)
             .each do |event|
               event.event_connections.each do |ec|
-                topic_id = ec.post.topic.id
-                destroyer = PostDestroyer.new(current_user, ec.post)
+                destroyer = PostDestroyer.new(current_user, ec.topic.first_post)
                 destroyer.destroy
               end
 

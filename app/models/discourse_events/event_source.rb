@@ -1,19 +1,11 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  class EventConnection < ActiveRecord::Base
-    self.table_name = "discourse_events_event_connections"
-    self.ignored_columns += [:post_id]
+  class EventSource < ActiveRecord::Base
+    self.table_name = "discourse_events_event_sources"
 
-    belongs_to :connection, foreign_key: "connection_id", class_name: "DiscourseEvents::Connection"
+    belongs_to :source, foreign_key: "source_id", class_name: "DiscourseEvents::Source"
     belongs_to :event, foreign_key: "event_id", class_name: "DiscourseEvents::Event"
-    belongs_to :topic
-
-    validates :client,
-              inclusion: {
-                in: Connection.client_names,
-                message: "%{value} is not a valid connection client",
-              }
   end
 end
 
@@ -23,14 +15,10 @@ end
 #
 #  id            :bigint           not null, primary key
 #  event_id      :bigint           not null
-#  connection_id :bigint           not null
-#  topic_id      :bigint
-#  post_id       :bigint
-#  series_id     :string
-#  client        :string
+#  source_id     :bigint           not null
+#  uid           :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  external_id   :string
 #
 # Indexes
 #
