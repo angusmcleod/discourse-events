@@ -51,9 +51,9 @@ describe DiscourseEvents::PublishManager do
         before { create_post_event }
 
         context "without publishable connections" do
-          it "does nothing" do
+          it "creates an event" do
             manager.perform
-            expect(DiscourseEvents::Event.count).to eq(0)
+            expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
           end
         end
 

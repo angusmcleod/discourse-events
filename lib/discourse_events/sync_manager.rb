@@ -20,7 +20,7 @@ module DiscourseEvents
       source_name = syncer.connection.source.name
       category_name = syncer.connection.category.name
 
-      unless syncer&.class&.ready?
+      unless syncer&.ready?
         message =
           I18n.t(
             "log.sync_client_not_ready",

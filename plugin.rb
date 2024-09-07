@@ -204,17 +204,6 @@ after_initialize do
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
     object.topic.event
   end
-  add_to_serializer(
-    :topic_view,
-    :event_record,
-    include_condition: -> { object.topic.event_record.present? },
-  ) do
-    DiscourseEvents::TopicEventSerializer.new(
-      object.topic.event_record,
-      scope: scope,
-      root: false,
-    ).as_json
-  end
 
   add_to_serializer(:topic_list_item, :event, include_condition: -> { object.has_event? }) do
     object.event
@@ -259,7 +248,7 @@ after_initialize do
 
   on(:post_created) do |post, opts, user|
     DiscourseEvents::EventCreator.create(post, opts, user)
-    DiscourseEvents::PublishManager.perform(post, "create")
+    DiscourseEvents::PublishManager.perform(post, "create") unless opts[:skip_event_publication]
   end
 
   on(:post_edited) { |post| DiscourseEvents::PublishManager.perform(post, "update") }

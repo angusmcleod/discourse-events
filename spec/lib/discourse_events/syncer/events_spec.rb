@@ -17,7 +17,8 @@ describe DiscourseEvents::EventsSyncer do
   end
 
   before do
-    skip("Client not installed") unless subject.ready?
+    category.custom_fields["events_enabled"] = true
+    category.save_custom_fields(true)
 
     SiteSetting.events_enabled = true
   end

@@ -29,8 +29,12 @@ module DiscourseEvents
     protected
 
     def create_event
+      return false if post.topic.event_record.present?
+
       data = publisher.get_event_data(post)
       return false unless data&.valid?
+
+      event = Event.create!(data.create_params)
 
       connections = []
 
@@ -55,22 +59,16 @@ module DiscourseEvents
         published_events[connection.id] = published_event if published_event.present?
       end
 
-      event = nil
+      connections.each do |connection|
+        published_event = published_events[connection.id]
 
-      ActiveRecord::Base.transaction do
-        event = Event.create!(data.create_params)
-
-        connections.each do |connection|
-          published_event = published_events[connection.id]
-
-          if published_event.present?
-            params = {
-              uid: published_event.metadata.uid,
-              source_id: connection.source.id,
-              event_id: event.id,
-            }
-            EventSource.create!(params)
-          end
+        if published_event.present?
+          params = {
+            uid: published_event.metadata.uid,
+            source_id: connection.source.id,
+            event_id: event.id,
+          }
+          EventSource.create!(params)
         end
       end
 
@@ -100,7 +98,7 @@ module DiscourseEvents
         end
       end
 
-      ActiveRecord::Base.transaction { event.update!(data.update_params) }
+      event.update!(data.update_params)
     end
 
     def destroy_event
@@ -122,7 +120,7 @@ module DiscourseEvents
         end
       end
 
-      ActiveRecord::Base.transaction { event.destroy! }
+      event.destroy!
     end
 
     def get_publisher

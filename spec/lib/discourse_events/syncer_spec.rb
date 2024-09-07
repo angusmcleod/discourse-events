@@ -68,6 +68,11 @@ describe DiscourseEvents::Syncer do
 
       expect(result).to eq({ created_topics: [1], updated_topics: [2, 3] })
     end
+
+    it "does not trigger publication" do
+      DiscourseEvents::PublishManager.expects(:perform).never
+      sync_events
+    end
   end
 
   context "with event series" do

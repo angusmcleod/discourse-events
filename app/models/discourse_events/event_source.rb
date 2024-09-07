@@ -6,7 +6,6 @@ module DiscourseEvents
 
     belongs_to :source, foreign_key: "source_id", class_name: "DiscourseEvents::Source"
     belongs_to :event, foreign_key: "event_id", class_name: "DiscourseEvents::Event"
-    
   end
 end
 

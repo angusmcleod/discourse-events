@@ -1,5 +1,6 @@
 import { click, fillIn, visit } from "@ember/test-helpers";
 import { test } from "qunit";
+import Category from "discourse/models/category";
 import {
   acceptance,
   exists,
@@ -100,8 +101,10 @@ acceptance("Events | Connection", function (needs) {
   });
 
   test("Add connection works", async (assert) => {
-    await visit("/admin/plugins/events/connection");
+    const category = Category.findById(2);
+    category.set("events_enabled", true);
 
+    await visit("/admin/plugins/events/connection");
     await click("#add-connection");
 
     assert.ok(
@@ -140,6 +143,9 @@ acceptance("Events | Connection", function (needs) {
   });
 
   test("Edit connection works", async (assert) => {
+    const category = Category.findById(1);
+    category.set("events_enabled", true);
+
     await visit("/admin/plugins/events/connection");
 
     await selectKit("tr[data-connection-id='1'] .connection-category").expand();

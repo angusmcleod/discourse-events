@@ -155,6 +155,7 @@ module DiscourseEvents
         topic_opts: topic_opts,
         raw: post_raw(event),
         skip_validations: true,
+        skip_event_publication: true,
       )
     end
 
@@ -167,7 +168,6 @@ module DiscourseEvents
       }
 
       params[:series_id] = event.series_id if event.series_id
-
       EventConnection.create!(params)
     end
 

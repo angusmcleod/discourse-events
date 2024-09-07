@@ -14,6 +14,13 @@ describe DiscourseEvents::SyncManager do
   fab!(:event) { Fabricate(:discourse_events_event) }
   fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
+  before do
+    category.custom_fields["events_enabled"] = true
+    category.save_custom_fields(true)
+
+    SiteSetting.events_enabled = true
+  end
+
   it "syncs a connection" do
     subject.sync_connection(connection.id)
 
@@ -34,7 +41,9 @@ describe DiscourseEvents::SyncManager do
       SiteSetting.discourse_post_event_enabled = true
     end
 
-    skip("Discourse Events is not installed") unless DiscourseEvents::DiscourseEventsSyncer.ready?
+    unless DiscourseEvents::DiscourseEventsSyncer.new(user, connection).ready?
+      skip("Discourse Events is not installed")
+    end
 
     result = subject.sync_connection(connection.id)
     expect(result).not_to eq(false)
