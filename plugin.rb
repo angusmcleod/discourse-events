@@ -71,6 +71,7 @@ after_initialize do
   require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/connection.rb"
   require_relative "app/models/discourse_events/event_connection.rb"
+  require_relative "app/models/discourse_events/event_source.rb"
   require_relative "app/models/discourse_events/event.rb"
   require_relative "app/models/discourse_events/log.rb"
   require_relative "app/models/discourse_events/provider.rb"
@@ -91,7 +92,6 @@ after_initialize do
   require_relative "app/serializers/discourse_events/source_serializer.rb"
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
-  require_relative "app/serializers/discourse_events/topic_event_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
   require_relative "app/jobs/discourse_events/scheduled/update_events.rb"
   require_relative "app/jobs/discourse_events/regular/import_source.rb"
@@ -101,7 +101,6 @@ after_initialize do
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
-  require_relative "extensions/guardian.rb"
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -265,10 +264,6 @@ after_initialize do
 
   on(:post_edited) { |post| DiscourseEvents::PublishManager.perform(post, "update") }
 
-  on(:post_destroyed) do |post, opts, user|
-    DiscourseEvents::PublishManager.perform(post, "destroy")
-  end
-
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload["event"]
 
@@ -398,43 +393,6 @@ after_initialize do
     else
       topics
     end
-  end
-
-  Post.has_many :event_connections,
-                class_name: "DiscourseEvents::EventConnection",
-                dependent: :destroy
-  Post.has_many :remote_events,
-                -> { remote },
-                through: :event_connections,
-                source: :event,
-                class_name: "DiscourseEvents::Event"
-
-  Guardian.prepend EventsGuardianExtension
-
-  add_to_class(:guardian, :can_manage_events?) do
-    return false unless SiteSetting.events_enabled
-
-    is_admin? || (SiteSetting.events_allow_moderator_management && is_staff?)
-  end
-
-  add_to_serializer(:current_user, :can_manage_events) { scope.can_manage_events? }
-
-  add_model_callback(:user, :after_initialize) do
-    self
-      .class
-      .define_method(:can_act_on_discourse_post_event?) do |event|
-        return false if event.post.remote_events.present?
-
-        # "super" doesn't work here so this is lifted directly from discourse-calendar
-        return @can_act_on_discourse_post_event if defined?(@can_act_on_discourse_post_event)
-        @can_act_on_discourse_post_event =
-          begin
-            return true if staff?
-            can_create_discourse_post_event? && Guardian.new(self).can_edit_post?(event.post)
-          rescue StandardError
-            false
-          end
-      end
   end
 end
 

@@ -30,12 +30,10 @@ describe DiscourseEvents::Syncer do
   fab!(:connection) do
     Fabricate(:discourse_events_connection, source: source, category: category, user: user)
   end
-  fab!(:event1) do
-    Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1")
-  end
-  fab!(:event2) do
-    Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2")
-  end
+  fab!(:event1) { Fabricate(:discourse_events_event, series_id: "ABC", occurrence_id: "1") }
+  fab!(:event_source1) { Fabricate(:discourse_events_event_source, event: event1, source: source) }
+  fab!(:event2) { Fabricate(:discourse_events_event, series_id: "ABC", occurrence_id: "2") }
+  fab!(:event_source2) { Fabricate(:discourse_events_event_source, event: event2, source: source) }
 
   describe "sync" do
     def sync_events(opts = {})
@@ -60,12 +58,6 @@ describe DiscourseEvents::Syncer do
       sync_events
 
       expect(event1.topics.first.title).to eq(new_name)
-    end
-
-    it "prevents the post from being edited by anyone" do
-      sync_events
-
-      expect(Guardian.new(admin).can_edit_post?(event1.topics.first.first_post)).to eq(false)
     end
 
     it "returns ids of created and updated topics" do

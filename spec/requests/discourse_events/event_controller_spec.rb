@@ -18,7 +18,7 @@ describe DiscourseEvents::EventController do
     fab!(:topic)
     fab!(:post) { Fabricate(:post, topic: topic, user: user, raw: event.description) }
     fab!(:event_connection) do
-      Fabricate(:discourse_events_event_connection, event: event, topic: topic, post: post)
+      Fabricate(:discourse_events_event_connection, event: event, topic: topic)
     end
 
     it "destroys events" do

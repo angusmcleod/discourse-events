@@ -52,7 +52,7 @@ export const SOURCE_OPTIONS = {
   ],
 };
 
-const SYNC_TYPES = ["import", "import_publish"];
+const SYNC_TYPES = ["import", "import_publish", "publish"];
 
 export default Component.extend({
   tagName: "tr",
@@ -112,9 +112,17 @@ export default Component.extend({
     return importDisabled ? "import-source" : "btn-primary import-source";
   },
 
-  @discourseComputed("sourceChanged", "source.id", "loading")
-  importDisabled(sourceChanged, sourceId, loading) {
-    return sourceChanged || sourceId === "new" || loading;
+  @discourseComputed(
+    "sourceChanged",
+    "source.id",
+    "loading",
+    "source.ready",
+    "source.canImport"
+  )
+  importDisabled(sourceChanged, sourceId, loading, ready, canImport) {
+    return (
+      sourceChanged || sourceId === "new" || loading || !ready || !canImport
+    );
   },
 
   @discourseComputed("source.provider_id")

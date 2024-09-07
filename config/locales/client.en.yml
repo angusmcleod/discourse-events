@@ -85,12 +85,6 @@ en:
         one_spot_left: "1 spot left"
         x_spots_left: "{{spotsLeft}} spots left"
 
-    post:
-      event:
-        manage:
-          label: Manage Event
-          title: Manage event on event provider.
-
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"
 
@@ -140,6 +134,7 @@ en:
             title: The type of sync with the source.
             import: Import
             import_publish: Import and Publish
+            publish: Publish
           date_range: Date Range
           import:
             label: Import

@@ -11,7 +11,8 @@ describe DiscourseEvents::SyncManager do
   fab!(:connection) do
     Fabricate(:discourse_events_connection, source: source, category: category, user: user)
   end
-  fab!(:event) { Fabricate(:discourse_events_event, source: source) }
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
   it "syncs a connection" do
     subject.sync_connection(connection.id)
@@ -48,11 +49,13 @@ describe DiscourseEvents::SyncManager do
   end
 
   context "with event series" do
-    fab!(:event1) do
-      Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "1")
+    fab!(:event1) { Fabricate(:discourse_events_event, series_id: "ABC", occurrence_id: "1") }
+    fab!(:event1_source) do
+      Fabricate(:discourse_events_event_source, source: source, event: event1, uid: "12345")
     end
-    fab!(:event2) do
-      Fabricate(:discourse_events_event, source: source, series_id: "ABC", occurrence_id: "2")
+    fab!(:event2) { Fabricate(:discourse_events_event, series_id: "ABC", occurrence_id: "2") }
+    fab!(:event2_source) do
+      Fabricate(:discourse_events_event_source, source: source, event: event2, uid: "678910")
     end
 
     before do
@@ -73,6 +76,7 @@ describe DiscourseEvents::SyncManager do
 
       result = subject.sync_connection(connection.id)
       expect(result).not_to eq(false)
+
       expect(result[:created_topics].size).to eq(2)
       expect(result[:updated_topics].size).to eq(0)
       expect(result[:created_topics]).to include(event1.reload.topics.first.id)

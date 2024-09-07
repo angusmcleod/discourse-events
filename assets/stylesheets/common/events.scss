@@ -674,48 +674,6 @@ ul.events-webcal-notices {
   }
 }
 
-.remote-event {
-  border-radius: 1em;
-  display: inline-block;
-  border: 1px solid var(--primary-low);
-  background: var(--primary-very-low);
-
-  .topic-avatar,
-  .topic-body {
-    border: none;
-  }
-
-  .topic-avatar {
-    padding-left: 15px;
-  }
-
-  .topic-body {
-    margin-right: 12px;
-
-    .post-menu-area {
-      padding: 0;
-    }
-
-    nav.post-controls .actions {
-      margin-left: unset;
-      width: 100%;
-
-      .manage-event {
-        margin-right: auto;
-        color: var(--primary-medium);
-      }
-    }
-  }
-}
-
-nav.post-controls .actions .manage-event {
-  padding: 8px 10px;
-
-  .d-icon {
-    margin-right: var(--control-icon-space);
-  }
-}
-
 .topic-controls-event {
   margin-bottom: 1em;
 }

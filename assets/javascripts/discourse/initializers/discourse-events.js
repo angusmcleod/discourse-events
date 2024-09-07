@@ -385,35 +385,6 @@ export default {
           }
         },
       });
-
-      api.includePostAttributes("event_record", "topic.event_record");
-
-      api.addPostClassesCallback((attrs) => {
-        if (attrs.post_number === 1 && attrs.topic.event_record?.remote) {
-          return ["remote-event"];
-        }
-      });
-
-      api.decorateWidget("post-menu:before-extra-controls", (helper) => {
-        const post = helper.getModel();
-
-        if (
-          post.topic.event_record?.remote &&
-          post.topic.event_record.can_manage &&
-          post.topic.event_record.admin_url
-        ) {
-          return helper.attach("link", {
-            attributes: {
-              target: "_blank",
-            },
-            href: post.topic.event_record.admin_url,
-            className: "manage-event",
-            icon: "external-link-alt",
-            label: "post.event.manage.label",
-            title: "post.event.manage.title",
-          });
-        }
-      });
     });
   },
 };

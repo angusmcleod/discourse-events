@@ -7,7 +7,9 @@
 </td>
 
 <td class="source">
-  {{event.source.name}}
+  {{#each event.sources as |source|}}
+    {{source.name}}
+  {{/each}}
 </td>
 
 <td class="topic">

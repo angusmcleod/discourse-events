@@ -65,15 +65,11 @@ module DiscourseEvents
 
           if published_event.present?
             params = {
+              uid: published_event.metadata.uid,
+              source_id: connection.source.id,
               event_id: event.id,
-              connection_id: connection.id,
-              topic_id: post.topic.id,
-              post_id: post.id,
-              client: connection.client,
-              external_id: published_event.metadata.uid,
             }
-            params[:series_id] = event.series_id if event.series_id
-            EventConnection.create!(params)
+            EventSource.create!(params)
           end
         end
       end
@@ -85,44 +81,48 @@ module DiscourseEvents
       data = publisher.get_event_data(post)
       return false unless data&.valid?
 
-      post
-        .event_connections
-        .where.not(external_id: nil)
-        .each do |event_connection|
-          source = event_connection.connection.source
+      event = post.topic.event_record
+      return false unless event
+
+      if event.event_sources
+        event.event_sources.each do |event_source|
+          source = event_source.source
           publisher.setup_provider(source.provider)
 
-          connection_data = data.dup
-          connection_data.uid = event_connection.external_id
+          source_data = data.dup
+          source_data.uid = event_source.uid
 
           begin
-            publisher.update_event(data: connection_data, opts: source.source_options_hash)
+            publisher.update_event(data: source_data, opts: source.source_options_hash)
           rescue => error
             logger.error(error.message)
           end
         end
+      end
 
-      ActiveRecord::Base.transaction { post.topic.event_record.update!(data.update_params) }
+      ActiveRecord::Base.transaction { event.update!(data.update_params) }
     end
 
     def destroy_event
-      post
-        .event_connections
-        .where.not(external_id: nil)
-        .each do |event_connection|
-          source = event_connection.connection.source
+      event = post.topic.event_record
+      return false unless event
+
+      if event.event_sources
+        event.event_sources.each do |event_source|
+          source = event_source.source
           publisher.setup_provider(source.provider)
 
-          data = Publisher::EventData.new(uid: event_connection.external_id)
+          source_data = Publisher::EventData.new(uid: event_source.uid)
 
           begin
-            publisher.destroy_event(data: data, opts: source.source_options_hash)
+            publisher.destroy_event(data: source_data, opts: source.source_options_hash)
           rescue => error
             logger.error(error.message)
           end
         end
+      end
 
-      ActiveRecord::Base.transaction { post.topic.event_record.destroy! }
+      ActiveRecord::Base.transaction { event.destroy! }
     end
 
     def get_publisher

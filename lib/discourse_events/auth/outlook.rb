@@ -15,7 +15,7 @@ module DiscourseEvents
             response_type: "code",
             redirect_uri: provider.redirect_uri,
             state: state,
-            scope: "Calendars.ReadWrite",
+            scope: "Calendars.ReadWrite offline_access",
           )
         uri.to_s
       end
@@ -66,6 +66,8 @@ module DiscourseEvents
         provider.refresh_token = data["refresh_token"]
 
         if provider.save!
+          ::Jobs.cancel_scheduled_job(:discourse_events_refresh_token, provider_id: provider.id)
+
           refresh_at = provider.reload.token_expires_at.to_time - 10.minutes
           ::Jobs.enqueue_at(refresh_at, :discourse_events_refresh_token, provider_id: provider.id)
         else

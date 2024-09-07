@@ -4,7 +4,10 @@ describe DiscourseEvents::ConnectionController do
   fab!(:category)
   fab!(:source) { Fabricate(:discourse_events_source) }
   fab!(:connection) { Fabricate(:discourse_events_connection, source: source) }
-  fab!(:event) { Fabricate(:discourse_events_event, source: connection.source) }
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) do
+    Fabricate(:discourse_events_event_source, source: connection.source, event: event)
+  end
   fab!(:user) { Fabricate(:user, admin: true) }
 
   before { sign_in(user) }

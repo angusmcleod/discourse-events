@@ -12,28 +12,31 @@ describe DiscourseEvents::ImportManager do
   let!(:provider) { Fabricate(:discourse_events_provider) }
   let!(:source) { Fabricate(:discourse_events_source, source_options: { uri: uri }) }
 
-  def event_uids
+  def raw_event_uids
     raw_data["events"].map { |event| event["id"] }
+  end
+
+  def event_uids
+    DiscourseEvents::Event.all.map { |e| e.event_sources.map { |es| es.uid } }.flatten
   end
 
   it "imports a source" do
     subject.import_source(source.id)
-    events = DiscourseEvents::Event.all
-    expect(events.map(&:uid)).to match_array(event_uids)
+    expect(event_uids).to match_array(raw_event_uids)
   end
 
-  it "does not import a connected event" do
+  it "does not create a previously sourced event" do
     event = Fabricate(:discourse_events_event, start_time: "2017-09-18T16:00:00+08:00")
-    connection = Fabricate(:discourse_events_connection, source: source)
-    event_connection =
+    event_source =
       Fabricate(
-        :discourse_events_event_connection,
-        connection: connection,
+        :discourse_events_event_source,
+        source: source,
         event: event,
-        external_id: raw_data["events"][0]["id"],
+        uid: raw_data["events"][0]["id"],
       )
-    subject.import_source(source.id)
-    expect(DiscourseEvents::Event.all.map(&:uid).include?(raw_data["events"][0]["id"])).to eq(false)
+    manager = subject.new(source)
+    manager.import(uri: uri)
+    expect(manager.created_event_uids.include?(raw_data["events"][0]["id"])).to eq(false)
   end
 
   it "imports all active sources" do
@@ -41,8 +44,8 @@ describe DiscourseEvents::ImportManager do
 
     events = DiscourseEvents::Event.all
     expect(events.size).to eq(2)
-    expect(events.first.uid).to eq(event_uids.first)
-    expect(events.second.uid).to eq(event_uids.second)
+    expect(events.first.event_sources.first.uid).to eq(raw_event_uids.first)
+    expect(events.second.event_sources.first.uid).to eq(raw_event_uids.second)
   end
 
   it "logs imports" do
@@ -74,7 +77,7 @@ describe DiscourseEvents::ImportManager do
 
       events = DiscourseEvents::Event.all
       expect(events.size).to eq(1)
-      expect(events.first.uid).to eq(event_uids.second)
+      expect(events.first.event_sources.first.uid).to eq(raw_event_uids.second)
     end
   end
 end
