@@ -5,6 +5,7 @@ module DiscourseEvents
     attributes :id,
                :start_time,
                :end_time,
+               :deadline,
                :name,
                :description,
                :status,

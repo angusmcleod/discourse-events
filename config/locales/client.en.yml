@@ -14,6 +14,16 @@ en:
       deadline:
         label: "Is a deadline"
         title: "Will show countdown in Topic and Topic List"
+        units:
+          day:
+            one: "day"
+            other: "days"
+          hour:
+            one: "hour"
+            other: "hours"
+          minute:
+            one: "minute"
+            other: "minutes"
       timezone: "Timezone"
       no_timezone: "Select a timezone"
       rsvp_enabled: "Rsvp enabled"

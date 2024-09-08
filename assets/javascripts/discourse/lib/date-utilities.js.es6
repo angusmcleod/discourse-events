@@ -313,6 +313,7 @@ function eventLabel(event, args = {}) {
     iconClass += "no-date";
   }
   let label = renderIcon("string", icon, { class: iconClass });
+  let passedDue = false;
 
   if (!args.noText) {
     const { start, end, allDay, timezone } = setupEvent(event, args);
@@ -363,10 +364,26 @@ function eventLabel(event, args = {}) {
         }
       }
     }
+
+    passedDue = moment() > start;
+
+    if (siteSettings.events_support_deadlines && event.deadline) {
+      const countdownIcon = siteSettings.events_event_countdown_icon;
+      const duration = passedDue ? 0 : moment.duration(start - moment());
+
+      let d = Math.floor(duration / (1000 * 60 * 60 * 24));
+      let h = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+
+      const timeLeft = `${d} ${I18n.t("add_event.deadline.units.day", { count: d })}, ${h} ${I18n.t("add_event.deadline.units.hour", { count: h})}, ${m} ${I18n.t("add_event.deadline.units.minute", { count: m })}`;
+
+      label += renderIcon("string", countdownIcon);
+      label += `<span>${timeLeft}</span>`;
+    }
   }
 
   if (!args.noContainer) {
-    label = `<span class='event-label'>${label}</span>`;
+    label = `<span class='event-label${passedDue ? " passed-due" : ""}'>${label}</span>`;
   }
 
   return label;

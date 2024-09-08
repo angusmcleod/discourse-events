@@ -132,6 +132,7 @@ after_initialize do
   register_topic_custom_field_type("event_start", :integer)
   register_topic_custom_field_type("event_end", :integer)
   register_topic_custom_field_type("event_all_day", :boolean)
+  register_topic_custom_field_type("event_deadline", :boolean)
   register_topic_custom_field_type("event_rsvp", :boolean)
   register_topic_custom_field_type("event_going", :json)
   register_topic_custom_field_type("event_going_max", :integer)
@@ -142,6 +143,7 @@ after_initialize do
       event_start
       event_end
       event_all_day
+      event_deadline
       event_timezone
       event_rsvp
       event_going
@@ -172,6 +174,8 @@ after_initialize do
     event[:timezone] = custom_fields["event_timezone"] if custom_fields["event_timezone"].present?
 
     event[:all_day] = custom_fields["event_all_day"] if custom_fields["event_all_day"].present?
+
+    event[:deadline] = custom_fields["event_deadline"] if custom_fields["event_deadline"].present?
 
     event[:version] = custom_fields["event_version"] if custom_fields["event_version"].present?
 
@@ -459,6 +463,7 @@ on(:custom_wizard_ready) do
 
           event_params["event_end"] = event["end"].to_datetime.to_i if event["end"].present?
           event_params["event_all_day"] = event["all_day"] === "true" if event["all_day"].present?
+          event_params["deadline"] = event["deadline"] === "true" if event["deadline"].present?
           event_params["event_timezone"] = event["timezone"] if event["timezone"].present?
           event_params["event_rsvp"] = event["rsvp"] if event["rsvp"].present?
           event_params["event_going_max"] = event["going_max"] if event["going_max"].present?
