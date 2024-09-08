@@ -1,4 +1,3 @@
-// app/components/event-form.gjs
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from "@ember/modifier";
@@ -9,7 +8,6 @@ import DateInput from "discourse/components/date-input";
 import InputTip from "discourse/components/input-tip";
 import TimeInput from "discourse/components/time-input";
 import concatClass from "discourse/helpers/concat-class";
-// import moment from 'moment';
 import i18n from "discourse-common/helpers/i18n";
 import ComboBox from "select-kit/components/combo-box";
 import EmailGroupUserChooser from "select-kit/components/email-group-user-chooser";
@@ -129,13 +127,6 @@ export default class EventForm extends Component {
   @action
   toggleDeadline(event) {
     this.deadline = event.target.checked;
-    // if (!this.allDay) {
-    //   const start = nextInterval();
-    //   this.startTime = start;
-    //   if (this.endEnabled) {
-    //     this.endTime = moment(start).add(1, 'hours');
-    //   }
-    // }
     this.updateEvent();
   }
 
