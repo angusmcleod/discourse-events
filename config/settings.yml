@@ -90,7 +90,10 @@ plugins:
   events_support_deadlines:
     default: false
     client: true
-  events_event_countdown_icon:
-    default: "hourglass"
+  events_event_countdown_icon_pending:
+    default: "hourglass-half"
+    client: true
+  events_event_countdown_icon_passed_due:
+    default: "hourglass-end"
     client: true
 

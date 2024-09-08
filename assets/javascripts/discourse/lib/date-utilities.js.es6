@@ -368,7 +368,9 @@ function eventLabel(event, args = {}) {
     passedDue = moment() > start;
 
     if (siteSettings.events_support_deadlines && event.deadline) {
-      const countdownIcon = siteSettings.events_event_countdown_icon;
+      const countdownIconPending = siteSettings.events_event_countdown_icon_pending || "hourglass-half";
+      const countdownIconPassedDue = siteSettings.events_event_countdown_icon_passed_due || "hourglass-end";
+      const countdownIcon = passedDue ? countdownIconPassedDue : countdownIconPending;
       const duration = passedDue ? 0 : moment.duration(start - moment());
 
       let d = Math.floor(duration / (1000 * 60 * 60 * 24));

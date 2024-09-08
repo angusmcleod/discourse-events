@@ -43,6 +43,8 @@ Discourse.anonymous_filters.push(:calendar)
 register_svg_icon "rss"
 register_svg_icon "fingerprint"
 register_svg_icon "save"
+register_svg_icon "hourglass-half"
+register_svg_icon "hourglass-end"
 
 require_relative "lib/discourse_events_client_site_setting.rb"
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
