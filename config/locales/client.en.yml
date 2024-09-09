@@ -14,6 +14,16 @@ en:
       deadline:
         label: "Is a deadline"
         title: "Will show countdown in Topic and Topic List"
+      timezone: "Timezone"
+      no_timezone: "Select a timezone"
+      rsvp_enabled: "Rsvp enabled"
+      rsvp_enabled_label: "Rsvp"
+      going: "Guests"
+      going_max: "Maximum guests"
+      going_max_label: "{{goingMax}} Guests"
+      error: "Event end should be same as or after event start"
+    event_label:
+      deadline:
         units:
           day:
             one: "day"
@@ -24,14 +34,7 @@ en:
           minute:
             one: "minute"
             other: "minutes"
-      timezone: "Timezone"
-      no_timezone: "Select a timezone"
-      rsvp_enabled: "Rsvp enabled"
-      rsvp_enabled_label: "Rsvp"
-      going: "Guests"
-      going_max: "Maximum guests"
-      going_max_label: "{{goingMax}} Guests"
-      error: "Event end should be same as or after event start"
+        past_due: "Past Due"
     category:
       events_setting_heading: "Events"
       enable_events: "Allow events to be added to topics in this category."
