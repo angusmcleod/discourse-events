@@ -16,7 +16,7 @@ module DiscourseEvents
             response_type: "code",
             state: state,
             redirect_uri: provider.redirect_uri,
-            client_id: provider.client_id
+            client_id: provider.client_id,
           )
         uri.to_s
       end
