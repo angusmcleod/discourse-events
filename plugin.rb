@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.8.5
+# version: 0.8.6
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -29,8 +29,8 @@ gem "omnievent-api", "0.1.0.pre3", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
-gem "omnievent-outlook", "0.1.0.pre6", require_name: "omnievent/outlook"
-gem "omnievent-google", "0.1.0.pre3", require_name: "omnievent/google"
+gem "omnievent-outlook", "0.1.0.pre7", require_name: "omnievent/outlook"
+gem "omnievent-google", "0.1.0.pre4", require_name: "omnievent/google"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)

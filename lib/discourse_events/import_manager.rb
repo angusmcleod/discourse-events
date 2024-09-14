@@ -71,6 +71,7 @@ module DiscourseEvents
       opts = source.source_options_with_fixed
       opts[:from_time] = source.from_time if source.from_time.present?
       opts[:to_time] = source.to_time if source.to_time.present?
+      opts[:match_name] = source.match_name if source.match_name.present?
 
       manager.import(opts)
     end

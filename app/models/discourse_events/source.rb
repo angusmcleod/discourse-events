@@ -106,6 +106,18 @@ module DiscourseEvents
         end
     end
 
+    def match_name
+      @match_name ||=
+        begin
+          filter =
+            filters.find_by(
+              query_column: DiscourseEvents::Filter.query_columns[:name],
+              query_operator: DiscourseEvents::Filter.query_operators[:like],
+            )
+          filter ? filter.query_value : nil
+        end
+    end
+
     private
 
     def valid_source_options?
