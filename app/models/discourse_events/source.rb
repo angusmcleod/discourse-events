@@ -25,6 +25,9 @@ module DiscourseEvents
         user_id: /[0-9a-zA-Z]/,
         calendar_id: /[0-9a-zA-Z=-]/,
       },
+      google: {
+        calendar_id: /[0-9a-zA-Z=-]/,
+      },
     }
 
     FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }

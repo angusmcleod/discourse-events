@@ -50,6 +50,13 @@ export const SOURCE_OPTIONS = {
       default: "",
     },
   ],
+  google: [
+    {
+      name: "calendar_id",
+      type: "text",
+      default: "",
+    },
+  ],
 };
 
 const SYNC_TYPES = ["import", "import_publish", "publish"];

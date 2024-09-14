@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.8.0
+# version: 0.8.5
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -23,13 +23,14 @@ gem "icalendar-recurrence", "1.1.3"
 gem "date", "3.3.4"
 gem "time", "0.2.0"
 gem "stringio", "3.1.1"
-gem "omnievent", "0.1.0.pre6", require_name: "omnievent"
+gem "omnievent", "0.1.0.pre7", require_name: "omnievent"
 gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
 gem "omnievent-api", "0.1.0.pre3", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
 gem "omnievent-outlook", "0.1.0.pre6", require_name: "omnievent/outlook"
+gem "omnievent-google", "0.1.0.pre3", require_name: "omnievent/google"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -68,6 +69,7 @@ after_initialize do
   require_relative "lib/discourse_events/auth/base.rb"
   require_relative "lib/discourse_events/auth/meetup.rb"
   require_relative "lib/discourse_events/auth/outlook.rb"
+  require_relative "lib/discourse_events/auth/google.rb"
   require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/connection.rb"
   require_relative "app/models/discourse_events/event_connection.rb"
