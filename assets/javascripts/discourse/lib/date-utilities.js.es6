@@ -389,13 +389,13 @@ function eventLabel(event, args = {}) {
         ? `${I18n.t("event_label.deadline.past_due")}: ${moment(start)
             .locale(I18n.locale)
             .fromNow()}`
-        : `${d} ${I18n.t("event_label.deadline.units.day", {
+        : `${d > 0 ? I18n.t("dates.medium.x_days", {
             count: d,
-          })}, ${h} ${I18n.t("event_label.deadline.units.hour", {
+          }) : ""} ${h > 0 ? I18n.t("dates.medium.x_hours", {
             count: h,
-          })}, ${m} ${I18n.t("event_label.deadline.units.minute", {
+          }) : ""} ${m > 0 ? I18n.t("dates.medium.x_minutes", {
             count: m,
-          })}`;
+          }): ""}`;
 
       label += renderIcon("string", countdownIcon);
       label += `<span class="deadline">${timeLeft}</span>`;

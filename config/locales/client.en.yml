@@ -24,16 +24,6 @@ en:
       error: "Event end should be same as or after event start"
     event_label:
       deadline:
-        units:
-          day:
-            one: "day"
-            other: "days"
-          hour:
-            one: "hour"
-            other: "hours"
-          minute:
-            one: "minute"
-            other: "minutes"
         past_due: "Past Due"
     category:
       events_setting_heading: "Events"
