@@ -49,6 +49,7 @@ Discourse::Application.routes.prepend do
       get "events/event" => "event#index"
       delete "events/event" => "event#destroy"
       get "events/log" => "log#index"
+      get "events/subscription" => "subscription#index"
     end
   end
 end

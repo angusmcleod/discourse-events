@@ -27,10 +27,6 @@ $pavilion_primary: #3c1c8c;
   table {
     min-width: 100%;
   }
-
-  .admin-controls > nav > ul > li.settings {
-    margin-left: auto;
-  }
 }
 
 .admin-events-controls {
@@ -386,5 +382,12 @@ $pavilion_primary: #3c1c8c;
 .events-source-options-modal {
   input.source-option {
     width: 100%;
+  }
+}
+
+.admin-plugins.events {
+  .admin-actions {
+    display: flex;
+    align-items: center;
   }
 }

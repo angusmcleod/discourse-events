@@ -22,12 +22,12 @@ gem "icalendar", "2.8.0"
 gem "icalendar-recurrence", "1.1.3"
 
 DiscourseEvent.on(:subscription_client_ready) do
-  require_relative "lib/discourse_events/subscription"
-  DiscourseEvents::Subscription.setup
+  require_relative "lib/discourse_events/subscription_manager"
+  DiscourseEvents::SubscriptionManager.setup(update: true, install: true)
 end
 DiscourseEvent.on(:subscription_client_subscriptions_updated) do
-  require_relative "lib/discourse_events/subscription"
-  DiscourseEvents::Subscription.setup
+  require_relative "lib/discourse_events/subscription_manager"
+  DiscourseEvents::SubscriptionManager.setup(install: true)
 end
 
 Discourse.top_menu_items.push(:agenda)
@@ -51,6 +51,7 @@ after_initialize do
   require_relative "lib/discourse_events/engine.rb"
   require_relative "lib/discourse_events/helper.rb"
   require_relative "lib/discourse_events/list.rb"
+  require_relative "lib/discourse_events/subscription_manager.rb"
   require_relative "lib/discourse_events/event_creator.rb"
   require_relative "lib/discourse_events/event_revisor.rb"
   require_relative "lib/discourse_events/logger.rb"
@@ -85,6 +86,7 @@ after_initialize do
   require_relative "app/controllers/discourse_events/log_controller.rb"
   require_relative "app/controllers/discourse_events/provider_controller.rb"
   require_relative "app/controllers/discourse_events/source_controller.rb"
+  require_relative "app/controllers/discourse_events/subscription_controller.rb"
   require_relative "app/serializers/discourse_events/basic_event_serializer.rb"
   require_relative "app/serializers/discourse_events/filter_serializer.rb"
   require_relative "app/serializers/discourse_events/connection_serializer.rb"

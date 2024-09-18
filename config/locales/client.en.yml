@@ -291,3 +291,15 @@ en:
           deauthorize:
             label: Deauthorize
             title: Deauthorize the current subscription.
+          update:
+            title: "Update subscription status"
+          type:
+            none:
+              label: Subscribe
+              title: There is no Events subscription active on this forum.
+            business:
+              label: Support
+              title: There is a Events Business subscription active on this forum.
+            community:
+              label: Support
+              title: There is a Events Community subscription active on this forum.

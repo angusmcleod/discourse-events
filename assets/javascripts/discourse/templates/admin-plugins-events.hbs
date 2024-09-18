@@ -1,11 +1,11 @@
 <AdminNav>
   <NavItem
-    @route="adminPlugins.events.connection"
-    @label="admin.events.connection.title"
-  />
-  <NavItem
     @route="adminPlugins.events.event"
     @label="admin.events.event.title"
+  />
+  <NavItem
+    @route="adminPlugins.events.connection"
+    @label="admin.events.connection.title"
   />
   <NavItem
     @route="adminPlugins.events.source"
@@ -25,8 +25,8 @@
       @label="admin.plugins.change_settings_short"
     />
   </li>
-
   <div class="admin-actions">
+    <EventsSubscriptionBadge />
     <EventsSubscriptionStatus />
   </div>
 </AdminNav>
