@@ -309,6 +309,7 @@ function eventLabel(event, args = {}) {
   let format = args.list ? listFormat : standardFormat;
 
   let iconClass = "";
+  let deadline = false;
   if (!format) {
     iconClass += "no-date";
   }
@@ -368,6 +369,7 @@ function eventLabel(event, args = {}) {
     pastDue = moment() > start;
 
     if (siteSettings.events_support_deadlines && event.deadline) {
+      deadline = true;
       const countdownIconPending = siteSettings.events_event_countdown_icon_pending || "hourglass-half";
       const countdownIconpastDue = siteSettings.events_event_countdown_icon_passed_due || "hourglass-end";
       const countdownIcon = pastDue ? countdownIconpastDue : countdownIconPending;
@@ -382,12 +384,12 @@ function eventLabel(event, args = {}) {
         : `${d} ${I18n.t("event_label.deadline.units.day", { count: d })}, ${h} ${I18n.t("event_label.deadline.units.hour", { count: h})}, ${m} ${I18n.t("event_label.deadline.units.minute", { count: m })}`;
 
       label += renderIcon("string", countdownIcon);
-      label += `<span>${timeLeft}</span>`;
+      label += `<span class="deadline">${timeLeft}</span>`;
     }
   }
 
   if (!args.noContainer) {
-    label = `<span class='event-label${pastDue ? " past-due" : ""}'>${label}</span>`;
+    label = `<span class='event-label${deadline ? " deadline" : ""} ${pastDue ? " past-due" : ""}'>${label}</span>`;
   }
 
   return label;

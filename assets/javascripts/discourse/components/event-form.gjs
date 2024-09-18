@@ -174,7 +174,7 @@ export default class EventForm extends Component {
         </div>
 
         {{#if this.showDeadlineToggle}}
-          <div class="control">
+          <div class="control deadline">
             <input
               type="checkbox"
               checked={{this.deadline}}

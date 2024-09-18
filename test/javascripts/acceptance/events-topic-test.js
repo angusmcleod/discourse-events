@@ -54,3 +54,29 @@ acceptance("Events | topic with an event", function (needs) {
     );
   });
 });
+
+acceptance("Events | topic with an event that is a deadline", function (needs) {
+  needs.user();
+  needs.site({ event_timezones: Timezones["event_timezones"] });
+  setupServer(needs, {
+    event: {
+      start: "2022-11-06T12:00:00.000Z",
+      deadline: true,
+      timezone: "Australia/Perth",
+    },
+  });
+
+  test("shows event", async function (assert) {
+    this.siteSettings.events_timezone_include_in_topic_list = true;
+    this.siteSettings.events_timezone_display = "event";
+    this.siteSettings.events_support_deadlines = true;
+    await visit("/t/280");
+
+    assert.ok(exists(".event-label.deadline.past-due"), "the event-label is visible");
+    assert.strictEqual(
+      query(".event-label .deadline").innerText.trim().split(":")[0],
+      I18n.t("event_label.deadline.past_due"),
+      "the event-label shows the Past Due element"
+    );
+  });
+});
