@@ -25,13 +25,17 @@ module DiscourseEvents
         user_id: /[0-9a-zA-Z]/,
         calendar_id: /[0-9a-zA-Z=-]/,
       },
+      google: {
+        calendar_id: /[0-9a-zA-Z=-]/,
+      },
     }
 
     FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
 
     belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
 
-    has_many :events, foreign_key: "source_id", class_name: "DiscourseEvents::Event"
+    has_many :event_sources, foreign_key: "source_id", class_name: "DiscourseEvents::EventSource"
+    has_many :events, through: :event_sources, class_name: "DiscourseEvents::Event"
     has_many :connections,
              foreign_key: "source_id",
              class_name: "DiscourseEvents::Connection",
@@ -46,8 +50,14 @@ module DiscourseEvents
     validates :provider, presence: true
     validate :valid_source_options?
 
+    enum sync_type: { import: 0, import_publish: 1, publish: 2 }
+
     def ready?
       provider.authenticated?
+    end
+
+    def import?
+      sync_type == "import" || sync_type == "import_publish"
     end
 
     def source_options_hash
@@ -93,6 +103,18 @@ module DiscourseEvents
               query_operator: DiscourseEvents::Filter.query_operators[:less_than],
             )
           filter ? filter.query_value.to_datetime : nil
+        end
+    end
+
+    def match_name
+      @match_name ||=
+        begin
+          filter =
+            filters.find_by(
+              query_column: DiscourseEvents::Filter.query_columns[:name],
+              query_operator: DiscourseEvents::Filter.query_operators[:like],
+            )
+          filter ? filter.query_value : nil
         end
     end
 
@@ -150,6 +172,7 @@ end
 #  taxonomy       :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  sync_type      :integer
 #
 # Indexes
 #

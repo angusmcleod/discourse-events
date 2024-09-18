@@ -35,28 +35,25 @@ module DiscourseEvents
           (
             event_params.is_a?(String) ? ::JSON.parse(event_params) : event_params
           ).with_indifferent_access
-        event_start = event["start"]
-        event_end = event["end"]
-        event_all_day = event["all_day"]
-        event_deadline = event["deadline"]
-        timezone = event["timezone"]
-        rsvp = event["rsvp"]
-        going_max = event["going_max"]
-        going = event["going"]
-        event_version = 1
 
-        topic.custom_fields["event_start"] = event_start.to_datetime.to_i if event_start
-        topic.custom_fields["event_end"] = event_end.to_datetime.to_i if event_end
-        topic.custom_fields["event_all_day"] = event_all_day === "true" if event_all_day
-        topic.custom_fields["event_deadline"] = event_deadline === "true" if event_deadline
-        topic.custom_fields["event_timezone"] = timezone if timezone
-        topic.custom_fields["event_rsvp"] = rsvp if rsvp
-        topic.custom_fields["event_going_max"] = going_max if going_max
-        topic.custom_fields["event_going"] = User.where(username: going).pluck(:id) if going
-        topic.custom_fields["event_version"] = event_version if event_version
+        topic.custom_fields["event_start"] = event_start.to_i if event_start
+        topic.custom_fields["event_end"] = event_end.to_i if event_end
+        topic.custom_fields["event_all_day"] = event["all_day"] === "true" if event["all_day"]
+        topic.custom_fields["event_deadline"] = event["deadline"] === "true" if event["deadline"]
+        topic.custom_fields["event_timezone"] = event["timezone"] if event["timezone"]
+        topic.custom_fields["event_rsvp"] = event["rsvp"] if event["rsvp"]
+        topic.custom_fields["event_going_max"] = event["going_max"] if event["going_max"]
+        topic.custom_fields["event_going"] = User.where(username: event["going"]).pluck(
+          :id,
+        ) if event["going"]
+        topic.custom_fields["event_version"] = 1
 
         topic.save_custom_fields(true)
       end
+    end
+
+    def self.create(post, opts, user)
+      new(post, opts, user).create
     end
   end
 end

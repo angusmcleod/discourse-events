@@ -2,20 +2,21 @@
 
 module DiscourseEvents
   module Auth
-    class Outlook < Base
+    class Google < Base
       def base_url
-        "https://login.microsoftonline.com"
+        "https://oauth2.googleapis.com/token"
       end
 
       def authorization_url(state)
-        uri = URI.parse("#{base_url}/common/oauth2/v2.0/authorize")
+        uri = URI.parse("https://accounts.google.com/o/oauth2/v2/auth")
         uri.query =
           URI.encode_www_form(
-            client_id: provider.client_id,
+            scope: "https://www.googleapis.com/auth/calendar",
+            access_type: "offline",
             response_type: "code",
-            redirect_uri: provider.redirect_uri,
             state: state,
-            scope: "Calendars.ReadWrite offline_access",
+            redirect_uri: provider.redirect_uri,
+            client_id: provider.client_id,
           )
         uri.to_s
       end
@@ -46,7 +47,7 @@ module DiscourseEvents
       def perform_request(body)
         response =
           Excon.post(
-            "#{base_url}/common/oauth2/v2.0/token",
+            "https://oauth2.googleapis.com/token",
             headers: {
               "Content-Type" => "application/x-www-form-urlencoded",
             },
@@ -63,7 +64,7 @@ module DiscourseEvents
 
         provider.token = data["access_token"]
         provider.token_expires_at = Time.now + data["expires_in"].seconds
-        provider.refresh_token = data["refresh_token"]
+        provider.refresh_token = data["refresh_token"] if data["refresh_token"].present?
 
         if provider.save!
           ::Jobs.cancel_scheduled_job(:discourse_events_refresh_token, provider_id: provider.id)

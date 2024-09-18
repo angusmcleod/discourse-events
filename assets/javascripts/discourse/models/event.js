@@ -25,9 +25,12 @@ Event.reopenClass({
   eventsArray(events) {
     return A(
       events.map((event) => {
-        let source = Source.create(event.source);
-        let topics = A(event.topics.map((t) => Topic.create(t)));
-        return Object.assign(event, { source, topics });
+        let attrs = {};
+        if (event.sources) {
+          attrs.source = A(event.sources.map((s) => Source.create(s)));
+        }
+        attrs.topics = A(event.topics.map((t) => Topic.create(t)));
+        return Object.assign(event, attrs);
       })
     );
   },

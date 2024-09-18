@@ -2,7 +2,7 @@
 
 module DiscourseEvents
   class DiscourseEventsSyncer < DiscourseEvents::Syncer
-    def self.ready?
+    def ready?
       defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
         ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
     end

@@ -16,6 +16,16 @@
   />
 </td>
 
+<td>
+  <ComboBox
+    @value={{source.sync_type}}
+    @content={{syncTypes}}
+    @onChange={{action (mut source.sync_type)}}
+    class="source-sync-type"
+    options={{hash none="admin.events.source.sync_type.select"}}
+  />
+</td>
+
 <td class="source-options">
   {{#if showSourceOptions}}
     <DButton

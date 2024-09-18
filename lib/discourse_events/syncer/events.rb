@@ -2,8 +2,8 @@
 
 module DiscourseEvents
   class EventsSyncer < DiscourseEvents::Syncer
-    def self.ready?
-      true
+    def ready?
+      connection.category.events_enabled
     end
 
     def create_event_topic(event)

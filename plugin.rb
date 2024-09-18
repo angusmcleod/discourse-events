@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.7.1
+# version: 0.8.7
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -23,13 +23,14 @@ gem "icalendar-recurrence", "1.1.3"
 gem "date", "3.3.4"
 gem "time", "0.2.2"
 gem "stringio", "3.1.1"
-gem "omnievent", "0.1.0.pre3", require_name: "omnievent"
+gem "omnievent", "0.1.0.pre7", require_name: "omnievent"
 gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
-gem "omnievent-api", "0.1.0.pre2", require_name: "omnievent/api"
+gem "omnievent-api", "0.1.0.pre3", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
-gem "omnievent-outlook", "0.1.0.pre2", require_name: "omnievent/outlook"
+gem "omnievent-outlook", "0.1.0.pre7", require_name: "omnievent/outlook"
+gem "omnievent-google", "0.1.0.pre4", require_name: "omnievent/google"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -62,12 +63,19 @@ after_initialize do
   require_relative "lib/discourse_events/syncer.rb"
   require_relative "lib/discourse_events/syncer/discourse_events.rb"
   require_relative "lib/discourse_events/syncer/events.rb"
+  require_relative "lib/discourse_events/publish_manager.rb"
+  require_relative "lib/discourse_events/publisher.rb"
+  require_relative "lib/discourse_events/publisher/event_data.rb"
+  require_relative "lib/discourse_events/publisher/discourse_events.rb"
+  require_relative "lib/discourse_events/publisher/events.rb"
   require_relative "lib/discourse_events/auth/base.rb"
   require_relative "lib/discourse_events/auth/meetup.rb"
   require_relative "lib/discourse_events/auth/outlook.rb"
+  require_relative "lib/discourse_events/auth/google.rb"
   require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/connection.rb"
   require_relative "app/models/discourse_events/event_connection.rb"
+  require_relative "app/models/discourse_events/event_source.rb"
   require_relative "app/models/discourse_events/event.rb"
   require_relative "app/models/discourse_events/log.rb"
   require_relative "app/models/discourse_events/provider.rb"
@@ -88,7 +96,6 @@ after_initialize do
   require_relative "app/serializers/discourse_events/source_serializer.rb"
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
-  require_relative "app/serializers/discourse_events/post_event_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
   require_relative "app/jobs/discourse_events/scheduled/update_events.rb"
   require_relative "app/jobs/discourse_events/regular/import_source.rb"
@@ -98,7 +105,6 @@ after_initialize do
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
-  require_relative "extensions/guardian.rb"
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -126,6 +132,10 @@ after_initialize do
     add_to_class(:category, key.to_sym) { self.custom_fields[key] }
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
+
+  Category.has_many :discourse_events_connections,
+                    class_name: "DiscourseEvents::Connection",
+                    dependent: :destroy
 
   SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
 
@@ -192,6 +202,13 @@ after_initialize do
     event
   end
 
+  Topic.has_one :event_connection, class_name: "DiscourseEvents::EventConnection"
+  Topic.has_one :event_record,
+                through: :event_connection,
+                source: :event,
+                class_name: "DiscourseEvents::Event"
+  Topic.attr_accessor :include_excerpt
+
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
     object.topic.event
   end
@@ -235,14 +252,14 @@ after_initialize do
 
   add_to_class(:guardian, :can_edit_event?) { |category| can_create_event?(category) }
 
-  Topic.attr_accessor :include_excerpt
-
   ListableTopicSerializer.prepend ListableTopicSerializerEventsExtension
 
   on(:post_created) do |post, opts, user|
-    event_creator = DiscourseEvents::EventCreator.new(post, opts, user)
-    event_creator.create
+    DiscourseEvents::EventCreator.create(post, opts, user)
+    DiscourseEvents::PublishManager.perform(post, "create") unless opts[:skip_event_publication]
   end
+
+  on(:post_edited) { |post| DiscourseEvents::PublishManager.perform(post, "update") }
 
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload["event"]
@@ -373,57 +390,6 @@ after_initialize do
     else
       topics
     end
-  end
-
-  Post.has_one :event_connection,
-               class_name: "DiscourseEvents::EventConnection",
-               dependent: :destroy
-  Guardian.prepend EventsGuardianExtension
-
-  TopicView.attr_writer :posts
-  TopicView.on_preload do |topic_view|
-    if SiteSetting.events_enabled
-      topic_view.posts = topic_view.posts.includes({ event_connection: :event })
-    end
-  end
-
-  # The discourse-calendar plugin uses "event" on the post model
-  add_to_serializer(
-    :post,
-    :connected_event,
-    include_condition: -> { SiteSetting.events_enabled && object.event_connection.present? },
-  ) do
-    DiscourseEvents::PostEventSerializer.new(
-      object.event_connection.event,
-      scope: scope,
-      root: false,
-    ).as_json
-  end
-
-  add_to_class(:guardian, :can_manage_events?) do
-    return false unless SiteSetting.events_enabled
-
-    is_admin? || (SiteSetting.events_allow_moderator_management && is_staff?)
-  end
-
-  add_to_serializer(:current_user, :can_manage_events) { scope.can_manage_events? }
-
-  add_model_callback(:user, :after_initialize) do
-    self
-      .class
-      .define_method(:can_act_on_discourse_post_event?) do |event|
-        return false if event.post.event_connection
-
-        # "super" doesn't work here so this is lifted directly from discourse-calendar
-        return @can_act_on_discourse_post_event if defined?(@can_act_on_discourse_post_event)
-        @can_act_on_discourse_post_event =
-          begin
-            return true if staff?
-            can_create_discourse_post_event? && Guardian.new(self).can_edit_post?(event.post)
-          rescue StandardError
-            false
-          end
-      end
   end
 end
 

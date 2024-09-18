@@ -6,7 +6,7 @@ module DiscourseEvents
 
     NO_AUTH ||= %w[developer icalendar]
     TOKEN ||= %w[eventbrite humanitix eventzilla]
-    OAUTH2 ||= %w[meetup outlook]
+    OAUTH2 ||= %w[meetup outlook google]
     TYPES = NO_AUTH + TOKEN + OAUTH2
 
     has_many :sources,

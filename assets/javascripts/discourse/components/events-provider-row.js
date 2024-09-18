@@ -9,7 +9,7 @@ export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
 
 export const NO_AUTH_TYPES = ["icalendar"];
 
-export const OAUTH2_TYPES = ["meetup", "outlook"];
+export const OAUTH2_TYPES = ["meetup", "outlook", "google"];
 
 export const PROVIDER_TYPES = [
   ...NO_AUTH_TYPES,
