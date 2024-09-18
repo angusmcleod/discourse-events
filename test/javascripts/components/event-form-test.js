@@ -14,9 +14,9 @@ module("Poll | Component | event-form", function (hooks) {
     this.site.event_timezones = Timezones["event_timezones"];
     this.setProperties({
       event: {
-        deadline: true
+        deadline: true,
       },
-      updateEvent: () => {}
+      updateEvent: () => {},
     });
 
     await render(hbs`<EventForm

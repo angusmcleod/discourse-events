@@ -72,7 +72,10 @@ acceptance("Events | topic with an event that is a deadline", function (needs) {
     this.siteSettings.events_support_deadlines = true;
     await visit("/t/280");
 
-    assert.ok(exists(".event-label.deadline.past-due"), "the event-label is visible");
+    assert.ok(
+      exists(".event-label.deadline.past-due"),
+      "the event-label is visible"
+    );
     assert.strictEqual(
       query(".event-label .deadline").innerText.trim().split(":")[0],
       I18n.t("event_label.deadline.past_due"),
