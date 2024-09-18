@@ -283,3 +283,11 @@ en:
             info: "Providers are the services providing your events"
           log:
             info: "The logs of your events"
+
+        subscription:
+          authorize:
+            label: Authorize
+            title: Authorize a subscription.
+          deauthorize:
+            label: Deauthorize
+            title: Deauthorize the current subscription.

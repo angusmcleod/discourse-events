@@ -70,7 +70,13 @@ describe DiscourseEvents::PublishManager do
           end
 
           context "when publication succeeds" do
-            before { OmniEvent.expects(:create_event).once.returns(event_hash) }
+            before do
+              DiscourseEvents::Publisher
+                .any_instance
+                .expects(:create_event)
+                .once
+                .returns(event_hash)
+            end
 
             it "creates an event" do
               manager.perform
@@ -143,7 +149,13 @@ describe DiscourseEvents::PublishManager do
       end
 
       context "when publication succeeds" do
-        before { OmniEvent.expects(:update_event).once.returns(updated_event_hash) }
+        before do
+          DiscourseEvents::Publisher
+            .any_instance
+            .expects(:update_event)
+            .once
+            .returns(updated_event_hash)
+        end
 
         it "updates the event" do
           manager.perform
@@ -192,7 +204,13 @@ describe DiscourseEvents::PublishManager do
       end
 
       context "when publication succeeds" do
-        before { OmniEvent.expects(:destroy_event).once.returns(event_hash) }
+        before do
+          DiscourseEvents::Publisher
+            .any_instance
+            .expects(:destroy_event)
+            .once
+            .returns(event_hash)
+        end
 
         it "destroys the event" do
           manager.perform

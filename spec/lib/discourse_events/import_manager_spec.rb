@@ -35,7 +35,7 @@ describe DiscourseEvents::ImportManager do
         uid: raw_data["events"][0]["id"],
       )
     manager = subject.new(source)
-    manager.import(uri: uri)
+    manager.import
     expect(manager.created_event_uids.include?(raw_data["events"][0]["id"])).to eq(false)
   end
 
