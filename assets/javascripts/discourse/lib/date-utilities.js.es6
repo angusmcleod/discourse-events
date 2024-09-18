@@ -371,9 +371,11 @@ function eventLabel(event, args = {}) {
     if (siteSettings.events_deadlines && event.deadline) {
       deadline = true;
       const countdownIconPending =
-        siteSettings.events_deadlines_countdown_icon_pending || "hourglass-half";
+        siteSettings.events_deadlines_countdown_icon_pending ||
+        "hourglass-half";
       const countdownIconpastDue =
-        siteSettings.events_deadlines_countdown_icon_passed_due || "hourglass-end";
+        siteSettings.events_deadlines_countdown_icon_passed_due ||
+        "hourglass-end";
       const countdownIcon = pastDue
         ? countdownIconpastDue
         : countdownIconPending;
