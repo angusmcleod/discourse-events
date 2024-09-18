@@ -40,7 +40,6 @@ export default class EventForm extends Component {
     this.setupProperties();
   }
 
-  @action
   setupProperties() {
     const props = setupEventForm(this.args.event, {
       siteSettings: this.siteSettings,
