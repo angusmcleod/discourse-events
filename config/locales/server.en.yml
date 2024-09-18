@@ -36,9 +36,9 @@ en:
     events_split_series_into_different_topics: "A seperate topic will be created for each event in a series."
     events_allow_moderator_management: "Allow moderators to administer events."
     events_add_default_end_time: "Add a default end time to events."
-    events_support_deadlines: "Offer option to create an event as a deadline, which will display a countdown in both Topic and Topic Lists"
-    events_event_countdown_icon_pending: "Icon for countdown"
-    events_event_countdown_icon_passed_due: "Icon for countdown once passed due"
+    events_deadlines: "Offer option to create an event as a deadline, which will display a countdown in both Topic and Topic Lists"
+    events_deadlines_countdown_icon_pending: "Icon for countdown"
+    events_deadlines_countdown_icon_passed_due: "Icon for countdown once passed due"
 
   rss_description:
     events: "Events"

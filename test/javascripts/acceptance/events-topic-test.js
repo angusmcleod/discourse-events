@@ -70,7 +70,7 @@ acceptance("Events | topic with an event that is a deadline", function (needs) {
   test("shows event", async function (assert) {
     this.siteSettings.events_timezone_include_in_topic_list = true;
     this.siteSettings.events_timezone_display = "event";
-    this.siteSettings.events_support_deadlines = true;
+    this.siteSettings.events_deadlines = true;
     await visit("/t/280");
 
     assert.ok(

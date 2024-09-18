@@ -53,7 +53,7 @@ export default class EventForm extends Component {
     ) {
       this.endEnabled = true;
     }
-    if (this.siteSettings.events_support_deadlines) {
+    if (this.siteSettings.events_deadlines) {
       this.toggleDeadlineEnabled;
     }
   }
@@ -68,7 +68,7 @@ export default class EventForm extends Component {
   }
 
   get showDeadlineToggle() {
-    return this.siteSettings.events_support_deadlines;
+    return this.siteSettings.events_deadlines;
   }
 
   @action

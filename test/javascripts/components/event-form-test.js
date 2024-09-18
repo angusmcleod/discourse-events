@@ -10,7 +10,7 @@ module("Poll | Component | event-form", function (hooks) {
   setupRenderingTest(hooks);
 
   test("open the form without a defined event", async function (assert) {
-    this.siteSettings.events_support_deadlines = true;
+    this.siteSettings.events_deadlines = true;
     this.site.event_timezones = Timezones["event_timezones"];
     this.setProperties({
       event: {
