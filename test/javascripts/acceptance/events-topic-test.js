@@ -6,8 +6,8 @@ import {
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
-import I18n from "discourse-i18n";
 import { cloneJSON } from "discourse-common/lib/object";
+import I18n from "discourse-i18n";
 import { default as Timezones } from "../fixtures/timezone-fixtures";
 
 const setupServer = (needs, attrs = {}) => {
