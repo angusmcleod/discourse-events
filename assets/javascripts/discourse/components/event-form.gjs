@@ -1,5 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
+import { Input } from "@ember/component";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
@@ -162,18 +163,18 @@ export default class EventForm extends Component {
     <div class="event-form">
       <div class="event-controls">
         <div class="control">
-          <input
-            type="checkbox"
-            checked={{this.endEnabled}}
+          <Input
+            @type="checkbox"
+            @checked={{this.endEnabled}}
             {{on "change" this.toggleEndEnabled}}
           />
           <span>{{i18n "add_event.end_enabled"}}</span>
         </div>
 
         <div class="control">
-          <input
-            type="checkbox"
-            checked={{this.allDay}}
+          <Input
+            @type="checkbox"
+            @checked={{this.allDay}}
             {{on "change" this.toggleAllDay}}
           />
           <span>{{i18n "add_event.all_day"}}</span>
@@ -181,10 +182,10 @@ export default class EventForm extends Component {
 
         {{#if this.showDeadlineToggle}}
           <div class="control deadline">
-            <input
-              type="checkbox"
-              checked={{this.deadline}}
-              title={{i18n "add_event.deadline.title"}}
+            <Input
+              @type="checkbox"
+              @checked={{this.deadline}}
+              @title={{i18n "add_event.deadline.title"}}
               {{on "click" this.toggleDeadline}}
             />
             <span title={{i18n "add_event.deadline.title"}}>{{i18n
@@ -287,7 +288,7 @@ export default class EventForm extends Component {
       {{#if this.siteSettings.events_rsvp}}
         <div class="rsvp-controls">
           <div class="control">
-            {{input type="checkbox" checked=this.rsvpEnabled}}
+            <Input @type="checkbox" @checked={{this.rsvpEnabled}} />
             <span>{{i18n "add_event.rsvp_enabled"}}</span>
           </div>
 
@@ -295,7 +296,7 @@ export default class EventForm extends Component {
             <div class="rsvp-container">
               <div class="control">
                 <span>{{i18n "add_event.going_max"}}</span>
-                {{input type="number" value=this.goingMax}}
+                <Input @type="number" @value={{this.goingMax}} />
               </div>
 
               <div class="control full-width">
