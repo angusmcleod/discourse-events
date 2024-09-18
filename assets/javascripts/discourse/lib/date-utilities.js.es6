@@ -370,18 +370,30 @@ function eventLabel(event, args = {}) {
 
     if (siteSettings.events_support_deadlines && event.deadline) {
       deadline = true;
-      const countdownIconPending = siteSettings.events_event_countdown_icon_pending || "hourglass-half";
-      const countdownIconpastDue = siteSettings.events_event_countdown_icon_passed_due || "hourglass-end";
-      const countdownIcon = pastDue ? countdownIconpastDue : countdownIconPending;
+      const countdownIconPending =
+        siteSettings.events_event_countdown_icon_pending || "hourglass-half";
+      const countdownIconpastDue =
+        siteSettings.events_event_countdown_icon_passed_due || "hourglass-end";
+      const countdownIcon = pastDue
+        ? countdownIconpastDue
+        : countdownIconPending;
       const duration = pastDue ? 0 : moment.duration(start - moment());
 
       let d = Math.floor(duration / (1000 * 60 * 60 * 24));
       let h = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       let m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
 
-      const timeLeft =
-        pastDue ? `${I18n.t("event_label.deadline.past_due")}: ${moment(start).locale(I18n.locale).fromNow()}`
-        : `${d} ${I18n.t("event_label.deadline.units.day", { count: d })}, ${h} ${I18n.t("event_label.deadline.units.hour", { count: h})}, ${m} ${I18n.t("event_label.deadline.units.minute", { count: m })}`;
+      const timeLeft = pastDue
+        ? `${I18n.t("event_label.deadline.past_due")}: ${moment(start)
+            .locale(I18n.locale)
+            .fromNow()}`
+        : `${d} ${I18n.t("event_label.deadline.units.day", {
+            count: d,
+          })}, ${h} ${I18n.t("event_label.deadline.units.hour", {
+            count: h,
+          })}, ${m} ${I18n.t("event_label.deadline.units.minute", {
+            count: m,
+          })}`;
 
       label += renderIcon("string", countdownIcon);
       label += `<span class="deadline">${timeLeft}</span>`;
@@ -389,7 +401,9 @@ function eventLabel(event, args = {}) {
   }
 
   if (!args.noContainer) {
-    label = `<span class='event-label${deadline ? " deadline" : ""} ${pastDue ? " past-due" : ""}'>${label}</span>`;
+    label = `<span class='event-label${deadline ? " deadline" : ""} ${
+      pastDue ? " past-due" : ""
+    }'>${label}</span>`;
   }
 
   return label;
