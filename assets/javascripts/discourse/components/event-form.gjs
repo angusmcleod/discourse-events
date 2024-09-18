@@ -185,7 +185,7 @@ export default class EventForm extends Component {
             <Input
               @type="checkbox"
               @checked={{this.deadline}}
-              @title={{i18n "add_event.deadline.title"}}
+              title={{i18n "add_event.deadline.title"}}
               {{on "click" this.toggleDeadline}}
             />
             <span title={{i18n "add_event.deadline.title"}}>{{i18n
