@@ -35,6 +35,8 @@ module DiscourseEvents
           (
             event_params.is_a?(String) ? ::JSON.parse(event_params) : event_params
           ).with_indifferent_access
+        event_start = event["start"] ? event["start"].to_datetime : nil
+        event_end = event["end"] ? event["end"].to_datetime : nil
 
         topic.custom_fields["event_start"] = event_start.to_i if event_start
         topic.custom_fields["event_end"] = event_end.to_i if event_end
