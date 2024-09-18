@@ -1,7 +1,7 @@
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import { on } from "@ember/modifier";
-import { action } from '@ember/object';
+import { action } from "@ember/object";
 import { service } from "@ember/service";
 import { hash } from "rsvp";
 import DateInput from "discourse/components/date-input";
@@ -11,7 +11,12 @@ import concatClass from "discourse/helpers/concat-class";
 import i18n from "discourse-common/helpers/i18n";
 import ComboBox from "select-kit/components/combo-box";
 import EmailGroupUserChooser from "select-kit/components/email-group-user-chooser";
-import { compileEvent, nextInterval, setupEventForm, timezoneLabel } from '../lib/date-utilities';
+import {
+  compileEvent,
+  nextInterval,
+  setupEventForm,
+  timezoneLabel,
+} from "../lib/date-utilities";
 
 export default class EventForm extends Component {
   @service siteSettings;
@@ -48,15 +53,14 @@ export default class EventForm extends Component {
     ) {
       this.endEnabled = true;
     }
-    if (
-      this.siteSettings.events_support_deadlines
-    ) {
+    if (this.siteSettings.events_support_deadlines) {
       this.toggleDeadlineEnabled;
     }
   }
 
   get timezones() {
-    const eventTimezones = this.args.event?.eventTimezones || this.site.event_timezones;
+    const eventTimezones =
+      this.args.event?.eventTimezones || this.site.event_timezones;
     return eventTimezones.map((tz) => ({
       value: tz.value,
       name: timezoneLabel(tz.value, { siteSettings: this.siteSettings }),
@@ -100,9 +104,11 @@ export default class EventForm extends Component {
       }
       if (!this.allDay && !this.endTime) {
         const start = moment(
-          `${moment(this.startDate).format('YYYY-MM-DD')} ${this.startTime.format('HH:mm')}`
+          `${moment(this.startDate).format(
+            "YYYY-MM-DD"
+          )} ${this.startTime.format("HH:mm")}`
         );
-        this.endTime = moment(start).add(1, 'hours');
+        this.endTime = moment(start).add(1, "hours");
       }
     } else {
       this.endDate = undefined;
@@ -118,7 +124,7 @@ export default class EventForm extends Component {
       const start = nextInterval();
       this.startTime = start;
       if (this.endEnabled) {
-        this.endTime = moment(start).add(1, 'hours');
+        this.endTime = moment(start).add(1, "hours");
       }
     }
     this.updateEvent();
@@ -181,7 +187,9 @@ export default class EventForm extends Component {
               title={{i18n "add_event.deadline.title"}}
               {{on "click" this.toggleDeadline}}
             />
-            <span title={{i18n "add_event.deadline.title"}}>{{i18n "add_event.deadline.label"}}</span>
+            <span title={{i18n "add_event.deadline.title"}}>{{i18n
+                "add_event.deadline.label"
+              }}</span>
           </div>
         {{/if}}
 
@@ -235,7 +243,12 @@ export default class EventForm extends Component {
           </div>
         </div>
 
-        <div class={{concatClass "end-card date-time-card" (unless this.endEnabled "disabled")}}>
+        <div
+          class={{concatClass
+            "end-card date-time-card"
+            (unless this.endEnabled "disabled")
+          }}
+        >
           <span class="sub-title">
             {{i18n "add_event.event_end"}}
           </span>
@@ -291,7 +304,9 @@ export default class EventForm extends Component {
                   @value={{this.usersGoing}}
                   @onChange={{action (mut this.usersGoing)}}
                   class="user-selector"
-                  @options={{hash filterPlaceholder="composer.users_placeholder"}}
+                  @options={{hash
+                    filterPlaceholder="composer.users_placeholder"
+                  }}
                 />
               </div>
             </div>
