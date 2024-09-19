@@ -295,6 +295,8 @@ function compileEvent(params) {
     }
   }
 
+  event.deadline = params.deadline || false;
+
   return event;
 }
 
@@ -307,10 +309,12 @@ function eventLabel(event, args = {}) {
   let format = args.list ? listFormat : standardFormat;
 
   let iconClass = "";
+  let deadline = false;
   if (!format) {
     iconClass += "no-date";
   }
   let label = renderIcon("string", icon, { class: iconClass });
+  let pastDue = false;
 
   if (!args.noText) {
     const { start, end, allDay, timezone } = setupEvent(event, args);
@@ -361,10 +365,59 @@ function eventLabel(event, args = {}) {
         }
       }
     }
+
+    pastDue = moment() > start;
+
+    if (siteSettings.events_deadlines && event.deadline) {
+      deadline = true;
+      const countdownIconPending =
+        siteSettings.events_deadlines_countdown_icon_pending ||
+        "hourglass-half";
+      const countdownIconpastDue =
+        siteSettings.events_deadlines_countdown_icon_passed_due ||
+        "hourglass-end";
+      const countdownIcon = pastDue
+        ? countdownIconpastDue
+        : countdownIconPending;
+      const duration = pastDue ? 0 : moment.duration(start - moment());
+
+      let d = Math.floor(duration / (1000 * 60 * 60 * 24));
+      let h = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let m = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+
+      const timeLeft = pastDue
+        ? `${I18n.t("event_label.deadline.past_due")}: ${moment(start)
+            .locale(I18n.locale)
+            .fromNow()}`
+        : `${
+            d > 0
+              ? I18n.t("dates.medium.x_days", {
+                  count: d,
+                })
+              : ""
+          } ${
+            h > 0
+              ? I18n.t("dates.medium.x_hours", {
+                  count: h,
+                })
+              : ""
+          } ${
+            m > 0
+              ? I18n.t("dates.medium.x_minutes", {
+                  count: m,
+                })
+              : ""
+          }`;
+
+      label += renderIcon("string", countdownIcon);
+      label += `<span class="deadline">${timeLeft}</span>`;
+    }
   }
 
   if (!args.noContainer) {
-    label = `<span class='event-label'>${label}</span>`;
+    label = `<span class='event-label${deadline ? " deadline" : ""} ${
+      pastDue ? " past-due" : ""
+    }'>${label}</span>`;
   }
 
   return label;
@@ -374,12 +427,14 @@ function setupEvent(event, args = {}) {
   let start;
   let end;
   let allDay;
+  let deadline;
   let multiDay;
   let timezone;
 
   if (event) {
     start = moment(event["start"]);
     allDay = isAllDay(event);
+    deadline = event["deadline"] || false;
 
     if (event["end"]) {
       end = moment(event["end"]);
@@ -399,7 +454,7 @@ function setupEvent(event, args = {}) {
     }
   }
 
-  return { start, end, allDay, multiDay, timezone };
+  return { start, end, allDay, deadline, multiDay, timezone };
 }
 
 function timezoneLabel(tz, args = {}) {
@@ -429,7 +484,7 @@ function timezoneLabel(tz, args = {}) {
 }
 
 function setupEventForm(event, args = {}) {
-  const { start, end, allDay, timezone } = setupEvent(
+  const { start, end, allDay, deadline, timezone } = setupEvent(
     event,
     Object.assign(args, { useEventTimezone: true })
   );
@@ -473,6 +528,10 @@ function setupEventForm(event, args = {}) {
     if (event.going) {
       props["usersGoing"] = event.going;
     }
+  }
+
+  if (event && event.deadline) {
+    props["deadline"] = deadline;
   }
 
   return props;
