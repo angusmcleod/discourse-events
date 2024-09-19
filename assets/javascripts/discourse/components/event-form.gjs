@@ -137,6 +137,12 @@ export default class EventForm extends Component {
   }
 
   @action
+  updateTimezone(newTimezone) {
+    this.timezone = newTimezone;
+    this.updateEvent();
+  }
+
+  @action
   updateEvent() {
     const event = compileEvent({
       startDate: this.startDate,
@@ -199,7 +205,7 @@ export default class EventForm extends Component {
               @id="add-event-select-timezone"
               @value={{this.timezone}}
               @valueProperty="value"
-              @onChange={{mut this.timezone}}
+              @onChange={{this.updateTimezone}}
               @content={{this.timezones}}
               @options={{hash filterable=true none="add_event.no_timezone"}}
             />
