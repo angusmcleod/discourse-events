@@ -11,7 +11,13 @@ describe DiscourseEvents::DiscourseCalendarSyncer do
   fab!(:category)
   fab!(:user) { Fabricate(:user, admin: true) }
   fab!(:connection) do
-    Fabricate(:discourse_events_connection, source: source, category: category, user: user, client: "discourse_calendar")
+    Fabricate(
+      :discourse_events_connection,
+      source: source,
+      category: category,
+      user: user,
+      client: "discourse_calendar",
+    )
   end
 
   before do
