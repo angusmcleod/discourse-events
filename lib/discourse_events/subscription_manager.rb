@@ -110,7 +110,7 @@ module DiscourseEvents
 
     def supports_feature_value?(feature, value)
       return true unless feature && value
-      features[feature.to_sym][value.to_sym][product]
+      features[feature.to_sym][value.to_sym][product.to_sym]
     end
 
     def subscriptions

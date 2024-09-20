@@ -64,6 +64,7 @@ export default Component.extend({
   attributeBindings: ["source.id:data-source-id"],
   hasFilters: notEmpty("source.filters"),
   modal: service(),
+  subscription: service("events-subscription"),
 
   didReceiveAttrs() {
     this._super();
@@ -121,12 +122,17 @@ export default Component.extend({
     "source.id",
     "loading",
     "source.ready",
-    "source.canImport"
+    "source.canImport",
+    "source.sync_type"
   )
-  importDisabled(sourceChanged, sourceId, loading, ready, canImport) {
-    return (
-      sourceChanged || sourceId === "new" || loading || !ready || !canImport
-    );
+  importDisabled(sourceChanged, sourceId, loading, ready, canImport, syncType) {
+    if (!this.subscription.supportsFeatureValue("source", syncType)) {
+      return true;
+    } else {
+      return (
+        sourceChanged || sourceId === "new" || loading || !ready || !canImport
+      );
+    }
   },
 
   @discourseComputed("source.provider_id")
@@ -163,11 +169,22 @@ export default Component.extend({
     },
 
     saveSource() {
-      const source = JSON.parse(JSON.stringify(this.source));
+      let source = JSON.parse(JSON.stringify(this.source));
 
       if (!source.name) {
         return;
       }
+
+      const supportedOptions = SOURCE_OPTIONS[this.provider.provider_type].map(
+        (o) => o.name
+      );
+
+      source.source_options = Object.keys(source.source_options)
+        .filter((name) => supportedOptions.includes(name))
+        .reduce((obj, key) => {
+          obj[key] = source.source_options[key];
+          return obj;
+        }, {});
 
       this.set("loading", true);
 
