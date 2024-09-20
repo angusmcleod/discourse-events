@@ -223,6 +223,8 @@ en:
           client:
             label: Client
             select: Select...
+            discourse_events: Discourse Events
+            discourse_calendar: Discourse Calendar
           source:
             label: Source
             select: Select...

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.8.7
+# version: 0.8.9
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -25,7 +25,7 @@ gem "time", "0.2.2"
 gem "stringio", "3.1.1"
 gem "omnievent", "0.1.0.pre7", require_name: "omnievent"
 gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
-gem "omnievent-api", "0.1.0.pre3", require_name: "omnievent/api"
+gem "omnievent-api", "0.1.0.pre4", require_name: "omnievent/api"
 gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
 gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
 gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
@@ -47,7 +47,6 @@ register_svg_icon "save"
 register_svg_icon "hourglass-half"
 register_svg_icon "hourglass-end"
 
-require_relative "lib/discourse_events_client_site_setting.rb"
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
 require_relative "lib/discourse_events_timezone_display_site_setting.rb"
 
@@ -62,12 +61,12 @@ after_initialize do
   require_relative "lib/discourse_events/sync_manager.rb"
   require_relative "lib/discourse_events/syncer.rb"
   require_relative "lib/discourse_events/syncer/discourse_events.rb"
-  require_relative "lib/discourse_events/syncer/events.rb"
+  require_relative "lib/discourse_events/syncer/discourse_calendar.rb"
   require_relative "lib/discourse_events/publish_manager.rb"
   require_relative "lib/discourse_events/publisher.rb"
   require_relative "lib/discourse_events/publisher/event_data.rb"
   require_relative "lib/discourse_events/publisher/discourse_events.rb"
-  require_relative "lib/discourse_events/publisher/events.rb"
+  require_relative "lib/discourse_events/publisher/discourse_calendar.rb"
   require_relative "lib/discourse_events/auth/base.rb"
   require_relative "lib/discourse_events/auth/meetup.rb"
   require_relative "lib/discourse_events/auth/outlook.rb"

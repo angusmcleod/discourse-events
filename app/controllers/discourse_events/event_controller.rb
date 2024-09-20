@@ -29,16 +29,21 @@ module DiscourseEvents
         events = Event.where(id: event_ids)
 
         if target === "events_and_topics" || target === "topics_only"
+          event_connections = {}
+
           events
             .includes(:event_connections)
             .each do |event|
               event.event_connections.each do |ec|
                 destroyer = PostDestroyer.new(current_user, ec.topic.first_post)
                 destroyer.destroy
+                event_connections[ec.id] ||= ec
               end
 
               result[:destroyed_topics_event_ids] << event.id
             end
+
+          DiscourseEvents::EventConnection.where(id: event_connections.keys).delete_all
         end
 
         if target === "events_only" || target === "events_and_topics"

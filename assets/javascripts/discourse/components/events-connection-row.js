@@ -31,18 +31,20 @@ export default Component.extend({
     "connection.user.username",
     "connection.category_id",
     "connection.source_id",
+    "connection.client",
     "connection.filters.[]",
     "connection.filters.@each.query_column",
     "connection.filters.@each.query_operator",
     "connection.filters.@each.query_value"
   )
-  connectionChanged(username, categoryId, sourceId, filters) {
+  connectionChanged(username, categoryId, sourceId, client, filters) {
     const cc = this.currentConnection;
     return (
       (!cc.user && username) ||
       (cc.user && cc.user.username !== username) ||
       cc.category_id !== categoryId ||
       cc.source_id !== sourceId ||
+      cc.client !== client ||
       !filtersMatch(filters, cc.filters)
     );
   },
@@ -51,10 +53,13 @@ export default Component.extend({
     "connectionChanged",
     "connection.user.username",
     "connection.category_id",
-    "connection.source_id"
+    "connection.source_id",
+    "connection.client"
   )
-  saveDisabled(connectionChanged, username, categoryId, sourceId) {
-    return !connectionChanged || !username || !categoryId || !sourceId;
+  saveDisabled(connectionChanged, username, categoryId, sourceId, client) {
+    return (
+      !connectionChanged || !username || !categoryId || !sourceId || !client
+    );
   },
 
   @discourseComputed("connectionChanged")
@@ -100,6 +105,7 @@ export default Component.extend({
         id: connection.id,
         category_id: connection.category_id,
         source_id: connection.source_id,
+        client: connection.client,
         user: connection.user,
       };
 

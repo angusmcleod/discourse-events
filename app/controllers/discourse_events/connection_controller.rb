@@ -10,6 +10,7 @@ module DiscourseEvents
       render_json_dump(
         connections: serialize_data(connections, ConnectionSerializer, root: false),
         sources: serialize_data(Source.all, SourceSerializer, root: false),
+        clients: DiscourseEvents::Connection.available_clients,
       )
     end
 
@@ -60,6 +61,7 @@ module DiscourseEvents
             :user_id,
             :category_id,
             :source_id,
+            :client,
             filters: %i[id query_column query_operator query_value],
           )
           .to_h
@@ -68,8 +70,6 @@ module DiscourseEvents
         user = User.find_by(username: params.dig(:connection, :user, :username))
         result[:user_id] = user.id
       end
-
-      result[:client] = SiteSetting.events_event_client
 
       result
     end

@@ -2,7 +2,7 @@
 
 module DiscourseEvents
   class ConnectionSerializer < ApplicationSerializer
-    attributes :id, :user, :category_id, :source_id
+    attributes :id, :user, :category_id, :source_id, :client
 
     has_many :filters, serializer: FilterSerializer, embed: :objects
 

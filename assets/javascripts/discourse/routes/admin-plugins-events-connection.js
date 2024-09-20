@@ -1,5 +1,6 @@
 import { A } from "@ember/array";
 import DiscourseRoute from "discourse/routes/discourse";
+import { contentsMap } from "../lib/events";
 import Connection from "../models/connection";
 import Filter from "../models/filter";
 import Source from "../models/source";
@@ -24,6 +25,10 @@ export default DiscourseRoute.extend({
         })
       ),
       sources: A(model.sources.map((s) => Source.create(s))),
+      clients: contentsMap(
+        model.clients || [],
+        "admin.events.connection.client"
+      ),
     });
   },
 });

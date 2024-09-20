@@ -33,9 +33,11 @@ function sourceRoutes(needs) {
               username: "angus",
             },
             category_id: 2,
+            client: "discourse_events",
             source_id: 1,
           },
         ],
+        clients: ["discourse_events", "discourse_calendar"],
       });
     });
     server.put("/admin/plugins/events/connection/new", () => {
@@ -132,6 +134,10 @@ acceptance("Events | Connection", function (needs) {
     await selectKit(
       "tr[data-connection-id=new] .connection-source"
     ).selectRowByValue(1);
+    await selectKit("tr[data-connection-id=new] .connection-client").expand();
+    await selectKit(
+      "tr[data-connection-id=new] .connection-client"
+    ).selectRowByValue("discourse_events");
 
     assert.strictEqual(
       query("tr[data-connection-id=new] .save-connection").disabled,
