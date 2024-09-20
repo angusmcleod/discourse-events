@@ -7,9 +7,10 @@
 </td>
 
 <td class="provider-type-column">
-  <ComboBox
+  <EventsSubscriptionSelector
     @value={{provider.provider_type}}
-    @content={{providerTypes}}
+    @feature="provider"
+    @i18nKey="provider_type"
     @onChange={{action (mut provider.provider_type)}}
     class="provider-type"
     options={{hash none="admin.events.provider.provider_type.select"}}

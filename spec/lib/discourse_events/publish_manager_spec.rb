@@ -205,11 +205,7 @@ describe DiscourseEvents::PublishManager do
 
       context "when publication succeeds" do
         before do
-          DiscourseEvents::Publisher
-            .any_instance
-            .expects(:destroy_event)
-            .once
-            .returns(event_hash)
+          DiscourseEvents::Publisher.any_instance.expects(:destroy_event).once.returns(event_hash)
         end
 
         it "destroys the event" do

@@ -17,9 +17,10 @@
 </td>
 
 <td>
-  <ComboBox
+  <EventsSubscriptionSelector
     @value={{source.sync_type}}
-    @content={{syncTypes}}
+    @feature="source"
+    @i18nKey="sync_type"
     @onChange={{action (mut source.sync_type)}}
     class="source-sync-type"
     options={{hash none="admin.events.source.sync_type.select"}}

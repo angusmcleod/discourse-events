@@ -3,7 +3,6 @@ import Component from "@ember/component";
 import { notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
-import I18n from "I18n";
 import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
@@ -58,8 +57,6 @@ export const SOURCE_OPTIONS = {
     },
   ],
 };
-
-const SYNC_TYPES = ["import", "import_publish", "publish"];
 
 export default Component.extend({
   tagName: "tr",
@@ -143,16 +140,6 @@ export default Component.extend({
   },
 
   showSourceOptions: notEmpty("sourceOptionFields"),
-
-  @discourseComputed
-  syncTypes() {
-    return SYNC_TYPES.map((syncType) => {
-      return {
-        id: syncType,
-        name: I18n.t(`admin.events.source.sync_type.${syncType}`),
-      };
-    });
-  },
 
   actions: {
     openFilters() {

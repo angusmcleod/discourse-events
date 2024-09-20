@@ -10,7 +10,6 @@ module DiscourseEvents
       render_json_dump(
         connections: serialize_data(connections, ConnectionSerializer, root: false),
         sources: serialize_data(Source.all, SourceSerializer, root: false),
-        clients: DiscourseEvents::Connection.available_clients,
       )
     end
 

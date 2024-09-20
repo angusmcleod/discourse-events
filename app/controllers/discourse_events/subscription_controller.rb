@@ -8,7 +8,8 @@ module DiscourseEvents
 
       render_json_dump(
         subscribed: manager.subscribed?,
-        product: manager.product.to_s
+        product: manager.product.to_s,
+        features: manager.features,
       )
     end
   end

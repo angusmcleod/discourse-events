@@ -6,9 +6,17 @@ import {
   query,
 } from "discourse/tests/helpers/qunit-helpers";
 import selectKit from "discourse/tests/helpers/select-kit-helper";
+import { default as Subscriptions } from "../fixtures/subscription-fixtures";
+import { default as Suppliers } from "../fixtures/supplier-fixtures";
 
 function providerRoutes(needs) {
   needs.pretender((server, helper) => {
+    server.get("/admin/plugins/events/subscription", () => {
+      return helper.response(Subscriptions["business"]);
+    });
+    server.get("/admin/plugins/subscription-client/suppliers", () => {
+      return helper.response(Suppliers["authorized"]);
+    });
     server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
@@ -124,13 +132,13 @@ acceptance("Events | Provider", function (needs) {
     );
 
     await selectKit(".provider-type").expand();
-    await selectKit(".provider-type").selectRowByValue("eventbrite");
+    await selectKit(".provider-type").selectRowByValue("google");
 
     await click(".open-credentials-modal");
 
     assert.ok(
-      exists(".events-provider-credentials-modal input.token"),
-      "it displays the token input"
+      exists(".events-provider-credentials-modal input.client-id"),
+      "it displays the client id input"
     );
     assert.ok(
       exists(

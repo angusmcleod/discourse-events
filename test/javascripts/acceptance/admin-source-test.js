@@ -6,9 +6,17 @@ import {
   query,
 } from "discourse/tests/helpers/qunit-helpers";
 import selectKit from "discourse/tests/helpers/select-kit-helper";
+import { default as Subscriptions } from "../fixtures/subscription-fixtures";
+import { default as Suppliers } from "../fixtures/supplier-fixtures";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
+    server.get("/admin/plugins/events/subscription", () => {
+      return helper.response(Subscriptions["business"]);
+    });
+    server.get("/admin/plugins/subscription-client/suppliers", () => {
+      return helper.response(Suppliers["authorized"]);
+    });
     server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
@@ -18,7 +26,7 @@ function sourceRoutes(needs) {
           {
             id: 1,
             name: "my_provider",
-            provider_type: "eventbrite",
+            provider_type: "google",
             authenticated: true,
           },
         ],
@@ -133,7 +141,7 @@ acceptance("Events | Source", function (needs) {
     await click(".open-source-options-modal");
 
     assert.ok(
-      exists("[name=organization_id]"),
+      exists("[name=calendar_id]"),
       "it displays the appropriate option"
     );
   });

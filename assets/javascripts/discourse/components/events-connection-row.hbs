@@ -9,9 +9,10 @@
 </td>
 
 <td>
-  <ComboBox
+  <EventsSubscriptionSelector
     @value={{connection.client}}
-    @content={{clients}}
+    @feature="connection"
+    @i18nKey="client"
     @onChange={{action (mut connection.client)}}
     class="connection-client"
     options={{hash none="admin.events.connection.client.select"}}

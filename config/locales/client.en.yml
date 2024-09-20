@@ -311,3 +311,11 @@ en:
             community:
               label: Support
               title: There is a Events Community subscription active on this forum.
+          subscribed:
+            label: Subscribed
+            title: You're subscribed and can use these features
+            selector: subscribed
+          not_subscribed:
+            label: Not Subscribed
+            title: Subscribe to use these features
+            selector: not subscribed

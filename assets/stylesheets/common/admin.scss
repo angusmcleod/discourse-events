@@ -394,3 +394,27 @@ $pavilion_primary: #3c1c8c;
     align-items: center;
   }
 }
+
+.events-subscription-selector.select-kit.single-select {
+  .select-kit-header.disabled {
+    background: var(--primary-low);
+  }
+
+  .select-kit-row {
+    .texts {
+      display: flex;
+      align-items: center;
+    }
+    &.disabled {
+      background: var(--primary-low);
+      cursor: unset;
+    }
+  }
+
+  .subscription-label {
+    margin-left: 0.75em;
+    padding-top: 0.25em;
+    color: var(--pavilion-primary);
+    font-size: 0.75em;
+  }
+}

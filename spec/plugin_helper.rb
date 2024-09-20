@@ -2,9 +2,7 @@
 
 require_relative "./support/omnievent.rb"
 
-RSpec.configure do |config|
-  config.include OmniEvent
-end
+RSpec.configure { |config| config.include OmniEvent }
 
 def enable_subscription(type)
   DiscourseEvents::SubscriptionManager.any_instance.stubs(:subscribed?).returns(true)

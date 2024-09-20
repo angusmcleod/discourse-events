@@ -1,19 +1,21 @@
-import { inject as service } from "@ember/service";
-import { action, computed } from "@ember/object";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import DiscourseURL from "discourse/lib/url";
-import DButton from "discourse/components/d-button";
+import { action } from "@ember/object";
+import { inject as service } from "@ember/service";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
+import DButton from "discourse/components/d-button";
+import DiscourseURL from "discourse/lib/url";
 import I18n from "I18n";
 
-export default class WizardSubscriptionBadge extends Component {
-  @service subscription;
+export default class EventsSubscriptionBadge extends Component {
+  @service("events-subscription") subscription;
   @tracked updating = false;
   @tracked updateIcon = "sync";
 
   get i18nKey() {
-    return `admin.events.subscription.type.${this.subscription.product || "none"}`;
+    return `admin.events.subscription.type.${
+      this.subscription.product || "none"
+    }`;
   }
 
   get title() {
