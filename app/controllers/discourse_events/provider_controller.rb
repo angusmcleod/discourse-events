@@ -87,6 +87,17 @@ module DiscourseEvents
           :client_id,
           :client_secret,
         )
+
+      unless subscription.supports_feature_value?(:provider, result[:provider_type])
+        raise Discourse::InvalidParameters,
+              "provider #{result[:provider_type]} not included in subscription"
+      end
+
+      result
+    end
+
+    def subscription
+      @subscription ||= SubscriptionManager.new
     end
   end
 end

@@ -12,7 +12,7 @@ module DiscourseEvents
     end
 
     def ready?
-      publisher.present?
+      publisher.present? && subscription_supports_publication?
     end
 
     def perform
@@ -141,6 +141,15 @@ module DiscourseEvents
       else
         nil
       end
+    end
+
+    def subscription_supports_publication?
+      subscription.supports_feature_value?(:source, :import_publish) ||
+        subscription.supports_feature_value?(:source, :publish)
+    end
+
+    def subscription
+      @subscription ||= SubscriptionManager.new
     end
   end
 end

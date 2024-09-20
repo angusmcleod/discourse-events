@@ -10,7 +10,10 @@ describe DiscourseEvents::ConnectionController do
   end
   fab!(:user) { Fabricate(:user, admin: true) }
 
-  before { sign_in(user) }
+  before do
+    sign_in(user)
+    enable_subscription(:business)
+  end
 
   it "lists connections and sources" do
     get "/admin/plugins/events/connection.json"

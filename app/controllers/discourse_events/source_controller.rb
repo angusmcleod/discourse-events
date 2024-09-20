@@ -96,20 +96,31 @@ module DiscourseEvents
     def source_params
       @source_params ||=
         begin
-          params
-            .require(:source)
-            .permit(
-              :name,
-              :provider_id,
-              :status,
-              :taxonomy,
-              :sync_type,
-              source_options: {
-              },
-              filters: %i[id query_column query_operator query_value],
-            )
-            .to_h
+          result =
+            params
+              .require(:source)
+              .permit(
+                :name,
+                :provider_id,
+                :status,
+                :taxonomy,
+                :sync_type,
+                source_options: {
+                },
+                filters: %i[id query_column query_operator query_value],
+              )
+              .to_h
+
+          unless subscription.supports_feature_value?(:source, result[:sync_type])
+            raise Discourse::InvalidParameters, "sync_type not included in subscription"
+          end
+
+          result
         end
+    end
+
+    def subscription
+      @subscription ||= SubscriptionManager.new
     end
 
     def valid_filters

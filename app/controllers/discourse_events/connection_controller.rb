@@ -70,7 +70,15 @@ module DiscourseEvents
         result[:user_id] = user.id
       end
 
+      unless subscription.supports_feature_value?(:connection, result[:client])
+        raise Discourse::InvalidParameters, "client not included in subscription"
+      end
+
       result
+    end
+
+    def subscription
+      @subscription ||= SubscriptionManager.new
     end
 
     def create_or_update

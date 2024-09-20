@@ -41,6 +41,8 @@ describe DiscourseEvents::PublishManager do
     topic.reload
   end
 
+  before { enable_subscription(:business) }
+
   describe "#create_event" do
     let!(:manager) { DiscourseEvents::PublishManager.new(post, "create") }
 

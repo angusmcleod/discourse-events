@@ -108,6 +108,11 @@ module DiscourseEvents
       subscription.present?
     end
 
+    def supports_feature_value?(feature, value)
+      return true unless feature && value
+      features[feature.to_sym][value.to_sym][product]
+    end
+
     def subscriptions
       @subscriptions ||= ::DiscourseSubscriptionClient.find_subscriptions("discourse-events")
     end
