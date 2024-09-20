@@ -84,3 +84,13 @@ plugins:
   events_add_default_end_time:
     default: false
     client: true
+  events_deadlines:
+    default: false
+    client: true
+  events_deadlines_countdown_icon_pending:
+    default: "hourglass-half"
+    client: true
+  events_deadlines_countdown_icon_passed_due:
+    default: "hourglass-end"
+    client: true
+

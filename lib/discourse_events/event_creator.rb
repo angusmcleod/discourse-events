@@ -41,6 +41,7 @@ module DiscourseEvents
         topic.custom_fields["event_start"] = event_start.to_i if event_start
         topic.custom_fields["event_end"] = event_end.to_i if event_end
         topic.custom_fields["event_all_day"] = event["all_day"] === "true" if event["all_day"]
+        topic.custom_fields["event_deadline"] = event["deadline"] === "true" if event["deadline"]
         topic.custom_fields["event_timezone"] = event["timezone"] if event["timezone"]
         topic.custom_fields["event_rsvp"] = event["rsvp"] if event["rsvp"]
         topic.custom_fields["event_going_max"] = event["going_max"] if event["going_max"]

@@ -25,6 +25,11 @@ module DiscourseEvents
           @tc.record_change("event_all_day", @tc.topic.custom_fields["event_all_day"], all_day)
         @tc.topic.custom_fields["event_all_day"] = all_day if all_day_change
 
+        deadline = !!@event["deadline"]
+        deadline_change =
+          @tc.record_change("event_deadline", @tc.topic.custom_fields["event_deadline"], deadline)
+        @tc.topic.custom_fields["event_deadline"] = deadline if deadline_change
+
         timezone = @event["timezone"]
         timezone_change =
           @tc.record_change("event_timezone", @tc.topic.custom_fields["event_timezone"], timezone)
