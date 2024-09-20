@@ -135,9 +135,9 @@ module DiscourseEvents
 
     def detect_client
       if post.topic.has_event?
-        "events"
-      elsif post.respond_to?(:event) && post.event.present?
         "discourse_events"
+      elsif post.respond_to?(:event) && post.event.present?
+        "discourse_calendar"
       else
         nil
       end

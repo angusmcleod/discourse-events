@@ -65,6 +65,7 @@ describe DiscourseEvents::EventController do
       topic_id = topic.id
       post_id = post.id
       event_id = event.id
+      event_connection_id = event_connection.id
 
       delete "/admin/plugins/events/event.json",
              params: {
@@ -77,6 +78,7 @@ describe DiscourseEvents::EventController do
       expect(response.parsed_body["destroyed_event_ids"].blank?).to be(true)
 
       expect(DiscourseEvents::Event.exists?(event_id)).to eq(true)
+      expect(DiscourseEvents::EventConnection.exists?(event_connection_id)).to eq(false)
       expect(Topic.exists?(topic_id)).to eq(false)
       expect(Post.exists?(post_id)).to eq(false)
     end

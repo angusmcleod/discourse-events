@@ -5,55 +5,45 @@ require "rails_helper"
 describe DiscourseEvents::DiscourseEventsSyncer do
   subject { DiscourseEvents::DiscourseEventsSyncer }
 
-  let(:client) { "discourse_events" }
-
   fab!(:source) { Fabricate(:discourse_events_source) }
   fab!(:event) { Fabricate(:discourse_events_event) }
   fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
   fab!(:category)
-  fab!(:user) { Fabricate(:user, admin: true) }
+  fab!(:user)
   fab!(:connection) do
-    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
+    Fabricate(
+      :discourse_events_connection,
+      source: source,
+      category: category,
+      user: user,
+      client: "discourse_events",
+    )
   end
 
   before do
-    skip("Discourse Events is not installed") unless defined?(DiscoursePostEvent) == "constant"
+    category.custom_fields["events_enabled"] = true
+    category.save_custom_fields(true)
 
-    SiteSetting.calendar_enabled = true
-    SiteSetting.discourse_post_event_enabled = true
-    SiteSetting.events_event_client = "discourse_events"
+    SiteSetting.events_enabled = true
   end
 
   def sync_events(opts = {})
     syncer = subject.new(user, connection)
-    syncer.sync
+    syncer.sync(opts)
 
     event.reload
-    topic = Topic.find(event.event_connections.first.topic_id)
-    post = topic.first_post
-
-    CookedPostProcessor.new(post).post_process
-    post.reload
-
-    post
+    Topic.find(event.event_connections.first.topic_id)
   end
 
   it "creates client event data" do
-    post = sync_events
-    expect(post.topic.id).to eq(event.topics.first.id)
+    topic = sync_events
 
-    events = DiscoursePostEvent::Event.all
-    expect(events.size).to eq(1)
-    expect(events.first.original_starts_at).to be_within(1.second).of(event.start_time)
-    expect(events.first.original_ends_at).to be_within(1.second).of(event.end_time)
-
-    event_dates = DiscoursePostEvent::EventDate.all
-    expect(event_dates.first.starts_at).to be_within(1.second).of(event.start_time)
-    expect(event_dates.first.ends_at).to be_within(1.second).of(event.end_time)
+    expect(topic.custom_fields["event_start"]).to eq(event.start_time.to_i)
+    expect(topic.custom_fields["event_end"]).to eq(event.end_time.to_i)
   end
 
   it "updates client event data" do
-    post = sync_events
+    topic = sync_events
 
     new_name = "New event name"
     new_start_time = event.start_time + 5.days
@@ -65,33 +55,11 @@ describe DiscourseEvents::DiscourseEventsSyncer do
 
     sync_events
 
-    post.topic.reload
-    expect(post.topic.title).to eq(new_name)
-    expect(post.topic.fancy_title).to eq(new_name)
-
-    events = DiscoursePostEvent::Event.all
-    expect(events.size).to eq(1)
-    expect(events.first.original_starts_at).to be_within(1.second).of(new_start_time)
-    expect(events.first.original_ends_at).to be_within(1.second).of(new_end_time)
-
-    event_dates = DiscoursePostEvent::EventDate.all
-    expect(event_dates.first.starts_at).to be_within(1.second).of(new_start_time)
-    expect(event_dates.first.ends_at).to be_within(1.second).of(new_end_time)
-  end
-
-  it "does not add end time if same as start time" do
-    event.start_time = event.end_time
-    event.save!
-
-    post = sync_events
-
-    expect(post.raw.include?("end=")).to eq(false)
-
-    events = DiscoursePostEvent::Event.all
-    expect(events.size).to eq(1)
-    expect(events.first.original_ends_at).to be(nil)
-
-    event_dates = DiscoursePostEvent::EventDate.all
-    expect(event_dates.first.ends_at).to be(nil)
+    topic = Topic.find(topic.id)
+    expect(Topic.all.size).to eq(1)
+    expect(topic.title).to eq(new_name)
+    expect(topic.fancy_title).to eq(new_name)
+    expect(topic.custom_fields["event_start"]).to eq(new_start_time.to_i)
+    expect(topic.custom_fields["event_end"]).to eq(new_end_time.to_i)
   end
 end

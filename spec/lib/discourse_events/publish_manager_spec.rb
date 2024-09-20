@@ -61,7 +61,7 @@ describe DiscourseEvents::PublishManager do
           before { enable_publication }
 
           it "sends create_event to the right publisher" do
-            DiscourseEvents::Publisher::Events
+            DiscourseEvents::Publisher::DiscourseEvents
               .any_instance
               .expects(:create_event)
               .once
@@ -134,7 +134,7 @@ describe DiscourseEvents::PublishManager do
       end
 
       it "sends update_event to the right publisher" do
-        DiscourseEvents::Publisher::Events
+        DiscourseEvents::Publisher::DiscourseEvents
           .any_instance
           .expects(:update_event)
           .once
@@ -183,7 +183,7 @@ describe DiscourseEvents::PublishManager do
       before { create_post_event(event_id: event.id) }
 
       it "sends destroy_event to the right publisher" do
-        DiscourseEvents::Publisher::Events
+        DiscourseEvents::Publisher::DiscourseEvents
           .any_instance
           .expects(:destroy_event)
           .once
