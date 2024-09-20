@@ -9,7 +9,7 @@ export default class EventsCategoryChooser extends CategoryChooser {
     "client"
   )
   get content() {
-    return super(...arguments);
+    return super.content;
   }
 
   categoriesByScope() {

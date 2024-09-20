@@ -25,7 +25,10 @@ export default DiscourseRoute.extend({
         })
       ),
       sources: A(model.sources.map((s) => Source.create(s))),
-      clients: contentsMap(model.clients, "admin.events.connection.client"),
+      clients: contentsMap(
+        model.clients || [],
+        "admin.events.connection.client"
+      ),
     });
   },
 });
