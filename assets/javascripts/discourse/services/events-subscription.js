@@ -29,7 +29,7 @@ export default class EventsSubscriptionService extends Service {
   }
 
   supportsFeatureValue(feature, value) {
-    if (!this.subscribed) {
+    if (!this.subscribed || !value) {
       return false;
     } else {
       return this.features[feature][value][this.product];
