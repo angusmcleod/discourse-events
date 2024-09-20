@@ -11,9 +11,6 @@ plugins:
   events_add_to_calendar:
     client: true
     default: false
-  events_event_client:
-    default: events
-    enum: DiscourseEventsClientSiteSetting
   events_event_label_icon:
     client: true
     default: 'far-calendar'
@@ -87,3 +84,13 @@ plugins:
   events_add_default_end_time:
     default: false
     client: true
+  events_deadlines:
+    default: false
+    client: true
+  events_deadlines_countdown_icon_pending:
+    default: "hourglass-half"
+    client: true
+  events_deadlines_countdown_icon_passed_due:
+    default: "hourglass-end"
+    client: true
+

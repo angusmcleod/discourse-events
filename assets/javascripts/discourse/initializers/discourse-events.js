@@ -29,7 +29,7 @@ export default {
       });
 
       api.modifyClass("model:composer", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @discourseComputed(
           "subtype",
@@ -59,7 +59,7 @@ export default {
       });
 
       api.modifyClass("component:composer-body", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @observes("composer.event")
         resizeWhenEventAdded() {
@@ -89,7 +89,7 @@ export default {
       });
 
       api.modifyClass("model:topic", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @discourseComputed(
           "subtype",
@@ -117,7 +117,7 @@ export default {
 
       // necessary because topic-title plugin outlet only recieves model
       api.modifyClass("controller:topic", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @observes("editingTopic")
         setEditingTopicOnModel() {
@@ -126,7 +126,7 @@ export default {
       });
 
       api.modifyClass("route:discovery.category", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         afterModel(model) {
           if (
@@ -175,7 +175,7 @@ export default {
       });
 
       api.modifyClass("component:topic-list-item", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         setupEventLinkClick() {
           $(".event-link", this.element).on(
@@ -237,7 +237,7 @@ export default {
       });
 
       api.modifyClass("component:edit-category-settings", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @discourseComputed("category")
         availableViews(category) {
@@ -262,7 +262,7 @@ export default {
       });
 
       api.modifyClass("controller:preferences/interface", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @discourseComputed("makeThemeDefault")
         saveAttrNames(makeDefault) {
@@ -295,7 +295,7 @@ export default {
       const user = api.getCurrentUser();
       if (user && user.admin) {
         api.modifyClass("model:site-setting", {
-          pluginId: "events",
+          pluginId: "discourse-events",
 
           @discourseComputed("valid_values")
           allowsNone() {
@@ -309,7 +309,7 @@ export default {
       }
 
       api.modifyClass("controller:topic", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @observes("model.id")
         subscribeDiscourseEvents() {
@@ -346,7 +346,7 @@ export default {
       });
 
       api.modifyClass("controller:composer", {
-        pluginId: "events",
+        pluginId: "discourse-events",
 
         @discourseComputed(
           "model.action",

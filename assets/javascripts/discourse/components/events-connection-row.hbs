@@ -1,9 +1,20 @@
 <td>
-  <UserChooser
-    @value={{connection.user.username}}
-    @onChange={{action "updateUser"}}
-    class="connection-user"
-    @options={{hash maximum=1 excludeCurrentUser=false}}
+  <ComboBox
+    @value={{connection.source_id}}
+    @content={{sources}}
+    @onChange={{action (mut connection.source_id)}}
+    class="connection-source"
+    options={{hash none="admin.events.connection.source.select"}}
+  />
+</td>
+
+<td>
+  <ComboBox
+    @value={{connection.client}}
+    @content={{clients}}
+    @onChange={{action (mut connection.client)}}
+    class="connection-client"
+    options={{hash none="admin.events.connection.client.select"}}
   />
 </td>
 
@@ -11,17 +22,17 @@
   <EventsCategoryChooser
     @value={{connection.category_id}}
     class="connection-category"
+    @client={{connection.client}}
     onChange={{action (mut connection.category_id)}}
   />
 </td>
 
 <td>
-  <ComboBox
-    @value={{connection.source_id}}
-    @content={{sources}}
-    @onChange={{action (mut connection.source_id)}}
-    class="connection-source"
-    options={{hash none="admin.events.connection.source.select"}}
+  <UserChooser
+    @value={{connection.user.username}}
+    @onChange={{action "updateUser"}}
+    class="connection-user"
+    @options={{hash maximum=1 excludeCurrentUser=false}}
   />
 </td>
 

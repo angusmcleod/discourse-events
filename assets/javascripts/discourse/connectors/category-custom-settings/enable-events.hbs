@@ -1,23 +1,13 @@
 <h3>{{i18n "category.events_setting_heading"}}</h3>
 <section class="field">
-  <label>
+  <label class="checkbox-label">
     {{input type="checkbox" checked=category.custom_fields.events_enabled}}
     {{i18n "category.enable_events"}}
   </label>
 </section>
 
-<section class="field min-trust">
-  <label>
-    {{i18n "category.events_min_trust_to_create"}}
-    {{input
-      type="number"
-      value=category.custom_fields.events_min_trust_to_create
-    }}
-  </label>
-</section>
-
 <section class="field">
-  <label>
+  <label class="checkbox-label">
     {{input
       type="checkbox"
       checked=category.custom_fields.events_agenda_enabled
@@ -27,7 +17,7 @@
 </section>
 
 <section class="field">
-  <label>
+  <label class="checkbox-label">
     {{input
       type="checkbox"
       checked=category.custom_fields.events_calendar_enabled
@@ -37,7 +27,7 @@
 </section>
 
 <section class="field">
-  <label>
+  <label class="checkbox-label">
     {{input
       type="checkbox"
       checked=category.custom_fields.events_event_label_no_text
@@ -47,8 +37,16 @@
 </section>
 
 <section class="field">
-  <label>
+  <label class="checkbox-label">
     {{input type="checkbox" checked=category.custom_fields.events_required}}
     {{i18n "category.require_event"}}
   </label>
+</section>
+
+<section class="field min-trust">
+  <label>{{i18n "category.events_min_trust_to_create"}}</label>
+  {{input
+    type="number"
+    value=category.custom_fields.events_min_trust_to_create
+  }}
 </section>

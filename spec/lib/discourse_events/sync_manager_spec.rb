@@ -41,15 +41,15 @@ describe DiscourseEvents::SyncManager do
       SiteSetting.discourse_post_event_enabled = true
     end
 
-    unless DiscourseEvents::DiscourseEventsSyncer.new(user, connection).ready?
-      skip("Discourse Events is not installed")
+    unless DiscourseEvents::DiscourseCalendarSyncer.new(user, connection).ready?
+      skip("Discourse Calendar is not installed")
     end
 
     result = subject.sync_connection(connection.id)
     expect(result).not_to eq(false)
     expect(result[:created_topics].size).to eq(1)
 
-    connection.client = "discourse_events"
+    connection.client = "discourse_calendar"
     connection.save!
 
     result = subject.sync_connection(connection.id)

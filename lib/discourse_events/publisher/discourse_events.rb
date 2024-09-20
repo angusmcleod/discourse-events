@@ -3,19 +3,19 @@
 module DiscourseEvents
   class Publisher::DiscourseEvents < Publisher
     def ready?
-      defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
-        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
+      true
     end
 
     def get_event_data(post)
-      return nil unless post&.event&.starts_at.present?
-      event = post.event
+      return nil unless post.topic.event.present?
+      event = post.topic.event
 
       Publisher::EventData.new(
-        start_time: event.starts_at,
-        end_time: event.ends_at,
-        name: event.name,
-        url: event.url,
+        start_time: event[:start],
+        end_time: event[:end],
+        name: post.topic.title,
+        description: post.topic.excerpt,
+        url: event[:url],
       )
     end
   end

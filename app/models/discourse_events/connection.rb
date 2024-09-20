@@ -4,7 +4,7 @@ module DiscourseEvents
   class Connection < ActiveRecord::Base
     self.table_name = "discourse_events_connections"
 
-    CLIENTS ||= { events: "discourse-events", discourse_events: "discourse-calendar" }
+    CLIENTS ||= { discourse_events: "discourse-events", discourse_calendar: "discourse-calendar" }
 
     def self.client_names
       CLIENTS.keys.map(&:to_s)
