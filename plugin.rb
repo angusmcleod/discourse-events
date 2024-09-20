@@ -21,7 +21,7 @@ gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
 gem "icalendar-recurrence", "1.1.3"
 gem "date", "3.3.4"
-gem "time", "0.2.0"
+gem "time", "0.2.2"
 gem "stringio", "3.1.1"
 gem "omnievent", "0.1.0.pre8", require_name: "omnievent"
 gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
@@ -44,6 +44,8 @@ Discourse.anonymous_filters.push(:calendar)
 register_svg_icon "rss"
 register_svg_icon "fingerprint"
 register_svg_icon "save"
+register_svg_icon "hourglass-half"
+register_svg_icon "hourglass-end"
 
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
 require_relative "lib/discourse_events_timezone_display_site_setting.rb"
@@ -141,6 +143,7 @@ after_initialize do
   register_topic_custom_field_type("event_start", :integer)
   register_topic_custom_field_type("event_end", :integer)
   register_topic_custom_field_type("event_all_day", :boolean)
+  register_topic_custom_field_type("event_deadline", :boolean)
   register_topic_custom_field_type("event_rsvp", :boolean)
   register_topic_custom_field_type("event_going", :json)
   register_topic_custom_field_type("event_going_max", :integer)
@@ -151,6 +154,7 @@ after_initialize do
       event_start
       event_end
       event_all_day
+      event_deadline
       event_timezone
       event_rsvp
       event_going
@@ -181,6 +185,8 @@ after_initialize do
     event[:timezone] = custom_fields["event_timezone"] if custom_fields["event_timezone"].present?
 
     event[:all_day] = custom_fields["event_all_day"] if custom_fields["event_all_day"].present?
+
+    event[:deadline] = custom_fields["event_deadline"] if custom_fields["event_deadline"].present?
 
     event[:version] = custom_fields["event_version"] if custom_fields["event_version"].present?
 
@@ -424,6 +430,7 @@ on(:custom_wizard_ready) do
 
           event_params["event_end"] = event["end"].to_datetime.to_i if event["end"].present?
           event_params["event_all_day"] = event["all_day"] === "true" if event["all_day"].present?
+          event_params["deadline"] = event["deadline"] === "true" if event["deadline"].present?
           event_params["event_timezone"] = event["timezone"] if event["timezone"].present?
           event_params["event_rsvp"] = event["rsvp"] if event["rsvp"].present?
           event_params["event_going_max"] = event["going_max"] if event["going_max"].present?
