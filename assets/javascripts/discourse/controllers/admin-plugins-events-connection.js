@@ -1,5 +1,5 @@
 import Controller from "@ember/controller";
-import { notEmpty } from "@ember/object/computed";
+import { not, notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import I18n from "I18n";
 import Message from "../mixins/message";
@@ -9,6 +9,8 @@ export default Controller.extend(Message, {
   hasConnections: notEmpty("connections"),
   viewName: "connection",
   dialog: service(),
+  subscription: service("events-subscription"),
+  addDisabled: not("subscription.subscribed"),
 
   actions: {
     addConnection() {

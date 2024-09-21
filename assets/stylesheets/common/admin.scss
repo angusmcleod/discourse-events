@@ -393,6 +393,10 @@ $pavilion_primary: #3c1c8c;
     display: flex;
     align-items: center;
   }
+
+  .admin-controls nav:after {
+    background: unset;
+  }
 }
 
 .events-subscription-selector.select-kit.single-select {
@@ -417,4 +421,8 @@ $pavilion_primary: #3c1c8c;
     color: var(--pavilion-primary);
     font-size: 0.75em;
   }
+}
+
+.update-subscription-status {
+  width: 40px;
 }

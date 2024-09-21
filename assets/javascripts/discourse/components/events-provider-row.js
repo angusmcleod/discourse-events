@@ -1,4 +1,5 @@
 import Component from "@ember/component";
+import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Provider from "../models/provider";
@@ -14,6 +15,7 @@ export default Component.extend({
   attributeBindings: ["provider.id:data-provider-id"],
   modal: service(),
   subscription: service("events-subscription"),
+  removeDisabled: not("subscription.subscribed"),
 
   didReceiveAttrs() {
     this._super();

@@ -77,10 +77,6 @@ module DiscourseEvents
       result
     end
 
-    def subscription
-      @subscription ||= SubscriptionManager.new
-    end
-
     def create_or_update
       @errors = []
       opts = connection_params.slice(:user_id, :category_id, :source_id, :client)

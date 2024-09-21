@@ -1,5 +1,5 @@
 import Component from "@ember/component";
-import { notEmpty, readOnly } from "@ember/object/computed";
+import { not, notEmpty, readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Connection from "../models/connection";
@@ -16,6 +16,8 @@ export default Component.extend({
   hasFilters: notEmpty("connection.filters"),
   hasChildCategory: readOnly("connection.category.parent_category_id"),
   modal: service(),
+  subscription: service("events-subscription"),
+  removeDisabled: not("subscription.subscribed"),
 
   didReceiveAttrs() {
     this._super();
@@ -74,9 +76,13 @@ export default Component.extend({
     return syncDisabled ? "sync-connection" : "btn-primary sync-connection";
   },
 
-  @discourseComputed("connectionChanged", "loading")
-  syncDisabled(connectionChanged, loading) {
-    return connectionChanged || loading;
+  @discourseComputed("connectionChanged", "loading", "connection.client")
+  syncDisabled(connectionChanged, loading, connectionClient) {
+    return (
+      connectionChanged ||
+      loading ||
+      !this.subscription.supportsFeatureValue("connection", connectionClient)
+    );
   },
 
   actions: {

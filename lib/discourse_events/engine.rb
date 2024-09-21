@@ -17,4 +17,7 @@ module DiscourseEvents
       Discourse.base_url
     end
   end
+
+  class NotSubscribed < StandardError
+  end
 end

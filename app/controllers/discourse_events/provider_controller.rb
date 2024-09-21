@@ -95,9 +95,5 @@ module DiscourseEvents
 
       result
     end
-
-    def subscription
-      @subscription ||= SubscriptionManager.new
-    end
   end
 end

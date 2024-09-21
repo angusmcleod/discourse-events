@@ -19,11 +19,19 @@ export default class EventsSubscriptionBadge extends Component {
   }
 
   get title() {
-    return `${this.i18nKey}.title`;
+    return I18n.t(`${this.i18nKey}.title`);
   }
 
   get label() {
     return I18n.t(`${this.i18nKey}.label`);
+  }
+
+  get classes() {
+    let classes = "btn-primary events-subscription-badge";
+    if (this.subscription.product) {
+      classes += ` ${this.subscription.product}`;
+    }
+    return classes;
   }
 
   @action
@@ -45,7 +53,7 @@ export default class EventsSubscriptionBadge extends Component {
     <DButton
       @icon={{this.updateIcon}}
       @action={{this.update}}
-      class="btn update"
+      class="btn update-subscription-status"
       @disabled={{this.updating}}
       @title="admin.events.subscription.update.title"
     >
@@ -53,7 +61,7 @@ export default class EventsSubscriptionBadge extends Component {
     </DButton>
     <DButton
       @action={{this.click}}
-      class="events-subscription-badge {{this.subscription.subscriptionType}}"
+      class={{this.classes}}
       @translatedTitle={{this.title}}
       @translatedLabel={{this.label}}
     />

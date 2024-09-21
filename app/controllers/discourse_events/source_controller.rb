@@ -119,10 +119,6 @@ module DiscourseEvents
         end
     end
 
-    def subscription
-      @subscription ||= SubscriptionManager.new
-    end
-
     def valid_filters
       @valid_filters ||=
         begin
