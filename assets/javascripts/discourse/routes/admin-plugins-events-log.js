@@ -20,5 +20,6 @@ export default DiscourseRoute.extend({
       page: model.page,
       logs: A(model.logs.map((p) => Log.create(p))),
     });
+    controller.setMessage("info");
   },
 });

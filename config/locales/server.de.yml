@@ -30,8 +30,6 @@ de:
     events_hamburger_menu_agenda_link: "Im Hamburger Menü Link zur Agenda (alle Kategorien) hinzufügen."
     events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen zu erstellen."
     events_rsvp: "Gästeliste aktivieren"
-    events_update_automatically: "Importiere automatisch alle Quellen und synchronisiere alle Verbindungen."
-    events_update_automatically_period_mins: "Der Zeitraum in Minuten zwischen den automatisch aktualisierten Veranstaltungen. HINWEIS: erfordert einen Neustart."
     events_split_series_into_different_topics: "Für jede Veranstaltung in einer Reihe wird ein eigenes Thema erstellt."
     events_allow_moderator_management: "Erlaube Moderatoren, Veranstaltungen zu verwalten."
     events_add_default_end_time: "Füge eine Standardendzeit für Veranstaltungen hinzu."

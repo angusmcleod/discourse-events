@@ -22,7 +22,7 @@ describe DiscourseEvents::SyncManager do
   end
 
   it "syncs a connection" do
-    subject.sync_connection(connection.id)
+    subject.sync_connection_by_id(connection.id)
 
     topic = Topic.find_by(title: event.name, category_id: category.id)
     expect(topic.id).to eq(event.topics.first.id)
@@ -45,14 +45,14 @@ describe DiscourseEvents::SyncManager do
       skip("Discourse Calendar is not installed")
     end
 
-    result = subject.sync_connection(connection.id)
+    result = subject.sync_connection_by_id(connection.id)
     expect(result).not_to eq(false)
     expect(result[:created_topics].size).to eq(1)
 
     connection.client = "discourse_calendar"
     connection.save!
 
-    result = subject.sync_connection(connection.id)
+    result = subject.sync_connection_by_id(connection.id)
     expect(result).not_to eq(false)
     expect(result[:updated_topics].size).to eq(0)
   end
@@ -83,7 +83,7 @@ describe DiscourseEvents::SyncManager do
       event2.start_time = second_start_time
       event2.save
 
-      result = subject.sync_connection(connection.id)
+      result = subject.sync_connection_by_id(connection.id)
       expect(result).not_to eq(false)
 
       expect(result[:created_topics].size).to eq(2)
@@ -92,7 +92,7 @@ describe DiscourseEvents::SyncManager do
 
       freeze_time(2.days.from_now + 1.hour)
 
-      result = subject.sync_connection(connection.id)
+      result = subject.sync_connection_by_id(connection.id)
       expect(result[:created_topics].size).to eq(0)
       expect(result[:updated_topics].size).to eq(2)
       expect(result[:updated_topics]).to include(event2.reload.topics.first.id)

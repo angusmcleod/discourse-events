@@ -17,6 +17,7 @@
           <th>{{I18n "admin.events.source.name.label"}}</th>
           <th>{{I18n "admin.events.source.provider.label"}}</th>
           <th>{{I18n "admin.events.source.sync_type.label"}}</th>
+          <th>{{I18n "admin.events.source.import_period.label"}}</th>
           <th>{{I18n "admin.events.source.source_options.label"}}</th>
           <th>{{I18n "admin.events.filters.label"}}</th>
           <th class="action-column">{{I18n "admin.events.actions"}}</th>
@@ -26,6 +27,8 @@
         {{#each sources as |source|}}
           <EventsSourceRow
             @source={{source}}
+            @sourceOptions={{sourceOptions}}
+            @importPeriods={{importPeriods}}
             @providers={{providers}}
             @authTypes={{authTypes}}
             @removeSource={{action "removeSource"}}

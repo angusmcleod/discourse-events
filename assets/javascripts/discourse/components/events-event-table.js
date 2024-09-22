@@ -18,11 +18,14 @@ export default Component.extend(LoadMore, {
         return;
       }
 
+      let filter = this.filter;
+      let asc = this.asc;
+      let order = this.order;
       let page = this.page + 1;
       this.set("page", page);
       this.set("loading", true);
 
-      Event.list({ page })
+      Event.list({ page, filter, asc, order })
         .then((result) => {
           if (result.events && result.events.length) {
             this.get("events").pushObjects(Event.eventsArray(result.events));

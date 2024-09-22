@@ -1,13 +1,42 @@
-<EventsHeader @viewName={{viewName}} @message={{message}}>
-  <DButton
-    @action={{action "openDelete"}}
-    @label="admin.events.event.delete.label"
-    @title="admin.events.event.delete.title"
-    @disabled={{deleteDisabled}}
-    class="btn-danger"
-    @icon="trash-alt"
-  />
-</EventsHeader>
+<div class="admin-events-controls">
+  <nav>
+    <ul class="nav nav-pills">
+      <li class="navigation-item topics">
+        <LinkTo
+          @route="adminPlugins.events.event"
+          @query={{hash filter="topics"}}
+          title={{i18n "admin.events.event.topics.title"}}
+          class="navigation-link"
+        >
+          {{i18n "admin.events.event.topics.label"}}
+        </LinkTo>
+      </li>
+      <li class="navigation-item unattached">
+        <LinkTo
+          @route="adminPlugins.events.event"
+          @query={{hash filter="unattached"}}
+          title={{i18n "admin.events.event.unattached.title"}}
+          class="navigation-link"
+        >
+          {{i18n "admin.events.event.unattached.label"}}
+        </LinkTo>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="buttons">
+    <DButton
+      @action={{action "openDelete"}}
+      @label="admin.events.event.delete.label"
+      @title="admin.events.event.delete.title"
+      @disabled={{deleteDisabled}}
+      class="btn-danger"
+      @icon="trash-alt"
+    />
+  </div>
+</div>
+
+<EventsMessage @viewName={{viewName}} @message={{message}} />
 
 <div class="admin-events-container">
   {{#if hasEvents}}
@@ -15,11 +44,12 @@
       @events={{events}}
       @page={{page}}
       @order={{order}}
+      @filter={{filter}}
       @asc={{asc}}
       @modifySelection={{action "modifySelection"}}
       @selectAll={{selectAll}}
     />
   {{else}}
-    <p>{{i18n "admin.events.event.none"}}</p>
+    <p>{{noneLabel}}</p>
   {{/if}}
 </div>

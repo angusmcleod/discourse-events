@@ -39,7 +39,7 @@ module DiscourseEvents
       connections = []
 
       post.topic&.category&.discourse_events_connections&.each do |connection|
-        next unless connection.publish?
+        next unless connection.source.publish?
         connections << connection
       end
       return unless connections.present?

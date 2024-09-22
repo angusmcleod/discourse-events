@@ -40,6 +40,57 @@ function sourceRoutes(needs) {
             },
           },
         ],
+        import_periods: {
+          "5_minutes": 300,
+          "30_minutes": 1800,
+          "1_hour": 3600,
+          "1_day": 86_400,
+          "1_week": 604_800,
+        },
+        source_options: {
+          icalendar: [
+            {
+              name: "uri",
+              type: "text",
+              default: "",
+            },
+          ],
+          eventbrite: [
+            {
+              name: "organization_id",
+              type: "number",
+              default: null,
+            },
+          ],
+          humanitix: [],
+          eventzilla: [],
+          meetup: [
+            {
+              name: "group_urlname",
+              type: "text",
+              default: "",
+            },
+          ],
+          outlook: [
+            {
+              name: "user_id",
+              type: "text",
+              defualt: "",
+            },
+            {
+              name: "calendar_id",
+              type: "text",
+              default: "",
+            },
+          ],
+          google: [
+            {
+              name: "calendar_id",
+              type: "text",
+              default: "",
+            },
+          ],
+        },
       });
     });
     server.put("/admin/plugins/events/source/new", () => {

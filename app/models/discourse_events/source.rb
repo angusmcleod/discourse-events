@@ -32,6 +32,14 @@ module DiscourseEvents
 
     FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
 
+    IMPORT_PERIODS ||= {
+      "5_minutes": 300,
+      "30_minutes": 1800,
+      "1_hour": 3600,
+      "1_day": 86_400,
+      "1_week": 604_800,
+    }.as_json
+
     belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
 
     has_many :event_sources, foreign_key: "source_id", class_name: "DiscourseEvents::EventSource"
@@ -48,7 +56,15 @@ module DiscourseEvents
 
     validates_format_of :name, with: /\A[a-z0-9\_]+\Z/i
     validates :provider, presence: true
+    validates :import_period,
+              inclusion: {
+                in: IMPORT_PERIODS.values,
+                message: "%{value} is not a valid import period",
+              },
+              allow_nil: true
     validate :valid_source_options?
+
+    after_commit :enqueue_import, if: :saved_change_to_import_period?
 
     enum sync_type: { import: 0, import_publish: 1, publish: 2 }
 
@@ -58,6 +74,10 @@ module DiscourseEvents
 
     def import?
       sync_type == "import" || sync_type == "import_publish"
+    end
+
+    def publish?
+      sync_type == "import_publish" || sync_type == "publish"
     end
 
     def source_options_hash
@@ -116,6 +136,20 @@ module DiscourseEvents
             )
           filter ? filter.query_value : nil
         end
+    end
+
+    def after_import
+      connections.each do |connection|
+        DiscourseEvents::SyncManager.sync_connection(connection) if connection.auto_sync
+      end
+      enqueue_import
+    end
+
+    def enqueue_import
+      Jobs.cancel_scheduled_job(:discourse_events_import_source, source_id: self.id)
+      if import_period.present?
+        Jobs.enqueue_in(import_period, :discourse_events_import_source, source_id: self.id)
+      end
     end
 
     private

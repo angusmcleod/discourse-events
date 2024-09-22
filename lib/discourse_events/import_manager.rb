@@ -61,6 +61,8 @@ module DiscourseEvents
             updated_count: updated_event_uids.count,
           )
         logger.send(:info, message)
+
+        source.after_import
       end
     end
 

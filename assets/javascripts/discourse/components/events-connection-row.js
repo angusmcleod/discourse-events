@@ -2,6 +2,7 @@ import Component from "@ember/component";
 import { not, notEmpty, readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
+import I18n from "I18n";
 import Connection from "../models/connection";
 import { filtersMatch } from "../models/filter";
 import EventsFilters from "./modal/events-filters";
@@ -24,28 +25,25 @@ export default Component.extend({
     this.set("currentConnection", JSON.parse(JSON.stringify(this.connection)));
   },
 
-  willDestroyElement() {
-    this._super(...arguments);
-    this.setMessage("info", "info");
-  },
-
   @discourseComputed(
     "connection.user.username",
     "connection.category_id",
     "connection.source_id",
+    "connection.auto_sync",
     "connection.client",
     "connection.filters.[]",
     "connection.filters.@each.query_column",
     "connection.filters.@each.query_operator",
     "connection.filters.@each.query_value"
   )
-  connectionChanged(username, categoryId, sourceId, client, filters) {
+  connectionChanged(username, categoryId, sourceId, autoSync, client, filters) {
     const cc = this.currentConnection;
     return (
       (!cc.user && username) ||
       (cc.user && cc.user.username !== username) ||
       cc.category_id !== categoryId ||
       cc.source_id !== sourceId ||
+      cc.auto_sync !== autoSync ||
       cc.client !== client ||
       !filtersMatch(filters, cc.filters)
     );
@@ -85,6 +83,20 @@ export default Component.extend({
     );
   },
 
+  @discourseComputed
+  syncOptions() {
+    return [
+      {
+        id: true,
+        name: I18n.t("admin.events.connection.sync_type.automatic"),
+      },
+      {
+        id: false,
+        name: I18n.t("admin.events.connection.sync_type.manual"),
+      },
+    ];
+  },
+
   actions: {
     updateUser(usernames) {
       const connection = this.connection;
@@ -111,6 +123,7 @@ export default Component.extend({
         id: connection.id,
         category_id: connection.category_id,
         source_id: connection.source_id,
+        auto_sync: connection.auto_sync,
         client: connection.client,
         user: connection.user,
       };

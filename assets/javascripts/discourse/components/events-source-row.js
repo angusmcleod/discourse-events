@@ -13,51 +13,6 @@ const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 };
 
-export const SOURCE_OPTIONS = {
-  icalendar: [
-    {
-      name: "uri",
-      type: "text",
-      default: "",
-    },
-  ],
-  eventbrite: [
-    {
-      name: "organization_id",
-      type: "number",
-      default: null,
-    },
-  ],
-  humanitix: [],
-  eventzilla: [],
-  meetup: [
-    {
-      name: "group_urlname",
-      type: "text",
-      default: "",
-    },
-  ],
-  outlook: [
-    {
-      name: "user_id",
-      type: "text",
-      defualt: "",
-    },
-    {
-      name: "calendar_id",
-      type: "text",
-      default: "",
-    },
-  ],
-  google: [
-    {
-      name: "calendar_id",
-      type: "text",
-      default: "",
-    },
-  ],
-};
-
 export default Component.extend({
   tagName: "tr",
   classNames: ["events-source-row"],
@@ -81,17 +36,26 @@ export default Component.extend({
     "source.name",
     "source.provider_id",
     "source.sync_type",
+    "source.import_period",
     "source.source_options.@each",
     "source.filters.[]",
     "source.filters.@each.query_column",
     "source.filters.@each.query_operator",
     "source.filters.@each.query_value"
   )
-  sourceChanged(sourceName, providerId, syncType, sourceOptions, filters) {
+  sourceChanged(
+    sourceName,
+    providerId,
+    syncType,
+    importPeriod,
+    sourceOptions,
+    filters
+  ) {
     const cs = this.currentSource;
     return (
       cs.name !== sourceName ||
       cs.provider_id !== providerId ||
+      cs.import_period !== importPeriod ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
       !filtersMatch(filters, cs.filters) ||
       cs.sync_type !== syncType
@@ -136,14 +100,20 @@ export default Component.extend({
     }
   },
 
+  importPeriodDisabled: not("source.canImport"),
+
   @discourseComputed("source.provider_id")
   provider(providerId) {
     return this.providers?.find((p) => p.id === providerId);
   },
 
-  @discourseComputed("provider.provider_type")
-  sourceOptionFields(providerType) {
-    return SOURCE_OPTIONS[providerType];
+  @discourseComputed("sourceOptions", "provider.provider_type")
+  sourceOptionFields(sourceOptions, providerType) {
+    if (sourceOptions) {
+      return sourceOptions[providerType];
+    } else {
+      return [];
+    }
   },
 
   showSourceOptions: notEmpty("sourceOptionFields"),
@@ -176,9 +146,9 @@ export default Component.extend({
         return;
       }
 
-      const supportedOptions = SOURCE_OPTIONS[this.provider.provider_type].map(
-        (o) => o.name
-      );
+      const supportedOptions = this.sourceOptions[
+        this.provider.provider_type
+      ].map((o) => o.name);
 
       source.source_options = Object.keys(source.source_options)
         .filter((name) => supportedOptions.includes(name))

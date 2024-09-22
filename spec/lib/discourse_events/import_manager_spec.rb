@@ -80,4 +80,45 @@ describe DiscourseEvents::ImportManager do
       expect(events.first.event_sources.first.uid).to eq(raw_event_uids.second)
     end
   end
+
+  context "with a source import period" do
+    before do
+      freeze_time
+      source.update(import_period: DiscourseEvents::Source::IMPORT_PERIODS["5_minutes"])
+    end
+
+    it "schedules the next import" do
+      expect_enqueued_with(
+        job: :discourse_events_import_source,
+        args: {
+          source_id: source.id,
+        },
+        at: 5.minutes.from_now,
+      ) { subject.import_source(source.id) }
+    end
+  end
+
+  context "with connections" do
+    let!(:category1) { Fabricate(:category) }
+    let!(:category2) { Fabricate(:category) }
+    let!(:user) { Fabricate(:user) }
+    let!(:connection1) do
+      Fabricate(:discourse_events_connection, source: source, category: category1, user: user)
+    end
+    let!(:connection2) do
+      Fabricate(
+        :discourse_events_connection,
+        source: source,
+        category: category2,
+        user: user,
+        auto_sync: true,
+      )
+    end
+
+    it "syncs auto_sync connections" do
+      DiscourseEvents::SyncManager.expects(:sync_connection).with(connection1).never
+      DiscourseEvents::SyncManager.expects(:sync_connection).with(connection2).once
+      subject.import_source(source.id)
+    end
+  end
 end

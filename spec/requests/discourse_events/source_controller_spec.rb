@@ -122,4 +122,47 @@ describe DiscourseEvents::SourceController do
 
     expect(response.status).to eq(200)
   end
+
+  context "when import period is added" do
+    before { freeze_time }
+
+    it "enqueues a source import" do
+      expect_enqueued_with(
+        job: :discourse_events_import_source,
+        args: {
+          source_id: source.id,
+        },
+        at: 5.minutes.from_now,
+      ) do
+        put "/admin/plugins/events/source/#{source.id}.json",
+            params: {
+              source: {
+                import_period: DiscourseEvents::Source::IMPORT_PERIODS["5_minutes"],
+              },
+            }
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
+  context "when import period is removed" do
+    before do
+      source.import_period = DiscourseEvents::Source::IMPORT_PERIODS["5_minutes"]
+      source.save!
+    end
+
+    it "removes enqueued imports" do
+      Jobs
+        .expects(:cancel_scheduled_job)
+        .with(:discourse_events_import_source, source_id: source.id)
+        .once
+      put "/admin/plugins/events/source/#{source.id}.json",
+          params: {
+            source: {
+              import_period: nil,
+            },
+          }
+      expect(response.status).to eq(200)
+    end
+  end
 end

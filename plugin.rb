@@ -96,7 +96,6 @@ after_initialize do
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
-  require_relative "app/jobs/discourse_events/scheduled/update_events.rb"
   require_relative "app/jobs/discourse_events/regular/import_source.rb"
   require_relative "app/jobs/discourse_events/regular/sync_connection.rb"
   require_relative "app/jobs/discourse_events/regular/refresh_token.rb"

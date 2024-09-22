@@ -9,6 +9,15 @@
 </td>
 
 <td>
+  <ComboBox
+    @value={{connection.auto_sync}}
+    @content={{syncOptions}}
+    @onChange={{action (mut connection.auto_sync)}}
+    class="connection-sync-type"
+  />
+</td>
+
+<td>
   <EventsSubscriptionSelector
     @value={{connection.client}}
     @feature="connection"

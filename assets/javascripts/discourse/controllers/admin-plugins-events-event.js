@@ -3,6 +3,7 @@ import Controller from "@ember/controller";
 import { notEmpty } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
+import I18n from "I18n";
 import ConfirmEventDeletion from "../components/modal/events-confirm-event-deletion";
 import Message from "../mixins/message";
 
@@ -13,7 +14,9 @@ export default Controller.extend(Message, {
   selectAll: false,
   order: null,
   asc: null,
+  filter: "topics",
   viewName: "event",
+  queryParams: ["filter"],
 
   @discourseComputed("selectedEvents.[]", "hasEvents")
   deleteDisabled(selectedEvents, hasEvents) {
@@ -23,6 +26,13 @@ export default Controller.extend(Message, {
   @discourseComputed("hasEvents")
   selectDisabled(hasEvents) {
     return !hasEvents;
+  },
+
+  @discourseComputed("filter")
+  noneLabel(filter) {
+    return I18n.t(
+      `admin.events.event.none.${filter === "topics" ? "topics" : "unattached"}`
+    );
   },
 
   actions: {

@@ -92,6 +92,12 @@ $pavilion_primary: #3c1c8c;
 
   .events-connection-row {
     .select-kit {
+      width: 150px;
+    }
+    .select-kit.connection-client {
+      width: 180px;
+    }
+    .select-kit.connection-sync-type {
       width: 180px;
     }
 
@@ -129,11 +135,12 @@ $pavilion_primary: #3c1c8c;
 
   .events-source-row {
     input.source-name,
-    .source-provider {
-      width: 200px;
-    }
+    .source-provider,
     .source-sync-type {
-      width: 180px;
+      width: 150px;
+    }
+    .source-import-period {
+      width: 125px;
     }
   }
 

@@ -11,5 +11,6 @@ export default DiscourseRoute.extend({
     controller.setProperties({
       providers: A(model.providers.map((p) => Provider.create(p))),
     });
+    controller.setMessage("info");
   },
 });

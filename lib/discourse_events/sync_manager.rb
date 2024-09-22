@@ -48,8 +48,14 @@ module DiscourseEvents
       result
     end
 
-    def self.sync_connection(connection_id)
+    def self.sync_connection_by_id(connection_id)
       connection = Connection.find_by(id: connection_id)
+      return if connection.blank?
+
+      sync_connection(connection)
+    end
+
+    def self.sync_connection(connection)
       return if connection.blank?
 
       syncer = self.new(connection.user, connection.client)

@@ -61,6 +61,7 @@ module DiscourseEvents
             :category_id,
             :source_id,
             :client,
+            :auto_sync,
             filters: %i[id query_column query_operator query_value],
           )
           .to_h
@@ -79,7 +80,7 @@ module DiscourseEvents
 
     def create_or_update
       @errors = []
-      opts = connection_params.slice(:user_id, :category_id, :source_id, :client)
+      opts = connection_params.slice(:user_id, :category_id, :source_id, :client, :auto_sync)
 
       ActiveRecord::Base.transaction do
         if action_name === "create"

@@ -25,5 +25,6 @@ export default DiscourseRoute.extend({
       ),
       sources: A(model.sources.map((s) => Source.create(s))),
     });
+    controller.setMessage("info");
   },
 });

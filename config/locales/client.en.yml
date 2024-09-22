@@ -139,9 +139,15 @@ en:
             label: Sync Type
             title: The type of sync with the source.
             import: Import
-            import_publish: Import and Publish
+            import_publish: Import Publish
             publish: Publish
-          date_range: Date Range
+          import_period:
+            label: Import Schedule
+            5_minutes: 5 Minutes
+            30_minutes: 30 Minutes
+            1_hour: Every Hour
+            1_day: Every Day
+            1_week: Every Week
           import:
             label: Import
             title: Import Source
@@ -231,6 +237,10 @@ en:
           sync:
             label: Sync
             title: Sync Connection
+          sync_type:
+            label: Sync Type
+            automatic: Automatic
+            manual: Manual
         filters:
           title: Filters
           label: Filters
@@ -258,7 +268,15 @@ en:
           name: Name
           source: Source
           topics: Topics
-          none: No events.
+          none:
+            topics: No events with topics.
+            unattached: No events without topics.
+          topics:
+            label: Topics
+            title: Events with topics.
+          unattached:
+            label: Unattached
+            title: Events without topics.
           delete:
             title: Delete Events and Topics
             label: Delete
@@ -286,7 +304,10 @@ en:
             import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Import failed to start."
           event:
-            info: "The events you've imported"
+            topics:
+              info: "Events with topics"
+            unattached:
+              info: "Events without topics"
           provider:
             info: "Providers are the services providing your events"
           log:

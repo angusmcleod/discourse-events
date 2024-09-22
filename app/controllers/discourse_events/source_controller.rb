@@ -5,9 +5,24 @@ module DiscourseEvents
     include DiscourseEvents::Filters
 
     def index
+      source_options =
+        DiscourseEvents::Source::SOURCE_OPTIONS.each_with_object({}) do |(provider, attrs), result|
+          result[provider] = []
+          attrs.each do |attr, val|
+            number = val == /\d/
+            result[provider] << {
+              name: attr,
+              type: number ? "number" : "text",
+              default: number ? nil : "",
+            }
+          end
+        end
+
       render_json_dump(
         sources: serialize_data(Source.all, SourceSerializer, root: false),
         providers: serialize_data(Provider.all, ProviderSerializer, root: false),
+        source_options: source_options,
+        import_periods: DiscourseEvents::Source::IMPORT_PERIODS,
       )
     end
 
@@ -24,6 +39,7 @@ module DiscourseEvents
               :taxonomy,
               :source_options,
               :sync_type,
+              :import_period,
             ),
           )
 
@@ -56,6 +72,7 @@ module DiscourseEvents
               :taxonomy,
               :source_options,
               :sync_type,
+              :import_period,
             ),
           )
 
@@ -105,6 +122,7 @@ module DiscourseEvents
                 :status,
                 :taxonomy,
                 :sync_type,
+                :import_period,
                 source_options: {
                 },
                 filters: %i[id query_column query_operator query_value],
@@ -114,6 +132,8 @@ module DiscourseEvents
           unless subscription.supports_feature_value?(:source, result[:sync_type])
             raise Discourse::InvalidParameters, "sync_type not included in subscription"
           end
+
+          result[:import_period] = result[:import_period].to_i if result[:import_period].present?
 
           result
         end

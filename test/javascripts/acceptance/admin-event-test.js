@@ -68,12 +68,6 @@ acceptance("Events | Event", function (needs) {
     assert.ok(exists(".events.event"), "it shows the event route");
 
     assert.equal(
-      query(".admin-events-controls h2").innerText.trim(),
-      "Events",
-      "title displayed"
-    );
-
-    assert.equal(
       query(".events-event-row .name").innerText.trim(),
       "La Traviata",
       "Name displayed"

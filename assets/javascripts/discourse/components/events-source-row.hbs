@@ -27,6 +27,16 @@
   />
 </td>
 
+<td>
+  <ComboBox
+    @value={{source.import_period}}
+    @content={{importPeriods}}
+    @onChange={{action (mut source.import_period)}}
+    @disabled={{importPeriodDisabled}}
+    class="source-import-period"
+  />
+</td>
+
 <td class="source-options">
   {{#if showSourceOptions}}
     <DButton

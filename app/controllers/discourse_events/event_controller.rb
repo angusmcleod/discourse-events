@@ -7,15 +7,19 @@ module DiscourseEvents
     def index
       page = params[:page].to_i
       order = params[:order] || "start_time"
+      filter = params[:filter]
       direction = ActiveRecord::Type::Boolean.new.cast(params[:asc]) ? "ASC" : "DESC"
       offset = page * PAGE_LIMIT
 
-      events =
-        Event
-          .includes(:sources, event_connections: [:topic])
-          .order("#{order} #{direction}")
-          .offset(offset)
-          .limit(PAGE_LIMIT)
+      events = Event.includes(:sources, event_connections: [:topic]).references(:event_connections)
+
+      if filter == "topics"
+        events = events.where("discourse_events_event_connections.topic_id IS NOT NULL")
+      elsif filter == "unattached"
+        events = events.where("discourse_events_event_connections.topic_id IS NULL")
+      end
+
+      events = events.order("#{order} #{direction}").offset(offset).limit(PAGE_LIMIT)
 
       render_json_dump(page: page, events: serialize_data(events, EventSerializer, root: false))
     end
