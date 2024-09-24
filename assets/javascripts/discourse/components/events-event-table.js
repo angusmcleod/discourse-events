@@ -18,16 +18,26 @@ export default Component.extend(LoadMore, {
         return;
       }
 
-      let filter = this.filter;
-      let asc = this.asc;
-      let order = this.order;
-      let page = this.page + 1;
-      this.set("page", page);
+      const page = this.page + 1;
+      let params = {
+        page,
+      };
+      if (this.filter) {
+        params.filter = this.filter;
+      }
+      if (this.asc) {
+        params.asc = this.asc;
+      }
+      if (this.order) {
+        params.order = this.order;
+      }
+
       this.set("loading", true);
 
-      Event.list({ page, filter, asc, order })
+      Event.list(params)
         .then((result) => {
           if (result.events && result.events.length) {
+            this.set("page", page);
             this.get("events").pushObjects(Event.eventsArray(result.events));
           } else {
             this.set("loadingComplete", true);

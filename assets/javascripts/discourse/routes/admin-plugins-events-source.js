@@ -36,7 +36,7 @@ export default DiscourseRoute.extend({
       ),
       providers: A(model.providers.map((p) => Provider.create(p))),
       importPeriods,
-      sourceOptions: model.source_options,
+      sourceOptionFields: model.source_options,
     });
     controller.setMessage("info");
   },

@@ -1,13 +1,12 @@
 import { A } from "@ember/array";
 import Component from "@ember/component";
-import { not, notEmpty, empty } from "@ember/object/computed";
+import { empty, not, notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
 import EventsFilters from "./modal/events-filters";
-import EventsSourceOptions from "./modal/events-source-options";
 
 const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
@@ -107,16 +106,30 @@ export default Component.extend({
     return this.providers?.find((p) => p.id === providerId);
   },
 
-  @discourseComputed("sourceOptions", "provider.provider_type")
-  sourceOptionFields(sourceOptions, providerType) {
-    if (sourceOptions) {
-      return sourceOptions[providerType];
+  @discourseComputed("sourceOptionFields", "provider.provider_type")
+  providerSourceOptionFields(sourceOptionFields, providerType) {
+    if (sourceOptionFields) {
+      return sourceOptionFields[providerType];
     } else {
       return [];
     }
   },
 
   sourceOptionsDisabled: empty("sourceOptionFields"),
+
+  @discourseComputed(
+    "source.source_options.@each",
+    "providerSourceOptionFields.@each"
+  )
+  sourceOptions(source_options) {
+    return this.providerSourceOptionFields.map((opt) => {
+      return {
+        name: opt.name,
+        value: source_options[opt.name],
+        type: opt.type,
+      };
+    });
+  },
 
   actions: {
     openFilters() {
@@ -125,14 +138,8 @@ export default Component.extend({
       });
     },
 
-    openSourceOptions() {
-      this.modal.show(EventsSourceOptions, {
-        model: {
-          source: this.get("source"),
-          sourceOptionFields: this.get("sourceOptionFields"),
-          providerType: this.get("provider.provider_type"),
-        },
-      });
+    updateSourceOptions(name, event) {
+      this.source.source_options.set(name, event.target.value);
     },
 
     updateProvider(provider_id) {
@@ -146,7 +153,7 @@ export default Component.extend({
         return;
       }
 
-      const supportedOptions = this.sourceOptions[
+      const supportedOptions = this.sourceOptionFields[
         this.provider.provider_type
       ].map((o) => o.name);
 

@@ -125,27 +125,19 @@ en:
             label: Save
             title: Save Source
           source_options:
-            label: Provider Options
-            button:
-              label: Set Provider Options
-              title: Set source provider options.
-            none: No options
             uri: URI
             organization_id: Organization ID
             group_urlname: Group Urlname
             user_id: User ID
             calendar_id: Calendar ID
-            done:
-              label: Set Options
-              title: Set source options.
           sync_type:
-            label: Import Type
+            label: Type
             title: The way events are imported and published.
             import: Import only
             import_publish: Import and Publish
             publish: Publish only
           import_period:
-            label: Import Schedule
+            label: Schedule
             5_minutes: 5 Minutes
             30_minutes: 30 Minutes
             1_hour: Every Hour
@@ -154,11 +146,6 @@ en:
           import:
             label: Import
             title: Import Source
-          filters:
-            label: Provider Filters
-            button:
-              label: Set Provider Filters
-              title: Set source provider filters
         provider:
           title: Providers
           label: Provider
@@ -167,7 +154,6 @@ en:
             label: Add
             title: Add Provider
           status:
-            label: Status
             ready:
               label: Ready
               title: Provider is ready.
@@ -200,17 +186,11 @@ en:
           authentication:
             label: Authentication
           credentials:
-            label: Credentials
-            none: No Credentials
-            update: Set Credentials
             username: Username
             password: Password
             token: Token
             client_id: Client ID
             client_secret: Client Secret
-            done:
-              label: Set Credentials
-              title: Close
           save:
             label: Save
             title: Save Provider
@@ -223,6 +203,7 @@ en:
             title: Authenticate Provider
         connection:
           title: Connections
+          label: Connection
           none: No connections.
           add:
             label: Add
@@ -253,24 +234,20 @@ en:
             label: Sync
             title: Sync Connection
           sync_type:
-            label: Sync Type
+            label: Sync
             automatic: Automatic
             manual: Manual
-          filters:
-            label: Source Filters
-            button:
-              label: Set Source Filters
-              title: Set connection source filters
         filters:
           label: Filters
-          button:
+          set: 
             label: Set Filters
+            title: Set filters.
           add:
             label: Add
-            title: Add a filter
+            title: Add a filter.
           done:
             label: Done
-            title: Close filters
+            title: Finished setting filters.
         filter:
           query_column:
             label: Attribute

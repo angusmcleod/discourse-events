@@ -40,11 +40,11 @@
     @onChange={{action (mut connection.auto_sync)}}
     class="connection-sync-type"
   />
-  <label>{{i18n "admin.events.connection.filters.label"}}</label>
+  <label>{{i18n "admin.events.filters.label"}}</label>
   <DButton
     @icon="filter"
-    @label="admin.events.connection.filters.button.label"
-    @title="admin.events.connection.filters.button.title"
+    @label="admin.events.filters.set.label"
+    @title="admin.events.filters.set.title"
     @action={{action "openFilters"}}
     class="show-filters"
   />

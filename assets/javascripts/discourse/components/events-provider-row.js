@@ -3,7 +3,6 @@ import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Provider from "../models/provider";
-import EventsProviderCredentials from "./modal/events-provider-credentials";
 
 export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
 export const NO_AUTH_TYPES = ["icalendar"];
@@ -80,17 +79,29 @@ export default Component.extend({
   },
 
   @discourseComputed("provider.provider_type")
-  noCredentials(providerType) {
-    return !providerType || NO_AUTH_TYPES.includes(providerType);
+  hasCredentials(providerType) {
+    return providerType && !NO_AUTH_TYPES.includes(providerType);
+  },
+
+  @discourseComputed(
+    "hasCredentials",
+    "provider.stored",
+    "provider.authenticated"
+  )
+  providerStatus(hasCredentials, providerStored, providerAuthenticated) {
+    if (hasCredentials) {
+      return providerAuthenticated ? "authenticated" : "not_authenticated";
+    } else {
+      return providerStored ? "ready" : "not_ready";
+    }
+  },
+
+  @discourseComputed("providerStatus")
+  showProviderStatus(providerStatus) {
+    return providerStatus && providerStatus !== "not_authenticated";
   },
 
   actions: {
-    openCredentials() {
-      this.modal.show(EventsProviderCredentials, {
-        model: this.get("provider"),
-      });
-    },
-
     saveProvider() {
       const provider = JSON.parse(JSON.stringify(this.provider));
 

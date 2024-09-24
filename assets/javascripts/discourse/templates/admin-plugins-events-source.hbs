@@ -15,7 +15,7 @@
       <thead>
         <tr>
           <th>{{I18n "admin.events.source.label"}}</th>
-          <th>{{I18n "admin.events.source.provider.label"}}</th>
+          <th>{{I18n "admin.events.provider.label"}}</th>
           <th class="action-column">{{I18n "admin.events.actions"}}</th>
         </tr>
       </thead>
@@ -23,7 +23,7 @@
         {{#each sources as |source|}}
           <EventsSourceRow
             @source={{source}}
-            @sourceOptions={{sourceOptions}}
+            @sourceOptionFields={{sourceOptionFields}}
             @importPeriods={{importPeriods}}
             @providers={{providers}}
             @authTypes={{authTypes}}

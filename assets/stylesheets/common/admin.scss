@@ -89,8 +89,7 @@ $pavilion_primary: #3c1c8c;
   .events-source-row,
   .events-provider-row {
     .select-kit,
-    input,
-    .events-provider-status {
+    input {
       max-width: 350px;
       width: 350px;
     }
@@ -132,6 +131,8 @@ $pavilion_primary: #3c1c8c;
   }
 
   tr {
+    vertical-align: top;
+
     .select-event {
       text-align: right;
 
@@ -300,7 +301,7 @@ $pavilion_primary: #3c1c8c;
   }
 }
 
-.events-provider-credentials-modal {
+.events-provider-credentials {
   input {
     width: 100%;
     margin-bottom: 0;
@@ -318,9 +319,13 @@ $pavilion_primary: #3c1c8c;
 }
 
 .events-provider-status {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25em;
+  padding: 0.5em 0.65em;
+  background-color: var(--primary-low);
+  border-radius: var(--d-button-border-radius);
 }
 
 .admin-plugins.events {

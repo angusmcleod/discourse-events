@@ -33,20 +33,24 @@
     class="source-provider"
     options={{hash none="admin.events.source.provider.select"}}
   />
-  <label>{{i18n "admin.events.source.source_options.label"}}</label>
-  <DButton
-    @action={{action "openSourceOptions"}}
-    @label="admin.events.source.source_options.button.label"
-    @title="admin.events.source.source_options.button.title"
-    @icon="cog"
-    @disabled={{sourceOptionsDisabled}}
-    class="open-source-options-modal"
-  />
-  <label>{{i18n "admin.events.source.filters.label"}}</label>
+  {{#each this.sourceOptions as |option|}}
+    <label>{{i18n
+        (concat "admin.events.source.source_options." option.name)
+      }}</label>
+    <Input
+      class="source-option"
+      @type={{option.type}}
+      name={{option.name}}
+      @value={{option.value}}
+      placeholder={{option.name}}
+      {{on "change" (action "updateSourceOptions" option.name)}}
+    />
+  {{/each}}
+  <label>{{i18n "admin.events.filters.label"}}</label>
   <DButton
     @icon="filter"
-    @label="admin.events.source.filters.button.label"
-    @title="admin.events.source.filters.button.title"
+    @label="admin.events.filters.set.label"
+    @title="admin.events.filters.set.title"
     @action={{action "openFilters"}}
     class="show-filters"
   />
