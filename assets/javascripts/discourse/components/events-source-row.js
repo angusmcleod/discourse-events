@@ -1,6 +1,6 @@
 import { A } from "@ember/array";
 import Component from "@ember/component";
-import { not, notEmpty } from "@ember/object/computed";
+import { not, notEmpty, empty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Filter, { filtersMatch } from "../models/filter";
@@ -116,7 +116,7 @@ export default Component.extend({
     }
   },
 
-  showSourceOptions: notEmpty("sourceOptionFields"),
+  sourceOptionsDisabled: empty("sourceOptionFields"),
 
   actions: {
     openFilters() {

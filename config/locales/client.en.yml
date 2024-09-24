@@ -107,6 +107,7 @@ en:
         source:
           title: Sources
           none: No sources.
+          label: Source
           add:
             label: Add
             title: Add Source
