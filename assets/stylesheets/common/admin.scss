@@ -78,101 +78,35 @@ $pavilion_primary: #3c1c8c;
 
   .action-column {
     display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding-left: 0;
-
-    .inline-spinner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 35px;
-    }
+    flex-direction: column;
+    max-width: 150px;
+    box-sizing: border-box;
+    margin-left: auto;
+    text-align: center;
   }
 
-  .events-connection-row {
-    .select-kit {
-      width: 150px;
-    }
-    .select-kit.connection-client {
-      width: 180px;
-    }
-    .select-kit.connection-sync-type {
-      width: 180px;
-    }
-
-    .select-kit.user-chooser {
-      width: 140px;
+  .events-connection-row,
+  .events-source-row,
+  .events-provider-row {
+    .select-kit,
+    input,
+    .events-provider-status {
+      max-width: 350px;
+      width: 350px;
     }
 
-    .select-kit.category-chooser {
-      height: 36px;
+    label {
+      font-weight: 400;
     }
 
-    &.has-child-category {
-      .category-chooser {
-        .select-kit-selected-name {
-          .name {
-            display: flex;
-            align-items: center;
-
-            > span:first-of-type {
-              margin: 0;
-
-              .badge-category-bg {
-                margin: 1px 0 0 0;
-              }
-
-              .badge-category {
-                display: none;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .events-source-row {
-    input.source-name,
-    .source-provider,
-    .source-sync-type {
-      width: 150px;
-    }
-    .source-import-period {
-      width: 125px;
+    details,
+    button,
+    input {
+      margin-bottom: 1em;
     }
   }
 
   .events-provider-row {
-    .name-column {
-      max-width: 180px;
-      min-width: 180px;
-
-      input {
-        width: 100%;
-      }
-    }
-
-    .url-column {
-      input {
-        width: 100%;
-      }
-    }
-
-    .provider-type-column {
-      max-width: 200px;
-      box-sizing: border-box;
-
-      .provider-type {
-        width: 210px;
-      }
-    }
-
-    .status-column {
-      min-width: 170px;
-    }
-
     .status {
       padding: 0.4rem;
       border-radius: 50%;
@@ -387,12 +321,6 @@ $pavilion_primary: #3c1c8c;
   display: flex;
   align-items: center;
   gap: 0.25em;
-}
-
-.events-source-options-modal {
-  input.source-option {
-    width: 100%;
-  }
 }
 
 .admin-plugins.events {

@@ -14,7 +14,7 @@ export default Controller.extend(Message, {
   selectAll: false,
   order: null,
   asc: null,
-  filter: "topics",
+  filter: "connected",
   viewName: "event",
   queryParams: ["filter"],
 
@@ -31,7 +31,9 @@ export default Controller.extend(Message, {
   @discourseComputed("filter")
   noneLabel(filter) {
     return I18n.t(
-      `admin.events.event.none.${filter === "topics" ? "topics" : "unattached"}`
+      `admin.events.event.none.${
+        filter === "connected" ? "connected" : "unconnected"
+      }`
     );
   },
 

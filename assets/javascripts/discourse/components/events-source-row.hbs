@@ -1,22 +1,11 @@
 <td>
+  <label>{{i18n "admin.events.source.name.label"}}</label>
   <Input
     @value={{source.name}}
     placeholder={{i18n "admin.events.source.name.placeholder"}}
     class="small source-name"
   />
-</td>
-
-<td>
-  <ComboBox
-    @value={{source.provider_id}}
-    @content={{providers}}
-    @onChange={{action "updateProvider"}}
-    class="source-provider"
-    options={{hash none="admin.events.source.provider.select"}}
-  />
-</td>
-
-<td>
+  <label>{{i18n "admin.events.source.sync_type.label"}}</label>
   <EventsSubscriptionSelector
     @value={{source.sync_type}}
     @feature="source"
@@ -25,9 +14,7 @@
     class="source-sync-type"
     options={{hash none="admin.events.source.sync_type.select"}}
   />
-</td>
-
-<td>
+  <label>{{i18n "admin.events.source.import_period.label"}}</label>
   <ComboBox
     @value={{source.import_period}}
     @content={{importPeriods}}
@@ -37,25 +24,32 @@
   />
 </td>
 
-<td class="source-options">
+<td>
+  <label>{{i18n "admin.events.source.provider.label"}}</label>
+  <ComboBox
+    @value={{source.provider_id}}
+    @content={{providers}}
+    @onChange={{action "updateProvider"}}
+    class="source-provider"
+    options={{hash none="admin.events.source.provider.select"}}
+  />
+  <label>{{i18n "admin.events.source.source_options.label"}}</label>
   {{#if showSourceOptions}}
     <DButton
       @action={{action "openSourceOptions"}}
-      @label="admin.events.source.source_options.label"
-      @title="admin.events.source.source_options.title"
+      @label="admin.events.source.source_options.button.label"
+      @title="admin.events.source.source_options.button.title"
       @icon="cog"
       class="open-source-options-modal"
     />
   {{else}}
     {{i18n "admin.events.source.source_options.none"}}
   {{/if}}
-</td>
-
-<td>
+  <label>{{i18n "admin.events.source.filters.label"}}</label>
   <DButton
     @icon="filter"
-    @label="admin.events.filters.label"
-    @title="admin.events.filters.title"
+    @label="admin.events.source.filters.button.label"
+    @title="admin.events.source.filters.button.title"
     @action={{action "openFilters"}}
     class="show-filters"
   />
@@ -68,6 +62,7 @@
     @icon="save"
     @class={{this.saveClass}}
     @title="admin.events.source.save.title"
+    @label="admin.events.source.save.label"
     @disabled={{this.saveDisabled}}
   />
   <DButton
@@ -76,12 +71,14 @@
     @disabled={{removeDisabled}}
     @icon="trash-alt"
     @title="admin.events.source.remove.title"
+    @label="admin.events.source.remove.label"
     class="remove-source btn-danger"
   />
   <DButton
     @action={{action "importSource"}}
     @icon="download"
     @title="admin.events.source.import.title"
+    @label="admin.events.source.import.label"
     class={{importClass}}
     @disabled={{importDisabled}}
   />

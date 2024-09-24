@@ -124,8 +124,10 @@ en:
             label: Save
             title: Save Source
           source_options:
-            label: Options
-            title: Set source options.
+            label: Provider Options
+            button:
+              label: Set Provider Options
+              title: Set source provider options.
             none: No options
             uri: URI
             organization_id: Organization ID
@@ -136,11 +138,11 @@ en:
               label: Set Options
               title: Set source options.
           sync_type:
-            label: Sync Type
-            title: The type of sync with the source.
-            import: Import
-            import_publish: Import Publish
-            publish: Publish
+            label: Import Type
+            title: The way events are imported and published.
+            import: Import only
+            import_publish: Import and Publish
+            publish: Publish only
           import_period:
             label: Import Schedule
             5_minutes: 5 Minutes
@@ -151,8 +153,14 @@ en:
           import:
             label: Import
             title: Import Source
+          filters:
+            label: Provider Filters
+            button:
+              label: Set Provider Filters
+              title: Set source provider filters
         provider:
           title: Providers
+          label: Provider
           none: No providers.
           add:
             label: Add
@@ -188,6 +196,8 @@ en:
             humanitix: Humanitix
             google: Google
           method: Method
+          authentication:
+            label: Authentication
           credentials:
             label: Credentials
             none: No Credentials
@@ -223,14 +233,18 @@ en:
           save:
             label: Save
             title: Save Connection
-          user: User
-          category: Category
+          topic:
+            label: Topic
+            user: User
+            category: Category
           source: Source
           client:
             label: Client
             select: Select...
             discourse_events: Discourse Events
             discourse_calendar: Discourse Calendar
+          event:
+            label: Event
           source:
             label: Source
             select: Select...
@@ -241,9 +255,15 @@ en:
             label: Sync Type
             automatic: Automatic
             manual: Manual
+          filters:
+            label: Source Filters
+            button:
+              label: Set Source Filters
+              title: Set connection source filters
         filters:
-          title: Filters
           label: Filters
+          button:
+            label: Set Filters
           add:
             label: Add
             title: Add a filter
@@ -269,14 +289,14 @@ en:
           source: Source
           topics: Topics
           none:
-            topics: No events with topics.
-            unattached: No events without topics.
-          topics:
-            label: Topics
-            title: Events with topics.
-          unattached:
-            label: Unattached
-            title: Events without topics.
+            connected: No events connected to topics.
+            unconnected: No events not connected topics.
+          connected:
+            label: Connected
+            title: Events connected to topics.
+          unconnected:
+            label: Unconnected
+            title: Events not connected to topics.
           delete:
             title: Delete Events and Topics
             label: Delete
@@ -296,18 +316,18 @@ en:
         message:
           documentation: "Check out the documentation"
           connection:
-            info: "Connections are where you show your events"
+            info: "Connections connect events to topics"
             sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             sync_failed_to_start: "Sync failed to start."
           source:
-            info: "Sources are how you import events from a provider"
+            info: "Sources import and publish events to and from a provider"
             import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Import failed to start."
           event:
-            topics:
-              info: "Events with topics"
-            unattached:
-              info: "Events without topics"
+            connected:
+              info: "Events connected to topics"
+            unconnected:
+              info: "Events not connected to topics"
           provider:
             info: "Providers are the services providing your events"
           log:

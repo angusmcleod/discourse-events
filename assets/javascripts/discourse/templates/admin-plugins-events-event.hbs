@@ -1,24 +1,24 @@
 <div class="admin-events-controls">
   <nav>
     <ul class="nav nav-pills">
-      <li class="navigation-item topics">
+      <li class="navigation-item connected">
         <LinkTo
           @route="adminPlugins.events.event"
-          @query={{hash filter="topics"}}
-          title={{i18n "admin.events.event.topics.title"}}
+          @query={{hash filter="connected"}}
+          title={{i18n "admin.events.event.connected.title"}}
           class="navigation-link"
         >
-          {{i18n "admin.events.event.topics.label"}}
+          {{i18n "admin.events.event.connected.label"}}
         </LinkTo>
       </li>
-      <li class="navigation-item unattached">
+      <li class="navigation-item unconnected">
         <LinkTo
           @route="adminPlugins.events.event"
-          @query={{hash filter="unattached"}}
-          title={{i18n "admin.events.event.unattached.title"}}
+          @query={{hash filter="unconnected"}}
+          title={{i18n "admin.events.event.unconnected.title"}}
           class="navigation-link"
         >
-          {{i18n "admin.events.event.unattached.label"}}
+          {{i18n "admin.events.event.unconnected.label"}}
         </LinkTo>
       </li>
     </ul>

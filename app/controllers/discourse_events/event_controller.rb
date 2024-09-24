@@ -13,9 +13,9 @@ module DiscourseEvents
 
       events = Event.includes(:sources, event_connections: [:topic]).references(:event_connections)
 
-      if filter == "topics"
+      if filter == "connected"
         events = events.where("discourse_events_event_connections.topic_id IS NOT NULL")
-      elsif filter == "unattached"
+      elsif filter == "unconnected"
         events = events.where("discourse_events_event_connections.topic_id IS NULL")
       end
 

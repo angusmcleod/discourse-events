@@ -1,12 +1,11 @@
-<td class="name-column">
+<td>
+  <label>{{I18n "admin.events.provider.name.label"}}</label>
   <Input
     @value={{provider.name}}
     placeholder={{i18n "admin.events.provider.name.placeholder"}}
     class="provider-name"
   />
-</td>
-
-<td class="provider-type-column">
+  <label>{{i18n "admin.events.provider.provider_type.label"}}</label>
   <EventsSubscriptionSelector
     @value={{provider.provider_type}}
     @feature="provider"
@@ -17,9 +16,16 @@
   />
 </td>
 
-<td class="credentials-column">
+<td>
+  <label>{{i18n "admin.events.provider.credentials.label"}}</label>
   {{#if noCredentials}}
-    {{i18n "admin.events.provider.credentials.none"}}
+    <DButton
+      @label="admin.events.provider.credentials.none"
+      @title="admin.events.provider.credentials.none"
+      @icon="id-card"
+      @disabled={{true}}
+      class="open-credentials-modal"
+    />
   {{else}}
     <DButton
       @action={{action "openCredentials"}}
@@ -29,9 +35,8 @@
       class="open-credentials-modal"
     />
   {{/if}}
-</td>
 
-<td class="status-column">
+  <label>{{i18n "admin.events.provider.status.label"}}</label>
   <div class="events-provider-status">
     {{#if noCredentials}}
       {{#if provider.stored}}
@@ -74,6 +79,7 @@
     @icon="save"
     @class={{this.saveClass}}
     @title="admin.events.provider.save.title"
+    @label="admin.events.provider.save.label"
     @disabled={{this.saveDisabled}}
   />
   <DButton
@@ -82,12 +88,14 @@
     @disabled={{removeDisabled}}
     @icon="trash-alt"
     @title="admin.events.provider.remove.title"
+    @label="admin.events.provider.remove.label"
     class="remove-provider btn-danger"
   />
   <DButton
     @action={{action "authenticateProvider"}}
     @icon="fingerprint"
     @title="admin.events.provider.authenticate.title"
+    @label="admin.events.provider.authenticate.label"
     @disabled={{authenticateDisabled}}
     class={{authenticateClass}}
   />

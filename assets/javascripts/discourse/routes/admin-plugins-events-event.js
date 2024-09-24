@@ -12,7 +12,7 @@ export default DiscourseRoute.extend({
     let page = params.page || 0;
     let order = params.order || "start_time";
     let asc = params.asc || false;
-    let filter = params.filter || "topics";
+    let filter = params.filter || "connected";
     return Event.list({ page, order, asc, filter });
   },
 
@@ -22,6 +22,6 @@ export default DiscourseRoute.extend({
       events: Event.eventsArray(model.events),
     });
     const filter = this.paramsFor("adminPlugins.events.event").filter;
-    controller.setMessage(`${filter || "topics"}.info`);
+    controller.setMessage(`${filter || "connected"}.info`);
   },
 });
