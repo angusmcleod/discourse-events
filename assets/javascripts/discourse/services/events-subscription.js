@@ -5,6 +5,7 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 
 const SUBSCRIBE_PATH = "/subscribe";
 const SUPPORT_PATH = "/new-message?username=angus&title=Events%20Support";
+const BASE_URL = "https://support.angus.blog";
 
 export default class EventsSubscriptionService extends Service {
   @tracked subscribed = false;
@@ -36,16 +37,20 @@ export default class EventsSubscriptionService extends Service {
     }
   }
 
+  get upgradePath() {
+    return BASE_URL + SUBSCRIBE_PATH;
+  }
+
   get ctaPath() {
     switch (this.product) {
       case "none":
-        return SUBSCRIBE_PATH;
+        return BASE_URL + SUBSCRIBE_PATH;
       case "community":
-        return SUPPORT_PATH;
+        return BASE_URL + SUPPORT_PATH;
       case "business":
-        return SUPPORT_PATH;
+        return BASE_URL + SUPPORT_PATH;
       default:
-        return SUBSCRIBE_PATH;
+        return BASE_URL + SUBSCRIBE_PATH;
     }
   }
 }

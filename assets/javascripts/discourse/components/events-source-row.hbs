@@ -11,6 +11,7 @@
     @feature="source"
     @i18nKey="sync_type"
     @onChange={{action (mut source.sync_type)}}
+    @allowedValues={{allowedSyncValues}}
     class="source-sync-type"
     options={{hash none="admin.events.source.sync_type.select"}}
   />
@@ -26,9 +27,11 @@
 
 <td>
   <label>{{i18n "admin.events.source.provider.label"}}</label>
-  <ComboBox
-    @value={{source.provider_id}}
-    @content={{providers}}
+  <EventsSubscriptionSelector
+    @value={{provider.provider_type}}
+    @feature="provider"
+    @i18nKey="provider_type"
+    @i18nSuffix="label"
     @onChange={{action "updateProvider"}}
     class="source-provider"
     options={{hash none="admin.events.source.provider.select"}}
@@ -59,6 +62,14 @@
 <td class="action-column">
   <ConditionalLoadingSpinner @condition={{saving}} @size="small" />
   <DButton
+    @action={{action "importSource"}}
+    @icon="download"
+    @title="admin.events.source.import.title"
+    @label="admin.events.source.import.label"
+    class={{importClass}}
+    @disabled={{importDisabled}}
+  />
+  <DButton
     @action={{action "saveSource"}}
     @icon="save"
     @class={{this.saveClass}}
@@ -74,13 +85,5 @@
     @title="admin.events.source.remove.title"
     @label="admin.events.source.remove.label"
     class="remove-source btn-danger"
-  />
-  <DButton
-    @action={{action "importSource"}}
-    @icon="download"
-    @title="admin.events.source.import.title"
-    @label="admin.events.source.import.label"
-    class={{importClass}}
-    @disabled={{importDisabled}}
   />
 </td>

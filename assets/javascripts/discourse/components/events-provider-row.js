@@ -1,6 +1,7 @@
 import Component from "@ember/component";
 import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
+import DiscourseURL from "discourse/lib/url";
 import discourseComputed from "discourse-common/utils/decorators";
 import Provider from "../models/provider";
 
@@ -54,6 +55,11 @@ export default Component.extend({
     }
   },
 
+  @discourseComputed("provider.provider_type", "inSubscription")
+  canSave(providerType, inSubscription) {
+    return inSubscription && providerType !== "icalendar";
+  },
+
   @discourseComputed("providerChanged")
   saveClass(providerChanged) {
     return providerChanged ? "save-provider btn-primary" : "save-provider";
@@ -73,9 +79,11 @@ export default Component.extend({
     return authenticateDisabled ? "" : "btn-primary";
   },
 
-  @discourseComputed("provider.provider_type")
-  canAuthenicate(providerType) {
-    return providerType && OAUTH2_TYPES.includes(providerType);
+  @discourseComputed("provider.provider_type", "inSubscription")
+  canAuthenicate(providerType, inSubscription) {
+    return (
+      inSubscription && providerType && OAUTH2_TYPES.includes(providerType)
+    );
   },
 
   @discourseComputed("provider.provider_type")
@@ -86,19 +94,54 @@ export default Component.extend({
   @discourseComputed(
     "hasCredentials",
     "provider.stored",
-    "provider.authenticated"
+    "provider.authenticated",
+    "inSubscription"
   )
-  providerStatus(hasCredentials, providerStored, providerAuthenticated) {
+  providerStatus(
+    hasCredentials,
+    providerStored,
+    providerAuthenticated,
+    inSubscription
+  ) {
+    if (!inSubscription) {
+      return "not_in_subscription";
+    }
     if (hasCredentials) {
-      return providerAuthenticated ? "authenticated" : "not_authenticated";
+      return providerAuthenticated ? "ready" : "not_authenticated";
     } else {
       return providerStored ? "ready" : "not_ready";
     }
   },
 
+  @discourseComputed("provider.provider_type")
+  providerLogo(providerType) {
+    return `/plugins/discourse-events/logos/${providerType}.svg`;
+  },
+
+  @discourseComputed("subscription.features.provider", "provider.provider_type")
+  inSubscription(subscriptionProviders, providerType) {
+    return this.subscription.supportsFeatureValue("provider", providerType);
+  },
+
+  notInSubscription: not("inSubscription"),
+
+  @discourseComputed("subscription.features.provider", "provider.provider_type")
+  supportedSubscriptions(subscriptionProviders, providerType) {
+    if (!subscriptionProviders) {
+      return [];
+    }
+    const subscriptions = subscriptionProviders[providerType];
+    return Object.keys(subscriptions).filter((type) => subscriptions[type]);
+  },
+
   @discourseComputed("providerStatus")
-  showProviderStatus(providerStatus) {
-    return providerStatus && providerStatus !== "not_authenticated";
+  showAuthenticate(providerStatus) {
+    return providerStatus && providerStatus === "not_authenticated";
+  },
+
+  @discourseComputed("providerStatus")
+  showUpgradeSubscription(providerStatus) {
+    return providerStatus && providerStatus === "not_in_subscription";
   },
 
   actions: {
@@ -132,6 +175,10 @@ export default Component.extend({
 
     authenticateProvider() {
       window.location.href = `/admin/plugins/events/provider/${this.provider.id}/authorize`;
+    },
+
+    upgradeSubscription() {
+      DiscourseURL.routeTo(this.subscription.upgradePath);
     },
   },
 });

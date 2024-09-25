@@ -13,7 +13,9 @@ module DiscourseEvents
     AUTH_SESSION_KEY = "events-provider-auth"
 
     def index
-      render_serialized(Provider.all, ProviderSerializer, root: "providers")
+      providers =
+        Provider.all.order("(CASE name WHEN 'icalendar' THEN 0 ELSE 1 END) DESC, name ASC")
+      render_serialized(providers, ProviderSerializer, root: "providers")
     end
 
     def create

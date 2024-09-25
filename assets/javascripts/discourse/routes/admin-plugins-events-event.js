@@ -1,7 +1,10 @@
+import { inject as service } from "@ember/service";
 import DiscourseRoute from "discourse/routes/discourse";
 import Event from "../models/event";
 
 export default DiscourseRoute.extend({
+  router: service(),
+
   queryParams: {
     order: { refreshModel: true },
     asc: { refreshModel: true },
@@ -19,9 +22,11 @@ export default DiscourseRoute.extend({
   setupController(controller, model) {
     controller.setProperties({
       page: model.page,
+      filter: model.filter,
+      order: model.order,
       events: Event.eventsArray(model.events),
+      withTopicsCount: model.with_topics_count,
+      withoutTopicsCount: model.without_topics_count,
     });
-    const filter = this.paramsFor("adminPlugins.events.event").filter;
-    controller.setMessage(`${filter || "connected"}.info`);
   },
 });

@@ -1,49 +1,54 @@
 <td>
-  <label>{{I18n "admin.events.provider.name.label"}}</label>
-  <Input
-    @value={{provider.name}}
-    placeholder={{i18n "admin.events.provider.name.placeholder"}}
-    class="provider-name"
-  />
-  <label>{{i18n "admin.events.provider.provider_type.label"}}</label>
-  <EventsSubscriptionSelector
-    @value={{provider.provider_type}}
-    @feature="provider"
-    @i18nKey="provider_type"
-    @onChange={{action (mut provider.provider_type)}}
-    class="provider-type"
-    options={{hash none="admin.events.provider.provider_type.select"}}
-  />
+  <div class="events-provider-metadata">
+    <div class="events-provider-logo">
+      <img
+        src={{concat
+          "/plugins/discourse-events/logos/"
+          provider.provider_type
+          ".svg"
+        }}
+      />
+    </div>
+    <div class="events-provider-details">
+      <label class="events-provider-label">
+        {{i18n
+          (concat
+            "admin.events.provider.provider_type."
+            provider.provider_type
+            ".label"
+          )
+        }}
+      </label>
+      <div class="events-provider-description">
+        {{i18n
+          (concat
+            "admin.events.provider.provider_type."
+            provider.provider_type
+            ".description"
+          )
+        }}
+      </div>
+      <div class="events-subscription-tags">
+        {{#each supportedSubscriptions as |subscription|}}
+          <EventsSubscriptionTag @subscription={{subscription}} />
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </td>
 
-<td>
+<td class="events-provider-authentication">
   {{#if hasCredentials}}
-    <EventsProviderCredentials @provider={{provider}} />
+    <EventsProviderCredentials
+      @provider={{provider}}
+      @disabled={{notInSubscription}}
+    />
   {{/if}}
 </td>
 
 <td class="action-column">
   <ConditionalLoadingSpinner @condition={{saving}} @size="small" />
-  <DButton
-    @action={{action "saveProvider"}}
-    @icon="save"
-    @class={{this.saveClass}}
-    @title="admin.events.provider.save.title"
-    @label="admin.events.provider.save.label"
-    @disabled={{this.saveDisabled}}
-  />
-  <DButton
-    @action={{removeProvider}}
-    @actionParam={{provider}}
-    @disabled={{removeDisabled}}
-    @icon="trash-alt"
-    @title="admin.events.provider.remove.title"
-    @label="admin.events.provider.remove.label"
-    class="remove-provider btn-danger"
-  />
-  {{#if showProviderStatus}}
-    <EventsProviderStatus @status={{providerStatus}} />
-  {{else}}
+  {{#if showAuthenticate}}
     <DButton
       @action={{action "authenticateProvider"}}
       @icon="fingerprint"
@@ -51,6 +56,24 @@
       @label="admin.events.provider.authenticate.label"
       @disabled={{authenticateDisabled}}
       class={{authenticateClass}}
+    />
+  {{else if showUpgradeSubscription}}
+    <DButton
+      @action={{action "upgradeSubscription"}}
+      @title="admin.events.subscription.upgrade.title"
+      @label="admin.events.subscription.upgrade.label"
+    />
+  {{else}}
+    <EventsProviderStatus @status={{providerStatus}} />
+  {{/if}}
+  {{#if canSave}}
+    <DButton
+      @action={{action "saveProvider"}}
+      @icon="save"
+      @class={{this.saveClass}}
+      @title="admin.events.provider.save.title"
+      @label="admin.events.provider.save.label"
+      @disabled={{this.saveDisabled}}
     />
   {{/if}}
 </td>

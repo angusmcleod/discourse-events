@@ -26,5 +26,15 @@ export default DiscourseRoute.extend({
       sources: A(model.sources.map((s) => Source.create(s))),
     });
     controller.setMessage("info");
+
+    if (this.paramsFor("adminPlugins.events.event.connection").add) {
+      controller.addConnection();
+    }
+
+    this.controllerFor("adminPlugins.events.event").setProperties({
+      order: null,
+      asc: null,
+      filter: null,
+    });
   },
 });

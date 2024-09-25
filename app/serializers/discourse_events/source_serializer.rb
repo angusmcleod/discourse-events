@@ -13,5 +13,9 @@ module DiscourseEvents
     def ready
       object.ready?
     end
+
+    def import_period
+      object.import_period || 0
+    end
   end
 end

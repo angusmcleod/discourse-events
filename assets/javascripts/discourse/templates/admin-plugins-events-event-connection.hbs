@@ -1,0 +1,24 @@
+{{#if hasConnections}}
+  <table>
+    <thead>
+      <tr>
+        <th>{{I18n "admin.events.connection.topic.label"}}</th>
+        <th>{{I18n "admin.events.connection.source.label"}}</th>
+        <th class="action-column">{{I18n "admin.events.actions"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each connections as |connection|}}
+        <EventsConnectionRow
+          @connection={{connection}}
+          @sources={{sources}}
+          @clients={{clients}}
+          @removeConnection={{action "removeConnection"}}
+          @setMessage={{action "setMessage"}}
+        />
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>{{i18n "admin.events.connection.none"}}</p>
+{{/if}}

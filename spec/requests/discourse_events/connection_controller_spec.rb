@@ -16,7 +16,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "lists connections and sources" do
-    get "/admin/plugins/events/connection.json"
+    get "/admin/plugins/events/event/connection.json"
 
     expect(response.status).to eq(200)
     expect(response.parsed_body["connections"].first["id"]).to eq(connection.id)
@@ -24,7 +24,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "creates connections" do
-    put "/admin/plugins/events/connection/new.json",
+    put "/admin/plugins/events/event/connection/new.json",
         params: {
           connection: {
             user: {
@@ -41,7 +41,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "handles invalid create params" do
-    put "/admin/plugins/events/connection/new.json",
+    put "/admin/plugins/events/event/connection/new.json",
         params: {
           connection: {
             user: {
@@ -59,7 +59,7 @@ describe DiscourseEvents::ConnectionController do
   it "updates connections" do
     new_cat = Fabricate(:category)
 
-    put "/admin/plugins/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/event/connection/#{connection.id}.json",
         params: {
           connection: {
             category_id: new_cat.id,
@@ -71,7 +71,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "handles invalid update params" do
-    put "/admin/plugins/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/event/connection/#{connection.id}.json",
         params: {
           connection: {
             category_id: -1,
@@ -83,7 +83,7 @@ describe DiscourseEvents::ConnectionController do
   end
 
   it "destroys connections" do
-    delete "/admin/plugins/events/connection/#{connection.id}.json"
+    delete "/admin/plugins/events/event/connection/#{connection.id}.json"
 
     expect(response.status).to eq(200)
     expect(DiscourseEvents::Connection.exists?(connection.id)).to eq(false)
@@ -95,13 +95,13 @@ describe DiscourseEvents::ConnectionController do
       args: {
         connection_id: connection.id,
       },
-    ) { post "/admin/plugins/events/connection/#{connection.id}.json" }
+    ) { post "/admin/plugins/events/event/connection/#{connection.id}.json" }
 
     expect(response.status).to eq(200)
   end
 
   it "creates filters" do
-    put "/admin/plugins/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/event/connection/#{connection.id}.json",
         params: {
           connection: {
             filters: [
@@ -125,7 +125,7 @@ describe DiscourseEvents::ConnectionController do
     filter1 = Fabricate(:discourse_events_filter, model: connection)
     filter2 = Fabricate(:discourse_events_filter, model: connection)
 
-    put "/admin/plugins/events/connection/#{connection.id}.json",
+    put "/admin/plugins/events/event/connection/#{connection.id}.json",
         params: {
           connection: {
             client: "discourse_events",

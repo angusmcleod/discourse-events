@@ -12,20 +12,19 @@ export default Controller.extend(Message, {
   dialog: service(),
   subscription: service("events-subscription"),
   addDisabled: not("subscription.subscribed"),
+  router: service(),
 
   actions: {
     addSource() {
-      this.get("sources").pushObject(
-        Source.create({
-          id: "new",
-          source_options: SourceOptions.create(),
-          from_time: moment()
-            .subtract(1, "months")
-            .add(30, "minutes")
-            .startOf("hour"),
-          to_time: moment().add(5, "months").add(30, "minutes").startOf("hour"),
-        })
-      );
+      const sources = this.get("sources");
+      if (!sources.isAny("id", "new")) {
+        sources.unshiftObject(
+          Source.create({
+            id: "new",
+            source_options: SourceOptions.create(),
+          })
+        );
+      }
     },
 
     removeSource(source) {

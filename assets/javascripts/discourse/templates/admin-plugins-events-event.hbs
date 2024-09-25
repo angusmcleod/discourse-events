@@ -8,7 +8,10 @@
           title={{i18n "admin.events.event.connected.title"}}
           class="navigation-link"
         >
-          {{i18n "admin.events.event.connected.label"}}
+          {{i18n
+            "admin.events.event.connected.label_with_count"
+            count=withTopicsCount
+          }}
         </LinkTo>
       </li>
       <li class="navigation-item unconnected">
@@ -18,38 +21,66 @@
           title={{i18n "admin.events.event.unconnected.title"}}
           class="navigation-link"
         >
-          {{i18n "admin.events.event.unconnected.label"}}
+          {{i18n
+            "admin.events.event.unconnected.label_with_count"
+            count=withoutTopicsCount
+          }}
+        </LinkTo>
+      </li>
+      <li class="navigation-item connections">
+        <LinkTo
+          @route="adminPlugins.events.event.connection"
+          title={{i18n "admin.events.connection.title"}}
+          class="navigation-link"
+        >
+          {{i18n "admin.events.connection.title"}}
         </LinkTo>
       </li>
     </ul>
   </nav>
 
   <div class="buttons">
-    <DButton
-      @action={{action "openDelete"}}
-      @label="admin.events.event.delete.label"
-      @title="admin.events.event.delete.title"
-      @disabled={{deleteDisabled}}
-      class="btn-danger"
-      @icon="trash-alt"
-    />
+    {{#if connectionRoute}}
+      <DButton
+        @id="add-connection"
+        @action={{action "addConnection"}}
+        @label="admin.events.connection.add.label"
+        @title="admin.events.connection.add.title"
+        @icon="plus"
+        @disabled={{addDisabled}}
+      />
+    {{/if}}
+    {{#if eventsRoute}}
+      <DButton
+        @action={{action "openDelete"}}
+        @label="admin.events.event.delete.label"
+        @title="admin.events.event.delete.title"
+        @disabled={{deleteDisabled}}
+        class="btn-danger"
+        @icon="trash-alt"
+      />
+    {{/if}}
   </div>
 </div>
 
 <EventsMessage @viewName={{viewName}} @message={{message}} />
 
 <div class="admin-events-container">
-  {{#if hasEvents}}
-    <EventsEventTable
-      @events={{events}}
-      @page={{page}}
-      @order={{order}}
-      @filter={{filter}}
-      @asc={{asc}}
-      @modifySelection={{action "modifySelection"}}
-      @selectAll={{selectAll}}
-    />
+  {{#if eventsRoute}}
+    {{#if hasEvents}}
+      <EventsEventTable
+        @events={{events}}
+        @page={{page}}
+        @order={{order}}
+        @filter={{filter}}
+        @asc={{asc}}
+        @modifySelection={{action "modifySelection"}}
+        @selectAll={{selectAll}}
+      />
+    {{else}}
+      <p>{{noneLabel}}</p>
+    {{/if}}
   {{else}}
-    <p>{{noneLabel}}</p>
+    {{outlet}}
   {{/if}}
 </div>

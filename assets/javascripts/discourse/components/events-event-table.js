@@ -1,11 +1,17 @@
 import Component from "@ember/component";
 import LoadMore from "discourse/mixins/load-more";
+import discourseComputed from "discourse-common/utils/decorators";
 import Event from "../models/event";
 
 export default Component.extend(LoadMore, {
   classNames: ["events-event-table"],
   eyelineSelector: ".events-event-row",
   loadingComplete: false,
+
+  @discourseComputed("filter")
+  showTopics(filter) {
+    return filter === "connected";
+  },
 
   actions: {
     toggleSelectAll() {

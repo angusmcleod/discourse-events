@@ -5,23 +5,42 @@ module DiscourseEvents
     PAGE_LIMIT = 30
 
     def index
-      page = params[:page].to_i
-      order = params[:order].present? ? params[:order] : "start_time"
+      all_events =
+        Event.includes(:sources, event_connections: [:topic]).references(:event_connections)
+      events_with_topics =
+        all_events.where("discourse_events_event_connections.topic_id IS NOT NULL")
+      events_without_topics =
+        all_events.where("discourse_events_event_connections.topic_id IS NULL")
+
       filter = params[:filter]
+      events =
+        if filter == "unconnected"
+          events_without_topics
+        elsif filter === "connected"
+          events_with_topics
+        else
+          all_events
+        end
+
+      page = params[:page].to_i
+      order = %w[start_time source_id name].find { |attr| attr == params[:order] } || "start_time"
       direction = ActiveRecord::Type::Boolean.new.cast(params[:asc]) ? "ASC" : "DESC"
       offset = page * PAGE_LIMIT
 
-      events = Event.includes(:sources, event_connections: [:topic]).references(:event_connections)
+      events =
+        events
+          .order("discourse_events_events.#{order} #{direction}")
+          .offset(offset)
+          .limit(PAGE_LIMIT)
 
-      if filter == "connected"
-        events = events.where("discourse_events_event_connections.topic_id IS NOT NULL")
-      elsif filter == "unconnected"
-        events = events.where("discourse_events_event_connections.topic_id IS NULL")
-      end
-
-      events = events.order("#{order} #{direction}").offset(offset).limit(PAGE_LIMIT)
-
-      render_json_dump(page: page, events: serialize_data(events, EventSerializer, root: false))
+      render_json_dump(
+        page: page,
+        filter: filter,
+        order: order,
+        with_topics_count: events_with_topics.count,
+        without_topics_count: events_without_topics.count,
+        events: serialize_data(events, EventSerializer, root: false),
+      )
     end
 
     def destroy

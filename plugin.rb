@@ -11,8 +11,7 @@ enabled_site_setting :events_enabled
 
 add_admin_route "admin.events.title", "events"
 
-register_asset "stylesheets/common/events.scss"
-register_asset "stylesheets/common/admin.scss"
+register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
@@ -103,6 +102,8 @@ after_initialize do
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
+
+  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-events", "db", "fixtures").to_s
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 

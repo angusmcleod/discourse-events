@@ -8,14 +8,7 @@
         @order={{order}}
         @asc={{asc}}
         @automatic={{true}}
-      />
-      <TableHeaderToggle
-        @tagName="th"
-        @field="name"
-        @labelKey="admin.events.event.name"
-        @order={{order}}
-        @asc={{asc}}
-        @automatic={{true}}
+        @class="start-time"
       />
       <TableHeaderToggle
         @tagName="th"
@@ -24,16 +17,25 @@
         @order={{order}}
         @asc={{asc}}
         @automatic={{true}}
+        @class="source"
       />
-      <th>{{i18n "admin.events.event.topics"}}</th>
+      {{#if showTopics}}
+        <th>{{i18n "admin.events.event.topics"}}</th>
+      {{else}}
+        <TableHeaderToggle
+          @tagName="th"
+          @field="name"
+          @labelKey="admin.events.event.name"
+          @order={{order}}
+          @asc={{asc}}
+          @automatic={{true}}
+        />
+      {{/if}}
       <th class="event-actions">
         <DButton
           @action={{action "toggleSelectAll"}}
           @title="admin.events.event.select_all"
         >
-          <span class="d-button-label">
-            {{i18n "admin.events.event.select_all"}}
-          </span>
           {{d-icon "check-square"}}
         </DButton>
       </th>
@@ -45,6 +47,7 @@
         @event={{event}}
         @modifySelection={{modifySelection}}
         @selectAll={{selectAll}}
+        @showTopics={{showTopics}}
       />
     {{/each}}
   </tbody>

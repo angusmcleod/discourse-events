@@ -3,10 +3,11 @@ export default {
   path: "/plugins",
   map() {
     this.route("events", function () {
-      this.route("provider");
+      this.route("event", function () {
+        this.route("connection");
+      });
       this.route("source");
-      this.route("connection");
-      this.route("event");
+      this.route("provider");
       this.route("log");
     });
   },

@@ -17,39 +17,46 @@ export default SingleSelectComponent.extend({
     caretDownIcon: "caret-down",
   },
 
-  @discourseComputed("feature", "subscription.features")
-  content(feature, subscriptionFeatures) {
+  @discourseComputed("feature", "subscription.features", "allowedValues")
+  content(feature, subscriptionFeatures, allowedValues) {
     const values = (subscriptionFeatures || {})[feature];
 
     if (!values) {
       return [];
     } else {
-      return Object.keys(values).map((value) => {
-        let minimumProduct = Object.keys(values[value]).find(
-          (product) => values[value][product]
-        );
-        let subscriptionRequired = minimumProduct !== "none";
-
-        let attrs = {
-          id: value,
-          name: I18n.t(`admin.events.${feature}.${this.i18nKey}.${value}`),
-          subscriptionRequired,
-          minimumProduct,
-        };
-
-        if (subscriptionRequired) {
-          attrs.subscribed = this.subscription.supportsFeatureValue(
-            feature,
-            value
+      return Object.keys(values)
+        .filter((value) =>
+          allowedValues ? allowedValues.includes(value) : true
+        )
+        .map((value) => {
+          let minimumProduct = Object.keys(values[value]).find(
+            (product) => values[value][product]
           );
-          attrs.disabled = !attrs.subscribed;
-          attrs.selectorLabel = `admin.events.subscription.${
-            attrs.subscribed ? "subscribed" : "not_subscribed"
-          }.selector`;
-        }
+          let subscriptionRequired = minimumProduct !== "none";
+          let i18nkey = `admin.events.${feature}.${this.i18nKey}.${value}`;
+          if (this.i18nSuffix) {
+            i18nkey += `.${this.i18nSuffix}`;
+          }
+          let attrs = {
+            id: value,
+            name: I18n.t(i18nkey),
+            subscriptionRequired,
+            minimumProduct,
+          };
 
-        return attrs;
-      });
+          if (subscriptionRequired) {
+            attrs.subscribed = this.subscription.supportsFeatureValue(
+              feature,
+              value
+            );
+            attrs.disabled = !attrs.subscribed;
+            attrs.selectorLabel = `admin.events.subscription.${
+              attrs.subscribed ? "subscribed" : "not_subscribed"
+            }.selector`;
+          }
+
+          return attrs;
+        });
     }
   },
 

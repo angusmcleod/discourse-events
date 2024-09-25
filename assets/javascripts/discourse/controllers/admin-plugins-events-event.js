@@ -1,6 +1,6 @@
 import { A } from "@ember/array";
-import Controller from "@ember/controller";
-import { notEmpty } from "@ember/object/computed";
+import Controller, { inject as controller } from "@ember/controller";
+import { not, notEmpty } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
@@ -14,9 +14,12 @@ export default Controller.extend(Message, {
   selectAll: false,
   order: null,
   asc: null,
-  filter: "connected",
-  viewName: "event",
+  filter: null,
   queryParams: ["filter"],
+  addDisabled: not("subscription.subscribed"),
+  subscription: service("events-subscription"),
+  router: service(),
+  connections: controller("admin-plugins-events-event-connection"),
 
   @discourseComputed("selectedEvents.[]", "hasEvents")
   deleteDisabled(selectedEvents, hasEvents) {
@@ -37,7 +40,28 @@ export default Controller.extend(Message, {
     );
   },
 
+  @discourseComputed("router.currentRouteName")
+  eventsRoute(currentRouteName) {
+    return currentRouteName === "adminPlugins.events.event.index";
+  },
+
+  @discourseComputed("router.currentRouteName")
+  connectionRoute(currentRouteName) {
+    return currentRouteName === "adminPlugins.events.event.connection";
+  },
+
+  @discourseComputed("eventsRoute", "filter")
+  viewName(eventsRoute, filter) {
+    return eventsRoute ? `event.${filter}` : "connection";
+  },
+
   actions: {
+    addConnection() {
+      if (this.connectionRoute) {
+        this.connections.addConnection();
+      }
+    },
+
     modifySelection(events, checked) {
       if (checked) {
         this.get("selectedEvents").pushObjects(events);

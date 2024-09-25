@@ -109,7 +109,7 @@ en:
           none: No sources.
           label: Source
           add:
-            label: Add
+            label: Add Source
             title: Add Source
           remove:
             label: Remove
@@ -137,9 +137,10 @@ en:
             import_publish: Import and Publish
             publish: Publish only
           import_period:
-            label: Schedule
-            5_minutes: 5 Minutes
-            30_minutes: 30 Minutes
+            label: Import Schedule
+            none: Manual
+            5_minutes: Every 5 Minutes
+            30_minutes: Every 30 Minutes
             1_hour: Every Hour
             1_day: Every Day
             1_week: Every Week
@@ -175,13 +176,23 @@ en:
           provider_type:
             label: Type
             select: Select a type...
-            icalendar: iCalendar
-            eventbrite: Eventbrite
-            eventzilla: Eventzilla
-            meetup: Meetup
-            outlook: Outlook
-            humanitix: Humanitix
-            google: Google
+            icalendar:
+              label: iCalendar
+              description: One-way export supported by most calendar services.
+            eventbrite:
+              label: Eventbrite
+            eventzilla:
+              label: Eventzilla
+            meetup:
+              label: Meetup
+            outlook:
+              label: Outlook Calendar
+              description: Import and export events from Outlook Calendar.
+            humanitix:
+              label: Humanitix
+            google:
+              label: Google Calendar
+              description: Import and export events from Google Calendar.
           method: Method
           authentication:
             label: Authentication
@@ -202,24 +213,22 @@ en:
             label: Authenticate
             title: Authenticate Provider
         connection:
-          title: Connections
-          label: Connection
-          none: No connections.
+          title: Sync
+          none: No syncs.
           add:
-            label: Add
-            title: Add Connection
+            label: Add Sync
+            title: Add sync
           remove:
             label: Remove
-            title: Remove Connection
-            confirm: Are you sure you want to remove this connection?
+            title: Remove sync
+            confirm: Are you sure you want to remove this sync?
           save:
             label: Save
-            title: Save Connection
+            title: Save sync
           topic:
             label: Topic
             user: User
             category: Category
-          source: Source
           client:
             label: Client
             select: Select...
@@ -235,7 +244,7 @@ en:
             title: Sync Connection
           sync_type:
             label: Sync
-            automatic: Automatic
+            automatic: Automatically after import
             manual: Manual
         filters:
           label: Filters
@@ -270,10 +279,16 @@ en:
             connected: No events connected to topics.
             unconnected: No events not connected topics.
           connected:
-            label: Connected
+            label: Topics
+            label_with_count:
+              one: "Topics (%{count})"
+              other: "Topics (%{count})"
             title: Events connected to topics.
           unconnected:
-            label: Unconnected
+            label: No Topics
+            label_with_count:
+              one: "No Topics (%{count})"
+              other: "No Topics (%{count})"
             title: Events not connected to topics.
           delete:
             title: Delete Events and Topics
@@ -294,20 +309,20 @@ en:
         message:
           documentation: "Check out the documentation"
           connection:
-            info: "Connections connect events to topics"
+            info: "Automatically create topics from imported events."
             sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             sync_failed_to_start: "Sync failed to start."
           source:
-            info: "Sources import and publish events to and from a provider"
+            info: "Import events from, and publish events to, a provider."
             import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Import failed to start."
           event:
             connected:
-              info: "Events connected to topics"
+              info: "Events connected to topics."
             unconnected:
-              info: "Events not connected to topics"
+              info: "Events not connected to topics."
           provider:
-            info: "Providers are the services providing your events"
+            info: "Services providing your events."
           log:
             info: "The logs of your events"
 
@@ -320,6 +335,9 @@ en:
             title: Deauthorize the current subscription.
           update:
             title: "Update subscription status"
+          upgrade:
+            label: Upgrade
+            title: Upgrade your subscription to use this feature.
           type:
             none:
               label: Subscribe
@@ -338,3 +356,10 @@ en:
             label: Not Subscribed
             title: Subscribe to use these features
             selector: not subscribed
+          tags:
+            community:
+              label: Community
+              title: Requires a community subscription.
+            business:
+              label: Business
+              title: Requires a business subscription.

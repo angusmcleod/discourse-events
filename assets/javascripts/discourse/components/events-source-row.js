@@ -65,10 +65,16 @@ export default Component.extend({
     "sourceChanged",
     "source.name",
     "source.provider_id",
-    "source.source_options.@each"
+    "sourceOptions.@each.value"
   )
   saveDisabled(sourceChanged, name, providerId, sourceOptions) {
-    return !sourceChanged || !name || !providerId || !sourceOptions;
+    return (
+      !sourceChanged ||
+      !name ||
+      !providerId ||
+      !sourceOptions ||
+      sourceOptions.some((opt) => !opt.value)
+    );
   },
 
   @discourseComputed("sourceChanged")
@@ -87,7 +93,8 @@ export default Component.extend({
     "loading",
     "source.ready",
     "source.canImport",
-    "source.sync_type"
+    "source.sync_type",
+    "subscription.subscribed"
   )
   importDisabled(sourceChanged, sourceId, loading, ready, canImport, syncType) {
     if (!this.subscription.supportsFeatureValue("source", syncType)) {
@@ -121,14 +128,26 @@ export default Component.extend({
     "source.source_options.@each",
     "providerSourceOptionFields.@each"
   )
-  sourceOptions(source_options) {
-    return this.providerSourceOptionFields.map((opt) => {
+  sourceOptions(source_options, providerSourceOptionFields) {
+    if (!providerSourceOptionFields) {
+      return [];
+    }
+    return providerSourceOptionFields.map((opt) => {
       return {
         name: opt.name,
         value: source_options[opt.name],
         type: opt.type,
       };
     });
+  },
+
+  @discourseComputed("provider.provider_type")
+  allowedSyncValues(providerType) {
+    if (providerType === "icalendar") {
+      return ["import"];
+    } else {
+      return null;
+    }
   },
 
   actions: {
@@ -142,8 +161,11 @@ export default Component.extend({
       this.source.source_options.set(name, event.target.value);
     },
 
-    updateProvider(provider_id) {
-      this.set("source.provider_id", provider_id);
+    updateProvider(providerType) {
+      const provider = this.providers?.find(
+        (p) => p.provider_type === providerType
+      );
+      this.set("source.provider_id", provider.id);
     },
 
     saveSource() {
@@ -163,6 +185,10 @@ export default Component.extend({
           obj[key] = source.source_options[key];
           return obj;
         }, {});
+
+      if (source.import_period === 0) {
+        source.import_period = null;
+      }
 
       this.set("loading", true);
 

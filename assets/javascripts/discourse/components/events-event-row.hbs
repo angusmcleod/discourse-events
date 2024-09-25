@@ -2,20 +2,20 @@
   {{raw-date event.start_time}}
 </td>
 
-<td class="name">
-  {{event.name}}
-</td>
-
 <td class="source">
   {{#each event.sources as |source|}}
     {{source.name}}
   {{/each}}
 </td>
 
-<td class="topic">
-  {{#each event.topics as |topic|}}
-    <a href={{topic.url}}>{{topic.fancy_title}}</a>
-  {{/each}}
+<td class="name-or-topic">
+  {{#if showTopics}}
+    {{#each event.topics as |topic|}}
+      <a href={{topic.url}}>{{topic.fancy_title}}</a>
+    {{/each}}
+  {{else}}
+    {{event.name}}
+  {{/if}}
 </td>
 
 <td class="select-event">

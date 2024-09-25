@@ -5,24 +5,11 @@ module DiscourseEvents
     include DiscourseEvents::Filters
 
     def index
-      source_options =
-        DiscourseEvents::Source::SOURCE_OPTIONS.each_with_object({}) do |(provider, attrs), result|
-          result[provider] = []
-          attrs.each do |attr, val|
-            number = val == /\d/
-            result[provider] << {
-              name: attr,
-              type: number ? "number" : "text",
-              default: number ? nil : "",
-            }
-          end
-        end
-
       render_json_dump(
         sources: serialize_data(Source.all, SourceSerializer, root: false),
         providers: serialize_data(Provider.all, ProviderSerializer, root: false),
         source_options: source_options,
-        import_periods: DiscourseEvents::Source::IMPORT_PERIODS,
+        import_periods: import_periods,
       )
     end
 
@@ -133,8 +120,6 @@ module DiscourseEvents
             raise Discourse::InvalidParameters, "sync_type not included in subscription"
           end
 
-          result[:import_period] = result[:import_period].to_i if result[:import_period].present?
-
           result
         end
     end
@@ -149,6 +134,29 @@ module DiscourseEvents
             has_keys && has_values
           end
         end
+    end
+
+    def source_options
+      @source_options ||=
+        begin
+          DiscourseEvents::Source::SOURCE_OPTIONS.each_with_object(
+            {},
+          ) do |(provider, attrs), result|
+            result[provider] = []
+            attrs.each do |attr, val|
+              number = val == /\d/
+              result[provider] << {
+                name: attr,
+                type: number ? "number" : "text",
+                default: number ? nil : "",
+              }
+            end
+          end
+        end
+    end
+
+    def import_periods
+      @import_periods ||= { none: 0 }.merge(DiscourseEvents::Source::IMPORT_PERIODS)
     end
   end
 end

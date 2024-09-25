@@ -79,7 +79,7 @@ $pavilion_primary: #3c1c8c;
   .action-column {
     display: flex;
     flex-direction: column;
-    max-width: 150px;
+    max-width: 190px;
     box-sizing: border-box;
     margin-left: auto;
     text-align: center;
@@ -106,6 +106,14 @@ $pavilion_primary: #3c1c8c;
   }
 
   .events-provider-row {
+    td {
+      padding: 1.5em;
+    }
+
+    .events-provider-authentication {
+      min-width: 420px;
+    }
+
     .status {
       padding: 0.4rem;
       border-radius: 50%;
@@ -126,6 +134,7 @@ $pavilion_primary: #3c1c8c;
       + span {
         display: inline-block;
         vertical-align: middle;
+        white-space: nowrap;
       }
     }
   }
@@ -154,11 +163,19 @@ $pavilion_primary: #3c1c8c;
     }
   }
 
-  td.start-time {
-    min-width: 170px;
+  td.start-time,
+  th.start-time {
+    max-width: 120px;
+    min-width: 120px;
   }
 
-  td.topic {
+  td.source,
+  th.source {
+    max-width: 90px;
+    min-width: 90px;
+  }
+
+  td.name-or-topic {
     min-width: 350px;
     max-width: 350px;
   }
@@ -177,7 +194,6 @@ $pavilion_primary: #3c1c8c;
       background: unset !important;
       color: var(--primary) !important;
       padding: unset;
-      min-width: 95px;
 
       .d-icon {
         color: var(--primary) !important;
@@ -301,6 +317,27 @@ $pavilion_primary: #3c1c8c;
   }
 }
 
+.events-provider-metadata {
+  display: flex;
+  gap: 1.5em;
+
+  .events-provider-logo {
+    img {
+      width: 80px;
+    }
+  }
+
+  .events-provider-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    label {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .events-provider-credentials {
   input {
     width: 100%;
@@ -324,6 +361,7 @@ $pavilion_primary: #3c1c8c;
   justify-content: center;
   gap: 0.25em;
   padding: 0.5em 0.65em;
+  margin-bottom: 1em;
   background-color: var(--primary-low);
   border-radius: var(--d-button-border-radius);
 }
@@ -365,4 +403,15 @@ $pavilion_primary: #3c1c8c;
 
 .update-subscription-status {
   width: 40px;
+}
+
+.events-subscription-tags {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.events-subscription-tag {
+  padding: 0.25em 0.5em;
+  background-color: var(--primary-low);
 }
