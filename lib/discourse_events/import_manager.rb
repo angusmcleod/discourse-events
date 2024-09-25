@@ -2,18 +2,30 @@
 
 module DiscourseEvents
   class ImportManager
+    include Subscription
+
     attr_reader :source, :logger
     attr_accessor :imported_event_uids, :created_event_uids, :updated_event_uids
 
     def initialize(source)
       @source = source
       @logger = Logger.new(:import)
+    end
 
-      OmniEvent.config.logger = @logger
-      OmniEvent::Builder.new { provider source.provider.provider_type, source.provider.options }
+    def ready?
+      @ready ||= false
+    end
+
+    def setup
+      return false unless subscribed? && source&.import_ready?
+      ::OmniEvent.config.logger = @logger
+      ::OmniEvent::Builder.new { provider source.provider.provider_type, source.provider.options }
+      @ready = true
     end
 
     def import(opts = {})
+      return false unless ready?
+
       opts.merge!(debug: Rails.env.development?)
 
       imported_events = {}
@@ -67,8 +79,9 @@ module DiscourseEvents
     end
 
     def self.import(source)
-      return unless source&.ready? && source.import?
       manager = self.new(source)
+      manager.setup
+      return unless manager.ready?
 
       opts = source.source_options_with_fixed
       opts[:from_time] = source.from_time if source.from_time.present?

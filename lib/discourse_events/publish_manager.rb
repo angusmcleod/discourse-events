@@ -2,6 +2,8 @@
 
 module DiscourseEvents
   class PublishManager
+    include Subscription
+
     attr_reader :post, :logger
     attr_accessor :publisher, :publication_type
 
@@ -12,7 +14,7 @@ module DiscourseEvents
     end
 
     def ready?
-      publisher.present? && subscription_supports_publication?
+      publisher.present? && subscription_manager.supports_publish?
     end
 
     def perform
@@ -141,15 +143,6 @@ module DiscourseEvents
       else
         nil
       end
-    end
-
-    def subscription_supports_publication?
-      subscription.supports_feature_value?(:source, :import_publish) ||
-        subscription.supports_feature_value?(:source, :publish)
-    end
-
-    def subscription
-      @subscription ||= SubscriptionManager.new
     end
   end
 end

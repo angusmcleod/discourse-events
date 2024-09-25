@@ -1,3 +1,4 @@
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import DiscourseRoute from "discourse/routes/discourse";
 import Event from "../models/event";
@@ -28,5 +29,12 @@ export default DiscourseRoute.extend({
       withTopicsCount: model.with_topics_count,
       withoutTopicsCount: model.without_topics_count,
     });
+  },
+
+  @action
+  willTransition() {
+    this.controllerFor("adminPlugins.events.event")
+      .get("selectedEvents")
+      .clear();
   },
 });

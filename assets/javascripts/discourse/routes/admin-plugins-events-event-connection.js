@@ -27,10 +27,6 @@ export default DiscourseRoute.extend({
     });
     controller.setMessage("info");
 
-    if (this.paramsFor("adminPlugins.events.event.connection").add) {
-      controller.addConnection();
-    }
-
     this.controllerFor("adminPlugins.events.event").setProperties({
       order: null,
       asc: null,

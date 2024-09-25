@@ -309,7 +309,7 @@ en:
         message:
           documentation: "Check out the documentation"
           connection:
-            info: "Automatically create topics from imported events."
+            info: "Automatically create topics from events imported from a source."
             sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             sync_failed_to_start: "Sync failed to start."
           source:

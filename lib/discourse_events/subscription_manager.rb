@@ -72,13 +72,17 @@ module DiscourseEvents
     end
 
     def self.setup(update: false, install: false)
-      new.setup(update: false, install: false)
+      new.setup(update: update, install: install)
+    end
+
+    def ready?
+      database_ready? && client_installed?
     end
 
     def setup(update: false, install: false)
-      return unless database_ready? && client_installed?
+      return unless ready?
       perform_update if update
-      perform_install if subscription && install
+      perform_install if subscribed? && install
     end
 
     def perform_update
@@ -86,15 +90,12 @@ module DiscourseEvents
     end
 
     def perform_install
-      source = subscriptions.resource.get_source_url(BUCKETS[product])
-      return unless source
+      return unless source_url
 
-      GEMS[product].each do |gem_slug, version|
+      GEMS[product.to_sym].each do |gem_slug, version|
         klass = gem_slug.to_s.underscore.classify
-        next if installed?(klass)
-
         gem_name = gem_slug.to_s.dasherize
-        opts = { require_name: gem_slug.to_s.gsub(/\_/, "/"), source: source }
+        opts = { require_name: gem_slug.to_s.gsub(/\_/, "/"), source: source_url }
         PluginGem.load(plugin_path, gem_name, version, opts)
       end
     end
@@ -108,8 +109,18 @@ module DiscourseEvents
       subscription.present?
     end
 
+    def supports_import?
+      supports_feature_value?(:source, :import) || supports_feature_value?(:source, :import_publish)
+    end
+
+    def supports_publish?
+      supports_feature_value?(:source, :publish) ||
+        supports_feature_value?(:source, :import_publish)
+    end
+
     def supports_feature_value?(feature, value)
       return true unless feature && value
+      return false unless product
       features[feature.to_sym][value.to_sym][product.to_sym]
     end
 
@@ -168,6 +179,14 @@ module DiscourseEvents
 
     def plugin_path
       @plugin_path ||= Discourse.plugins_by_name["discourse-events"].path
+    end
+
+    def source_url
+      @source_url ||=
+        begin
+          return ENV["DISCOURSE_EVENTS_SOURCE_URL"] if ENV["DISCOURSE_EVENTS_SOURCE_URL"].present?
+          subscriptions.resource.get_source_url(BUCKETS[product])
+        end
     end
   end
 end

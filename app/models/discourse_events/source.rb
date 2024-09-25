@@ -2,6 +2,8 @@
 
 module DiscourseEvents
   class Source < ActiveRecord::Base
+    include Subscription
+
     self.table_name = "discourse_events_sources"
 
     SOURCE_OPTIONS ||= {
@@ -70,6 +72,14 @@ module DiscourseEvents
 
     def ready?
       provider.authenticated?
+    end
+
+    def import_ready?
+      ready? && import? && subscription_manager.supports_import?
+    end
+
+    def publish_ready?
+      ready? && publish? && subscription_manager.supports_publish?
     end
 
     def import?
