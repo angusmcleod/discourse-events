@@ -8,9 +8,7 @@ module DiscourseEvents
 
     attr_accessor :opts
 
-    def initialize(user, connection)
-      raise ArgumentError.new("Must pass a valid connection") unless connection
-
+    def initialize(user, connection = nil)
       @user = user
       @connection = connection
       @logger = Logger.new(:sync)
@@ -20,11 +18,15 @@ module DiscourseEvents
       raise NotImplementedError
     end
 
+    def connect_event_to_topic(topic, event)
+      raise NotImplementedError
+    end
+
     def update_event_topic(topic, event)
       raise NotImplementedError
     end
 
-    def post_raw(event)
+    def post_raw(event, post: nil, add_raw: false)
       raise NotImplementedError
     end
 

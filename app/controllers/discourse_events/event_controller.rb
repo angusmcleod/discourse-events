@@ -43,6 +43,36 @@ module DiscourseEvents
       )
     end
 
+    def connect
+      event_id = params[:event_id]
+      event = Event.find_by(id: event_id)
+      raise Discourse::InvalidParameters.new(:event_id) unless event
+
+      topic_id = params[:topic_id]
+      topic = Topic.find_by(id: topic_id)
+      raise Discourse::InvalidParameters.new(:topic_id) unless topic
+
+      client = params[:client]
+      unless Connection.available_clients.include?(client)
+        raise Discourse::InvalidParameters.new(:client)
+      end
+
+      topic_with_event = nil
+      ActiveRecord::Base.transaction do
+        event_connection =
+          EventConnection.create!(event_id: event.id, topic_id: topic.id, client: client)
+        syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(current_user)
+        topic_with_event = syncer.connect_event_to_topic(topic, event)
+        raise ActiveRecord::Rollback unless topic_with_event
+      end
+
+      if topic_with_event.present?
+        render json: success_json
+      else
+        render json: failed_json
+      end
+    end
+
     def destroy
       event_ids = params[:event_ids]
       target = params[:target]

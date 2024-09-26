@@ -50,6 +50,16 @@
         @disabled={{addDisabled}}
       />
     {{/if}}
+    {{#if unconnectedRoute}}
+      <DButton
+        @id="connect-topic"
+        @action={{action "openConnectTopic"}}
+        @label="admin.events.event.connect.title"
+        @title="admin.events.event.connect.title"
+        @icon="plus"
+        @disabled={{connectTopicDisabled}}
+      />
+    {{/if}}
     {{#if eventsRoute}}
       <DButton
         @action={{action "openDelete"}}

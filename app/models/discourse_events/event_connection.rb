@@ -23,14 +23,12 @@ end
 #
 #  id            :bigint           not null, primary key
 #  event_id      :bigint           not null
-#  connection_id :bigint           not null
+#  connection_id :bigint
 #  topic_id      :bigint
-#  post_id       :bigint
 #  series_id     :string
 #  client        :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  external_id   :string
 #
 # Indexes
 #

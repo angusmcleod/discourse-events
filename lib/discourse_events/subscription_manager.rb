@@ -6,11 +6,11 @@ module DiscourseEvents
     GEMS = {
       community: {
         omnievent: "0.1.0.pre8",
-        omnievent_icalendar: "0.1.0.pre5",
+        omnievent_icalendar: "0.1.0.pre7",
       },
       business: {
         omnievent: "0.1.0.pre8",
-        omnievent_icalendar: "0.1.0.pre5",
+        omnievent_icalendar: "0.1.0.pre7",
         omnievent_api: "0.1.0.pre3",
         omnievent_outlook: "0.1.0.pre7",
         omnievent_google: "0.1.0.pre4",

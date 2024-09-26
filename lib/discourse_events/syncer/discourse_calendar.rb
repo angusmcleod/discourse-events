@@ -12,33 +12,41 @@ module DiscourseEvents
       post.topic
     end
 
-    def update_event_topic(topic, event)
+    def update_event_topic(topic, event, add_raw: false)
+      post = topic.first_post
+
       # No validations or callbacks can be triggered when updating this data
       topic.update_columns(title: event.name, fancy_title: nil, slug: nil)
-      topic.first_post.update_columns(raw: post_raw(event))
+      post.update_columns(raw: post_raw(event, post: post, add_raw: add_raw))
 
-      if topic.first_post.event
+      if post.event
         org_params = { original_starts_at: event.start_time }
         org_params[:original_ends_at] = event.end_time if add_end_time(event)
         org_params[:url] = event.url if event.url
-        topic.first_post.event.update_columns(org_params)
+        post.event.update_columns(org_params)
 
         params = { starts_at: event.start_time }
         params[:ends_at] = event.end_time if add_end_time(event)
-        topic.first_post.event.event_dates.first.update_columns(params)
+        post.event.event_dates.first.update_columns(params)
       end
-      topic.first_post.trigger_post_process(bypass_bump: true, priority: :low)
+      post.trigger_post_process(bypass_bump: true, priority: :low)
 
       topic
     end
 
-    def post_raw(event)
+    def connect_event_to_topic(topic, event)
+      return false if topic.first_post.event.present?
+      update_event_topic(topic, event, add_raw: true)
+    end
+
+    def post_raw(event, post: nil, add_raw: false)
       raw_params = "start=\"#{event.start_time}\""
       raw_params += " end=\"#{event.end_time}\"" if add_end_time(event)
       raw_params += " url=\"#{event.url}\"" if event.url
 
       raw = "[event #{raw_params}]\n[/event]"
       raw += "\n#{event.description}" if event.description.present?
+      raw += "\n\n#{post.raw}" if post && add_raw
       raw
     end
 

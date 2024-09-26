@@ -26,8 +26,6 @@ module DiscourseEvents
                 message: "%{value} is not a valid provider type",
               }
 
-    before_create { self.name = self.provider_type unless self.name.present? }
-
     def options
       { token: self.token } if (TOKEN + OAUTH2).include?(self.provider_type)
     end

@@ -299,6 +299,12 @@ en:
             events_only_btn: Delete Events
             events_and_topics_btn: Delete Events and Topics
             topics_only_btn: Delete Topics
+          connect:
+            title: Connect Topic
+            label: Connect
+            event: Event
+            topic: Topic
+            client: Client
         log:
           title: Logs
           created_at: Created At

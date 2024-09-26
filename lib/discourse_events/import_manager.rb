@@ -18,8 +18,9 @@ module DiscourseEvents
 
     def setup
       return false unless subscribed? && source&.import_ready?
+      _provider = source.provider
       ::OmniEvent.config.logger = @logger
-      ::OmniEvent::Builder.new { provider source.provider.provider_type, source.provider.options }
+      ::OmniEvent::Builder.new { provider _provider.provider_type, _provider.options }
       @ready = true
     end
 

@@ -11,8 +11,8 @@ describe DiscourseEvents::SourceController do
     get "/admin/plugins/events/source.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["sources"].first["name"]).to eq(source.name)
-    expect(response.parsed_body["providers"].first["name"]).to eq(source.provider.name)
+    expect(response.parsed_body["sources"].map { |s| s["name"] }).to include(source.name)
+    expect(response.parsed_body["providers"].map { |p| p["name"] }).to include(source.provider.name)
   end
 
   context "with a subscription" do

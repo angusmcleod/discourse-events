@@ -49,6 +49,8 @@ require_relative "lib/discourse_events_timezone_default_site_setting.rb"
 require_relative "lib/discourse_events_timezone_display_site_setting.rb"
 
 after_initialize do
+  register_seedfu_fixtures(Rails.root.join("plugins", "discourse-events", "db", "fixtures"))
+
   require_relative "lib/discourse_events/engine.rb"
   require_relative "lib/discourse_events/helper.rb"
   require_relative "lib/discourse_events/list.rb"
@@ -104,8 +106,6 @@ after_initialize do
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
-
-  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-events", "db", "fixtures").to_s
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -391,6 +391,16 @@ after_initialize do
     else
       topics
     end
+  end
+
+  register_search_advanced_filter(/^without_event/) do |posts|
+    where_sql = "name = 'event_start'"
+    if defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module
+      where_sql += "OR name = '#{DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT}'"
+    end
+    posts.where(
+      "posts.topic_id NOT IN (SELECT topic_id FROM topic_custom_fields WHERE (#{where_sql}))",
+    )
   end
 end
 

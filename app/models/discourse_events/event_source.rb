@@ -11,21 +11,22 @@ end
 
 # == Schema Information
 #
-# Table name: discourse_events_event_connections
+# Table name: discourse_events_event_sources
 #
-#  id            :bigint           not null, primary key
-#  event_id      :bigint           not null
-#  source_id     :bigint           not null
-#  uid           :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  id         :bigint           not null, primary key
+#  uid        :string           not null
+#  source_id  :bigint
+#  event_id   :bigint
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #
-#  discourse_events_event_connections_event  (event_id)
+#  index_discourse_events_event_sources_on_event_id   (event_id)
+#  index_discourse_events_event_sources_on_source_id  (source_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (connection_id => discourse_events_connections.id)
 #  fk_rails_...  (event_id => discourse_events_events.id)
+#  fk_rails_...  (source_id => discourse_events_sources.id)
 #

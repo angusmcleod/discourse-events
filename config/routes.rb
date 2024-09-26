@@ -48,6 +48,7 @@ Discourse::Application.routes.prepend do
       delete "events/event/connection/:id" => "connection#destroy"
       get "events/event" => "event#index"
       delete "events/event" => "event#destroy"
+      post "events/event/connect" => "event#connect"
       get "events/log" => "log#index"
       get "events/subscription" => "subscription#index"
     end

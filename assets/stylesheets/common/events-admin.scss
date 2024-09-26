@@ -415,3 +415,13 @@ $pavilion_primary: #3c1c8c;
   padding: 0.25em 0.5em;
   background-color: var(--primary-low);
 }
+
+.events-connect-topic-modal {
+  .control-group {
+    margin-bottom: 1em;
+  }
+
+  .select-kit {
+    width: 100%;
+  }
+}

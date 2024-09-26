@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module OmniEvent
-  class EventHash < ::Hashie::Mash
+  class KeyStore < ::Hashie::Mash
+  end
+  class EventHash < OmniEvent::KeyStore
   end
   class Builder
     def initialize(&block)

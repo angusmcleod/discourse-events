@@ -86,5 +86,51 @@ describe DiscourseEvents::EventController do
         expect(Post.exists?(post_id)).to eq(false)
       end
     end
+
+    context "when connecting a topic" do
+      let!(:topic) { Fabricate(:topic) }
+      let!(:first_post) { Fabricate(:post, topic: topic) }
+
+      shared_examples "connects topics" do
+        it "connects a topic" do
+          post "/admin/plugins/events/event/connect.json",
+               params: {
+                 topic_id: topic.id,
+                 event_id: event.id,
+                 client: client,
+               }
+          expect(response.status).to eq(200)
+          expect(response.parsed_body["success"]).to eq("OK")
+          expect(
+            DiscourseEvents::EventConnection.exists?(
+              topic_id: topic.id,
+              event_id: event.id,
+              client: client,
+            ),
+          ).to eq(true)
+        end
+      end
+
+      context "with discourse_events" do
+        let!(:client) { "discourse_events" }
+
+        include_examples "connects topics"
+      end
+
+      context "with discourse_calendar" do
+        let!(:client) { "discourse_calendar" }
+
+        before do
+          unless defined?(DiscoursePostEvent) == "constant"
+            skip("Discourse Calendar is not installed")
+          end
+
+          SiteSetting.calendar_enabled = true
+          SiteSetting.discourse_post_event_enabled = true
+        end
+
+        include_examples "connects topics"
+      end
+    end
   end
 end

@@ -13,7 +13,7 @@ describe DiscourseEvents::ProviderController do
     get "/admin/plugins/events/provider.json"
 
     expect(response.status).to eq(200)
-    expect(response.parsed_body["providers"].first["name"]).to eq(provider.name)
+    expect(response.parsed_body["providers"].map { |p| p["name"] }).to include(provider.name)
   end
 
   it "creates providers" do

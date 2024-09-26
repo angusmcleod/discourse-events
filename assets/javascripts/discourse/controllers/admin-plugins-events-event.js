@@ -5,6 +5,7 @@ import { inject as service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
 import ConfirmEventDeletion from "../components/modal/events-confirm-event-deletion";
+import ConnectTopic from "../components/modal/events-connect-topic";
 import Message from "../mixins/message";
 
 export default Controller.extend(Message, {
@@ -45,6 +46,11 @@ export default Controller.extend(Message, {
     return currentRouteName === "adminPlugins.events.event.index";
   },
 
+  @discourseComputed("eventsRoute", "filter")
+  unconnectedRoute(eventsRoute, filter) {
+    return eventsRoute && filter === "unconnected";
+  },
+
   @discourseComputed("router.currentRouteName")
   connectionRoute(currentRouteName) {
     return currentRouteName === "adminPlugins.events.event.connection";
@@ -55,11 +61,31 @@ export default Controller.extend(Message, {
     return eventsRoute ? `event.${filter}` : "connection";
   },
 
+  @discourseComputed("selectedEvents.[]")
+  connectTopicDisabled(selectedEvents) {
+    return selectedEvents.length !== 1;
+  },
+
   actions: {
     addConnection() {
       if (this.connectionRoute) {
         this.connections.addConnection();
       }
+    },
+
+    openConnectTopic() {
+      const selectedEvent = this.selectedEvents[0];
+
+      this.modal.show(ConnectTopic, {
+        model: {
+          event: selectedEvent,
+          onConnectTopic: () => {
+            this.set("selectedEvents", A());
+            const events = this.get("events");
+            events.removeObject(events.findBy("id", selectedEvent.id));
+          },
+        },
+      });
     },
 
     modifySelection(events, checked) {

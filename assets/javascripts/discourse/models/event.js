@@ -22,6 +22,13 @@ Event.reopenClass({
     }).catch(popupAjaxError);
   },
 
+  connect(data) {
+    return ajax("/admin/plugins/events/event/connect", {
+      type: "POST",
+      data,
+    }).catch(popupAjaxError);
+  },
+
   eventsArray(events) {
     return A(
       events.map((event) => {
@@ -30,7 +37,7 @@ Event.reopenClass({
           attrs.source = A(event.sources.map((s) => Source.create(s)));
         }
         attrs.topics = A(event.topics.map((t) => Topic.create(t)));
-        return Object.assign(event, attrs);
+        return Event.create(Object.assign(event, attrs));
       })
     );
   },
