@@ -2,8 +2,6 @@ import { A } from "@ember/array";
 import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import Topic from "discourse/models/topic";
-import Source from "../models/source";
 
 const Event = EmberObject.extend();
 
@@ -29,15 +27,10 @@ Event.reopenClass({
     }).catch(popupAjaxError);
   },
 
-  eventsArray(events) {
+  toArray(events) {
     return A(
       events.map((event) => {
-        let attrs = {};
-        if (event.sources) {
-          attrs.source = A(event.sources.map((s) => Source.create(s)));
-        }
-        attrs.topics = A(event.topics.map((t) => Topic.create(t)));
-        return Event.create(Object.assign(event, attrs));
+        return Event.create(event);
       })
     );
   },

@@ -5,11 +5,11 @@ module DiscourseEvents
     BUCKETS = { community: "discourse-events-gems-us", business: "discourse-events-gems-us" }
     GEMS = {
       community: {
-        omnievent: "0.1.0.pre8",
+        omnievent: "0.1.0.pre9",
         omnievent_icalendar: "0.1.0.pre7",
       },
       business: {
-        omnievent: "0.1.0.pre8",
+        omnievent: "0.1.0.pre9",
         omnievent_icalendar: "0.1.0.pre7",
         omnievent_api: "0.1.0.pre3",
         omnievent_outlook: "0.1.0.pre7",

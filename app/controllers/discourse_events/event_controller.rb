@@ -5,41 +5,56 @@ module DiscourseEvents
     PAGE_LIMIT = 30
 
     def index
-      all_events =
-        Event.includes(:sources, event_connections: [:topic]).references(:event_connections)
-      events_with_topics =
-        all_events.where("discourse_events_event_connections.topic_id IS NOT NULL")
-      events_without_topics =
-        all_events.where("discourse_events_event_connections.topic_id IS NULL")
-
       filter = params[:filter]
-      events =
-        if filter == "unconnected"
-          events_without_topics
-        elsif filter === "connected"
-          events_with_topics
-        else
-          all_events
-        end
+      if filter && %w[unconnected connected].exclude?(filter)
+        raise Discourse::InvalidParameters.new(:filter)
+      end
 
-      page = params[:page].to_i
-      order = %w[start_time source_id name].find { |attr| attr == params[:order] } || "start_time"
+      order = params[:order]
+      raise Discourse::InvalidParameters.new(:order) if order && %w[start_time name].exclude?(order)
+      order ||= "start_time"
+
       direction = ActiveRecord::Type::Boolean.new.cast(params[:asc]) ? "ASC" : "DESC"
+      page = params[:page].to_i
       offset = page * PAGE_LIMIT
+      limit = PAGE_LIMIT
 
-      events =
-        events
-          .order("discourse_events_events.#{order} #{direction}")
-          .offset(offset)
-          .limit(PAGE_LIMIT)
+      filter_sql =
+        if filter
+          "WHERE ec.topic_id IS #{filter === "unconnected" ? "NULL" : "NOT NULL"}"
+        else
+          ""
+        end
+      events_sql = (<<~SQL)
+        SELECT * FROM (#{Event.distinct_events_sql(filter_sql: filter_sql)}) AS distinct_events
+        ORDER BY #{order} #{direction}
+        OFFSET #{offset}
+        LIMIT #{limit}
+      SQL
+
+      events = DB.query(events_sql)
+
+      with_topics_sql = (<<~SQL)
+        SELECT COUNT(id) FROM (#{Event.distinct_events_sql}) AS distinct_events
+        WHERE cardinality(topic_ids) > 0
+      SQL
+
+      without_topics_sql = (<<~SQL)
+        SELECT COUNT(id) FROM (#{Event.distinct_events_sql}) AS distinct_events
+        WHERE cardinality(topic_ids) = 0
+      SQL
+
+      with_topics_query = DB.query(with_topics_sql)
+      without_topics_query = DB.query(without_topics_sql)
 
       render_json_dump(
         page: page,
         filter: filter,
         order: order,
-        with_topics_count: events_with_topics.count,
-        without_topics_count: events_without_topics.count,
+        with_topics_count: with_topics_query.first.count,
+        without_topics_count: without_topics_query.first.count,
         events: serialize_data(events, EventSerializer, root: false),
+        providers: serialize_data(Provider.all, ProviderSerializer, root: false),
       )
     end
 

@@ -165,19 +165,8 @@ $pavilion_primary: #3c1c8c;
 
   td.start-time,
   th.start-time {
-    max-width: 120px;
-    min-width: 120px;
-  }
-
-  td.source,
-  th.source {
-    max-width: 90px;
-    min-width: 90px;
-  }
-
-  td.name-or-topic {
-    min-width: 350px;
-    max-width: 350px;
+    width: 200px;
+    box-sizing: border-box;
   }
 
   th {

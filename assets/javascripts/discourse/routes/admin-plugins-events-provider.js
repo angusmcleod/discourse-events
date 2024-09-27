@@ -1,4 +1,3 @@
-import { A } from "@ember/array";
 import DiscourseRoute from "discourse/routes/discourse";
 import Provider from "../models/provider";
 
@@ -9,7 +8,7 @@ export default DiscourseRoute.extend({
 
   setupController(controller, model) {
     controller.setProperties({
-      providers: A(model.providers.map((p) => Provider.create(p))),
+      providers: Provider.toArray(model.providers),
     });
     controller.setMessage("info");
   },

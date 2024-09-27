@@ -2,6 +2,7 @@ import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import DiscourseRoute from "discourse/routes/discourse";
 import Event from "../models/event";
+import Provider from "../models/provider";
 
 export default DiscourseRoute.extend({
   router: service(),
@@ -25,9 +26,10 @@ export default DiscourseRoute.extend({
       page: model.page,
       filter: model.filter,
       order: model.order,
-      events: Event.eventsArray(model.events),
+      events: Event.toArray(model.events),
       withTopicsCount: model.with_topics_count,
       withoutTopicsCount: model.without_topics_count,
+      providers: Provider.toArray(model.providers),
     });
   },
 

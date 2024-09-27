@@ -12,25 +12,13 @@
       />
       <TableHeaderToggle
         @tagName="th"
-        @field="source_id"
-        @labelKey="admin.events.event.source"
+        @field="name"
+        @labelKey="admin.events.event.name"
         @order={{order}}
         @asc={{asc}}
         @automatic={{true}}
-        @class="source"
       />
-      {{#if showTopics}}
-        <th>{{i18n "admin.events.event.topics"}}</th>
-      {{else}}
-        <TableHeaderToggle
-          @tagName="th"
-          @field="name"
-          @labelKey="admin.events.event.name"
-          @order={{order}}
-          @asc={{asc}}
-          @automatic={{true}}
-        />
-      {{/if}}
+      <th></th>
       <th class="event-actions">
         <DButton
           @action={{action "toggleSelectAll"}}
@@ -45,6 +33,7 @@
     {{#each events as |event|}}
       <EventsEventRow
         @event={{event}}
+        @providers={{providers}}
         @modifySelection={{modifySelection}}
         @selectAll={{selectAll}}
         @showTopics={{showTopics}}

@@ -29,6 +29,32 @@ module DiscourseEvents
                 in: %w[draft published cancelled],
                 message: "%{value} is not a valid event status",
               }
+
+    def self.distinct_events_sql(filter_sql: "")
+      (<<~SQL)
+        SELECT e.id,
+               e.start_time,
+               e.name,
+               e.series_id, 
+               array_remove(array_agg(ec.topic_id), NULL) AS topic_ids,
+               es.source_id,
+               s.provider_id
+        FROM (
+            SELECT DISTINCT ON (series_id) *
+            FROM discourse_events_events
+            WHERE series_id IS NOT NULL AND start_time > NOW()
+            UNION
+            SELECT *
+            FROM discourse_events_events
+            WHERE series_id IS NULL
+        ) AS e
+        LEFT JOIN discourse_events_event_connections ec ON ec.event_id = e.id
+        LEFT JOIN discourse_events_event_sources es ON es.event_id = e.id
+        LEFT JOIN discourse_events_sources s ON s.id = es.source_id
+        #{filter_sql}
+        GROUP BY e.id, e.start_time, e.name, e.series_id, es.source_id, s.provider_id
+      SQL
+    end
   end
 end
 
