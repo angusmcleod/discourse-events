@@ -5,7 +5,11 @@
 <td class="name">
   {{#if showTopics}}
     {{#each event.topic_ids as |topic_id|}}
-      <a href={{concat "/t/" topic_id}}>{{event.name}}</a>
+      <a
+        href={{concat "/t/" topic_id}}
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{event.name}}</a>
     {{/each}}
   {{else}}
     {{event.name}}
@@ -13,14 +17,21 @@
 </td>
 
 <td class="tags">
-  {{#if providerLabel}}
-    <a
-      class="event-tag provider"
-      href={{concat "/admin/plugins/events/provider"}}
-    >
-      <span>{{providerLabel}}</span>
-    </a>
-  {{/if}}
+  <div class="event-tags">
+    {{#if providerLabel}}
+      <a
+        class="event-tag provider"
+        href={{concat "/admin/plugins/events/provider"}}
+      >
+        <span>{{providerLabel}}</span>
+      </a>
+    {{/if}}
+    {{#if event.series_id}}
+      <a class="event-tag series">
+        <span>{{i18n "admin.events.event.series.label"}}</span>
+      </a>
+    {{/if}}
+  </div>
 </td>
 
 <td class="select-event">

@@ -305,6 +305,8 @@ en:
             event: Event
             topic: Topic
             client: Client
+          series:
+            label: Series
         log:
           title: Logs
           created_at: Created At

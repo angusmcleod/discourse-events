@@ -26,7 +26,7 @@ module DiscourseEvents
           ""
         end
       events_sql = (<<~SQL)
-        SELECT * FROM (#{Event.distinct_events_sql(filter_sql: filter_sql)}) AS distinct_events
+        SELECT * FROM (#{Event.list_sql(filter_sql: filter_sql)}) AS events
         ORDER BY #{order} #{direction}
         OFFSET #{offset}
         LIMIT #{limit}
@@ -35,12 +35,12 @@ module DiscourseEvents
       events = DB.query(events_sql)
 
       with_topics_sql = (<<~SQL)
-        SELECT COUNT(id) FROM (#{Event.distinct_events_sql}) AS distinct_events
+        SELECT COUNT(id) FROM (#{Event.list_sql}) AS events
         WHERE cardinality(topic_ids) > 0
       SQL
 
       without_topics_sql = (<<~SQL)
-        SELECT COUNT(id) FROM (#{Event.distinct_events_sql}) AS distinct_events
+        SELECT COUNT(id) FROM (#{Event.list_sql}) AS events
         WHERE cardinality(topic_ids) = 0
       SQL
 

@@ -169,13 +169,20 @@ $pavilion_primary: #3c1c8c;
     box-sizing: border-box;
   }
 
+  td.tags {
+    width: 200px;
+    text-align: right;
+  }
+
   th {
     height: 45px;
     box-sizing: border-box;
   }
 
+  td.event-actions,
   th.event-actions {
     text-align: right;
+    width: 60px;
 
     .btn,
     .btn:active,
@@ -413,4 +420,17 @@ $pavilion_primary: #3c1c8c;
   .select-kit {
     width: 100%;
   }
+}
+
+.event-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+a.event-tag {
+  padding: 0.25em 0.5em;
+  color: var(--primary-800);
+  background-color: var(--primary-200);
+  font-size: var(--font-down-1);
 }

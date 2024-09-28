@@ -98,8 +98,8 @@ describe DiscourseEvents::Syncer do
         connection.source.stubs(:supports_series).returns(true)
       end
 
-      it "sources all events if events_split_series_into_different_topics is enabled" do
-        SiteSetting.events_split_series_into_different_topics = true
+      it "sources all events if events_ignore_series is enabled" do
+        SiteSetting.events_ignore_series = true
 
         syncer = subject.new(user, connection)
         expect(syncer.standard_events.size).to eq(2)

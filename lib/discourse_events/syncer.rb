@@ -184,7 +184,7 @@ module DiscourseEvents
     end
 
     def one_topic_per_series
-      connection.source.supports_series && !SiteSetting.events_split_series_into_different_topics
+      connection.source.supports_series && !SiteSetting.events_ignore_series
     end
 
     def _create_event_topic(event)

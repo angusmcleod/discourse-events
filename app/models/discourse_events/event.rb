@@ -30,7 +30,43 @@ module DiscourseEvents
                 message: "%{value} is not a valid event status",
               }
 
-    def self.distinct_events_sql(filter_sql: "")
+    ONE_EVENT_PER_SERIES_SQL = (<<~SQL)
+      (
+        SELECT DISTINCT ON (series_id) * FROM (
+          (
+            SELECT DISTINCT ON (series_id) *
+            FROM discourse_events_events
+            WHERE series_id IS NOT NULL AND start_time > NOW()
+            ORDER BY series_id, start_time ASC
+          )
+          UNION
+          (
+            SELECT DISTINCT ON (series_id) *
+            FROM discourse_events_events
+            WHERE series_id IS NOT NULL AND start_time < NOW()
+            ORDER BY series_id, start_time DESC
+          )
+        ) event_series
+        ORDER BY series_id, start_time DESC
+      )
+      UNION
+      (
+        SELECT *
+        FROM discourse_events_events
+        WHERE series_id IS NULL
+      )
+    SQL
+
+    def self.list_sql(filter_sql: "")
+      events =
+        (
+          if SiteSetting.events_ignore_series
+            "SELECT * FROM discourse_events_events"
+          else
+            ONE_EVENT_PER_SERIES_SQL
+          end
+        )
+
       (<<~SQL)
         SELECT e.id,
                e.start_time,
@@ -39,15 +75,7 @@ module DiscourseEvents
                array_remove(array_agg(ec.topic_id), NULL) AS topic_ids,
                es.source_id,
                s.provider_id
-        FROM (
-            SELECT DISTINCT ON (series_id) *
-            FROM discourse_events_events
-            WHERE series_id IS NOT NULL AND start_time > NOW()
-            UNION
-            SELECT *
-            FROM discourse_events_events
-            WHERE series_id IS NULL
-        ) AS e
+        FROM (#{events}) AS e
         LEFT JOIN discourse_events_event_connections ec ON ec.event_id = e.id
         LEFT JOIN discourse_events_event_sources es ON es.event_id = e.id
         LEFT JOIN discourse_events_sources s ON s.id = es.source_id

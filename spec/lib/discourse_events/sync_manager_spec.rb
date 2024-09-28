@@ -69,7 +69,7 @@ describe DiscourseEvents::SyncManager do
 
     before do
       DiscourseEvents::Source.any_instance.stubs(:supports_series).returns(true)
-      SiteSetting.events_split_series_into_different_topics = false
+      SiteSetting.events_ignore_series = false
     end
 
     it "syncs series events" do

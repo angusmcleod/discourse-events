@@ -75,7 +75,7 @@ plugins:
   events_rsvp:
     default: false
     client: true
-  events_split_series_into_different_topics: false
+  events_ignore_series: false
   events_allow_moderator_management:
     default: false
     client: true
