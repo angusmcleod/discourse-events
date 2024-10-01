@@ -5,20 +5,18 @@ require "rails_helper"
 describe DiscourseEvents::DiscourseCalendarSyncer do
   subject { DiscourseEvents::DiscourseCalendarSyncer }
 
-  fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:event) { Fabricate(:discourse_events_event) }
-  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
   fab!(:category)
   fab!(:user) { Fabricate(:user, admin: true) }
-  fab!(:connection) do
+  fab!(:source) do
     Fabricate(
-      :discourse_events_connection,
-      source: source,
+      :discourse_events_source,
       category: category,
       user: user,
       client: "discourse_calendar",
     )
   end
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
   before do
     skip("Discourse Calendar is not installed") unless defined?(DiscoursePostEvent) == "constant"
@@ -28,11 +26,11 @@ describe DiscourseEvents::DiscourseCalendarSyncer do
   end
 
   def sync_events(opts = {})
-    syncer = subject.new(user, connection)
+    syncer = subject.new(user, source)
     syncer.sync
 
     event.reload
-    topic = Topic.find(event.event_connections.first.topic_id)
+    topic = Topic.find(event.event_topics.first.topic_id)
     post = topic.first_post
 
     CookedPostProcessor.new(post).post_process

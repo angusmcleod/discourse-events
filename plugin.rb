@@ -74,8 +74,7 @@ after_initialize do
   require_relative "lib/discourse_events/auth/outlook.rb"
   require_relative "lib/discourse_events/auth/google.rb"
   require_relative "app/models/discourse_events/filter.rb"
-  require_relative "app/models/discourse_events/connection.rb"
-  require_relative "app/models/discourse_events/event_connection.rb"
+  require_relative "app/models/discourse_events/event_topic.rb"
   require_relative "app/models/discourse_events/event_source.rb"
   require_relative "app/models/discourse_events/event.rb"
   require_relative "app/models/discourse_events/log.rb"
@@ -84,7 +83,6 @@ after_initialize do
   require_relative "app/controllers/concerns/discourse_events/filters.rb"
   require_relative "app/controllers/discourse_events/admin_controller.rb"
   require_relative "app/controllers/discourse_events/api_keys_controller.rb"
-  require_relative "app/controllers/discourse_events/connection_controller.rb"
   require_relative "app/controllers/discourse_events/event_controller.rb"
   require_relative "app/controllers/discourse_events/rsvp_controller.rb"
   require_relative "app/controllers/discourse_events/log_controller.rb"
@@ -93,14 +91,12 @@ after_initialize do
   require_relative "app/controllers/discourse_events/subscription_controller.rb"
   require_relative "app/serializers/discourse_events/basic_event_serializer.rb"
   require_relative "app/serializers/discourse_events/filter_serializer.rb"
-  require_relative "app/serializers/discourse_events/connection_serializer.rb"
-  require_relative "app/serializers/discourse_events/connection_user_serializer.rb"
   require_relative "app/serializers/discourse_events/source_serializer.rb"
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
   require_relative "app/jobs/discourse_events/regular/import_source.rb"
-  require_relative "app/jobs/discourse_events/regular/sync_connection.rb"
+  require_relative "app/jobs/discourse_events/regular/sync_source.rb"
   require_relative "app/jobs/discourse_events/regular/refresh_token.rb"
   require_relative "config/routes.rb"
   require_relative "extensions/list_controller.rb"
@@ -134,8 +130,8 @@ after_initialize do
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
 
-  Category.has_many :discourse_events_connections,
-                    class_name: "DiscourseEvents::Connection",
+  Category.has_many :discourse_events_sources,
+                    class_name: "DiscourseEvents::Source",
                     dependent: :destroy
 
   SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
@@ -203,9 +199,9 @@ after_initialize do
     event
   end
 
-  Topic.has_one :event_connection, class_name: "DiscourseEvents::EventConnection"
+  Topic.has_one :event_topic, class_name: "DiscourseEvents::EventTopic"
   Topic.has_one :event_record,
-                through: :event_connection,
+                through: :event_topic,
                 source: :event,
                 class_name: "DiscourseEvents::Event"
   Topic.attr_accessor :include_excerpt

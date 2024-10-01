@@ -5,12 +5,11 @@ module DiscourseEvents
     self.table_name = "discourse_events_events"
     self.ignored_columns += %i[uid source_id provider_id]
 
-    has_many :event_connections,
+    has_many :event_topics,
              foreign_key: "event_id",
-             class_name: "DiscourseEvents::EventConnection",
+             class_name: "DiscourseEvents::EventTopic",
              dependent: :destroy
-    has_many :connections, through: :event_connections, source: :connection
-    has_many :topics, through: :event_connections
+    has_many :topics, through: :event_topics
 
     has_many :event_sources,
              foreign_key: "event_id",
@@ -21,62 +20,57 @@ module DiscourseEvents
     has_many :series_events,
              primary_key: "series_id",
              foreign_key: "series_id",
-             class_name: "DiscourseEvents::EventConnection"
-    has_many :series_events_topics, through: :series_events, source: :topic
+             class_name: "DiscourseEvents::EventTopic"
+    has_many :series_topics, through: :series_events, source: :topic
 
-    validates :status,
-              inclusion: {
-                in: %w[draft published cancelled],
-                message: "%{value} is not a valid event status",
-              }
-
-    ONE_EVENT_PER_SERIES_SQL = (<<~SQL)
-      (
-        SELECT DISTINCT ON (series_id) * FROM (
-          (
-            SELECT DISTINCT ON (series_id) *
-            FROM discourse_events_events
-            WHERE series_id IS NOT NULL AND start_time > NOW()
-            ORDER BY series_id, start_time ASC
-          )
-          UNION
-          (
-            SELECT DISTINCT ON (series_id) *
-            FROM discourse_events_events
-            WHERE series_id IS NOT NULL AND start_time < NOW()
-            ORDER BY series_id, start_time DESC
-          )
-        ) event_series
-        ORDER BY series_id, start_time DESC
-      )
-      UNION
-      (
-        SELECT *
-        FROM discourse_events_events
-        WHERE series_id IS NULL
-      )
+    PAST_SERIES_EVENTS_SQL = (<<~SQL)
+      DISTINCT ON (series_id) *
+      FROM discourse_events_events
+      WHERE series_id IS NOT NULL AND start_time < NOW()
+      ORDER BY series_id, start_time DESC
     SQL
 
-    def self.list_sql(filter_sql: "")
-      events =
-        (
-          if SiteSetting.events_ignore_series
-            "SELECT * FROM discourse_events_events"
-          else
-            ONE_EVENT_PER_SERIES_SQL
-          end
-        )
+    FUTURE_SERIES_EVENTS_SQL = (<<~SQL)
+      DISTINCT ON (series_id) *
+      FROM discourse_events_events
+      WHERE series_id IS NOT NULL AND start_time > NOW()
+      ORDER BY series_id, start_time ASC
+    SQL
 
+    CURRENT_SERIES_EVENTS_SQL = (<<~SQL)
+      DISTINCT ON (series_id) * FROM (
+        (SELECT #{FUTURE_SERIES_EVENTS_SQL})
+        UNION
+        (SELECT #{PAST_SERIES_EVENTS_SQL})
+      ) current_series_events
+      ORDER BY series_id, start_time DESC
+    SQL
+
+    ONE_EVENT_PER_SERIES_SQL = (<<~SQL)
+      (SELECT #{CURRENT_SERIES_EVENTS_SQL})
+      UNION
+      (SELECT * FROM discourse_events_events WHERE series_id IS NULL)
+    SQL
+
+    def self.events_sql
+      if SiteSetting.events_one_event_per_series
+        ONE_EVENT_PER_SERIES_SQL
+      else
+        "SELECT * FROM discourse_events_events"
+      end
+    end
+
+    def self.list_sql(filter_sql: "")
       (<<~SQL)
         SELECT e.id,
                e.start_time,
                e.name,
                e.series_id, 
-               array_remove(array_agg(ec.topic_id), NULL) AS topic_ids,
+               array_remove(array_agg(et.topic_id), NULL) AS topic_ids,
                es.source_id,
                s.provider_id
-        FROM (#{events}) AS e
-        LEFT JOIN discourse_events_event_connections ec ON ec.event_id = e.id
+        FROM (#{events_sql}) AS e
+        LEFT JOIN discourse_events_event_topics et ON et.event_id = e.id
         LEFT JOIN discourse_events_event_sources es ON es.event_id = e.id
         LEFT JOIN discourse_events_sources s ON s.id = es.source_id
         #{filter_sql}

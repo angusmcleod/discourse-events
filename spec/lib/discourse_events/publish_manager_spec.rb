@@ -3,12 +3,9 @@
 require "rails_helper"
 
 describe DiscourseEvents::PublishManager do
-  fab!(:source) { Fabricate(:discourse_events_source) }
   fab!(:category)
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1]) }
-  fab!(:connection) do
-    Fabricate(:discourse_events_connection, source: source, category: category, user: user)
-  end
+  fab!(:source) { Fabricate(:discourse_events_source, category: category, user: user) }
   fab!(:topic) { Fabricate(:topic, category: category) }
   fab!(:post) { Fabricate(:post, topic: topic, user: user) }
   let!(:event_start) { "2017-09-18T16:00:00+08:00" }
@@ -30,7 +27,7 @@ describe DiscourseEvents::PublishManager do
   end
 
   def enable_publication
-    source.sync_type = DiscourseEvents::Source.sync_types[:import_publish]
+    source.import_type = DiscourseEvents::Source.import_types[:import_publish]
     source.save!
   end
 
@@ -52,14 +49,14 @@ describe DiscourseEvents::PublishManager do
       context "with a post event" do
         before { create_post_event }
 
-        context "without publishable connections" do
+        context "without publishable sources" do
           it "creates an event" do
             manager.perform
             expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
           end
         end
 
-        context "with publishable connections" do
+        context "with publishable sources" do
           before { enable_publication }
 
           it "sends create_event to the right publisher" do
@@ -85,13 +82,13 @@ describe DiscourseEvents::PublishManager do
               expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
             end
 
-            it "creates event connections" do
+            it "creates event sources" do
               manager.perform
               event = DiscourseEvents::Event.find_by(start_time: event_start)
               expect(
                 DiscourseEvents::EventSource.exists?(
                   uid: "12345",
-                  source_id: connection.source.id,
+                  source_id: source.id,
                   event_id: event.id,
                 ),
               ).to eq(true)
@@ -112,19 +109,14 @@ describe DiscourseEvents::PublishManager do
 
     context "with an updated event" do
       let!(:event) { Fabricate(:discourse_events_event, start_time: event_start) }
-      let!(:event_connection) do
-        Fabricate(
-          :discourse_events_event_connection,
-          event: event,
-          connection: connection,
-          topic: post.topic,
-        )
+      let!(:event_topic) do
+        Fabricate(:discourse_events_event_topic, event: event, topic: post.topic)
       end
       let!(:event_source) do
         Fabricate(
           :discourse_events_event_source,
           event: event,
-          source: connection.source,
+          source: source,
           uid: event_hash.metadata.uid,
         )
       end
@@ -177,19 +169,14 @@ describe DiscourseEvents::PublishManager do
 
     context "with an event" do
       let!(:event) { Fabricate(:discourse_events_event, start_time: event_start) }
-      let!(:event_connection) do
-        Fabricate(
-          :discourse_events_event_connection,
-          event: event,
-          connection: connection,
-          topic: post.topic,
-        )
+      let!(:event_topic) do
+        Fabricate(:discourse_events_event_topic, event: event, topic: post.topic)
       end
       let!(:event_source) do
         Fabricate(
           :discourse_events_event_source,
           event: event,
-          source: connection.source,
+          source: source,
           uid: event_hash.metadata.uid,
         )
       end

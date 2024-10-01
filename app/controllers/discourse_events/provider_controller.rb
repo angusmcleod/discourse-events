@@ -90,9 +90,9 @@ module DiscourseEvents
           :client_secret,
         )
 
-      unless subscription.supports_feature_value?(:provider, result[:provider_type])
+      unless subscription.supports?(:provider, :provider_type, result[:provider_type])
         raise Discourse::InvalidParameters,
-              "provider #{result[:provider_type]} not included in subscription"
+              "provider #{result[:provider_type]} not supported by your subscription"
       end
 
       result

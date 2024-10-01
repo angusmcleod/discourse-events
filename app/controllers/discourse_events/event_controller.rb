@@ -21,7 +21,7 @@ module DiscourseEvents
 
       filter_sql =
         if filter
-          "WHERE ec.topic_id IS #{filter === "unconnected" ? "NULL" : "NOT NULL"}"
+          "WHERE et.topic_id IS #{filter === "unconnected" ? "NULL" : "NOT NULL"}"
         else
           ""
         end
@@ -68,16 +68,15 @@ module DiscourseEvents
       raise Discourse::InvalidParameters.new(:topic_id) unless topic
 
       client = params[:client]
-      unless Connection.available_clients.include?(client)
+      unless Source.available_clients.include?(client)
         raise Discourse::InvalidParameters.new(:client)
       end
 
       topic_with_event = nil
       ActiveRecord::Base.transaction do
-        event_connection =
-          EventConnection.create!(event_id: event.id, topic_id: topic.id, client: client)
+        event_topic = EventTopic.create!(event_id: event.id, topic_id: topic.id)
         syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(current_user)
-        topic_with_event = syncer.connect_event_to_topic(topic, event)
+        topic_with_event = syncer.connect_topic(topic, event)
         raise ActiveRecord::Rollback unless topic_with_event
       end
 
@@ -97,21 +96,21 @@ module DiscourseEvents
         events = Event.where(id: event_ids)
 
         if target === "events_and_topics" || target === "topics_only"
-          event_connections = {}
+          event_topics = {}
 
           events
-            .includes(:event_connections)
+            .includes(:event_topics)
             .each do |event|
-              event.event_connections.each do |ec|
-                destroyer = PostDestroyer.new(current_user, ec.topic.first_post)
+              event.event_topics.each do |et|
+                destroyer = PostDestroyer.new(current_user, et.topic.first_post)
                 destroyer.destroy
-                event_connections[ec.id] ||= ec
+                event_topics[et.id] ||= et
               end
 
               result[:destroyed_topics_event_ids] << event.id
             end
 
-          DiscourseEvents::EventConnection.where(id: event_connections.keys).delete_all
+          DiscourseEvents::EventTopic.where(id: event_topics.keys).delete_all
         end
 
         if target === "events_only" || target === "events_and_topics"

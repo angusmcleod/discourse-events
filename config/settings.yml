@@ -75,7 +75,7 @@ plugins:
   events_rsvp:
     default: false
     client: true
-  events_ignore_series: false
+  events_one_event_per_series: true
   events_allow_moderator_management:
     default: false
     client: true

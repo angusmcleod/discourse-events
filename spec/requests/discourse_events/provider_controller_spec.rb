@@ -57,7 +57,7 @@ describe DiscourseEvents::ProviderController do
         }
     expect(response.status).to eq(400)
     expect(response.parsed_body["errors"].first).to eq(
-      "You supplied invalid parameters to the request: provider google not included in subscription",
+      "You supplied invalid parameters to the request: provider google not supported by your subscription",
     )
   end
 

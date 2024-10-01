@@ -38,38 +38,33 @@ module DiscourseEvents
 
       event = Event.create!(data.create_params)
 
-      connections = []
+      sources = []
 
-      post.topic&.category&.discourse_events_connections&.each do |connection|
-        next unless connection.source.publish?
-        connections << connection
+      post.topic&.category&.discourse_events_sources&.each do |source|
+        next unless source.publish?
+        sources << source
       end
-      return unless connections.present?
+      return unless sources.present?
 
       published_events = {}
 
-      connections.each do |connection|
-        publisher.setup_provider(connection.source.provider)
+      sources.each do |source|
+        publisher.setup_provider(source.provider)
 
         begin
-          published_event =
-            publisher.create_event(data: data, opts: connection.source.source_options_hash)
+          published_event = publisher.create_event(data: data, opts: source.source_options_hash)
         rescue => error
           logger.error(error.message)
         end
 
-        published_events[connection.id] = published_event if published_event.present?
+        published_events[source.id] = published_event if published_event.present?
       end
 
-      connections.each do |connection|
-        published_event = published_events[connection.id]
+      sources.each do |source|
+        published_event = published_events[source.id]
 
         if published_event.present?
-          params = {
-            uid: published_event.metadata.uid,
-            source_id: connection.source.id,
-            event_id: event.id,
-          }
+          params = { uid: published_event.metadata.uid, source_id: source.id, event_id: event.id }
           EventSource.create!(params)
         end
       end
@@ -127,7 +122,7 @@ module DiscourseEvents
 
     def get_publisher
       client = detect_client
-      return false unless Connection.client_names.include?(client)
+      return false unless Source::CLIENT_NAMES.include?(client)
 
       publisher = "DiscourseEvents::Publisher::#{client.camelize}".constantize.new
       return false unless publisher.ready?

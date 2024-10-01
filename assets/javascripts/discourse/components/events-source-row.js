@@ -34,7 +34,7 @@ export default Component.extend({
   @discourseComputed(
     "source.name",
     "source.provider_id",
-    "source.sync_type",
+    "source.import_type",
     "source.import_period",
     "source.source_options.@each",
     "source.filters.[]",
@@ -45,7 +45,7 @@ export default Component.extend({
   sourceChanged(
     sourceName,
     providerId,
-    syncType,
+    importType,
     importPeriod,
     sourceOptions,
     filters
@@ -57,7 +57,7 @@ export default Component.extend({
       cs.import_period !== importPeriod ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
       !filtersMatch(filters, cs.filters) ||
-      cs.sync_type !== syncType
+      cs.import_type !== importType
     );
   },
 
@@ -93,11 +93,18 @@ export default Component.extend({
     "loading",
     "source.ready",
     "source.canImport",
-    "source.sync_type",
+    "source.import_type",
     "subscription.subscribed"
   )
-  importDisabled(sourceChanged, sourceId, loading, ready, canImport, syncType) {
-    if (!this.subscription.supportsFeatureValue("source", syncType)) {
+  importDisabled(
+    sourceChanged,
+    sourceId,
+    loading,
+    ready,
+    canImport,
+    importType
+  ) {
+    if (!this.subscription.supportsFeatureValue("source", importType)) {
       return true;
     } else {
       return (

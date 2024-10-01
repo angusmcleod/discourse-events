@@ -6,6 +6,9 @@ module DiscourseEvents
 
     self.table_name = "discourse_events_sources"
 
+    CLIENTS ||= { discourse_events: "discourse-events", discourse_calendar: "discourse-calendar" }
+    CLIENT_NAMES = CLIENTS.keys.map(&:to_s)
+
     SOURCE_OPTIONS ||= {
       developer: {
         uri: /./,
@@ -43,13 +46,11 @@ module DiscourseEvents
     }.as_json
 
     belongs_to :provider, foreign_key: "provider_id", class_name: "DiscourseEvents::Provider"
+    belongs_to :user, optional: true
+    belongs_to :category, optional: true
 
     has_many :event_sources, foreign_key: "source_id", class_name: "DiscourseEvents::EventSource"
     has_many :events, through: :event_sources, class_name: "DiscourseEvents::Event"
-    has_many :connections,
-             foreign_key: "source_id",
-             class_name: "DiscourseEvents::Connection",
-             dependent: :destroy
     has_many :filters,
              -> { where(model_type: "DiscourseEvents::Source") },
              foreign_key: "model_id",
@@ -57,6 +58,7 @@ module DiscourseEvents
              dependent: :destroy
 
     validates_format_of :name, with: /\A[a-z0-9\_]+\Z/i
+    validate :valid_source_options?
     validates :provider, presence: true
     validates :import_period,
               inclusion: {
@@ -64,11 +66,25 @@ module DiscourseEvents
                 message: "%{value} is not a valid import period",
               },
               allow_nil: true
-    validate :valid_source_options?
+    validates :client,
+              inclusion: {
+                in: CLIENT_NAMES,
+                message: "%{value} is not a valid client",
+              },
+              allow_nil: true
 
     after_commit :enqueue_import, if: :saved_change_to_import_period?
 
-    enum sync_type: { import: 0, import_publish: 1, publish: 2 }
+    enum import_type: { import: 0, import_publish: 1, publish: 2 }
+    enum sync_type: { manual: 0, auto: 1 }, _prefix: :sync
+
+    def self.available_clients
+      CLIENTS.select { |client, plugin| plugins.include?(plugin) }.keys.map(&:to_s)
+    end
+
+    def self.plugins
+      Discourse.plugins.map(&:name)
+    end
 
     def ready?
       provider.authenticated?
@@ -83,11 +99,11 @@ module DiscourseEvents
     end
 
     def import?
-      sync_type == "import" || sync_type == "import_publish"
+      import_type == "import" || import_type == "import_publish"
     end
 
     def publish?
-      sync_type == "import_publish" || sync_type == "publish"
+      import_type == "import_publish" || import_type == "publish"
     end
 
     def source_options_hash
@@ -149,9 +165,7 @@ module DiscourseEvents
     end
 
     def after_import
-      connections.each do |connection|
-        DiscourseEvents::SyncManager.sync_connection(connection) if connection.auto_sync
-      end
+      DiscourseEvents::SyncManager.sync_source(self) if self.sync_auto?
       enqueue_import
     end
 
@@ -210,14 +224,14 @@ end
 #  name           :string           not null
 #  provider_id    :bigint           not null
 #  source_options :json
-#  from_time      :datetime
-#  to_time        :datetime
-#  status         :string
-#  taxonomy       :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  sync_type      :integer          default("import")
+#  sync_type      :integer
 #  import_period  :integer
+#  import_type    :integer
+#  user_id        :integer
+#  category_id    :integer
+#  client         :string           default("discourse_events")
 #
 # Indexes
 #

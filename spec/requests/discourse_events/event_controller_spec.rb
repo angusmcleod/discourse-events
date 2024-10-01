@@ -2,24 +2,15 @@
 
 describe DiscourseEvents::EventController do
   fab!(:user) { Fabricate(:user, admin: true) }
-  fab!(:connection) { Fabricate(:discourse_events_connection) }
   fab!(:event1) do
     Fabricate(:discourse_events_event, start_time: 1.hour.from_now, name: "Ben's party")
   end
   fab!(:topic1) { Fabricate(:topic) }
   fab!(:post1) { Fabricate(:post, topic: topic1, user: user, raw: event1.description) }
-  fab!(:event_connection1) do
-    Fabricate(
-      :discourse_events_event_connection,
-      event: event1,
-      topic: topic1,
-      connection: connection,
-    )
-  end
+  fab!(:event_topic1) { Fabricate(:discourse_events_event_topic, event: event1, topic: topic1) }
   fab!(:event2) do
     Fabricate(:discourse_events_event, start_time: 2.hours.from_now, name: "Tim's party")
   end
-  fab!(:event_connection2) { Fabricate(:discourse_events_event_connection, event: event2) }
 
   before do
     freeze_time
@@ -169,7 +160,7 @@ describe DiscourseEvents::EventController do
         topic_id = topic1.id
         post_id = post1.id
         event_id = event1.id
-        event_connection_id = event_connection1.id
+        event_topic_id = event_topic1.id
 
         delete "/admin/plugins/events/event.json",
                params: {
@@ -182,7 +173,7 @@ describe DiscourseEvents::EventController do
         expect(response.parsed_body["destroyed_event_ids"].blank?).to be(true)
 
         expect(DiscourseEvents::Event.exists?(event_id)).to eq(true)
-        expect(DiscourseEvents::EventConnection.exists?(event_connection_id)).to eq(false)
+        expect(DiscourseEvents::EventTopic.exists?(event_topic_id)).to eq(false)
         expect(Topic.exists?(topic_id)).to eq(false)
         expect(Post.exists?(post_id)).to eq(false)
       end
@@ -203,13 +194,9 @@ describe DiscourseEvents::EventController do
                }
           expect(response.status).to eq(200)
           expect(response.parsed_body["success"]).to eq("OK")
-          expect(
-            DiscourseEvents::EventConnection.exists?(
-              topic_id: topic.id,
-              event_id: event.id,
-              client: client,
-            ),
-          ).to eq(true)
+          expect(DiscourseEvents::EventTopic.exists?(topic_id: topic.id, event_id: event.id)).to eq(
+            true,
+          )
         end
       end
 

@@ -5,20 +5,13 @@ require "rails_helper"
 describe DiscourseEvents::DiscourseEventsSyncer do
   subject { DiscourseEvents::DiscourseEventsSyncer }
 
-  fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:event) { Fabricate(:discourse_events_event) }
-  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
   fab!(:category)
   fab!(:user)
-  fab!(:connection) do
-    Fabricate(
-      :discourse_events_connection,
-      source: source,
-      category: category,
-      user: user,
-      client: "discourse_events",
-    )
+  fab!(:source) do
+    Fabricate(:discourse_events_source, category: category, user: user, client: "discourse_events")
   end
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
   before do
     category.custom_fields["events_enabled"] = true
@@ -28,11 +21,11 @@ describe DiscourseEvents::DiscourseEventsSyncer do
   end
 
   def sync_events(opts = {})
-    syncer = subject.new(user, connection)
+    syncer = subject.new(user, source)
     syncer.sync(opts)
 
     event.reload
-    Topic.find(event.event_connections.first.topic_id)
+    Topic.find(event.event_topics.first.topic_id)
   end
 
   it "creates client event data" do

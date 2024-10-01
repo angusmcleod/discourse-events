@@ -5,7 +5,7 @@ module DiscourseEvents
     attr_reader :user, :client
 
     def initialize(user, client)
-      if Connection.client_names.exclude?(client.to_s)
+      if Source::CLIENT_NAMES.exclude?(client.to_s)
         raise ArgumentError.new("Must pass a valid client")
       end
 
@@ -13,12 +13,12 @@ module DiscourseEvents
       @client = client.to_s
     end
 
-    def sync(connection, opts = {})
-      syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(user, connection)
+    def sync(source, opts = {})
+      syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(user, source)
 
       client_name = client.humanize
-      source_name = syncer.connection.source.name
-      category_name = syncer.connection.category.name
+      source_name = syncer.source.name
+      category_name = syncer.source.category&.name
 
       unless syncer&.ready?
         message =
@@ -48,28 +48,28 @@ module DiscourseEvents
       result
     end
 
-    def self.sync_connection_by_id(connection_id)
-      connection = Connection.find_by(id: connection_id)
-      return if connection.blank?
+    def self.sync_source_by_id(source_id)
+      source = Source.find_by(id: source_id)
+      return if source.blank?
 
-      sync_connection(connection)
+      sync_source(source)
     end
 
-    def self.sync_connection(connection)
-      return if connection.blank?
+    def self.sync_source(source)
+      return if source.blank?
 
-      syncer = self.new(connection.user, connection.client)
-      syncer.sync(connection)
+      syncer = self.new(source.user, source.client)
+      syncer.sync(source)
     end
 
-    def self.sync_all_connections
-      result = { synced_connections: [], created_topics: [], updated_topics: [] }
+    def self.sync_all_sources
+      result = { synced_sources: [], created_topics: [], updated_topics: [] }
 
-      Connection.all.each do |connection|
-        result[:synced_connections] << connection.id
+      Source.all.each do |source|
+        result[:synced_sources] << source.id
 
-        syncer = self.new(connection.user, connection.client)
-        sync_result = syncer.sync(connection)
+        syncer = self.new(source.user, source.client)
+        sync_result = syncer.sync(source)
 
         result[:created_topics] += sync_result[:created_topics]
         result[:updated_topics] += sync_result[:updated_topics]

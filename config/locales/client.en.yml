@@ -130,7 +130,7 @@ en:
             group_urlname: Group Urlname
             user_id: User ID
             calendar_id: Calendar ID
-          sync_type:
+          import_type:
             label: Type
             title: The way events are imported and published.
             import: Import only
@@ -212,40 +212,6 @@ en:
           authenticate:
             label: Authenticate
             title: Authenticate Provider
-        connection:
-          title: Sync
-          none: No syncs.
-          add:
-            label: Add Sync
-            title: Add sync
-          remove:
-            label: Remove
-            title: Remove sync
-            confirm: Are you sure you want to remove this sync?
-          save:
-            label: Save
-            title: Save sync
-          topic:
-            label: Topic
-            user: User
-            category: Category
-          client:
-            label: Client
-            select: Select...
-            discourse_events: Discourse Events
-            discourse_calendar: Discourse Calendar
-          event:
-            label: Event
-          source:
-            label: Source
-            select: Select...
-          sync:
-            label: Sync
-            title: Sync Connection
-          sync_type:
-            label: Sync
-            automatic: Automatically after import
-            manual: Manual
         filters:
           label: Filters
           set: 
@@ -315,15 +281,13 @@ en:
           message: Message
           none: No logs.
         message:
-          documentation: "Check out the documentation"
-          connection:
-            info: "Automatically create topics from events imported from a source."
-            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
-            sync_failed_to_start: "Sync failed to start."
+          documentation: "Check out the documentation"            
           source:
             info: "Import events from, and publish events to, a provider."
             import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
             import_failed_to_start: "Import failed to start."
+            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
+            sync_failed_to_start: "Sync failed to start."
           event:
             connected:
               info: "Events connected to topics."

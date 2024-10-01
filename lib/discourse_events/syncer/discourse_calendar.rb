@@ -7,12 +7,12 @@ module DiscourseEvents
         ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
     end
 
-    def create_event_topic(event)
+    def create_topic(event)
       post = create_event_post(event)
       post.topic
     end
 
-    def update_event_topic(topic, event, add_raw: false)
+    def update_topic(topic, event, add_raw: false)
       post = topic.first_post
 
       # No validations or callbacks can be triggered when updating this data
@@ -34,9 +34,9 @@ module DiscourseEvents
       topic
     end
 
-    def connect_event_to_topic(topic, event)
+    def connect_topic(topic, event)
       return false if topic.first_post.event.present?
-      update_event_topic(topic, event, add_raw: true)
+      update_topic(topic, event, add_raw: true)
     end
 
     def post_raw(event, post: nil, add_raw: false)

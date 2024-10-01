@@ -4,9 +4,9 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import discourseComputed from "discourse-common/utils/decorators";
 
 const Source = EmberObject.extend({
-  @discourseComputed("sync_type")
-  canImport(syncType) {
-    return syncType === "import" || syncType === "import_publish";
+  @discourseComputed("import_type")
+  canImport(importType) {
+    return importType === "import" || importType === "import_publish";
   },
 });
 

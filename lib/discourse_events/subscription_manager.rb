@@ -22,50 +22,58 @@ module DiscourseEvents
     def features
       result = {
         provider: {
-          icalendar: {
-            none: false,
-            community: true,
-            business: true,
-          },
-          google: {
-            none: false,
-            community: false,
-            business: true,
-          },
-          outlook: {
-            none: false,
-            community: false,
-            business: true,
+          provider_type: {
+            icalendar: {
+              none: false,
+              community: true,
+              business: true,
+            },
+            google: {
+              none: false,
+              community: false,
+              business: true,
+            },
+            outlook: {
+              none: false,
+              community: false,
+              business: true,
+            },
           },
         },
         source: {
-          import: {
-            none: false,
-            community: true,
-            business: true,
+          import_type: {
+            import: {
+              none: false,
+              community: true,
+              business: true,
+            },
+            import_publish: {
+              none: false,
+              community: false,
+              business: true,
+            },
+            publish: {
+              none: false,
+              community: false,
+              business: true,
+            },
           },
-          import_publish: {
-            none: false,
-            community: false,
-            business: true,
-          },
-          publish: {
-            none: false,
-            community: false,
-            business: true,
-          },
-        },
-        connection: {
-          discourse_events: {
-            none: false,
-            community: true,
-            business: true,
+          client: {
+            discourse_events: {
+              none: false,
+              community: true,
+              business: true,
+            },
           },
         },
       }
 
-      if DiscourseEvents::Connection.available_clients.include?("discourse_calendar")
-        result[:connection][:discourse_calendar] = { none: false, community: false, business: true }
+      if DiscourseEvents::Source.available_clients.include?("discourse_calendar")
+        result[:source][:client][:discourse_calendar] = {
+          none: false,
+          community: false,
+          business: true,
+        }
       end
 
       result
@@ -110,18 +118,18 @@ module DiscourseEvents
     end
 
     def supports_import?
-      supports_feature_value?(:source, :import) || supports_feature_value?(:source, :import_publish)
+      supports?(:source, :import_type, :import) || supports?(:source, :import_type, :import_publish)
     end
 
     def supports_publish?
-      supports_feature_value?(:source, :publish) ||
-        supports_feature_value?(:source, :import_publish)
+      supports?(:source, :import_type, :publish) ||
+        supports?(:source, :import_type, :import_publish)
     end
 
-    def supports_feature_value?(feature, value)
-      return true unless feature && value
+    def supports?(feature, attribute, value)
+      return true unless feature && attribute && value
       return false unless product
-      features[feature.to_sym][value.to_sym][product.to_sym]
+      features[feature.to_sym][attribute.to_sym][value.to_sym][product.to_sym]
     end
 
     def subscriptions

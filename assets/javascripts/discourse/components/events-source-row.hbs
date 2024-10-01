@@ -5,15 +5,15 @@
     placeholder={{i18n "admin.events.source.name.placeholder"}}
     class="small source-name"
   />
-  <label>{{i18n "admin.events.source.sync_type.label"}}</label>
+  <label>{{i18n "admin.events.source.import_type.label"}}</label>
   <EventsSubscriptionSelector
-    @value={{source.sync_type}}
+    @value={{source.import_type}}
     @feature="source"
-    @i18nKey="sync_type"
-    @onChange={{action (mut source.sync_type)}}
+    @i18nKey="import_type"
+    @onChange={{action (mut source.import_type)}}
     @allowedValues={{allowedSyncValues}}
     class="source-sync-type"
-    options={{hash none="admin.events.source.sync_type.select"}}
+    options={{hash none="admin.events.source.import_type.select"}}
   />
   <label>{{i18n "admin.events.source.import_period.label"}}</label>
   <ComboBox

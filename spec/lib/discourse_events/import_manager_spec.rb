@@ -102,26 +102,20 @@ describe DiscourseEvents::ImportManager do
       end
     end
 
-    context "with connections" do
-      let!(:category1) { Fabricate(:category) }
-      let!(:category2) { Fabricate(:category) }
+    context "with sync auto" do
+      let!(:category) { Fabricate(:category) }
       let!(:user) { Fabricate(:user) }
-      let!(:connection1) do
-        Fabricate(:discourse_events_connection, source: source, category: category1, user: user)
-      end
-      let!(:connection2) do
-        Fabricate(
-          :discourse_events_connection,
-          source: source,
-          category: category2,
-          user: user,
-          auto_sync: true,
-        )
+
+      before do
+        source.user_id = user.id
+        source.category_id = category.id
+        source.client = "discourse_events"
+        source.sync_type = DiscourseEvents::Source.sync_types[:auto]
+        source.save!
       end
 
-      it "syncs auto_sync connections" do
-        DiscourseEvents::SyncManager.expects(:sync_connection).with(connection1).never
-        DiscourseEvents::SyncManager.expects(:sync_connection).with(connection2).once
+      it "syncs sources" do
+        DiscourseEvents::SyncManager.expects(:sync_source).with(source).once
         subject.import_source(source.id)
       end
     end

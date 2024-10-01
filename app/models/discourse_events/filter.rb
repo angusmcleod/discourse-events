@@ -4,7 +4,7 @@ module DiscourseEvents
   class Filter < ActiveRecord::Base
     self.table_name = "discourse_events_filters"
 
-    MODEL_TYPES = %w[DiscourseEvents::Connection DiscourseEvents::Source]
+    MODEL_TYPES = %w[DiscourseEvents::Source]
 
     belongs_to :model, polymorphic: true
 
