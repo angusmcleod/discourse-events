@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 class ConsolidateEventsDataModel < ActiveRecord::Migration[7.1]
   def up
+    change_column_null :discourse_events_sources, :name, true
+
     add_column :discourse_events_sources, :import_type, :integer
+    add_column :discourse_events_sources, :topic_sync, :integer
     add_column :discourse_events_sources, :user_id, :integer
     add_column :discourse_events_sources, :category_id, :integer
     add_column :discourse_events_sources, :client, :string, default: "discourse_events"

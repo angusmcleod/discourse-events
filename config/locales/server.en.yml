@@ -57,6 +57,6 @@ en:
       calendar_events: "Events plugin webcal"
 
   log:
-    import_finished: "Finished importing from %{source_name}. Retrieved %{events_count} events, created %{created_count} events and updated %{updated_count} events."
-    sync_finished: "Finished syncing %{source_name} with %{category_name}. Created %{created_count} topics and updated %{updated_count} topics for the %{client_name} plugin."
-    sync_client_not_ready: "Failed to sync %{source_name} with %{category_name}. %{client_name} plugin is not ready."
+    import_finished: "Finished importing from %{provider_type}. Retrieved %{events_count} events, created %{created_count} events and updated %{updated_count} events."
+    sync_finished: "Finished syncing %{provider_type} with %{category_name}. Created %{created_count} topics and updated %{updated_count} topics for the %{client_name} plugin."
+    sync_client_not_ready: "Failed to sync %{provider_type} with %{category_name}. %{client_name} plugin is not ready."

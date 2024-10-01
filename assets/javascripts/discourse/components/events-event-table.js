@@ -44,7 +44,7 @@ export default Component.extend(LoadMore, {
         .then((result) => {
           if (result.events && result.events.length) {
             this.set("page", page);
-            this.get("events").pushObjects(Event.eventsArray(result.events));
+            this.get("events").pushObjects(Event.toArray(result.events));
           } else {
             this.set("loadingComplete", true);
           }

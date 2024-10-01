@@ -89,18 +89,22 @@ $pavilion_primary: #3c1c8c;
   .events-source-row,
   .events-provider-row {
     .select-kit,
-    input {
+    input,
+    .control-instructions {
       max-width: 350px;
       width: 350px;
+    }
+
+    .control-instructions {
+      min-height: 20px;
     }
 
     label {
       font-weight: 400;
     }
 
-    details,
-    button,
-    input {
+    .control-group,
+    button {
       margin-bottom: 1em;
     }
   }
@@ -430,7 +434,7 @@ $pavilion_primary: #3c1c8c;
 
 a.event-tag {
   padding: 0.25em 0.5em;
-  color: var(--primary-800);
-  background-color: var(--primary-200);
-  font-size: var(--font-down-1);
+  color: var(--primary-700);
+  background-color: var(--primary-100);
+  font-size: var(--font-down-2);
 }

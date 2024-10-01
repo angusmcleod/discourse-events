@@ -114,13 +114,13 @@ en:
           remove:
             label: Remove
             title: Remove Source
-            confirm: Are you sure you want to remove '%{source_name}'? Removing a source removes all associated events and connections.
+            confirm: Are you sure you want to remove this source? Removing a source removes all associated events.
           name:
             label: Name
             placeholder: underscored
           provider:
             label: Provider
-            select: Select a provider...
+            instructions: Service providing events.
           save:
             label: Save
             title: Save Source
@@ -131,13 +131,21 @@ en:
             user_id: User ID
             calendar_id: Calendar ID
           import_type:
-            label: Type
+            label: Import Type
             title: The way events are imported and published.
-            import: Import only
-            import_publish: Import and Publish
-            publish: Publish only
+            instructions: How events are imported and published.
+            import:
+              label: Import only
+              instructions: Only import events.
+            import_publish:
+              label: Import and Publish
+              instructions: Import events, and publish events from the Category.
+            publish:
+              label: Publish only
+              instructions: Only publish events from the Category.
           import_period:
             label: Import Schedule
+            instructions: How often events are imported.
             none: Manual
             5_minutes: Every 5 Minutes
             30_minutes: Every 30 Minutes
@@ -145,8 +153,35 @@ en:
             1_day: Every Day
             1_week: Every Week
           import:
-            label: Import
-            title: Import Source
+            label: Import Events
+            title: Import events from source.
+          client:
+            label: Plugin
+            instructions: Plugin used to post events.
+            discourse_events: Discourse Events
+            discourse_calendar: Discourse Calendar
+          category:
+            label: Category
+            instructions: Category where events are posted and published.
+          user:
+            label: User
+            instructions: User who posts events.
+          topics:
+            label: Topics
+          topic_sync:
+            label: Sync
+            title: How to create and update topics for events from this source.
+            instructions: How topics are created and updated from events.
+            manual:
+              label: Manual
+              instructions: Connect topics to events in the "Events" panel.
+            auto:
+              label: Automatic
+              instructions: Post are created or updated automatically after an import.  
+          topic_sync_all:
+            label: Sync Events
+            title: Sync all events from this source with topics in the Category.
+
         provider:
           title: Providers
           label: Provider
@@ -283,11 +318,11 @@ en:
         message:
           documentation: "Check out the documentation"            
           source:
-            info: "Import events from, and publish events to, a provider."
-            import_started: "Import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
-            import_failed_to_start: "Import failed to start."
-            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
-            sync_failed_to_start: "Sync failed to start."
+            info: "Import events, sync topics, and publish events."
+            event_import_started: "Event import started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
+            event_import_failed_to_start: "Event import failed to start."
+            topic_creation_started: "Topic creation started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
+            topic_creation_failed_to_start: "Topic creation failed to start."
           event:
             connected:
               info: "Events connected to topics."

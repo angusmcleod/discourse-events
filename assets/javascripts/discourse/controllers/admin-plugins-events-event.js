@@ -1,5 +1,5 @@
 import { A } from "@ember/array";
-import Controller, { inject as controller } from "@ember/controller";
+import Controller from "@ember/controller";
 import { not, notEmpty } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
@@ -20,7 +20,6 @@ export default Controller.extend(Message, {
   addDisabled: not("subscription.subscribed"),
   subscription: service("events-subscription"),
   router: service(),
-  connections: controller("admin-plugins-events-event-connection"),
 
   @discourseComputed("selectedEvents.[]", "hasEvents")
   deleteDisabled(selectedEvents, hasEvents) {
@@ -51,14 +50,9 @@ export default Controller.extend(Message, {
     return eventsRoute && filter === "unconnected";
   },
 
-  @discourseComputed("router.currentRouteName")
-  connectionRoute(currentRouteName) {
-    return currentRouteName === "adminPlugins.events.event.connection";
-  },
-
   @discourseComputed("eventsRoute", "filter")
   viewName(eventsRoute, filter) {
-    return eventsRoute ? `event.${filter}` : "connection";
+    return `event.${filter}`;
   },
 
   @discourseComputed("selectedEvents.[]")
@@ -67,12 +61,6 @@ export default Controller.extend(Message, {
   },
 
   actions: {
-    addConnection() {
-      if (this.connectionRoute) {
-        this.connections.addConnection();
-      }
-    },
-
     openConnectTopic() {
       const selectedEvent = this.selectedEvents[0];
 

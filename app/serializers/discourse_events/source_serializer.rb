@@ -3,12 +3,11 @@
 module DiscourseEvents
   class SourceSerializer < ApplicationSerializer
     attributes :id,
-               :name,
                :provider_id,
                :source_options,
                :import_type,
                :import_period,
-               :sync_type,
+               :topic_sync,
                :user_id,
                :category_id,
                :client,

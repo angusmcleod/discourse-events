@@ -57,7 +57,6 @@ module DiscourseEvents
              class_name: "DiscourseEvents::Filter",
              dependent: :destroy
 
-    validates_format_of :name, with: /\A[a-z0-9\_]+\Z/i
     validate :valid_source_options?
     validates :provider, presence: true
     validates :import_period,
@@ -76,7 +75,7 @@ module DiscourseEvents
     after_commit :enqueue_import, if: :saved_change_to_import_period?
 
     enum import_type: { import: 0, import_publish: 1, publish: 2 }
-    enum sync_type: { manual: 0, auto: 1 }, _prefix: :sync
+    enum topic_sync: { manual: 0, auto: 1 }, _prefix: :topic_sync
 
     def self.available_clients
       CLIENTS.select { |client, plugin| plugins.include?(plugin) }.keys.map(&:to_s)
@@ -165,14 +164,14 @@ module DiscourseEvents
     end
 
     def after_import
-      DiscourseEvents::SyncManager.sync_source(self) if self.sync_auto?
+      DiscourseEvents::SyncManager.sync_source(self) if self.topic_sync_auto?
       enqueue_import
     end
 
     def enqueue_import
-      Jobs.cancel_scheduled_job(:discourse_events_import_source, source_id: self.id)
+      Jobs.cancel_scheduled_job(:discourse_events_import_events, source_id: self.id)
       if import_period.present?
-        Jobs.enqueue_in(import_period, :discourse_events_import_source, source_id: self.id)
+        Jobs.enqueue_in(import_period, :discourse_events_import_events, source_id: self.id)
       end
     end
 
@@ -221,21 +220,19 @@ end
 # Table name: discourse_events_sources
 #
 #  id             :bigint           not null, primary key
-#  name           :string           not null
 #  provider_id    :bigint           not null
 #  source_options :json
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  sync_type      :integer
 #  import_period  :integer
 #  import_type    :integer
+#  topic_sync     :integer
 #  user_id        :integer
 #  category_id    :integer
 #  client         :string           default("discourse_events")
 #
 # Indexes
 #
-#  index_discourse_events_sources_on_name         (name) UNIQUE
 #  index_discourse_events_sources_on_provider_id  (provider_id)
 #
 # Foreign Keys

@@ -20,14 +20,14 @@ module DiscourseEvents
         @model =
           Source.create(
             source_params.slice(
-              :name,
               :provider_id,
-              :status,
-              :taxonomy,
               :source_options,
               :import_period,
               :import_type,
-              :sync_type,
+              :topic_sync,
+              :category_id,
+              :user_id,
+              :client,
             ),
           )
 
@@ -54,14 +54,14 @@ module DiscourseEvents
           Source.update(
             params[:id],
             source_params.slice(
-              :name,
               :provider_id,
-              :status,
-              :taxonomy,
               :source_options,
               :import_period,
               :import_type,
-              :sync_type,
+              :topic_sync,
+              :category_id,
+              :user_id,
+              :client,
             ),
           )
 
@@ -84,7 +84,16 @@ module DiscourseEvents
       source = Source.find_by(id: params[:id])
       raise Discourse::InvalidParameters.new(:id) unless source
 
-      ::Jobs.enqueue(:discourse_events_import_source, source_id: source.id)
+      ::Jobs.enqueue(:discourse_events_import_events, source_id: source.id)
+
+      render json: success_json
+    end
+
+    def topics
+      source = Source.find_by(id: params[:id])
+      raise Discourse::InvalidParameters.new(:id) unless source
+
+      ::Jobs.enqueue(:discourse_events_create_topics, source_id: source.id)
 
       render json: success_json
     end
@@ -106,11 +115,10 @@ module DiscourseEvents
             params
               .require(:source)
               .permit(
-                :name,
                 :provider_id,
                 :import_period,
                 :import_type,
-                :sync_type,
+                :topic_sync,
                 :category_id,
                 :user_id,
                 :client,
@@ -119,6 +127,15 @@ module DiscourseEvents
                 filters: %i[id query_column query_operator query_value],
               )
               .to_h
+
+          if result[:import_type].present? &&
+               Source.import_types.keys.exclude?(result[:import_type])
+            raise Discourse::InvalidParameters.new(:import_type)
+          end
+
+          if result[:topic_sync].present? && Source.topic_syncs.keys.exclude?(result[:topic_sync])
+            raise Discourse::InvalidParameters.new(:topic_sync)
+          end
 
           unless subscription.supports?(:source, :import_type, result[:import_type])
             raise Discourse::InvalidParameters,

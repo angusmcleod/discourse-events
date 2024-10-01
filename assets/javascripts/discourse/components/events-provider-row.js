@@ -51,7 +51,11 @@ export default Component.extend({
     if (!providerName || !providerChanged || !providerType) {
       return true;
     } else {
-      return !this.subscription.supportsFeatureValue("provider", providerType);
+      return !this.subscription.supportsFeatureValue(
+        "provider",
+        "provider_type",
+        providerType
+      );
     }
   },
 
@@ -120,7 +124,11 @@ export default Component.extend({
 
   @discourseComputed("subscription.features.provider", "provider.provider_type")
   inSubscription(subscriptionProviders, providerType) {
-    return this.subscription.supportsFeatureValue("provider", providerType);
+    return this.subscription.supportsFeatureValue(
+      "provider",
+      "provider_type",
+      providerType
+    );
   },
 
   notInSubscription: not("inSubscription"),
@@ -130,7 +138,7 @@ export default Component.extend({
     if (!subscriptionProviders) {
       return [];
     }
-    const subscriptions = subscriptionProviders[providerType];
+    const subscriptions = subscriptionProviders["provider_type"][providerType];
     return Object.keys(subscriptions).filter((type) => subscriptions[type]);
   },
 

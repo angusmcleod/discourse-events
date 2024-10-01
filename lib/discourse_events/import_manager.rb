@@ -68,7 +68,7 @@ module DiscourseEvents
         message =
           I18n.t(
             "log.import_finished",
-            source_name: source.name,
+            provider_type: source.provider.provider_type,
             events_count: imported_event_uids.count,
             created_count: created_event_uids.count,
             updated_count: updated_event_uids.count,

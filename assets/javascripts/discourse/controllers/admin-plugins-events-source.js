@@ -32,9 +32,7 @@ export default Controller.extend(Message, {
         this.get("sources").removeObject(source);
       } else {
         this.dialog.confirm({
-          message: I18n.t("admin.events.source.remove.confirm", {
-            source_name: source.name,
-          }),
+          message: I18n.t("admin.events.source.remove.confirm"),
           confirmButtonLabel: "admin.events.source.remove.label",
           cancelButtonLabel: "cancel",
           didConfirm: () => {

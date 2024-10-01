@@ -57,7 +57,7 @@ describe DiscourseEvents::ImportManager do
       expect(DiscourseEvents::Log.all.first.message).to eq(
         I18n.t(
           "log.import_finished",
-          source_name: source.name,
+          provider_type: provider.provider_type,
           events_count: 2,
           created_count: 2,
           updated_count: 0,
@@ -93,7 +93,7 @@ describe DiscourseEvents::ImportManager do
 
       it "schedules the next import" do
         expect_enqueued_with(
-          job: :discourse_events_import_source,
+          job: :discourse_events_import_events,
           args: {
             source_id: source.id,
           },
@@ -110,7 +110,7 @@ describe DiscourseEvents::ImportManager do
         source.user_id = user.id
         source.category_id = category.id
         source.client = "discourse_events"
-        source.sync_type = DiscourseEvents::Source.sync_types[:auto]
+        source.topic_sync = DiscourseEvents::Source.topic_syncs[:auto]
         source.save!
       end
 

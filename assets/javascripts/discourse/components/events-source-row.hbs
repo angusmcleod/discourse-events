@@ -1,62 +1,180 @@
 <td>
-  <label>{{i18n "admin.events.source.name.label"}}</label>
-  <Input
-    @value={{source.name}}
-    placeholder={{i18n "admin.events.source.name.placeholder"}}
-    class="small source-name"
-  />
-  <label>{{i18n "admin.events.source.import_type.label"}}</label>
-  <EventsSubscriptionSelector
-    @value={{source.import_type}}
-    @feature="source"
-    @i18nKey="import_type"
-    @onChange={{action (mut source.import_type)}}
-    @allowedValues={{allowedSyncValues}}
-    class="source-sync-type"
-    options={{hash none="admin.events.source.import_type.select"}}
-  />
-  <label>{{i18n "admin.events.source.import_period.label"}}</label>
-  <ComboBox
-    @value={{source.import_period}}
-    @content={{importPeriods}}
-    @onChange={{action (mut source.import_period)}}
-    @disabled={{importPeriodDisabled}}
-    class="source-import-period"
-  />
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.topic_sync.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{source.topic_sync}}
+        @feature="source"
+        @attribute="topic_sync"
+        @i18nSuffix="label"
+        @onChange={{action (mut source.topic_sync)}}
+        class="source-create-topic"
+      />
+    </div>
+    <div class="control-instructions">
+      {{#if source.topic_sync}}
+        {{i18n
+          (concat
+            "admin.events.source.topic_sync." source.topic_sync ".instructions"
+          )
+        }}
+      {{else}}
+        {{i18n "admin.events.source.topic_sync.instructions"}}
+      {{/if}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.client.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{source.client}}
+        @feature="source"
+        @attribute="client"
+        @onChange={{action (mut source.client)}}
+        class="source-client"
+        options={{hash none="admin.events.source.client.select"}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.client.instructions"}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.category.label"}}
+    </label>
+    <div class="control-input">
+      <EventsCategoryChooser
+        @value={{source.category_id}}
+        class="connection-category"
+        @client={{source.client}}
+        onChange={{action (mut source.category_id)}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.category.instructions"}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.user.label"}}
+    </label>
+    <div class="control-input">
+      <UserChooser
+        @value={{source.user.username}}
+        @onChange={{action "updateUser"}}
+        class="source-user"
+        @options={{hash maximum=1 excludeCurrentUser=false}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.user.instructions"}}
+    </div>
+  </div>
 </td>
 
 <td>
-  <label>{{i18n "admin.events.source.provider.label"}}</label>
-  <EventsSubscriptionSelector
-    @value={{provider.provider_type}}
-    @feature="provider"
-    @i18nKey="provider_type"
-    @i18nSuffix="label"
-    @onChange={{action "updateProvider"}}
-    class="source-provider"
-    options={{hash none="admin.events.source.provider.select"}}
-  />
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.provider.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{provider.provider_type}}
+        @feature="provider"
+        @attribute="provider_type"
+        @i18nSuffix="label"
+        @onChange={{action "updateProvider"}}
+        class="source-provider"
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.provider.instructions"}}
+    </div>
+  </div>
   {{#each this.sourceOptions as |option|}}
-    <label>{{i18n
-        (concat "admin.events.source.source_options." option.name)
-      }}</label>
-    <Input
-      class="source-option"
-      @type={{option.type}}
-      name={{option.name}}
-      @value={{option.value}}
-      placeholder={{option.name}}
-      {{on "change" (action "updateSourceOptions" option.name)}}
-    />
+    <div class="control-group">
+      <label class="control-label">
+        {{i18n (concat "admin.events.source.source_options." option.name)}}
+      </label>
+      <div class="control-input">
+        <Input
+          class="source-option"
+          @type={{option.type}}
+          name={{option.name}}
+          @value={{option.value}}
+          placeholder={{option.name}}
+          {{on "change" (action "updateSourceOptions" option.name)}}
+        />
+      </div>
+    </div>
   {{/each}}
-  <label>{{i18n "admin.events.filters.label"}}</label>
-  <DButton
-    @icon="filter"
-    @label="admin.events.filters.set.label"
-    @title="admin.events.filters.set.title"
-    @action={{action "openFilters"}}
-    class="show-filters"
-  />
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.import_type.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{source.import_type}}
+        @feature="source"
+        @attribute="import_type"
+        @i18nSuffix="label"
+        @onChange={{action (mut source.import_type)}}
+        @allowedValues={{allowedImportTypeValues}}
+        class="source-import-type"
+      />
+    </div>
+    <div class="control-instructions">
+      {{#if source.import_type}}
+        {{i18n
+          (concat
+            "admin.events.source.import_type."
+            source.import_type
+            ".instructions"
+          )
+        }}
+      {{else}}
+        {{i18n "admin.events.source.import_type.instructions"}}
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.import_period.label"}}
+    </label>
+    <div class="control-input">
+      <ComboBox
+        @value={{source.import_period}}
+        @content={{importPeriods}}
+        @onChange={{action (mut source.import_period)}}
+        @disabled={{importPeriodDisabled}}
+        class="source-import-period"
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.import_period.instructions"}}
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.filters.label"}}
+    </label>
+    <div class="control-input">
+      <DButton
+        @icon="filter"
+        @label="admin.events.filters.set.label"
+        @title="admin.events.filters.set.title"
+        @action={{action "openFilters"}}
+        class="show-filters"
+      />
+    </div>
+  </div>
 </td>
 
 <td class="action-column">
@@ -68,6 +186,14 @@
     @label="admin.events.source.import.label"
     class={{importClass}}
     @disabled={{importDisabled}}
+  />
+  <DButton
+    @action={{action "syncTopics"}}
+    @icon="sync"
+    @label="admin.events.source.topic_sync_all.label"
+    @title="admin.events.source.topic_sync_all.title"
+    class="sync-topics"
+    @disabled={{syncTopicsDisabled}}
   />
   <DButton
     @action={{action "saveSource"}}

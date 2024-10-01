@@ -17,10 +17,19 @@ export default SingleSelectComponent.extend({
     caretDownIcon: "caret-down",
   },
 
-  @discourseComputed("feature", "subscription.features", "allowedValues")
-  content(feature, subscriptionFeatures, allowedValues) {
-    const values = (subscriptionFeatures || {})[feature];
+  @discourseComputed(
+    "feature",
+    "attribute",
+    "subscription.features",
+    "allowedValues"
+  )
+  content(feature, attribute, subscriptionFeatures, allowedValues) {
+    const attributes = (subscriptionFeatures || {})[feature];
+    if (!attributes) {
+      return [];
+    }
 
+    const values = attributes[attribute];
     if (!values) {
       return [];
     } else {
@@ -33,7 +42,7 @@ export default SingleSelectComponent.extend({
             (product) => values[value][product]
           );
           let subscriptionRequired = minimumProduct !== "none";
-          let i18nkey = `admin.events.${feature}.${this.i18nKey}.${value}`;
+          let i18nkey = `admin.events.${feature}.${attribute}.${value}`;
           if (this.i18nSuffix) {
             i18nkey += `.${this.i18nSuffix}`;
           }
@@ -47,6 +56,7 @@ export default SingleSelectComponent.extend({
           if (subscriptionRequired) {
             attrs.subscribed = this.subscription.supportsFeatureValue(
               feature,
+              attribute,
               value
             );
             attrs.disabled = !attrs.subscribed;

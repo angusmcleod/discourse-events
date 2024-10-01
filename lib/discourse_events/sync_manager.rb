@@ -17,7 +17,7 @@ module DiscourseEvents
       syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(user, source)
 
       client_name = client.humanize
-      source_name = syncer.source.name
+      provider_type = syncer.source.provider.provider_type
       category_name = syncer.source.category&.name
 
       unless syncer&.ready?
@@ -25,7 +25,7 @@ module DiscourseEvents
           I18n.t(
             "log.sync_client_not_ready",
             client_name: client_name,
-            source_name: source_name,
+            provider_type: provider_type,
             category_name: category_name,
           )
         syncer.log(:error, message)
@@ -38,7 +38,7 @@ module DiscourseEvents
         I18n.t(
           "log.sync_finished",
           client_name: client.humanize,
-          source_name: source_name,
+          provider_type: provider_type,
           category_name: category_name,
           created_count: result[:created_topics].size,
           updated_count: result[:updated_topics].size,

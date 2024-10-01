@@ -58,6 +58,18 @@ module DiscourseEvents
               business: true,
             },
           },
+          topic_sync: {
+            manual: {
+              none: false,
+              community: true,
+              business: true,
+            },
+            auto: {
+              none: false,
+              community: false,
+              business: true,
+            },
+          },
           client: {
             discourse_events: {
               none: false,
@@ -129,7 +141,7 @@ module DiscourseEvents
     def supports?(feature, attribute, value)
       return true unless feature && attribute && value
       return false unless product
-      features[feature.to_sym][attribute.to_sym][value.to_sym][product.to_sym]
+      features.dig(feature.to_sym, attribute.to_sym, value.to_sym, product.to_sym)
     end
 
     def subscriptions

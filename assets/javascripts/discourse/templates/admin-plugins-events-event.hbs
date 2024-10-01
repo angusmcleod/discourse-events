@@ -27,29 +27,10 @@
           }}
         </LinkTo>
       </li>
-      <li class="navigation-item connections">
-        <LinkTo
-          @route="adminPlugins.events.event.connection"
-          title={{i18n "admin.events.connection.title"}}
-          class="navigation-link"
-        >
-          {{i18n "admin.events.connection.title"}}
-        </LinkTo>
-      </li>
     </ul>
   </nav>
 
   <div class="buttons">
-    {{#if connectionRoute}}
-      <DButton
-        @id="add-connection"
-        @action={{action "addConnection"}}
-        @label="admin.events.connection.add.label"
-        @title="admin.events.connection.add.title"
-        @icon="plus"
-        @disabled={{addDisabled}}
-      />
-    {{/if}}
     {{#if unconnectedRoute}}
       <DButton
         @id="connect-topic"
