@@ -4,7 +4,7 @@ module DiscourseEvents
   class DiscourseCalendarSyncer < DiscourseEvents::Syncer
     def ready?
       defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
-        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
+        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled && super
     end
 
     def create_topic(event)

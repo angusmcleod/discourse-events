@@ -14,7 +14,7 @@ export default Component.extend(LoadMore, {
   },
 
   selectAllEvents() {
-    Event.listAll().then((result) => {
+    Event.listAll({ filter: this.filter }).then((result) => {
       this.modifySelection(result.event_ids, true);
     });
   },

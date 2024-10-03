@@ -19,7 +19,7 @@ export default class EventTag extends Component {
   }
 
   <template>
-    <a class={{this.class}} {{on "click" this.click}}>
+    <a class={{this.class}} {{on "click" this.click}} role="button">
       <span>{{@label}}</span>
     </a>
   </template>

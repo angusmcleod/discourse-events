@@ -12,6 +12,10 @@ module DiscourseEvents
       @logger = Logger.new(:sync)
     end
 
+    def ready?
+      source.user.present?
+    end
+
     def create_topic(event)
       raise NotImplementedError
     end

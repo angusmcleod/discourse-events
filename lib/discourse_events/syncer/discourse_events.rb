@@ -3,7 +3,7 @@
 module DiscourseEvents
   class DiscourseEventsSyncer < DiscourseEvents::Syncer
     def ready?
-      source.category.events_enabled
+      source.category.events_enabled && super
     end
 
     def create_topic(event)

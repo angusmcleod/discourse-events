@@ -92,4 +92,24 @@ describe DiscourseEvents::SyncManager do
       expect(result[:updated_topics]).to include(event2.reload.topics.first.id)
     end
   end
+
+  context "when source has no user" do
+    before do
+      source.user = nil
+      source.save!
+    end
+
+    it "does not sync" do
+      result = subject.sync_source(source)
+      expect(result).to eq(false)
+      expect(DiscourseEvents::Log.all.first.message).to eq(
+        I18n.t(
+          "log.sync_client_not_ready",
+          client_name: "Discourse events",
+          provider_type: source.provider.provider_type,
+          category_name: category.name,
+        ),
+      )
+    end
+  end
 end

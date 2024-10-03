@@ -178,15 +178,31 @@ export default Component.extend({
     "sourceChanged",
     "saving",
     "syncing",
+    "subscription.subscribed",
     "source.client",
-    "subscription.subscribed"
+    "source.topic_sync",
+    "source.category_id",
+    "source.user.username"
   )
-  syncTopicsDisabled(sourceChanged, saving, syncing, sourceClient) {
+  syncTopicsDisabled(
+    sourceChanged,
+    saving,
+    syncing,
+    subscribed,
+    client,
+    topicSync,
+    categoryId,
+    username
+  ) {
     return (
       sourceChanged ||
       saving ||
       syncing ||
-      !this.subscription.supportsFeatureValue("source", "client", sourceClient)
+      !client ||
+      !this.subscription.supportsFeatureValue("source", "client", client) ||
+      !topicSync ||
+      !categoryId ||
+      !username
     );
   },
 
@@ -237,6 +253,8 @@ export default Component.extend({
       if (source.user) {
         source.username = source.user.username;
         delete source.user;
+      } else {
+        source.username = null;
       }
 
       this.set("saving", true);
