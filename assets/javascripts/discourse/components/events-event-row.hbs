@@ -6,9 +6,10 @@
   {{#if showTopics}}
     {{#each event.topic_ids as |topic_id|}}
       <a
-        href={{concat "/t/" topic_id}}
+        {{on "click" (fn this.openTopic topic_id)}}
         target="_blank"
         rel="noopener noreferrer"
+        role="button"
       >{{event.name}}</a>
     {{/each}}
   {{else}}

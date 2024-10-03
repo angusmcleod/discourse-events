@@ -1,4 +1,5 @@
 import Component from "@ember/component";
+import { action } from "@ember/object";
 import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import I18n from "I18n";
 
@@ -18,6 +19,13 @@ export default Component.extend({
 
   click() {
     this.set("event.selected", !this.get("event.selected"));
+  },
+
+  @action
+  openTopic(topicId) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    window.open(`/t/${topicId}`, "_blank");
   },
 
   @discourseComputed("provider.provider_type")

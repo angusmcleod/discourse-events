@@ -163,6 +163,8 @@ $pavilion_primary: #3c1c8c;
 
 .events-event-table {
   .events-event-row {
+    cursor: pointer;
+
     &.show-select {
       cursor: pointer;
     }

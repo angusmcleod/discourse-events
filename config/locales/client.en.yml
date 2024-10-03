@@ -272,8 +272,8 @@ en:
           title: Events
           select_all: Select all
           selected_x:
-            one: "%{count} event selected."
-            other: "%{count} events selected."
+            one: "%{count} event selected"
+            other: "%{count} events selected"
           show_select: Show event select
           start_time: Start Time
           name: Name
