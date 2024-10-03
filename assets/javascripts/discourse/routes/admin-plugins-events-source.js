@@ -1,4 +1,5 @@
 import { A } from "@ember/array";
+import { inject as service } from "@ember/service";
 import DiscourseRoute from "discourse/routes/discourse";
 import I18n from "I18n";
 import Filter from "../models/filter";
@@ -7,6 +8,8 @@ import Source from "../models/source";
 import SourceOptions from "../models/source-options";
 
 export default DiscourseRoute.extend({
+  store: service(),
+
   model() {
     return Source.all();
   },
@@ -34,7 +37,7 @@ export default DiscourseRoute.extend({
           return Source.create(s);
         })
       ),
-      providers: A(model.providers.map((p) => Provider.create(p))),
+      providers: Provider.toArray(this.store, model.providers),
       importPeriods,
       sourceOptionFields: model.source_options,
     });

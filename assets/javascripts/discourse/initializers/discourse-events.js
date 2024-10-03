@@ -10,12 +10,14 @@ import {
   on,
 } from "discourse-common/utils/decorators";
 import I18n from "I18n";
+import Provider from "../models/provider";
 
 export default {
   name: "events-edits",
   initialize(container) {
     const siteSettings = container.lookup("site-settings:main");
     const currentUser = container.lookup("current-user:main");
+    container.registry.register("model:provider", Provider);
 
     withPluginApi("1.4.0", (api) => {
       api.serializeToDraft("event");

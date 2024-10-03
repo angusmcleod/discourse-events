@@ -3,11 +3,11 @@ import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
 import DiscourseURL from "discourse/lib/url";
 import discourseComputed from "discourse-common/utils/decorators";
-import Provider from "../models/provider";
-
-export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
-export const NO_AUTH_TYPES = ["icalendar"];
-export const OAUTH2_TYPES = ["meetup", "outlook", "google"];
+import Provider, {
+  NO_AUTH_TYPES,
+  OAUTH2_TYPES,
+  TOKEN_TYPES,
+} from "../models/provider";
 
 export default Component.extend({
   tagName: "tr",
@@ -59,7 +59,7 @@ export default Component.extend({
     }
   },
 
-  @discourseComputed("provider.provider_type", "inSubscription")
+  @discourseComputed("provider.provider_type", "provider.inSubscription")
   canSave(providerType, inSubscription) {
     return inSubscription && providerType !== "icalendar";
   },
@@ -83,7 +83,7 @@ export default Component.extend({
     return authenticateDisabled ? "" : "btn-primary";
   },
 
-  @discourseComputed("provider.provider_type", "inSubscription")
+  @discourseComputed("provider.provider_type", "provider.inSubscription")
   canAuthenicate(providerType, inSubscription) {
     return (
       inSubscription && providerType && OAUTH2_TYPES.includes(providerType)
@@ -91,47 +91,9 @@ export default Component.extend({
   },
 
   @discourseComputed("provider.provider_type")
-  hasCredentials(providerType) {
-    return providerType && !NO_AUTH_TYPES.includes(providerType);
-  },
-
-  @discourseComputed(
-    "hasCredentials",
-    "provider.stored",
-    "provider.authenticated",
-    "inSubscription"
-  )
-  providerStatus(
-    hasCredentials,
-    providerStored,
-    providerAuthenticated,
-    inSubscription
-  ) {
-    if (!inSubscription) {
-      return "not_in_subscription";
-    }
-    if (hasCredentials) {
-      return providerAuthenticated ? "ready" : "not_authenticated";
-    } else {
-      return providerStored ? "ready" : "not_ready";
-    }
-  },
-
-  @discourseComputed("provider.provider_type")
   providerLogo(providerType) {
     return `/plugins/discourse-events/logos/${providerType}.svg`;
   },
-
-  @discourseComputed("subscription.features.provider", "provider.provider_type")
-  inSubscription(subscriptionProviders, providerType) {
-    return this.subscription.supportsFeatureValue(
-      "provider",
-      "provider_type",
-      providerType
-    );
-  },
-
-  notInSubscription: not("inSubscription"),
 
   @discourseComputed("subscription.features.provider", "provider.provider_type")
   supportedSubscriptions(subscriptionProviders, providerType) {
@@ -142,12 +104,12 @@ export default Component.extend({
     return Object.keys(subscriptions).filter((type) => subscriptions[type]);
   },
 
-  @discourseComputed("providerStatus")
+  @discourseComputed("provider.status")
   showAuthenticate(providerStatus) {
     return providerStatus && providerStatus === "not_authenticated";
   },
 
-  @discourseComputed("providerStatus")
+  @discourseComputed("provider.status")
   showUpgradeSubscription(providerStatus) {
     return providerStatus && providerStatus === "not_in_subscription";
   },

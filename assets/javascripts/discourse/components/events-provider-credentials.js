@@ -1,7 +1,7 @@
 import Component from "@ember/component";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
-import { OAUTH2_TYPES, TOKEN_TYPES } from "./events-provider-row";
+import { OAUTH2_TYPES, TOKEN_TYPES } from "../models/provider";
 
 export default Component.extend({
   hideCredentials: true,

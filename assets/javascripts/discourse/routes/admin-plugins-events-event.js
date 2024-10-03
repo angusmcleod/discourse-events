@@ -6,6 +6,7 @@ import Provider from "../models/provider";
 
 export default DiscourseRoute.extend({
   router: service(),
+  store: service(),
 
   queryParams: {
     order: { refreshModel: true },
@@ -29,7 +30,7 @@ export default DiscourseRoute.extend({
       events: Event.toArray(model.events),
       withTopicsCount: model.with_topics_count,
       withoutTopicsCount: model.without_topics_count,
-      providers: Provider.toArray(model.providers),
+      providers: Provider.toArray(this.store, model.providers),
       selectAll: false,
     });
   },

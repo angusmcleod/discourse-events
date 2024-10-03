@@ -38,16 +38,15 @@
 </td>
 
 <td class="events-provider-authentication">
-  {{#if hasCredentials}}
+  {{#if provider.hasCredentials}}
     <EventsProviderCredentials
       @provider={{provider}}
-      @disabled={{notInSubscription}}
+      @disabled={{provider.notInSubscription}}
     />
   {{/if}}
 </td>
 
 <td class="action-column">
-  <ConditionalLoadingSpinner @condition={{saving}} @size="small" />
   {{#if showAuthenticate}}
     <DButton
       @action={{action "authenticateProvider"}}
@@ -64,7 +63,7 @@
       @label="admin.events.subscription.upgrade.label"
     />
   {{else}}
-    <EventsProviderStatus @status={{providerStatus}} />
+    <EventsProviderStatus @status={{provider.status}} />
   {{/if}}
   {{#if canSave}}
     <DButton

@@ -177,6 +177,13 @@ export default Component.extend({
     }
   },
 
+  @discourseComputed("providers.@each.status")
+  allowedProviderTypeValues(providers) {
+    return providers
+      .filter((p) => p.status === "ready")
+      .map((p) => p.provider_type);
+  },
+
   @discourseComputed(
     "sourceChanged",
     "saving",
