@@ -57,6 +57,7 @@ after_initialize do
   require_relative "lib/discourse_events/subscription_manager.rb"
   require_relative "lib/discourse_events/subscription.rb"
   require_relative "lib/discourse_events/event_creator.rb"
+  require_relative "lib/discourse_events/event_destroyer.rb"
   require_relative "lib/discourse_events/event_revisor.rb"
   require_relative "lib/discourse_events/logger.rb"
   require_relative "lib/discourse_events/import_manager.rb"

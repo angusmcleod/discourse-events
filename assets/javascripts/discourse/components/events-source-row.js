@@ -36,19 +36,34 @@ export default Component.extend({
     "source.import_type",
     "source.import_period",
     "source.source_options.@each",
+    "source.user.username",
+    "source.category_id",
+    "source.client",
     "source.filters.[]",
     "source.filters.@each.query_column",
     "source.filters.@each.query_operator",
     "source.filters.@each.query_value"
   )
-  sourceChanged(providerId, importType, importPeriod, sourceOptions, filters) {
+  sourceChanged(
+    providerId,
+    importType,
+    importPeriod,
+    sourceOptions,
+    username,
+    categoryId,
+    client,
+    filters
+  ) {
     const cs = this.currentSource;
     return (
       cs.provider_id !== providerId ||
       cs.import_period !== importPeriod ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
       !filtersMatch(filters, cs.filters) ||
-      cs.import_type !== importType
+      cs.import_type !== importType ||
+      cs.user?.username !== username ||
+      cs.category_id !== categoryId ||
+      cs.client !== client
     );
   },
 
@@ -217,6 +232,11 @@ export default Component.extend({
 
       if (source.import_period === 0) {
         source.import_period = null;
+      }
+
+      if (source.user) {
+        source.username = source.user.username;
+        delete source.user;
       }
 
       this.set("saving", true);

@@ -13,10 +13,21 @@ export default Component.extend(LoadMore, {
     return filter === "connected";
   },
 
+  selectAllEvents() {
+    Event.listAll().then((result) => {
+      this.modifySelection(result.event_ids, true);
+    });
+  },
+
   actions: {
     toggleSelectAll() {
       this.toggleProperty("selectAll");
-      this.modifySelection(this.events, this.selectAll);
+
+      if (this.selectAll) {
+        this.selectAllEvents();
+      } else {
+        this.modifySelection(this.selectedEventIds, false);
+      }
     },
 
     loadMore() {
@@ -44,7 +55,9 @@ export default Component.extend(LoadMore, {
         .then((result) => {
           if (result.events && result.events.length) {
             this.set("page", page);
-            this.get("events").pushObjects(Event.toArray(result.events));
+            this.get("events").pushObjects(
+              Event.toArray(result.events, this.selectedEventIds)
+            );
           } else {
             this.set("loadingComplete", true);
           }

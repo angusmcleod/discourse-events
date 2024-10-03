@@ -10,7 +10,7 @@ import Message from "../mixins/message";
 
 export default Controller.extend(Message, {
   hasEvents: notEmpty("events"),
-  selectedEvents: A(),
+  selectedEventIds: A(),
   modal: service(),
   selectAll: false,
   order: null,
@@ -21,9 +21,9 @@ export default Controller.extend(Message, {
   subscription: service("events-subscription"),
   router: service(),
 
-  @discourseComputed("selectedEvents.[]", "hasEvents")
-  deleteDisabled(selectedEvents, hasEvents) {
-    return !hasEvents || !selectedEvents.length;
+  @discourseComputed("selectedEventIds.[]", "hasEvents")
+  deleteDisabled(selectedEventIds, hasEvents) {
+    return !hasEvents || !selectedEventIds.length;
   },
 
   @discourseComputed("hasEvents")
@@ -55,47 +55,70 @@ export default Controller.extend(Message, {
     return `event.${filter}`;
   },
 
-  @discourseComputed("selectedEvents.[]")
-  connectTopicDisabled(selectedEvents) {
-    return selectedEvents.length !== 1;
+  @discourseComputed("selectedEventIds.[]")
+  connectTopicDisabled(selectedEventIds) {
+    return selectedEventIds.length !== 1;
+  },
+
+  updateCurrentRouteCount() {
+    const events = this.get("events");
+    this.set(
+      `${this.unconnectedRoute ? "without" : "with"}TopicsCount`,
+      events.length
+    );
   },
 
   actions: {
     openConnectTopic() {
-      const selectedEvent = this.selectedEvents[0];
+      const selectedEventId = this.selectedEventIds[0];
+      const event = this.get("events").findBy("id", selectedEventId);
+
+      if (!event) {
+        return;
+      }
 
       this.modal.show(ConnectTopic, {
         model: {
-          event: selectedEvent,
+          event,
           onConnectTopic: () => {
-            this.set("selectedEvents", A());
-            const events = this.get("events");
-            events.removeObject(events.findBy("id", selectedEvent.id));
+            this.set("selectedEventIds", A());
+            this.get("events").removeObject(event);
           },
         },
       });
     },
 
-    modifySelection(events, checked) {
-      if (checked) {
-        this.get("selectedEvents").pushObjects(events);
+    modifySelection(eventIds, selected) {
+      this.get("events").forEach((event) => {
+        if (eventIds.includes(event.id)) {
+          event.set("selected", selected);
+        }
+      });
+      if (selected) {
+        this.get("selectedEventIds").addObjects(eventIds);
       } else {
-        this.get("selectedEvents").removeObjects(events);
+        this.get("selectedEventIds").removeObjects(eventIds);
       }
     },
 
     openDelete() {
       this.modal.show(ConfirmEventDeletion, {
         model: {
-          events: this.selectedEvents,
+          eventIds: this.selectedEventIds,
           onDestroyEvents: (
-            destroyedEvents = null,
+            destroyedEventIds = null,
             destroyedTopicsEvents = null
           ) => {
-            this.set("selectedEvents", A());
+            this.set("selectedEventIds", A());
 
-            if (destroyedEvents) {
-              this.get("events").removeObjects(destroyedEvents);
+            const events = this.get("events");
+
+            if (destroyedEventIds) {
+              const destroyedEvents = events.filter((e) =>
+                destroyedEventIds.includes(e.id)
+              );
+              events.removeObjects(destroyedEvents);
+              this.updateCurrentRouteCount();
             }
 
             if (destroyedTopicsEvents) {
@@ -103,7 +126,7 @@ export default Controller.extend(Message, {
                 (e) => e.id
               );
 
-              this.get("events").forEach((event) => {
+              events.forEach((event) => {
                 if (destroyedTopicsEventIds.includes(event.id)) {
                   event.set("topics", null);
                 }

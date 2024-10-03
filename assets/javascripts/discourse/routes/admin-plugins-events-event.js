@@ -30,13 +30,14 @@ export default DiscourseRoute.extend({
       withTopicsCount: model.with_topics_count,
       withoutTopicsCount: model.without_topics_count,
       providers: Provider.toArray(model.providers),
+      selectAll: false,
     });
   },
 
   @action
   willTransition() {
     this.controllerFor("adminPlugins.events.event")
-      .get("selectedEvents")
+      .get("selectedEventIds")
       .clear();
   },
 });

@@ -174,10 +174,10 @@ en:
             instructions: How topics are created and updated from events.
             manual:
               label: Manual
-              instructions: Connect topics to events in the "Events" panel.
+              instructions: Manually connect topics in the "Events" panel.
             auto:
               label: Automatic
-              instructions: Post are created or updated automatically after an import.  
+              instructions: Topics are posted automatically after import.
           topic_sync_all:
             label: Sync Events
             title: Sync all events from this source with topics in the Category.
@@ -271,6 +271,9 @@ en:
         event:
           title: Events
           select_all: Select all
+          selected_x:
+            one: "%{count} event selected."
+            other: "%{count} events selected."
           show_select: Show event select
           start_time: Start Time
           name: Name
@@ -292,8 +295,11 @@ en:
               other: "No Topics (%{count})"
             title: Events not connected to topics.
           delete:
-            title: Delete Events and Topics
+            title: Delete Events
             label: Delete
+            description_x:
+              one: One event selected.
+              other: "%{count} events selected."
             events_only: Delete events only
             events_and_topics: Delete events and associated topics
             topics_only: Delete topics only

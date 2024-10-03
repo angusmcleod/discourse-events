@@ -24,6 +24,16 @@
           @action={{action "toggleSelectAll"}}
           @title="admin.events.event.select_all"
         >
+          <span class="events-selected">
+            {{#if selectAll}}
+              {{i18n
+                "admin.events.event.selected_x"
+                count=selectedEventIds.length
+              }}
+            {{else}}
+              {{i18n "admin.events.event.select_all"}}
+            {{/if}}
+          </span>
           {{d-icon "check-square"}}
         </DButton>
       </th>
@@ -35,7 +45,6 @@
         @event={{event}}
         @providers={{providers}}
         @modifySelection={{modifySelection}}
-        @selectAll={{selectAll}}
         @showTopics={{showTopics}}
       />
     {{/each}}

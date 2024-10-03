@@ -5,11 +5,12 @@
   @flash={{this.flash}}
 >
   <:body>
-    <ul class="events">
-      {{#each model.events as |event|}}
-        <li class="event">{{event.name}}</li>
-      {{/each}}
-    </ul>
+    <div class="delete-events-count">
+      {{i18n
+        "admin.events.event.delete.description_x"
+        count=model.eventIds.length
+      }}
+    </div>
     <div class="target-control">
       <ComboBox
         @content={{deleteTargets}}

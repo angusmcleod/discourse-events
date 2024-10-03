@@ -97,6 +97,7 @@ $pavilion_primary: #3c1c8c;
 
     .control-instructions {
       min-height: 20px;
+      margin-top: 0.25em;
     }
 
     label {
@@ -194,16 +195,27 @@ $pavilion_primary: #3c1c8c;
       background: unset !important;
       color: var(--primary) !important;
       padding: unset;
+      position: relative;
 
       .d-icon {
         color: var(--primary) !important;
         margin-right: 0.3em;
       }
     }
+
+    .events-selected {
+      position: absolute;
+      right: 30px;
+      white-space: nowrap;
+    }
   }
 }
 
 .delete-event-modal {
+  .delete-events-count {
+    margin-bottom: 1em;
+  }
+
   .target-control {
     margin-bottom: 0.5rem;
 

@@ -5,7 +5,6 @@ module DiscourseEvents
     end
 
     def save_filters
-      return unless valid_filters.present?
       @errors ||= []
       saved_ids = []
 

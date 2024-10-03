@@ -8,12 +8,12 @@ module DiscourseEvents
                :import_type,
                :import_period,
                :topic_sync,
-               :user_id,
                :category_id,
                :client,
                :ready
 
     has_many :filters, serializer: FilterSerializer, embed: :objects
+    has_one :user, serializer: BasicUserSerializer, embed: :objects
 
     def source_options
       object.source_options_hash

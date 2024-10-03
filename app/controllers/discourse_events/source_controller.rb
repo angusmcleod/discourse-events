@@ -120,7 +120,7 @@ module DiscourseEvents
                 :import_type,
                 :topic_sync,
                 :category_id,
-                :user_id,
+                :username,
                 :client,
                 source_options: {
                 },
@@ -145,6 +145,12 @@ module DiscourseEvents
           unless subscription.supports?(:source, :client, result[:client])
             raise Discourse::InvalidParameters,
                   "client #{result[:client]} is not supported by your subscription"
+          end
+
+          if result[:username]
+            user = User.find_by(username: result[:username])
+            raise Discourse::InvalidParameters.new(:username) unless user.present?
+            result[:user_id] = user.id
           end
 
           result

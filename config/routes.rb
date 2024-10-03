@@ -43,6 +43,7 @@ Discourse::Application.routes.prepend do
       post "events/source/:id/topics" => "source#topics"
       delete "events/source/:id" => "source#destroy"
       get "events/event" => "event#index"
+      get "events/event/all" => "event#all"
       delete "events/event" => "event#destroy"
       post "events/event/connect" => "event#connect"
       get "events/log" => "log#index"

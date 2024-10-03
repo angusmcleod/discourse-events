@@ -5,11 +5,6 @@ module DiscourseEvents
     PAGE_LIMIT = 30
 
     def index
-      filter = params[:filter]
-      if filter && %w[unconnected connected].exclude?(filter)
-        raise Discourse::InvalidParameters.new(:filter)
-      end
-
       order = params[:order]
       raise Discourse::InvalidParameters.new(:order) if order && %w[start_time name].exclude?(order)
       order ||= "start_time"
@@ -19,20 +14,8 @@ module DiscourseEvents
       offset = page * PAGE_LIMIT
       limit = PAGE_LIMIT
 
-      filter_sql =
-        if filter
-          "WHERE et.topic_id IS #{filter === "unconnected" ? "NULL" : "NOT NULL"}"
-        else
-          ""
-        end
-      events_sql = (<<~SQL)
-        SELECT * FROM (#{Event.list_sql(filter_sql: filter_sql)}) AS events
-        ORDER BY #{order} #{direction}
-        OFFSET #{offset}
-        LIMIT #{limit}
-      SQL
-
-      events = DB.query(events_sql)
+      events =
+        DB.query(events_sql(order: order, direction: direction, offset: offset, limit: limit))
 
       with_topics_sql = (<<~SQL)
         SELECT COUNT(id) FROM (#{Event.list_sql}) AS events
@@ -56,6 +39,11 @@ module DiscourseEvents
         events: serialize_data(events, EventSerializer, root: false),
         providers: serialize_data(Provider.all, ProviderSerializer, root: false),
       )
+    end
+
+    def all
+      events = DB.query(events_sql)
+      render json: { event_ids: events.map(&:id) }.as_json
     end
 
     def connect
@@ -90,40 +78,55 @@ module DiscourseEvents
     def destroy
       event_ids = params[:event_ids]
       target = params[:target]
-      result = { destroyed_event_ids: [], destroyed_topics_event_ids: [] }
 
-      ActiveRecord::Base.transaction do
-        events = Event.where(id: event_ids)
-
-        if target === "events_and_topics" || target === "topics_only"
-          event_topics = {}
-
-          events
-            .includes(:event_topics)
-            .each do |event|
-              event.event_topics.each do |et|
-                destroyer = PostDestroyer.new(current_user, et.topic.first_post)
-                destroyer.destroy
-                event_topics[et.id] ||= et
-              end
-
-              result[:destroyed_topics_event_ids] << event.id
-            end
-
-          DiscourseEvents::EventTopic.where(id: event_topics.keys).delete_all
-        end
-
-        if target === "events_only" || target === "events_and_topics"
-          destroyed_events = events.destroy_all
-          result[:destroyed_event_ids] += destroyed_events.map(&:id)
-        end
-      end
+      result = EventDestroyer.perform(user: current_user, event_ids: event_ids, target: target)
 
       if result[:destroyed_event_ids].present? || result[:destroyed_topics_event_ids].present?
         render json: success_json.merge(result)
       else
         render json: failed_json
       end
+    end
+
+    protected
+
+    def filter
+      @filter ||=
+        begin
+          result = params[:filter]
+          if result && %w[unconnected connected].exclude?(result)
+            raise Discourse::InvalidParameters.new(:filter)
+          end
+          result
+        end
+    end
+
+    def filter_sql
+      @filter_sql ||=
+        begin
+          if filter
+            "WHERE et.topic_id IS #{filter === "unconnected" ? "NULL" : "NOT NULL"}"
+          else
+            ""
+          end
+        end
+    end
+
+    def events_sql(order: nil, direction: nil, offset: nil, limit: nil)
+      sql = (<<~SQL)
+        SELECT * FROM (#{Event.list_sql(filter_sql: filter_sql)}) AS events
+      SQL
+
+      sql << (<<~SQL) if !order.nil? && !direction.nil?
+          ORDER BY #{order} #{direction}
+        SQL
+
+      sql << (<<~SQL) if !offset.nil? && !limit.nil?
+          OFFSET #{offset}
+          LIMIT #{limit}
+        SQL
+
+      sql
     end
   end
 end

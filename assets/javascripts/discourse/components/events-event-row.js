@@ -4,17 +4,11 @@ import I18n from "I18n";
 
 export default Component.extend({
   tagName: "tr",
-  classNameBindings: [":events-event-row", "selected"],
-  selected: false,
+  classNameBindings: [":events-event-row", "event.selected:selected"],
 
-  @observes("selectAll")
-  toggleWhenSelectAll() {
-    this.set("selected", this.selectAll);
-  },
-
-  @observes("selected")
+  @observes("event.selected")
   selectEvent() {
-    this.modifySelection([this.event], this.selected);
+    this.modifySelection([this.event.id], this.event.selected);
   },
 
   @discourseComputed("event.provider_id", "providers")

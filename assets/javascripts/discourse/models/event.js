@@ -3,11 +3,20 @@ import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-const Event = EmberObject.extend();
+const Event = EmberObject.extend({
+  selected: false,
+});
 
 Event.reopenClass({
   list(data = {}) {
     return ajax("/admin/plugins/events/event", {
+      type: "GET",
+      data,
+    }).catch(popupAjaxError);
+  },
+
+  listAll(data = {}) {
+    return ajax("/admin/plugins/events/event/all", {
       type: "GET",
       data,
     }).catch(popupAjaxError);
@@ -27,9 +36,12 @@ Event.reopenClass({
     }).catch(popupAjaxError);
   },
 
-  toArray(events) {
+  toArray(events, selectedEventIds = []) {
     return A(
       events.map((event) => {
+        if (selectedEventIds.includes(event.id)) {
+          event.selected = true;
+        }
         return Event.create(event);
       })
     );

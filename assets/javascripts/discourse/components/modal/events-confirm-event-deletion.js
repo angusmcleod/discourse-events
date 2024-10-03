@@ -12,11 +12,6 @@ export default Component.extend({
   })),
   deleteTarget: "events_only",
 
-  @discourseComputed("model.events")
-  eventCount(events) {
-    return events.length;
-  },
-
   @discourseComputed("deleteTarget")
   btnLabel(deleteTarget) {
     return `admin.events.event.delete.${deleteTarget}_btn`;
@@ -24,8 +19,7 @@ export default Component.extend({
 
   actions: {
     delete() {
-      const events = this.model.events;
-      const eventIds = events.map((e) => e.id);
+      const eventIds = this.model.eventIds;
       const target = this.deleteTarget;
 
       const opts = {
@@ -39,9 +33,11 @@ export default Component.extend({
         .then((result) => {
           if (result.success) {
             this.model.onDestroyEvents(
-              events.filter((e) => result.destroyed_event_ids.includes(e.id)),
-              events.filter((e) =>
-                result.destroyed_topics_event_ids.includes(e.id)
+              eventIds.filter((eventId) =>
+                result.destroyed_event_ids.includes(eventId)
+              ),
+              eventIds.filter((eventId) =>
+                result.destroyed_topics_event_ids.includes(eventId)
               )
             );
             this.closeModal();
