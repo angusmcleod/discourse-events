@@ -32,6 +32,7 @@ export default Component.extend({
   },
 
   @discourseComputed(
+    "source.topic_sync",
     "source.provider_id",
     "source.import_type",
     "source.import_period",
@@ -45,6 +46,7 @@ export default Component.extend({
     "source.filters.@each.query_value"
   )
   sourceChanged(
+    topicSync,
     providerId,
     importType,
     importPeriod,
@@ -56,6 +58,7 @@ export default Component.extend({
   ) {
     const cs = this.currentSource;
     return (
+      cs.topic_sync !== topicSync ||
       cs.provider_id !== providerId ||
       cs.import_period !== importPeriod ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
