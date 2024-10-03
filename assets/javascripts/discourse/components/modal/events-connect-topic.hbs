@@ -21,7 +21,7 @@
       <label>{{i18n "admin.events.event.connect.client"}}</label>
       <EventsSubscriptionSelector
         @value={{this.client}}
-        @feature="connection"
+        @feature="source"
         @attribute="client"
         @onChange={{action (mut this.client)}}
         class="connection-client"

@@ -16,6 +16,10 @@ export default Component.extend({
     return providers.find((provider) => provider.id === providerId);
   },
 
+  click() {
+    this.set("event.selected", !this.get("event.selected"));
+  },
+
   @discourseComputed("provider.provider_type")
   providerLabel(providerType) {
     if (providerType) {

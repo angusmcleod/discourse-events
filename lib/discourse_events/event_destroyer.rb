@@ -34,10 +34,11 @@ module DiscourseEvents
 
           series_events = destroyed_events.select { |e| e.series_id.present? }
           if SiteSetting.events_one_event_per_series
-            destroyed_series_events = Event
-              .where.not(id: series_events.map(&:id))
-              .where(series_id: series_events.map(&:series_id))
-              .destroy_all
+            destroyed_series_events =
+              Event
+                .where.not(id: series_events.map(&:id))
+                .where(series_id: series_events.map(&:series_id))
+                .destroy_all
             result[:destroyed_event_ids] += destroyed_series_events.map(&:id)
           end
         end

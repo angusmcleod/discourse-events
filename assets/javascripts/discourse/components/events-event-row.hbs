@@ -19,17 +19,17 @@
 <td class="tags">
   <div class="event-tags">
     {{#if providerLabel}}
-      <a
-        class="event-tag provider"
-        href={{concat "/admin/plugins/events/provider"}}
-      >
-        <span>{{providerLabel}}</span>
-      </a>
+      <EventTag
+        @label={{providerLabel}}
+        @href="/admin/plugins/events/provider"
+        @class="provider"
+      />
     {{/if}}
     {{#if event.series_id}}
-      <a class="event-tag series">
-        <span>{{i18n "admin.events.event.series.label"}}</span>
-      </a>
+      <EventTag
+        @label={{i18n "admin.events.event.series.label"}}
+        @class="series"
+      />
     {{/if}}
   </div>
 </td>
