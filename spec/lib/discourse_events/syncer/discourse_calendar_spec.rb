@@ -95,4 +95,15 @@ describe DiscourseEvents::DiscourseCalendarSyncer do
     event_dates = DiscoursePostEvent::EventDate.all
     expect(event_dates.first.ends_at).to be(nil)
   end
+
+  context "with event registrations" do
+    fab!(:event_registration1) do
+      Fabricate(:discourse_events_event_registration, event: event, user: user, status: "confirmed")
+    end
+
+    it "creates event invitees" do
+      post = sync_events
+      expect(post.event.invitees.first.user.id).to eq(user.id)
+    end
+  end
 end

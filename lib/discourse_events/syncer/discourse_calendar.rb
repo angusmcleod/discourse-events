@@ -48,6 +48,37 @@ module DiscourseEvents
     def add_end_time(event)
       event.end_time && event.end_time > event.start_time
     end
+
+    def update_client_registrations(topic, event)
+      post = topic.first_post
+
+      event.registrations.each do |registration|
+        next unless registration.user
+
+        invitee =
+          DiscoursePostEvent::Invitee.find_by(user_id: registration.user.id, post_id: post.id)
+        status = invitee_status(registration.status)
+
+        if invitee
+          invitee.update_attendance!(status)
+        else
+          DiscoursePostEvent::Invitee.create_attendance!(registration.user.id, post.id, status)
+        end
+      end
+    end
+
+    def invitee_status(registration_status)
+      case registration_status
+      when "confirmed"
+        :going
+      when "declined"
+        :not_going
+      when "tentative"
+        :interested
+      else
+        DiscoursePostEvent::Invitee::UNKNOWN_ATTENDANCE
+      end
+    end
   end
 end
 

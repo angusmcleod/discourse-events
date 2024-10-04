@@ -43,6 +43,7 @@ module OmniEvent
                 :series_id,
                 :occurrence_id,
               ),
+            associated_data: OmniEvent::EventHash.new(registrations: []),
           )
 
         event.data.start_time = format_time(event.data.start_time)
@@ -50,6 +51,13 @@ module OmniEvent
         event.metadata.created_at = format_time(event.metadata.created_at)
         event.metadata.updated_at = format_time(event.metadata.updated_at)
         event.metadata.uid = raw_event["id"]
+
+        if raw_event["attendees"]
+          event.associated_data.registrations =
+            raw_event["attendees"].map do |attendee|
+              OmniEvent::EventHash.new(attendee.symbolize_keys)
+            end
+        end
 
         next if opts[:from_time] && Time.parse(event.data.start_time).utc < opts[:from_time].utc
         next if opts[:to_time] && Time.parse(event.data.start_time).utc > opts[:to_time].to_time.utc

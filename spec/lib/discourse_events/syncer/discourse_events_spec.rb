@@ -55,4 +55,15 @@ describe DiscourseEvents::DiscourseEventsSyncer do
     expect(topic.custom_fields["event_start"]).to eq(new_start_time.to_i)
     expect(topic.custom_fields["event_end"]).to eq(new_end_time.to_i)
   end
+
+  context "with event registrations" do
+    fab!(:event_registration1) do
+      Fabricate(:discourse_events_event_registration, event: event, user: user, status: "confirmed")
+    end
+
+    it "creates event rsvps" do
+      topic = sync_events
+      expect(topic.event_going).to include(user.id)
+    end
+  end
 end

@@ -23,6 +23,11 @@ module DiscourseEvents
              class_name: "DiscourseEvents::EventTopic"
     has_many :series_topics, through: :series_events, source: :topic
 
+    has_many :registrations,
+             foreign_key: "event_id",
+             class_name: "DiscourseEvents::EventRegistration",
+             dependent: :destroy
+
     PAST_SERIES_EVENTS_SQL = (<<~SQL)
       DISTINCT ON (series_id) *
       FROM discourse_events_events

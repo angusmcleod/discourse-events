@@ -13,7 +13,7 @@ module DiscourseEvents
         omnievent_icalendar: "0.1.0.pre7",
         omnievent_api: "0.1.0.pre5",
         omnievent_outlook: "0.1.0.pre7",
-        omnievent_google: "0.1.0.pre4",
+        omnievent_google: "0.1.0.pre5",
       },
     }
 

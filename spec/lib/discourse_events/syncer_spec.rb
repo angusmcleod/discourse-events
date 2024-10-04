@@ -18,6 +18,9 @@ describe DiscourseEvents::Syncer do
       topic
     end
 
+    def update_client_registrations(topic, event)
+    end
+
     def post_raw(event, post: nil, add_raw: false)
       raw = event.description
       raw += "\n\n#{post.raw}" if post && add_raw
@@ -71,6 +74,11 @@ describe DiscourseEvents::Syncer do
 
     it "does not trigger publication" do
       DiscourseEvents::PublishManager.expects(:perform).never
+      sync_events
+    end
+
+    it "triggers client registrations update for each event" do
+      DiscourseEvents::Syncer.any_instance.expects(:update_client_registrations).twice
       sync_events
     end
   end
@@ -132,6 +140,12 @@ describe DiscourseEvents::Syncer do
 
         expect(event1.event_topics.size).to eq(1)
       end
+
+      it "triggers client registrations update for each series event" do
+        DiscourseEvents::Syncer.any_instance.expects(:update_client_registrations).once
+        syncer = subject.new(user: user, source: source, client: source.client)
+        syncer.update_series_events_topics
+      end
     end
   end
 
@@ -142,6 +156,27 @@ describe DiscourseEvents::Syncer do
       syncer = subject.new(user: user, source: source, client: source.client)
       expect(syncer.standard_events.size).to eq(1)
       expect(syncer.standard_events.first.name).to eq(event2.name)
+    end
+  end
+
+  describe "#update_registrations" do
+    fab!(:topic) { Fabricate(:topic, category: category) }
+    fab!(:post) { Fabricate(:post, topic: topic) }
+    fab!(:event_registration1) do
+      Fabricate(
+        :discourse_events_event_registration,
+        event: event1,
+        user: user,
+        status: "confirmed",
+      )
+    end
+    fab!(:event_registration2) { Fabricate(:discourse_events_event_registration, event: event1) }
+
+    it "ensures registration users" do
+      syncer = subject.new(user: user, source: source, client: source.client)
+      expect { syncer.update_registrations(topic, event1) }.to change { User.count }.by(1)
+      user2 = User.find_by_email(event_registration2.email)
+      expect(user2.staged).to eq(true)
     end
   end
 end

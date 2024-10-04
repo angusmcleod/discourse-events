@@ -76,6 +76,7 @@ after_initialize do
   require_relative "lib/discourse_events/auth/google.rb"
   require_relative "app/models/discourse_events/filter.rb"
   require_relative "app/models/discourse_events/event_topic.rb"
+  require_relative "app/models/discourse_events/event_registration.rb"
   require_relative "app/models/discourse_events/event_source.rb"
   require_relative "app/models/discourse_events/event.rb"
   require_relative "app/models/discourse_events/log.rb"

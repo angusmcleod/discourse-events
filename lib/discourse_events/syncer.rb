@@ -35,18 +35,23 @@ module DiscourseEvents
       topic = create_client_topic(event)
       raise ActiveRecord::Rollback if topic.blank?
       create_event_topic(event, topic)
-      topic.id
+      topic
     end
 
     def update_topic(topic, event, add_raw: nil)
       topic = update_client_topic(topic, event, add_raw: add_raw)
       raise ActiveRecord::Rollback if topic.blank?
-      topic.id
+      topic
     end
 
     def connect_topic(topic, event)
       return false if topic.first_post.event.present?
       update_topic(topic, event, add_raw: true)
+    end
+
+    def update_registrations(topic, event)
+      ensure_registration_users(event)
+      update_client_registrations(topic, event)
     end
 
     def create_post(event, topic_opts = {})
@@ -86,6 +91,10 @@ module DiscourseEvents
       raise NotImplementedError
     end
 
+    def update_client_registrations(topic, event)
+      raise NotImplementedError
+    end
+
     def post_raw(event, post: nil, add_raw: false)
       raise NotImplementedError
     end
@@ -100,7 +109,12 @@ module DiscourseEvents
             event
               .event_topics
               .where(client: client)
-              .each { |et| topics_updated << update_topic(et.topic, event) }
+              .each do |et|
+                topic = update_topic(et.topic, event)
+                next unless topic
+                topics_updated << topic.id
+                update_registrations(topic, event)
+              end
           end
         end
 
@@ -111,7 +125,12 @@ module DiscourseEvents
       topics_created = []
 
       unsynced_events.each do |event|
-        ActiveRecord::Base.transaction { topics_created << create_topic(event) }
+        ActiveRecord::Base.transaction do
+          topic = create_topic(event)
+          next unless topic
+          topics_created << topic.id
+          update_registrations(topic, event)
+        end
       end
 
       topics_created
@@ -127,9 +146,13 @@ module DiscourseEvents
         ActiveRecord::Base.transaction do
           if topic.present?
             ensure_event_topic(event, topic)
-            topics_updated << update_topic(topic, event)
+            topic = update_topic(topic, event)
+            topics_updated << topic.id
+            update_registrations(topic, event)
           else
-            topics_created << create_topic(event)
+            topic = create_topic(event)
+            topics_created << topic.id
+            update_registrations(topic, event)
           end
         end
       end
@@ -191,6 +214,38 @@ module DiscourseEvents
 
     def one_topic_per_series
       source.supports_series && SiteSetting.events_one_event_per_series
+    end
+
+    def ensure_registration_users(event)
+      event.registrations.each do |registration|
+        next if registration.user.present?
+        user = find_or_create_user(registration)
+        next unless user.present?
+        registration.update(user_id: user.id)
+      end
+    end
+
+    def find_or_create_user(registration)
+      user = User.find_by_email(registration.email)
+
+      unless user
+        begin
+          user =
+            User.create!(
+              email: registration.email,
+              username: UserNameSuggester.suggest(registration.name.presence || registration.email),
+              name: registration.name || User.suggest_name(registration.email),
+              staged: true,
+            )
+        rescue PG::UniqueViolation,
+               ActiveRecord::RecordNotUnique,
+               ActiveRecord::RecordInvalid => error
+          message = I18n.t("log.sync_failed_to_create_registration_user", email: registration.email)
+          log(:error, message)
+        end
+      end
+
+      user
     end
   end
 end

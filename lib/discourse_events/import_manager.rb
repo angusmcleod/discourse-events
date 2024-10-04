@@ -37,6 +37,7 @@ module DiscourseEvents
           data[:status] = "published" if data[:status].blank?
           data[:series_id] = imported_event.metadata.series_id
           data[:occurrence_id] = imported_event.metadata.occurrence_id
+          data[:registrations] = imported_event.associated_data.registrations
 
           imported_events[imported_event.metadata.uid] = data
         end
@@ -50,16 +51,34 @@ module DiscourseEvents
           event_source = source.event_sources.find_by(uid: uid)
 
           if event_source
-            event_source.event.update!(data)
+            event_source.event.update!(data.except(:registrations))
 
             updated_event_uids << event_source.uid
           else
             ActiveRecord::Base.transaction do
-              event = Event.create!(data)
+              event = Event.create!(data.except(:registrations))
               event_source = EventSource.create!(uid: uid, event_id: event.id, source_id: source.id)
             end
 
             created_event_uids << event_source.uid
+          end
+
+          if event_source.event.id && data[:registrations].present?
+            registrations =
+              data[:registrations].map do |registration|
+                result = {
+                  event_id: event_source.event.id,
+                  email: registration[:email],
+                  uid: registration[:uid],
+                  name: registration[:name],
+                }
+                if registration[:status] &&
+                     EventRegistration.statuses.keys.include?(registration[:status])
+                  result[:status] = EventRegistration.statuses[registration[:status]]
+                end
+                result
+              end
+            EventRegistration.upsert_all(registrations, unique_by: %i[email])
           end
         end
       end

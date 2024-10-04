@@ -23,9 +23,14 @@ describe DiscourseEvents::ImportManager do
   context "with a subscription" do
     before { enable_subscription(:business) }
 
-    it "imports a source" do
+    it "imports a events from source" do
       subject.import_source(source.id)
       expect(event_uids).to match_array(raw_event_uids)
+    end
+
+    it "imports event registrations" do
+      subject.import_source(source.id)
+      expect(DiscourseEvents::EventRegistration.exists?(email: "angus@email.com")).to eq(true)
     end
 
     it "does not create a previously sourced event" do

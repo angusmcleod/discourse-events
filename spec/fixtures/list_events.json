@@ -62,7 +62,14 @@
             "label": "Don Giovanni Live"
           }
         ]
-      }
+      },
+      "attendees": [
+        {
+          "email": "angus@email.com",
+          "name": "Angus McLeod",
+          "status": "confirmed"
+        }
+      ]
     }
   ]
 }
