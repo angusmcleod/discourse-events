@@ -33,7 +33,11 @@ describe DiscourseEvents::SyncManager do
   end
 
   it "does not sync a source if the client changes" do
-    unless DiscourseEvents::DiscourseCalendarSyncer.new(user, source).ready?
+    unless DiscourseEvents::DiscourseCalendarSyncer.new(
+             user: user,
+             source: source,
+             client: source.client,
+           ).ready?
       skip("Discourse Calendar is not installed")
     end
     SiteSetting.calendar_enabled = true

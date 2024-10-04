@@ -14,7 +14,7 @@ module DiscourseEvents
     end
 
     def sync(source, opts = {})
-      syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(user, source)
+      syncer = self.class.new_client(client, user, source)
 
       client_name = client.humanize
       provider_type = syncer.source.provider.provider_type
@@ -46,6 +46,14 @@ module DiscourseEvents
       syncer.log(:info, message)
 
       result
+    end
+
+    def self.new_client(client, user, source = nil)
+      "DiscourseEvents::#{client.camelize}Syncer".constantize.new(
+        user: user,
+        source: source,
+        client: client,
+      )
     end
 
     def self.sync_source_by_id(source_id)

@@ -310,8 +310,9 @@ en:
             title: Connect Topic
             label: Connect
             event: Event
-            topic: Topic
-            client: Client
+            create_topic: Create a new topic for the event.
+            connect_topic: Connect an existing topic to the event.
+            client: Plugin
           series:
             label: Series
         log:

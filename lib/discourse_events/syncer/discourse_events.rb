@@ -6,7 +6,7 @@ module DiscourseEvents
       source.category.events_enabled && super
     end
 
-    def create_topic(event)
+    def create_client_topic(event)
       post =
         create_post(
           event,
@@ -19,12 +19,7 @@ module DiscourseEvents
       post.topic
     end
 
-    def connect_topic(topic, event)
-      return false if topic.has_event? || topic.first_post.blank?
-      update_topic(topic, event, add_raw: true)
-    end
-
-    def update_topic(topic, event, add_raw: false)
+    def update_client_topic(topic, event, add_raw: false)
       post = topic.first_post
 
       # No validations or callbacks can be triggered when updating this data

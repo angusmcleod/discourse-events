@@ -9,12 +9,26 @@
       <label>{{i18n "admin.events.event.connect.event"}}</label>
       <span class="event-label">{{model.event.name}}</span>
     </div>
+
     <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.topic"}}</label>
+      <label class="checkbox-label">
+        <Input
+          @type="checkbox"
+          @checked={{this.createTopic}}
+          disabled={{this.topicId}}
+        />
+        {{i18n "admin.events.event.connect.create_topic"}}
+      </label>
+    </div>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
       <TopicChooser
         @value={{this.topicId}}
         @onChange={{action (mut this.topicId)}}
-        @options={{hash additionalFilters="without_event"}}
+        @options={{hash
+          additionalFilters="without_event"
+          disabled=this.createTopic
+        }}
       />
     </div>
     <div class="control-group">

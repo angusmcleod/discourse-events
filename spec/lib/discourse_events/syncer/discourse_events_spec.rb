@@ -21,7 +21,7 @@ describe DiscourseEvents::DiscourseEventsSyncer do
   end
 
   def sync_events(opts = {})
-    syncer = subject.new(user, source)
+    syncer = subject.new(user: user, source: source, client: "discourse_events")
     syncer.sync(opts)
 
     event.reload

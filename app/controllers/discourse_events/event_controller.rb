@@ -52,23 +52,29 @@ module DiscourseEvents
       raise Discourse::InvalidParameters.new(:event_id) unless event
 
       topic_id = params[:topic_id]
-      topic = Topic.find_by(id: topic_id)
-      raise Discourse::InvalidParameters.new(:topic_id) unless topic
+      topic = nil
+      if topic_id
+        topic = Topic.find_by(id: topic_id)
+        raise Discourse::InvalidParameters.new(:topic_id) unless topic
+      end
 
       client = params[:client]
       unless Source.available_clients.include?(client)
         raise Discourse::InvalidParameters.new(:client)
       end
 
-      topic_with_event = nil
+      syncer = SyncManager.new_client(client, current_user)
       ActiveRecord::Base.transaction do
-        event_topic = EventTopic.create!(event_id: event.id, topic_id: topic.id)
-        syncer = "DiscourseEvents::#{client.camelize}Syncer".constantize.new(current_user)
-        topic_with_event = syncer.connect_topic(topic, event)
-        raise ActiveRecord::Rollback unless topic_with_event
+        if topic
+          event_topic = EventTopic.create!(event_id: event.id, topic_id: topic.id)
+          topic_id = syncer.connect_topic(topic, event)
+        else
+          topic_id = syncer.create_topic(event)
+        end
+        raise ActiveRecord::Rollback unless topic_id
       end
 
-      if topic_with_event.present?
+      if topic_id.present?
         render json: success_json
       else
         render json: failed_json

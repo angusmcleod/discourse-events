@@ -3,9 +3,11 @@ import discourseComputed from "discourse-common/utils/decorators";
 import Event from "../../models/event";
 
 export default Component.extend({
-  @discourseComputed("connecting", "topicId", "client")
-  connectDisabled(connecting, topicId, client) {
-    return connecting || !topicId || !client;
+  createTopic: false,
+
+  @discourseComputed("connecting", "topicId", "createTopic", "client")
+  connectDisabled(connecting, topicId, createTopic, client) {
+    return connecting || (!topicId && !createTopic) || !client;
   },
 
   actions: {
@@ -16,9 +18,12 @@ export default Component.extend({
 
       const opts = {
         event_id: this.model.event.id,
-        topic_id: this.topicId,
         client: this.client,
       };
+
+      if (this.topicId) {
+        opts.topic_id = this.topicId;
+      }
 
       this.set("connecting", true);
 

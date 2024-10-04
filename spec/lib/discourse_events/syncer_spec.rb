@@ -7,18 +7,21 @@ describe DiscourseEvents::Syncer do
 
   # rubocop:disable Discourse/Plugins/NoMonkeyPatching
   DiscourseEvents::Syncer.class_eval do
-    def create_topic(event)
+    def create_client_topic(event)
       create_post(event).topic
     end
 
-    def update_topic(topic, event)
+    def update_client_topic(topic, event, add_raw: false)
+      post = topic.first_post
       topic.update_columns(title: event.name, fancy_title: nil, slug: nil)
-      topic.first_post.update_columns(raw: post_raw(event))
+      topic.first_post.update_columns(raw: post_raw(event, post: post, add_raw: add_raw))
       topic
     end
 
-    def post_raw(event)
-      event.description
+    def post_raw(event, post: nil, add_raw: false)
+      raw = event.description
+      raw += "\n\n#{post.raw}" if post && add_raw
+      raw
     end
   end
   # rubocop:enable Discourse/Plugins/NoMonkeyPatching
@@ -34,7 +37,7 @@ describe DiscourseEvents::Syncer do
 
   describe "sync" do
     def sync_events(opts = {})
-      syncer = subject.new(user, source)
+      syncer = subject.new(user: user, source: source, client: source.client)
       syncer.sync(opts)
 
       event1.reload
@@ -58,7 +61,7 @@ describe DiscourseEvents::Syncer do
     end
 
     it "returns ids of created and updated topics" do
-      syncer = subject.new(user, source)
+      syncer = subject.new(user: user, source: source, client: source.client)
       syncer.stubs(:create_events).returns([1])
       syncer.stubs(:update_events).returns([2, 3])
       result = syncer.sync
@@ -76,7 +79,7 @@ describe DiscourseEvents::Syncer do
     it "sources all events if source does not support event series" do
       source.stubs(:supports_series).returns(false)
 
-      syncer = subject.new(user, source)
+      syncer = subject.new(user: user, source: source, client: source.client)
       expect(syncer.standard_events.size).to eq(2)
     end
 
@@ -98,24 +101,24 @@ describe DiscourseEvents::Syncer do
       it "sources all events if events_one_event_per_series is disabled" do
         SiteSetting.events_one_event_per_series = false
 
-        syncer = subject.new(user, source)
+        syncer = subject.new(user: user, source: source, client: source.client)
         expect(syncer.standard_events.size).to eq(2)
       end
 
       it "sources series events" do
-        syncer = subject.new(user, source)
+        syncer = subject.new(user: user, source: source, client: source.client)
         expect(syncer.series_events.size).to eq(1)
         expect(syncer.series_events.first.start_time).to be_within(1.second).of(first_start_time)
 
         freeze_time(2.days.from_now + 1.hour)
 
-        syncer = subject.new(user, source)
+        syncer = subject.new(user: user, source: source, client: source.client)
         expect(syncer.series_events.size).to eq(1)
         expect(syncer.series_events.first.start_time).to be_within(1.second).of(second_start_time)
       end
 
       it "creates series event topics" do
-        syncer = subject.new(user, source)
+        syncer = subject.new(user: user, source: source, client: source.client)
         result = syncer.update_series_events_topics
 
         expect(result[:created_topics].size).to eq(1)
@@ -123,7 +126,7 @@ describe DiscourseEvents::Syncer do
       end
 
       it "only creates one event topic per series topic" do
-        syncer = subject.new(user, source)
+        syncer = subject.new(user: user, source: source, client: source.client)
         syncer.update_series_events_topics
         syncer.update_series_events_topics
 
@@ -136,7 +139,7 @@ describe DiscourseEvents::Syncer do
     fab!(:filter1) { Fabricate(:discourse_events_filter, model: source, query_value: event2.name) }
 
     it "filters events" do
-      syncer = subject.new(user, source)
+      syncer = subject.new(user: user, source: source, client: source.client)
       expect(syncer.standard_events.size).to eq(1)
       expect(syncer.standard_events.first.name).to eq(event2.name)
     end

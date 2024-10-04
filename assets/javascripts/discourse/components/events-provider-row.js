@@ -3,11 +3,7 @@ import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
 import DiscourseURL from "discourse/lib/url";
 import discourseComputed from "discourse-common/utils/decorators";
-import Provider, {
-  NO_AUTH_TYPES,
-  OAUTH2_TYPES,
-  TOKEN_TYPES,
-} from "../models/provider";
+import Provider, { OAUTH2_TYPES } from "../models/provider";
 
 export default Component.extend({
   tagName: "tr",

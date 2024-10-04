@@ -2,34 +2,18 @@
 
 module DiscourseEvents
   class Syncer
-    attr_reader :user, :source, :logger
-
+    attr_reader :user, :source, :client, :logger
     attr_accessor :opts
 
-    def initialize(user, source = nil)
+    def initialize(user: nil, source: nil, client: nil)
       @user = user
       @source = source
+      @client = client
       @logger = Logger.new(:sync)
     end
 
     def ready?
       source.user.present?
-    end
-
-    def create_topic(event)
-      raise NotImplementedError
-    end
-
-    def connect_topic(topic, event)
-      raise NotImplementedError
-    end
-
-    def update_topic(topic, event)
-      raise NotImplementedError
-    end
-
-    def post_raw(event, post: nil, add_raw: false)
-      raise NotImplementedError
     end
 
     def sync(_opts = {})
@@ -47,6 +31,65 @@ module DiscourseEvents
       { created_topics: created_topics, updated_topics: updated_topics }
     end
 
+    def create_topic(event)
+      topic = create_client_topic(event)
+      raise ActiveRecord::Rollback if topic.blank?
+      create_event_topic(event, topic)
+      topic.id
+    end
+
+    def update_topic(topic, event, add_raw: nil)
+      topic = update_client_topic(topic, event, add_raw: add_raw)
+      raise ActiveRecord::Rollback if topic.blank?
+      topic.id
+    end
+
+    def connect_topic(topic, event)
+      return false if topic.first_post.event.present?
+      update_topic(topic, event, add_raw: true)
+    end
+
+    def create_post(event, topic_opts = {})
+      topic_opts = { title: event.name }.merge(topic_opts)
+      topic_opts[:category] = source.category.id if source&.category_id
+
+      PostCreator.create!(
+        user,
+        topic_opts: topic_opts,
+        raw: post_raw(event),
+        skip_validations: true,
+        skip_event_publication: true,
+      )
+    end
+
+    def create_event_topic(event, topic)
+      params = { event_id: event.id, topic_id: topic.id, client: client }
+      params[:series_id] = event.series_id if event.series_id
+      EventTopic.create!(params)
+    end
+
+    def ensure_event_topic(event, topic)
+      unless EventTopic.exists?(event_id: event.id, topic_id: topic.id)
+        create_event_topic(event, topic)
+      end
+    end
+
+    def create_client_topic(event)
+      raise NotImplementedError
+    end
+
+    def connect_client_topic(topic, event)
+      raise NotImplementedError
+    end
+
+    def update_client_topic(topic, event, add_raw: false)
+      raise NotImplementedError
+    end
+
+    def post_raw(event, post: nil, add_raw: false)
+      raise NotImplementedError
+    end
+
     def update_events
       topics_updated = []
 
@@ -56,8 +99,8 @@ module DiscourseEvents
           ActiveRecord::Base.transaction do
             event
               .event_topics
-              .where(client: source.client)
-              .each { |et| topics_updated << _update_topic(et.topic, event) }
+              .where(client: client)
+              .each { |et| topics_updated << update_topic(et.topic, event) }
           end
         end
 
@@ -68,7 +111,7 @@ module DiscourseEvents
       topics_created = []
 
       unsynced_events.each do |event|
-        ActiveRecord::Base.transaction { topics_created << _create_topic(event) }
+        ActiveRecord::Base.transaction { topics_created << create_topic(event) }
       end
 
       topics_created
@@ -84,9 +127,9 @@ module DiscourseEvents
         ActiveRecord::Base.transaction do
           if topic.present?
             ensure_event_topic(event, topic)
-            topics_updated << _update_topic(topic, event)
+            topics_updated << update_topic(topic, event)
           else
-            topics_created << _create_topic(event)
+            topics_created << create_topic(event)
           end
         end
       end
@@ -146,47 +189,8 @@ module DiscourseEvents
       logger.send(type.to_s, message)
     end
 
-    def create_post(event, topic_opts = {})
-      topic_opts = { title: event.name }.merge(topic_opts)
-
-      topic_opts[:category] = source.category.id if source.category_id
-
-      PostCreator.create!(
-        user,
-        topic_opts: topic_opts,
-        raw: post_raw(event),
-        skip_validations: true,
-        skip_event_publication: true,
-      )
-    end
-
-    def create_event_topic(event, topic)
-      params = { event_id: event.id, topic_id: topic.id, client: source.client }
-      params[:series_id] = event.series_id if event.series_id
-      EventTopic.create!(params)
-    end
-
-    def ensure_event_topic(event, topic)
-      unless EventTopic.exists?(event_id: event.id, topic_id: topic.id)
-        create_event_topic(event, topic)
-      end
-    end
-
     def one_topic_per_series
       source.supports_series && SiteSetting.events_one_event_per_series
-    end
-
-    def _create_topic(event)
-      topic = create_topic(event)
-      raise ActiveRecord::Rollback if topic.blank?
-      create_event_topic(event, topic)
-      topic.id
-    end
-
-    def _update_topic(topic, event)
-      topic = update_topic(topic, event)
-      raise ActiveRecord::Rollback if topic.blank?
-      topic.id
     end
   end
 end
