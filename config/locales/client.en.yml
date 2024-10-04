@@ -114,7 +114,7 @@ en:
           remove:
             label: Remove
             title: Remove Source
-            confirm: Are you sure you want to remove this source? Removing a source removes all associated events.
+            confirm: Are you sure you want to remove this source? Removing a source removes all its events.
           name:
             label: Name
             placeholder: underscored
@@ -243,7 +243,7 @@ en:
           remove:
             label: Remove
             title: Remove Provider
-            confirm: Are you sure you want to remove '%{provider_name}'? Removing a provider removes associated sources.
+            confirm: Are you sure you want to remove '%{provider_name}'? Removing a provider removes its sources.
           authenticate:
             label: Authenticate
             title: Authenticate Provider
@@ -301,7 +301,7 @@ en:
               one: One event selected.
               other: "%{count} events selected."
             events_only: Delete events only
-            events_and_topics: Delete events and associated topics
+            events_and_topics: Delete events and topics
             topics_only: Delete topics only
             events_only_btn: Delete Events
             events_and_topics_btn: Delete Events and Topics
