@@ -4,9 +4,7 @@ describe DiscourseEvents::EventTopicController do
   fab!(:user) { Fabricate(:user, admin: true) }
   fab!(:event) { Fabricate(:discourse_events_event) }
 
-  before do
-    sign_in(user)
-  end
+  before { sign_in(user) }
 
   describe "#connect" do
     context "when connecting a topic to an event" do
@@ -52,23 +50,29 @@ describe DiscourseEvents::EventTopicController do
     end
 
     context "when creating a topic for an event" do
-      shared_examples "creates event topics" do
-        it "creates a topic" do
-          post "/admin/plugins/events/event/topic/connect.json",
-               params: {
-                 event_id: event.id,
-                 client: client,
-               }
-          expect(response.status).to eq(200)
-          expect(response.parsed_body["success"]).to eq("OK")
-          expect(DiscourseEvents::EventTopic.exists?(event_id: event.id)).to eq(true)
-        end
-      end
-
       context "with discourse_events" do
         let!(:client) { "discourse_events" }
 
-        include_examples "creates event topics"
+        context "with a category id" do
+          fab!(:category) { Fabricate(:category) }
+
+          before do
+            category.custom_fields["events_enabled"] = true
+            category.save_custom_fields(true)
+          end
+
+          it "creates a topic" do
+            post "/admin/plugins/events/event/topic/connect.json",
+                 params: {
+                   event_id: event.id,
+                   client: client,
+                   category_id: category.id,
+                 }
+            expect(response.status).to eq(200)
+            expect(response.parsed_body["success"]).to eq("OK")
+            expect(DiscourseEvents::EventTopic.exists?(event_id: event.id)).to eq(true)
+          end
+        end
       end
 
       context "with discourse_calendar" do
@@ -83,7 +87,16 @@ describe DiscourseEvents::EventTopicController do
           SiteSetting.discourse_post_event_enabled = true
         end
 
-        include_examples "creates event topics"
+        it "creates a topic" do
+          post "/admin/plugins/events/event/topic/connect.json",
+               params: {
+                 event_id: event.id,
+                 client: client,
+               }
+          expect(response.status).to eq(200)
+          expect(response.parsed_body["success"]).to eq("OK")
+          expect(DiscourseEvents::EventTopic.exists?(event_id: event.id)).to eq(true)
+        end
       end
     end
   end
@@ -101,10 +114,7 @@ describe DiscourseEvents::EventTopicController do
 
       shared_examples "updates event topics" do
         it "updates a topic" do
-          post "/admin/plugins/events/event/topic/update.json",
-              params: {
-                event_id: event.id,
-              }
+          post "/admin/plugins/events/event/topic/update.json", params: { event_id: event.id }
           expect(response.status).to eq(200)
           expect(response.parsed_body["success"]).to eq("OK")
           expect(topic.reload.title).to eq("Updated event name")

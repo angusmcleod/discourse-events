@@ -6,15 +6,17 @@ module DiscourseEvents
       source.category.events_enabled && super
     end
 
-    def create_client_topic(event)
+    def create_client_topic(event, topic_opts = {})
       post =
         create_post(
           event,
-          featured_link: event.url,
-          custom_fields: {
-            event_start: event.start_time.to_i,
-            event_end: event.end_time.to_i,
-          },
+          topic_opts.merge(
+            featured_link: event.url,
+            custom_fields: {
+              event_start: event.start_time.to_i,
+              event_end: event.end_time.to_i,
+            },
+          ),
         )
       post.topic
     end

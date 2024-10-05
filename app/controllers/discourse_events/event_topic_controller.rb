@@ -6,15 +6,29 @@ module DiscourseEvents
     before_action :find_topic, only: [:connect]
 
     def connect
-      client = params[:client]
-      unless Source.available_clients.include?(client)
-        raise Discourse::InvalidParameters.new(:client)
-      end
+      topic_opts = {}
 
       user = current_user
       if params[:username]
         user = User.find_by(username: params[:username])
         raise Discourse::InvalidParameters.new(:username) unless user.present?
+      end
+
+      category_id = params[:category_id]
+      category = nil
+      if category_id
+        category = Category.find_by(id: category_id)
+        raise Discourse::InvalidParameters.new(:category_id) unless category.present?
+        topic_opts[:category_id] = category_id
+      end
+
+      client = params[:client]
+      unless Source.available_clients.include?(client)
+        raise Discourse::InvalidParameters.new(:client)
+      end
+
+      if !@topic && client == "discourse_events"
+        raise Discourse::InvalidParameters.new(:category_id) unless category&.events_enabled
       end
 
       syncer = SyncManager.new_client(client, user)
@@ -24,7 +38,7 @@ module DiscourseEvents
           event_topic = EventTopic.create!(event_id: @event.id, topic_id: @topic.id)
           connected_topic = syncer.connect_topic(@topic, @event)
         else
-          connected_topic = syncer.create_topic(@event)
+          connected_topic = syncer.create_topic(@event, topic_opts)
         end
         raise ActiveRecord::Rollback unless connected_topic
       end

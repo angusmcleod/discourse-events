@@ -310,9 +310,10 @@ en:
             title: Connect Topic
             label: Connect
             event: Event
-            user: New Topic User
-            create_topic: Create a new topic for the event.
-            connect_topic: Connect an existing topic to the event.
+            user: User
+            category: Category
+            create_topic: Create a topic.
+            connect_topic: Connect a topic.
             client: Plugin
           update:
             title: Update Topic

@@ -10,6 +10,17 @@
       <span class="event-label">{{model.event.name}}</span>
     </div>
     <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
+      <TopicChooser
+        @value={{this.topicId}}
+        @onChange={{action (mut this.topicId)}}
+        @options={{hash
+          additionalFilters="without_event"
+          disabled=this.createTopic
+        }}
+      />
+    </div>
+    <div class="control-group">
       <label class="checkbox-label">
         <Input
           @type="checkbox"
@@ -18,6 +29,28 @@
         />
         {{i18n "admin.events.event.connect.create_topic"}}
       </label>
+    </div>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.client"}}</label>
+      <EventsSubscriptionSelector
+        @value={{this.client}}
+        @feature="source"
+        @attribute="client"
+        @onChange={{action (mut this.client)}}
+        @allowedValues={{allowedClientValues}}
+        class="connection-client"
+        options={{hash none="admin.events.connection.client.select"}}
+      />
+    </div>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.category"}}</label>
+      <EventsCategoryChooser
+        @value={{this.category_id}}
+        class="connect-category"
+        @client={{this.client}}
+        onChange={{action (mut this.category_id)}}
+        @options={{hash disabled=this.topicId}}
+      />
     </div>
     <div class="control-group">
       <label>{{i18n "admin.events.event.connect.user"}}</label>
@@ -30,29 +63,6 @@
           excludeCurrentUser=false
           disabled=this.topicId
         }}
-      />
-    </div>
-    <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
-      <TopicChooser
-        @value={{this.topicId}}
-        @onChange={{action (mut this.topicId)}}
-        @options={{hash
-          additionalFilters="without_event"
-          disabled=this.createTopic
-        }}
-      />
-    </div>
-    <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.client"}}</label>
-      <EventsSubscriptionSelector
-        @value={{this.client}}
-        @feature="source"
-        @attribute="client"
-        @onChange={{action (mut this.client)}}
-        @allowedValues={{allowedClientValues}}
-        class="connection-client"
-        options={{hash none="admin.events.connection.client.select"}}
       />
     </div>
   </:body>

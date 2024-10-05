@@ -39,7 +39,8 @@ export default Component.extend({
         opts.topic_id = this.topicId;
       }
 
-      if (this.createTopic && this.username) {
+      if (this.createTopic) {
+        opts.category_id = this.category_id;
         opts.username = this.username;
       }
 

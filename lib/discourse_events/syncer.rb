@@ -31,8 +31,8 @@ module DiscourseEvents
       { created_topics: created_topics, updated_topics: updated_topics }
     end
 
-    def create_topic(event)
-      topic = create_client_topic(event)
+    def create_topic(event, topic_opts = {})
+      topic = create_client_topic(event, topic_opts)
       raise ActiveRecord::Rollback if topic.blank?
       create_event_topic(event, topic)
       update_registrations(topic, event)
@@ -81,7 +81,7 @@ module DiscourseEvents
       end
     end
 
-    def create_client_topic(event)
+    def create_client_topic(event, topic_opts = {})
       raise NotImplementedError
     end
 
