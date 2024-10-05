@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { Input } from "@ember/component";
+import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
@@ -308,7 +309,7 @@ export default class EventForm extends Component {
                 <span>{{i18n "add_event.going"}}</span>
                 <EmailGroupUserChooser
                   @value={{this.usersGoing}}
-                  @onChange={{action (mut this.usersGoing)}}
+                  @onChange={{fn (mut this.usersGoing)}}
                   class="user-selector"
                   @options={{hash
                     filterPlaceholder="composer.users_placeholder"
