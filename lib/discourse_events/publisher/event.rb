@@ -57,9 +57,7 @@ module DiscourseEvents
     end
 
     def associated_data
-      {
-        registrations: registrations
-      }
+      { registrations: registrations }
     end
 
     def create_params

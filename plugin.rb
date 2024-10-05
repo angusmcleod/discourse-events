@@ -87,6 +87,7 @@ after_initialize do
   require_relative "app/controllers/discourse_events/admin_controller.rb"
   require_relative "app/controllers/discourse_events/api_keys_controller.rb"
   require_relative "app/controllers/discourse_events/event_controller.rb"
+  require_relative "app/controllers/discourse_events/event_topic_controller.rb"
   require_relative "app/controllers/discourse_events/rsvp_controller.rb"
   require_relative "app/controllers/discourse_events/log_controller.rb"
   require_relative "app/controllers/discourse_events/provider_controller.rb"

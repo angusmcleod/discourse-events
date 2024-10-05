@@ -46,41 +46,6 @@ module DiscourseEvents
       render json: { event_ids: events.map(&:id) }.as_json
     end
 
-    def connect
-      event_id = params[:event_id]
-      event = Event.find_by(id: event_id)
-      raise Discourse::InvalidParameters.new(:event_id) unless event
-
-      topic_id = params[:topic_id]
-      topic = nil
-      if topic_id
-        topic = Topic.find_by(id: topic_id)
-        raise Discourse::InvalidParameters.new(:topic_id) unless topic
-      end
-
-      client = params[:client]
-      unless Source.available_clients.include?(client)
-        raise Discourse::InvalidParameters.new(:client)
-      end
-
-      syncer = SyncManager.new_client(client, current_user)
-      ActiveRecord::Base.transaction do
-        if topic
-          event_topic = EventTopic.create!(event_id: event.id, topic_id: topic.id)
-          topic_id = syncer.connect_topic(topic, event)
-        else
-          topic_id = syncer.create_topic(event)
-        end
-        raise ActiveRecord::Rollback unless topic_id
-      end
-
-      if topic_id.present?
-        render json: success_json
-      else
-        render json: failed_json
-      end
-    end
-
     def destroy
       event_ids = params[:event_ids]
       target = params[:target]

@@ -37,7 +37,7 @@ module DiscourseEvents
     end
 
     def post_raw(event, post: nil, add_raw: false)
-      raw_params = "start=\"#{event.start_time}\""
+      raw_params = "start=\"#{event.start_time}\" status=\"public\""
       raw_params += " end=\"#{event.end_time}\"" if add_end_time(event)
       raw_params += " url=\"#{event.url}\"" if event.url
 

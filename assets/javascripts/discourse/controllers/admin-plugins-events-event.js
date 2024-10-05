@@ -7,6 +7,7 @@ import I18n from "I18n";
 import ConfirmEventDeletion from "../components/modal/events-confirm-event-deletion";
 import ConnectTopic from "../components/modal/events-connect-topic";
 import Message from "../mixins/message";
+import Event from "../models/event";
 
 export default Controller.extend(Message, {
   hasEvents: notEmpty("events"),
@@ -51,12 +52,22 @@ export default Controller.extend(Message, {
   },
 
   @discourseComputed("eventsRoute", "filter")
+  connectedRoute(eventsRoute, filter) {
+    return eventsRoute && filter === "connected";
+  },
+
+  @discourseComputed("eventsRoute", "filter")
   viewName(eventsRoute, filter) {
     return `event.${filter}`;
   },
 
   @discourseComputed("selectedEventIds.[]")
   connectTopicDisabled(selectedEventIds) {
+    return selectedEventIds.length !== 1;
+  },
+
+  @discourseComputed("selectedEventIds.[]")
+  updateTopicDisabled(selectedEventIds) {
     return selectedEventIds.length !== 1;
   },
 
@@ -86,6 +97,25 @@ export default Controller.extend(Message, {
           },
         },
       });
+    },
+
+    updateTopic() {
+      const selectedEventId = this.selectedEventIds[0];
+      const event = this.get("events").findBy("id", selectedEventId);
+
+      if (!event) {
+        return;
+      }
+
+      this.set("updating", true);
+
+      Event.updateTopic({ event_id: event.id })
+        .then((result) => {
+          if (result.success) {
+            this.set("selectedEventIds", A());
+          }
+        })
+        .finally(() => this.set("updating", false));
     },
 
     modifySelection(eventIds, selected) {

@@ -31,6 +31,16 @@
   </nav>
 
   <div class="buttons">
+    {{#if connectedRoute}}
+      <DButton
+        @id="update-topic"
+        @action={{action "updateTopic"}}
+        @label="admin.events.event.update.title"
+        @title="admin.events.event.update.title"
+        @icon="sync"
+        @disabled={{updateTopicDisabled}}
+      />
+    {{/if}}
     {{#if unconnectedRoute}}
       <DButton
         @id="connect-topic"

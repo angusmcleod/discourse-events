@@ -9,7 +9,6 @@
       <label>{{i18n "admin.events.event.connect.event"}}</label>
       <span class="event-label">{{model.event.name}}</span>
     </div>
-
     <div class="control-group">
       <label class="checkbox-label">
         <Input
@@ -19,6 +18,19 @@
         />
         {{i18n "admin.events.event.connect.create_topic"}}
       </label>
+    </div>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.user"}}</label>
+      <UserChooser
+        @value={{this.username}}
+        @onChange={{action (mut this.username)}}
+        class="connect-user"
+        @options={{hash
+          maximum=1
+          excludeCurrentUser=false
+          disabled=this.topicId
+        }}
+      />
     </div>
     <div class="control-group">
       <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
@@ -38,6 +50,7 @@
         @feature="source"
         @attribute="client"
         @onChange={{action (mut this.client)}}
+        @allowedValues={{allowedClientValues}}
         class="connection-client"
         options={{hash none="admin.events.connection.client.select"}}
       />
@@ -46,7 +59,7 @@
   <:footer>
     <DButton
       @class="btn-primary"
-      @action={{action "connect"}}
+      @action={{action "connectTopic"}}
       @label="admin.events.event.connect.label"
       disabled={{connectDisabled}}
     />

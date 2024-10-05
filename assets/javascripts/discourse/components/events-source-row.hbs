@@ -35,6 +35,7 @@
         @feature="source"
         @attribute="client"
         @onChange={{action (mut source.client)}}
+        @allowedValues={{allowedClientValues}}
         class="source-client"
         options={{hash none="admin.events.source.client.select"}}
       />

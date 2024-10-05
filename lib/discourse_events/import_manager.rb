@@ -71,6 +71,7 @@ module DiscourseEvents
                   email: registration[:email],
                   uid: registration[:uid],
                   name: registration[:name],
+                  status: nil,
                 }
                 if registration[:status] &&
                      EventRegistration.statuses.keys.include?(registration[:status])

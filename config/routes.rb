@@ -26,7 +26,6 @@ Discourse::Application.routes.prepend do
   get "c/*category_slug_path_with_id/l/agenda.rss" => "list#agenda_feed", :format => :rss
 
   mount ::DiscourseEvents::Engine, at: "/discourse-events"
-
   scope module: "discourse_events", constraints: AdminConstraint.new do
     scope "/admin/plugins" do
       get "events" => "admin#index"
@@ -45,7 +44,8 @@ Discourse::Application.routes.prepend do
       get "events/event" => "event#index"
       get "events/event/all" => "event#all"
       delete "events/event" => "event#destroy"
-      post "events/event/connect" => "event#connect"
+      post "events/event/topic/connect" => "event_topic#connect"
+      post "events/event/topic/update" => "event_topic#update"
       get "events/log" => "log#index"
       get "events/subscription" => "subscription#index"
     end

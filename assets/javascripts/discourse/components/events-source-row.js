@@ -20,6 +20,7 @@ export default Component.extend({
   modal: service(),
   subscription: service("events-subscription"),
   removeDisabled: not("subscription.subscribed"),
+  siteSettings: service(),
 
   didReceiveAttrs() {
     this._super();
@@ -182,6 +183,18 @@ export default Component.extend({
     return providers
       .filter((p) => p.status === "ready")
       .map((p) => p.provider_type);
+  },
+
+  @discourseComputed(
+    "siteSettings.calendar_enabled",
+    "siteSettings.discourse_post_event_enabled"
+  )
+  allowedClientValues(calendarEnabled, postEventEnabled) {
+    let allowedClients = ["discourse_events"];
+    if (calendarEnabled && postEventEnabled) {
+      allowedClients.push("discourse_calendar");
+    }
+    return allowedClients;
   },
 
   @discourseComputed(

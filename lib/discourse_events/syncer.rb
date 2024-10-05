@@ -35,12 +35,14 @@ module DiscourseEvents
       topic = create_client_topic(event)
       raise ActiveRecord::Rollback if topic.blank?
       create_event_topic(event, topic)
+      update_registrations(topic, event)
       topic
     end
 
     def update_topic(topic, event, add_raw: nil)
       topic = update_client_topic(topic, event, add_raw: add_raw)
       raise ActiveRecord::Rollback if topic.blank?
+      update_registrations(topic, event)
       topic
     end
 
@@ -113,7 +115,6 @@ module DiscourseEvents
                 topic = update_topic(et.topic, event)
                 next unless topic
                 topics_updated << topic.id
-                update_registrations(topic, event)
               end
           end
         end
@@ -129,7 +130,6 @@ module DiscourseEvents
           topic = create_topic(event)
           next unless topic
           topics_created << topic.id
-          update_registrations(topic, event)
         end
       end
 
@@ -148,11 +148,9 @@ module DiscourseEvents
             ensure_event_topic(event, topic)
             topic = update_topic(topic, event)
             topics_updated << topic.id
-            update_registrations(topic, event)
           else
             topic = create_topic(event)
             topics_created << topic.id
-            update_registrations(topic, event)
           end
         end
       end

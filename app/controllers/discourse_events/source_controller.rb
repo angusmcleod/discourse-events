@@ -147,12 +147,22 @@ module DiscourseEvents
                   "client #{result[:client]} is not supported by your subscription"
           end
 
+          user = nil
           if result[:username]
             user = User.find_by(username: result[:username])
             raise Discourse::InvalidParameters.new(:username) unless user.present?
             result[:user_id] = user.id
           else
             result[:user_id] = nil
+          end
+
+          if result[:client] == "discourse_calendar"
+            if !SiteSetting.calendar_enabled || !SiteSetting.discourse_post_event_enabled
+              raise Discourse::InvalidParameters, "Discourse Calendar is not enabled"
+            end
+            if user && !user.can_create_discourse_post_event?
+              raise Discourse::InvalidParameters, "User cannot create events for Discourse Calendar"
+            end
           end
 
           result

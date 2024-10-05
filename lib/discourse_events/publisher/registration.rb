@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 module DiscourseEvents
   class Publisher::Registration
-    attr_accessor :uid,
-                  :user_id,
-                  :email,
-                  :name,
-                  :status
+    attr_accessor :uid, :user_id, :email, :name, :status
 
     def initialize(params = {})
       @uid = params[:uid]

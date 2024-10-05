@@ -29,8 +29,15 @@ Event.reopenClass({
     }).catch(popupAjaxError);
   },
 
-  connect(data) {
-    return ajax("/admin/plugins/events/event/connect", {
+  connectTopic(data) {
+    return ajax("/admin/plugins/events/event/topic/connect", {
+      type: "POST",
+      data,
+    }).catch(popupAjaxError);
+  },
+
+  updateTopic(data) {
+    return ajax("/admin/plugins/events/event/topic/update", {
       type: "POST",
       data,
     }).catch(popupAjaxError);

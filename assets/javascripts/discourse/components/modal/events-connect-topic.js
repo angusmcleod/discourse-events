@@ -1,17 +1,31 @@
 import Component from "@ember/component";
+import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import Event from "../../models/event";
 
 export default Component.extend({
   createTopic: false,
+  siteSettings: service(),
 
   @discourseComputed("connecting", "topicId", "createTopic", "client")
   connectDisabled(connecting, topicId, createTopic, client) {
     return connecting || (!topicId && !createTopic) || !client;
   },
 
+  @discourseComputed(
+    "siteSettings.calendar_enabled",
+    "siteSettings.discourse_post_event_enabled"
+  )
+  allowedClientValues(calendarEnabled, postEventEnabled) {
+    let allowedClients = ["discourse_events"];
+    if (calendarEnabled && postEventEnabled) {
+      allowedClients.push("discourse_calendar");
+    }
+    return allowedClients;
+  },
+
   actions: {
-    connect() {
+    connectTopic() {
       if (this.connectDisabled) {
         return;
       }
@@ -25,9 +39,13 @@ export default Component.extend({
         opts.topic_id = this.topicId;
       }
 
+      if (this.createTopic && this.username) {
+        opts.username = this.username;
+      }
+
       this.set("connecting", true);
 
-      Event.connect(opts)
+      Event.connectTopic(opts)
         .then((result) => {
           if (result.success) {
             this.model.onConnectTopic();
