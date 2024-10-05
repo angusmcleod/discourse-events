@@ -33,7 +33,7 @@ describe DiscourseEvents::SyncManager do
   end
 
   it "does not sync a source if the client changes" do
-    unless DiscourseEvents::DiscourseCalendarSyncer.new(
+    unless DiscourseEvents::Syncer::DiscourseCalendar.new(
              user: user,
              source: source,
              client: source.client,

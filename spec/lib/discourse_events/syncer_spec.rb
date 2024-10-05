@@ -73,7 +73,7 @@ describe DiscourseEvents::Syncer do
     end
 
     it "does not trigger publication" do
-      DiscourseEvents::PublishManager.expects(:perform).never
+      DiscourseEvents::PublishManager.expects(:publish).never
       sync_events
     end
 

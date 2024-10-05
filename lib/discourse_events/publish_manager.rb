@@ -5,9 +5,9 @@ module DiscourseEvents
     include Subscription
 
     attr_reader :post, :logger
-    attr_accessor :publisher, :publication_type
+    attr_accessor :publisher, :publication_type, :client
 
-    def initialize(post, publication_type)
+    def initialize(post, publication_type = nil)
       @post = post
       @publication_type = publication_type
       @logger = Logger.new(:publish)
@@ -17,15 +17,56 @@ module DiscourseEvents
       publisher.present? && subscription_manager.supports_publish?
     end
 
-    def perform
+    def publish
       @publisher = get_publisher
-      return false unless ready?
+      return false unless ready? && publication_type
 
       send("#{publication_type}_event")
     end
 
-    def self.perform(post, publication_type)
-      new(post, publication_type).perform
+    def get_publisher
+      @client = detect_client
+      return false unless Source::CLIENT_NAMES.include?(client)
+
+      publisher = "DiscourseEvents::Publisher::#{client.camelize}".constantize.new
+      return false unless publisher.ready?
+
+      publisher
+    end
+
+    def self.publish(post, publication_type)
+      new(post, publication_type).publish
+    end
+
+    def self.update_registrations(post)
+      publisher = new(post).get_publisher
+      return [] unless publisher.present?
+
+      current_registrations = publisher.get_registrations(post)
+      updated_registrations = []
+      event = post.topic.event_record
+
+      event.registrations.each do |registration|
+        current_registration = current_registrations.find { |r| r.email == registration.email }
+
+        if current_registration.blank?
+          registration.destroy!
+        else
+          registration.update(name: current_registration.name, status: current_registration.status)
+          updated_registrations << current_registration
+        end
+      end
+
+      (current_registrations - updated_registrations).each do |new_registration|
+        registration =
+          event.registrations.build(
+            user_id: new_registration.user_id,
+            email: new_registration.email,
+            name: new_registration.name,
+            status: new_registration.status,
+          )
+        registration.save!
+      end
     end
 
     protected
@@ -33,13 +74,18 @@ module DiscourseEvents
     def create_event
       return false if post.topic.event_record.present?
 
-      data = publisher.get_event_data(post)
+      data = publisher.get_event(post)
       return false unless data&.valid?
 
-      event = Event.create!(data.create_params)
+      event = nil
+      event_topic = nil
+      ActiveRecord::Base.transaction do
+        event = Event.create!(data.create_params)
+        event_topic =
+          EventTopic.create!(event_id: event.id, topic_id: post.topic.id, client: client)
+      end
 
       sources = []
-
       post.topic&.category&.discourse_events_sources&.each do |source|
         next unless source.publish?
         sources << source
@@ -73,11 +119,21 @@ module DiscourseEvents
     end
 
     def update_event
-      data = publisher.get_event_data(post)
+      data = publisher.get_event(post)
       return false unless data&.valid?
 
       event = post.topic.event_record
       return false unless event
+
+      data.registrations =
+        event.registrations.map do |registration|
+          Publisher::Registration.new(
+            uid: registration.uid,
+            email: registration.email,
+            name: registration.name,
+            status: DiscourseEvents::EventRegistration.statuses[registration.status].to_s,
+          )
+        end
 
       if event.event_sources
         event.event_sources.each do |event_source|
@@ -107,7 +163,7 @@ module DiscourseEvents
           source = event_source.source
           publisher.setup_provider(source.provider)
 
-          source_data = Publisher::EventData.new(uid: event_source.uid)
+          source_data = Publisher::Event.new(uid: event_source.uid)
 
           begin
             publisher.destroy_event(data: source_data, opts: source.source_options_hash)
@@ -118,16 +174,6 @@ module DiscourseEvents
       end
 
       event.destroy!
-    end
-
-    def get_publisher
-      client = detect_client
-      return false unless Source::CLIENT_NAMES.include?(client)
-
-      publisher = "DiscourseEvents::Publisher::#{client.camelize}".constantize.new
-      return false unless publisher.ready?
-
-      publisher
     end
 
     def detect_client

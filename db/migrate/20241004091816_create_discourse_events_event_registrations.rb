@@ -2,7 +2,12 @@
 class CreateDiscourseEventsEventRegistrations < ActiveRecord::Migration[7.1]
   def change
     create_table :discourse_events_event_registrations do |t|
-      t.references :event, index: true, foreign_key: { to_table: :discourse_events_events }, null: false
+      t.references :event,
+                   index: true,
+                   foreign_key: {
+                     to_table: :discourse_events_events,
+                   },
+                   null: false
       t.references :user
       t.string :email, null: false
       t.string :uid

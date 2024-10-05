@@ -174,10 +174,10 @@ en:
             instructions: How topics are created and updated from events.
             manual:
               label: Manual
-              instructions: Manually connect topics in the "Events" panel.
+              instructions: Manually connect or sync events with topics.
             auto:
               label: Automatic
-              instructions: Topics are posted automatically after import.
+              instructions: Events are synced automatically after they're imported.
           topic_sync_all:
             label: Sync Events
             title: Sync all events from this source with topics in the Category.

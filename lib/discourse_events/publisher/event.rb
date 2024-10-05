@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module DiscourseEvents
-  class Publisher::EventData
+  class Publisher::Event
     attr_accessor :start_time,
                   :end_time,
                   :name,
@@ -14,7 +14,8 @@ module DiscourseEvents
                   :taxonomies,
                   :sequence,
                   :series_id,
-                  :occurrence_id
+                  :occurrence_id,
+                  :registrations
 
     def initialize(params = {})
       @start_time = params[:start_time]
@@ -52,6 +53,12 @@ module DiscourseEvents
         sequence: sequence,
         series_id: series_id,
         occurrence_id: occurrence_id,
+      }
+    end
+
+    def associated_data
+      {
+        registrations: registrations
       }
     end
 

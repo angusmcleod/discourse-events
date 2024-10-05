@@ -67,7 +67,8 @@ after_initialize do
   require_relative "lib/discourse_events/syncer/discourse_calendar.rb"
   require_relative "lib/discourse_events/publish_manager.rb"
   require_relative "lib/discourse_events/publisher.rb"
-  require_relative "lib/discourse_events/publisher/event_data.rb"
+  require_relative "lib/discourse_events/publisher/event.rb"
+  require_relative "lib/discourse_events/publisher/registration.rb"
   require_relative "lib/discourse_events/publisher/discourse_events.rb"
   require_relative "lib/discourse_events/publisher/discourse_calendar.rb"
   require_relative "lib/discourse_events/auth/base.rb"
@@ -255,10 +256,10 @@ after_initialize do
 
   on(:post_created) do |post, opts, user|
     DiscourseEvents::EventCreator.create(post, opts, user)
-    DiscourseEvents::PublishManager.perform(post, "create") unless opts[:skip_event_publication]
+    DiscourseEvents::PublishManager.publish(post, "create") unless opts[:skip_event_publication]
   end
 
-  on(:post_edited) { |post| DiscourseEvents::PublishManager.perform(post, "update") }
+  on(:post_edited) { |post| DiscourseEvents::PublishManager.publish(post, "update") }
 
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload["event"]
@@ -271,6 +272,19 @@ after_initialize do
       event.each { |k, v| topic.custom_fields[k] = v }
 
       topic.save_custom_fields(true)
+    end
+  end
+
+  on(:discourse_events_rsvps_updated) do |topic|
+    DiscourseEvents::PublishManager.update_registrations(topic.first_post)
+    DiscourseEvents::PublishManager.publish(topic.first_post, "update")
+  end
+  if defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module
+    DiscoursePostEvent::Invitee.after_commit do
+      if self.event&.post
+        DiscourseEvents::PublishManager.update_registrations(self.event.post)
+        DiscourseEvents::PublishManager.publish(self.event.post, "update")
+      end
     end
   end
 

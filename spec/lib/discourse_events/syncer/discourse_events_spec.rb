@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-describe DiscourseEvents::DiscourseEventsSyncer do
-  subject { DiscourseEvents::DiscourseEventsSyncer }
+describe DiscourseEvents::Syncer::DiscourseEvents do
+  subject { DiscourseEvents::Syncer::DiscourseEvents }
 
   fab!(:category)
   fab!(:user)

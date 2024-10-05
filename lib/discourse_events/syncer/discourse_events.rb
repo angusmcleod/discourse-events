@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  class DiscourseEventsSyncer < DiscourseEvents::Syncer
+  class Syncer::DiscourseEvents < Syncer
     def ready?
       source.category.events_enabled && super
     end

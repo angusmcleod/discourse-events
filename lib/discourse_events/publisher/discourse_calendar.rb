@@ -7,16 +7,37 @@ module DiscourseEvents
         ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
     end
 
-    def get_event_data(post)
-      return nil unless post&.event&.starts_at.present?
-      event = post.event
+    def get_client_event(post)
+      post.event
+    end
 
-      Publisher::EventData.new(
+    def get_event(post)
+      event = get_client_event(post)
+      return nil unless event.present?
+
+      Publisher::Event.new(
         start_time: event.starts_at,
         end_time: event.ends_at,
         name: event.name,
         url: event.url,
       )
+    end
+
+    def get_registrations(post)
+      event = get_client_event(post)
+      return [] unless event.invitees.present?
+
+      event.invitees.map do |invitee|
+        Publisher::Registration.new(
+          user_id: invitee.user.id,
+          email: invitee.user.email,
+          name: invitee.user.name,
+          status:
+            Syncer::DiscourseCalendar::STATUS_MAP.key(
+              DiscoursePostEvent::Invitee.statuses[invitee.status].to_s,
+            ),
+        )
+      end
     end
   end
 end

@@ -23,7 +23,15 @@ module DiscourseEvents
       OmniEvent.destroy_event(provider.provider_type, omnievent_opts("destroy", data, opts))
     end
 
-    def get_event_data(post)
+    def get_client_event(post)
+      raise NotImplementedError
+    end
+
+    def get_event(post)
+      raise NotImplementedError
+    end
+
+    def get_registrations(post)
       raise NotImplementedError
     end
 

@@ -49,7 +49,7 @@ module DiscourseEvents
     end
 
     def self.new_client(client, user, source = nil)
-      "DiscourseEvents::#{client.camelize}Syncer".constantize.new(
+      "DiscourseEvents::Syncer::#{client.camelize}".constantize.new(
         user: user,
         source: source,
         client: client,

@@ -38,6 +38,12 @@ describe DiscourseEvents::PublishManager do
     topic.reload
   end
 
+  def enable_rsvp
+    topic.custom_fields["event_rsvp"] = true
+    topic.save_custom_fields(true)
+    topic.reload
+  end
+
   before { enable_subscription(:business) }
 
   describe "#create_event" do
@@ -51,8 +57,13 @@ describe DiscourseEvents::PublishManager do
 
         context "without publishable sources" do
           it "creates an event" do
-            manager.perform
+            manager.publish
             expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
+          end
+
+          it "creates an event topic" do
+            manager.publish
+            expect(DiscourseEvents::EventTopic.exists?(topic_id: topic.id)).to eq(true)
           end
         end
 
@@ -65,7 +76,7 @@ describe DiscourseEvents::PublishManager do
               .expects(:create_event)
               .once
               .returns(event_hash)
-            manager.perform
+            manager.publish
           end
 
           context "when publication succeeds" do
@@ -78,12 +89,17 @@ describe DiscourseEvents::PublishManager do
             end
 
             it "creates an event" do
-              manager.perform
+              manager.publish
               expect(DiscourseEvents::Event.exists?(start_time: event_start)).to eq(true)
             end
 
+            it "creates an event topic" do
+              manager.publish
+              expect(DiscourseEvents::EventTopic.exists?(topic_id: topic.id)).to eq(true)
+            end
+
             it "creates event sources" do
-              manager.perform
+              manager.publish
               event = DiscourseEvents::Event.find_by(start_time: event_start)
               expect(
                 DiscourseEvents::EventSource.exists?(
@@ -139,7 +155,7 @@ describe DiscourseEvents::PublishManager do
           .expects(:update_event)
           .once
           .returns(updated_event_hash)
-        manager.perform
+        manager.publish
       end
 
       context "when publication succeeds" do
@@ -152,7 +168,7 @@ describe DiscourseEvents::PublishManager do
         end
 
         it "updates the event" do
-          manager.perform
+          manager.publish
           expect(event.reload.start_time).to eq(updated_event_start)
         end
       end
@@ -189,7 +205,7 @@ describe DiscourseEvents::PublishManager do
           .expects(:destroy_event)
           .once
           .returns(event_hash)
-        manager.perform
+        manager.publish
       end
 
       context "when publication succeeds" do
@@ -198,8 +214,103 @@ describe DiscourseEvents::PublishManager do
         end
 
         it "destroys the event" do
-          manager.perform
+          manager.publish
           expect(DiscourseEvents::Event.exists?(event.id)).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe "#update_registrations" do
+    fab!(:user2) { Fabricate(:user) }
+    fab!(:event) { Fabricate(:discourse_events_event) }
+    fab!(:event_topic) { Fabricate(:discourse_events_event_topic, event: event, topic: topic) }
+
+    context "with discourse_events" do
+      def update_event_going(event_going = [])
+        topic.custom_fields["event_going"] = event_going
+        topic.save_custom_fields(true)
+        DiscourseEvent.trigger(:discourse_events_rsvps_updated, topic)
+      end
+
+      context "with events enabled" do
+        before { enable_events }
+
+        context "with a post event" do
+          before { create_post_event(event_id: event.id) }
+
+          context "with rsvp enabled" do
+            before { enable_rsvp }
+
+            context "with registrations" do
+              fab!(:event_registration1) do
+                Fabricate(
+                  :discourse_events_event_registration,
+                  event: event,
+                  user: user,
+                  email: user.email,
+                  status: "confirmed",
+                )
+              end
+              fab!(:event_registration2) do
+                Fabricate(
+                  :discourse_events_event_registration,
+                  event: event,
+                  user: user2,
+                  email: user2.email,
+                  status: "declined",
+                )
+              end
+
+              it "updates registrations when rsvps are updated" do
+                update_event_going([user.id, user2.id])
+                expect(event_registration2.status).to eq("confirmed")
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context "with discourse_calendar" do
+      before do
+        unless defined?(DiscoursePostEvent) == "constant"
+          skip("Discourse Calendar is not installed")
+        end
+
+        SiteSetting.calendar_enabled = true
+        SiteSetting.discourse_post_event_enabled = true
+
+        event_topic.client = "discourse_calendar"
+        event_topic.save!
+
+        DiscoursePostEvent::Event.create!(
+          id: post.id,
+          original_starts_at: Time.now + 1.hours,
+          original_ends_at: Time.now + 2.hours,
+        )
+      end
+
+      it "creates a registration when an invitee is created" do
+        DiscoursePostEvent::Invitee.create_attendance!(user.id, post.id, "going")
+
+        registration = DiscourseEvents::EventRegistration.find_by(user_id: user.id)
+        expect(registration).to be_present
+        expect(registration.status).to eq("confirmed")
+      end
+
+      context "with registrations" do
+        before do
+          DiscoursePostEvent::Invitee.create_attendance!(user.id, post.id, "going")
+          DiscoursePostEvent::Invitee.create_attendance!(user2.id, post.id, "not_going")
+        end
+
+        it "updates registrations when attendence is updated" do
+          invitee = DiscoursePostEvent::Invitee.find_by(user_id: user2.id, post_id: post.id)
+          invitee.update_attendance!("going")
+
+          registration = DiscourseEvents::EventRegistration.find_by(user_id: user2.id)
+          expect(registration.status).to eq("confirmed")
         end
       end
     end

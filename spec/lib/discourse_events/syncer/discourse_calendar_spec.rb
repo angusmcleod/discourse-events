@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-describe DiscourseEvents::DiscourseCalendarSyncer do
-  subject { DiscourseEvents::DiscourseCalendarSyncer }
+describe DiscourseEvents::Syncer::DiscourseCalendar do
+  subject { DiscourseEvents::Syncer::DiscourseCalendar }
 
   fab!(:category)
   fab!(:user) { Fabricate(:user, admin: true) }

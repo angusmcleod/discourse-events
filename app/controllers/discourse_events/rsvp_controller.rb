@@ -86,11 +86,9 @@ class DiscourseEvents::RsvpController < ApplicationController
 
   def push_update(topic, prop)
     channel = "/calendar-events/#{topic.id}"
-
     msg = { current_user_id: current_user.id, updated_at: Time.now, type: "rsvp" }
-
     msg[prop[:key]] = prop[:value]
-
     MessageBus.publish(channel, msg)
+    DiscourseEvent.trigger(:discourse_events_rsvps_updated, topic)
   end
 end

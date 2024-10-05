@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  class DiscourseCalendarSyncer < DiscourseEvents::Syncer
+  class Syncer::DiscourseCalendar < Syncer
+    STATUS_MAP = { confirmed: "going", declined: "not_going", tentative: "interested" }.as_json
+
     def ready?
       defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
         ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled && super
@@ -68,16 +70,8 @@ module DiscourseEvents
     end
 
     def invitee_status(registration_status)
-      case registration_status
-      when "confirmed"
-        :going
-      when "declined"
-        :not_going
-      when "tentative"
-        :interested
-      else
-        DiscoursePostEvent::Invitee::UNKNOWN_ATTENDANCE
-      end
+      return STATUS_MAP[registration_status] if STATUS_MAP[registration_status].present?
+      DiscoursePostEvent::Invitee::UNKNOWN_ATTENDANCE
     end
   end
 end
