@@ -131,7 +131,7 @@ module DiscourseEvents
             uid: registration.uid,
             email: registration.email,
             name: registration.name,
-            status: DiscourseEvents::EventRegistration.statuses[registration.status].to_s,
+            status: registration.status,
           )
         end
 

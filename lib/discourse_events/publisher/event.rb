@@ -57,7 +57,17 @@ module DiscourseEvents
     end
 
     def associated_data
-      { registrations: registrations }
+      {
+        registrations:
+          (registrations || []).map do |registration|
+            {
+              uid: registration.uid,
+              email: registration.email,
+              name: registration.name,
+              status: registration.status,
+            }
+          end,
+      }
     end
 
     def create_params
@@ -98,6 +108,7 @@ module DiscourseEvents
           provider: provider_type,
           data: data.compact,
           metadata: metadata.compact,
+          associated_data: associated_data.compact,
         )
     end
 

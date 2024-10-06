@@ -42,7 +42,7 @@ module DiscourseEvents
     end
 
     def event_hash(type, data)
-      raise ArgumentError.new "No event data" unless data.is_a?(EventData)
+      raise ArgumentError.new "No event data" unless data.is_a?(Event)
       event = data.event_hash(type, provider.provider_type)
       raise ArgumentError.new "Invalid event data" unless event.valid?
       event

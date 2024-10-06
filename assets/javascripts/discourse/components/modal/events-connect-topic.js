@@ -48,7 +48,7 @@ export default Component.extend({
 
       Event.connectTopic(opts)
         .then((result) => {
-          if (result.success) {
+          if (result?.success) {
             this.model.onConnectTopic();
             this.closeModal();
           } else {

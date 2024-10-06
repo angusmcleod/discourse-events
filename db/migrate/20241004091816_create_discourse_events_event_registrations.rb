@@ -18,8 +18,8 @@ class CreateDiscourseEventsEventRegistrations < ActiveRecord::Migration[7.1]
     end
 
     add_index :discourse_events_event_registrations,
-              %i[email],
+              %i[event_id email],
               unique: true,
-              name: :idx_events_event_registration_emails
+              name: :idx_events_event_registration_event_emails
   end
 end

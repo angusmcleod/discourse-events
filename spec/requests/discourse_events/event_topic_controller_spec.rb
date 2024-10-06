@@ -70,7 +70,11 @@ describe DiscourseEvents::EventTopicController do
                  }
             expect(response.status).to eq(200)
             expect(response.parsed_body["success"]).to eq("OK")
-            expect(DiscourseEvents::EventTopic.exists?(event_id: event.id)).to eq(true)
+
+            event_topic = DiscourseEvents::EventTopic.find_by(event_id: event.id)
+            expect(event_topic).to be_present
+            expect(event_topic.topic.title).to eq(event.name)
+            expect(event_topic.topic.category.id).to eq(category.id)
           end
         end
       end

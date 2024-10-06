@@ -53,12 +53,13 @@ module DiscourseEvents
       if confirmed_user_ids.any?
         event_going = topic.event_going || []
 
-        if !topic.event_going_max || list.length <= topic.event_going_max
+        if !topic.event_going_max || event_going.length <= topic.event_going_max
           confirmed_user_ids.each do |user_id|
             event_going << user_id unless event_going.include?(user_id)
           end
         end
 
+        topic.custom_fields["event_rsvp"] = true
         topic.custom_fields["event_going"] = event_going
         topic.save_custom_fields(true)
       end

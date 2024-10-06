@@ -431,6 +431,10 @@ $pavilion_primary: #3c1c8c;
 }
 
 .events-connect-topic-modal {
+  .select-kit.combo-box.category-chooser {
+    width: 100%;
+  }
+
   .control-group {
     margin-bottom: 1em;
   }

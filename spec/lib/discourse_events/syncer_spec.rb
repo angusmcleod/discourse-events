@@ -7,8 +7,8 @@ describe DiscourseEvents::Syncer do
 
   # rubocop:disable Discourse/Plugins/NoMonkeyPatching
   DiscourseEvents::Syncer.class_eval do
-    def create_client_topic(event)
-      create_post(event).topic
+    def create_client_topic(event, topic_opts = {})
+      create_post(event, topic_opts).topic
     end
 
     def update_client_topic(topic, event, add_raw: false)

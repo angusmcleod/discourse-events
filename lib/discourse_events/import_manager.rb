@@ -79,7 +79,7 @@ module DiscourseEvents
                 end
                 result
               end
-            EventRegistration.upsert_all(registrations, unique_by: %i[email])
+            EventRegistration.upsert_all(registrations, unique_by: %i[event_id email])
           end
         end
       end

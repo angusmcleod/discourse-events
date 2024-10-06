@@ -30,41 +30,44 @@
         {{i18n "admin.events.event.connect.create_topic"}}
       </label>
     </div>
-    <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.client"}}</label>
-      <EventsSubscriptionSelector
-        @value={{this.client}}
-        @feature="source"
-        @attribute="client"
-        @onChange={{action (mut this.client)}}
-        @allowedValues={{allowedClientValues}}
-        class="connection-client"
-        options={{hash none="admin.events.connection.client.select"}}
-      />
-    </div>
-    <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.category"}}</label>
-      <EventsCategoryChooser
-        @value={{this.category_id}}
-        class="connect-category"
-        @client={{this.client}}
-        onChange={{action (mut this.category_id)}}
-        @options={{hash disabled=this.topicId}}
-      />
-    </div>
-    <div class="control-group">
-      <label>{{i18n "admin.events.event.connect.user"}}</label>
-      <UserChooser
-        @value={{this.username}}
-        @onChange={{action (mut this.username)}}
-        class="connect-user"
-        @options={{hash
-          maximum=1
-          excludeCurrentUser=false
-          disabled=this.topicId
-        }}
-      />
-    </div>
+
+    {{#if this.createTopic}}
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.client"}}</label>
+        <EventsSubscriptionSelector
+          @value={{this.client}}
+          @feature="source"
+          @attribute="client"
+          @onChange={{action (mut this.client)}}
+          @allowedValues={{allowedClientValues}}
+          class="connection-client"
+          options={{hash none="admin.events.connection.client.select"}}
+        />
+      </div>
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.category"}}</label>
+        <EventsCategoryChooser
+          @value={{this.category_id}}
+          class="connect-category"
+          @client={{this.client}}
+          onChange={{action (mut this.category_id)}}
+          @options={{hash disabled=this.topicId}}
+        />
+      </div>
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.user"}}</label>
+        <UserChooser
+          @value={{this.username}}
+          @onChange={{action (mut this.username)}}
+          class="connect-user"
+          @options={{hash
+            maximum=1
+            excludeCurrentUser=false
+            disabled=this.topicId
+          }}
+        />
+      </div>
+    {{/if}}
   </:body>
   <:footer>
     <DButton

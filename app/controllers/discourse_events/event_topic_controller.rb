@@ -19,7 +19,7 @@ module DiscourseEvents
       if category_id
         category = Category.find_by(id: category_id)
         raise Discourse::InvalidParameters.new(:category_id) unless category.present?
-        topic_opts[:category_id] = category_id
+        topic_opts[:category] = category_id
       end
 
       client = params[:client]
