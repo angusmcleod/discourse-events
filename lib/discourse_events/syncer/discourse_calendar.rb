@@ -24,7 +24,7 @@ module DiscourseEvents
       if post.event
         org_params = { original_starts_at: event.start_time }
         org_params[:original_ends_at] = event.end_time if add_end_time(event)
-        org_params[:url] = event.url if event.url
+        org_params[:url] = event.featured_url
         post.event.update_columns(org_params)
 
         params = { starts_at: event.start_time }
@@ -39,7 +39,7 @@ module DiscourseEvents
     def post_raw(event, post: nil, add_raw: false)
       raw_params = "start=\"#{event.start_time}\" status=\"public\""
       raw_params += " end=\"#{event.end_time}\"" if add_end_time(event)
-      raw_params += " url=\"#{event.url}\"" if event.url
+      raw_params += " url=\"#{event.featured_url}\"" if event.featured_url
 
       raw = "[event #{raw_params}]\n[/event]"
       raw += "\n#{event.description}" if event.description.present?

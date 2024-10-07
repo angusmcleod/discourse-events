@@ -57,6 +57,16 @@ module DiscourseEvents
       (SELECT * FROM discourse_events_events WHERE series_id IS NULL)
     SQL
 
+    def featured_url
+      if video_url
+        video_url
+      elsif url
+        url
+      else
+        nil
+      end
+    end
+
     def self.events_sql
       if SiteSetting.events_one_event_per_series
         ONE_EVENT_PER_SERIES_SQL

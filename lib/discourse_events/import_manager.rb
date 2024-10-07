@@ -38,6 +38,7 @@ module DiscourseEvents
           data[:series_id] = imported_event.metadata.series_id
           data[:occurrence_id] = imported_event.metadata.occurrence_id
           data[:registrations] = imported_event.associated_data.registrations
+          data[:virtual_location] = imported_event.associated_data.virtual_location
 
           imported_events[imported_event.metadata.uid] = data
         end
@@ -50,13 +51,14 @@ module DiscourseEvents
         imported_events.each do |uid, data|
           event_source = source.event_sources.find_by(uid: uid)
 
-          if event_source
-            event_source.event.update!(data.except(:registrations))
+          formatted_data = format_event_data(data)
 
+          if event_source
+            event_source.event.update!(formatted_data)
             updated_event_uids << event_source.uid
           else
             ActiveRecord::Base.transaction do
-              event = Event.create!(data.except(:registrations))
+              event = Event.create!(formatted_data)
               event_source = EventSource.create!(uid: uid, event_id: event.id, source_id: source.id)
             end
 
@@ -97,6 +99,19 @@ module DiscourseEvents
 
         source.after_import
       end
+    end
+
+    def format_event_data(data)
+      formatted_data = data.except(:registrations, :virtual_location)
+
+      if data[:virtual_location].present? && data[:virtual_location][:entry_points].present?
+        video_entry_point =
+          data[:virtual_location][:entry_points].find { |ep| ep[:type] == "video" }
+
+        formatted_data[:video_url] = video_entry_point["uri"] if video_entry_point
+      end
+
+      formatted_data
     end
 
     def self.import(source)

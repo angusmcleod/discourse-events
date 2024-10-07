@@ -43,7 +43,7 @@ module OmniEvent
                 :series_id,
                 :occurrence_id,
               ),
-            associated_data: OmniEvent::EventHash.new(registrations: []),
+            associated_data: OmniEvent::EventHash.new(registrations: [], virtual_location: {}),
           )
 
         event.data.start_time = format_time(event.data.start_time)
@@ -57,6 +57,10 @@ module OmniEvent
             raw_event["attendees"].map do |attendee|
               OmniEvent::EventHash.new(attendee.symbolize_keys)
             end
+        end
+
+        if raw_event["virtual_location"]
+          event.associated_data.virtual_location = raw_event["virtual_location"].deep_symbolize_keys
         end
 
         next if opts[:from_time] && Time.parse(event.data.start_time).utc < opts[:from_time].utc

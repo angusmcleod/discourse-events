@@ -11,7 +11,7 @@ module DiscourseEvents
         create_post(
           event,
           topic_opts.merge(
-            featured_link: event.url,
+            featured_link: event.featured_url,
             custom_fields: {
               event_start: event.start_time.to_i,
               event_end: event.end_time.to_i,
@@ -25,7 +25,12 @@ module DiscourseEvents
       post = topic.first_post
 
       # No validations or callbacks can be triggered when updating this data
-      topic.update_columns(title: event.name, fancy_title: nil, slug: nil, featured_link: event.url)
+      topic.update_columns(
+        title: event.name,
+        fancy_title: nil,
+        slug: nil,
+        featured_link: event.featured_url,
+      )
       post.update_columns(raw: post_raw(event, post: post, add_raw: add_raw))
       topic.custom_fields["event_start"] = event.start_time.to_i
       topic.custom_fields["event_end"] = event.end_time.to_i

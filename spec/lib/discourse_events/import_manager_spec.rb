@@ -33,6 +33,13 @@ describe DiscourseEvents::ImportManager do
       expect(DiscourseEvents::EventRegistration.exists?(email: "angus@email.com")).to eq(true)
     end
 
+    it "imports virtual locations" do
+      subject.import_source(source.id)
+      expect(
+        DiscourseEvents::Event.exists?(video_url: "https://opera-online.com/events/don-giovanni"),
+      ).to eq(true)
+    end
+
     it "does not create a previously sourced event" do
       event = Fabricate(:discourse_events_event, start_time: "2017-09-18T16:00:00+08:00")
       event_source =
