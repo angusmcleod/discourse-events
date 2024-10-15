@@ -29,7 +29,7 @@ export default class EventsSubscriptionBadge extends Component {
   get classes() {
     let classes = "btn-primary events-subscription-badge";
     if (this.subscription.product) {
-      classes += ` ${this.subscription.product}`;
+      classes += ` subscribed ${this.subscription.product}`;
     }
     return classes;
   }

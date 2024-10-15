@@ -699,3 +699,9 @@ ul.events-webcal-notices {
     height: 30px;
   }
 }
+
+.events-subscription-badge {
+  &.subscribed {
+    background-color: var(--success);
+  }
+}

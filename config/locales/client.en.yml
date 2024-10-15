@@ -361,10 +361,10 @@ en:
               label: Subscribe
               title: There is no Events subscription active on this forum.
             business:
-              label: Support
+              label: Subscribed
               title: There is a Events Business subscription active on this forum.
             community:
-              label: Support
+              label: Subscribed
               title: There is a Events Community subscription active on this forum.
           subscribed:
             label: Subscribed
