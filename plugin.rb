@@ -5,7 +5,7 @@
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
-# subscription_url: https://test.angus.blog
+# subscription_url: https://support.angus.blog
 
 enabled_site_setting :events_enabled
 
