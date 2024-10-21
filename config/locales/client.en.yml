@@ -283,16 +283,16 @@ en:
             connected: No events connected to topics.
             unconnected: No events not connected topics.
           connected:
-            label: Topics
+            label: Connected
             label_with_count:
-              one: "Topics (%{count})"
-              other: "Topics (%{count})"
+              one: "Connected (%{count})"
+              other: "Connected (%{count})"
             title: Events connected to topics.
           unconnected:
-            label: No Topics
+            label: Unconnected
             label_with_count:
-              one: "No Topics (%{count})"
-              other: "No Topics (%{count})"
+              one: "Unconnnected (%{count})"
+              other: "Unconnected (%{count})"
             title: Events not connected to topics.
           delete:
             title: Delete Events
