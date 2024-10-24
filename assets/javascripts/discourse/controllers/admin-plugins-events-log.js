@@ -30,7 +30,7 @@ export default class AdminPluginsEventsLog extends Controller.extend(Message) {
       order: this.order,
     })
       .then((result) => {
-        if (result.logs && result.logs.length) {
+        if (result?.logs && result.logs.length) {
           this.logs.pushObjects(result.logs.map((p) => Log.create(p)));
         } else {
           this.loadingComplete = true;
