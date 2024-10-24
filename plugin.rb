@@ -15,7 +15,7 @@ register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
-gem "discourse_subscription_client", "0.1.7", require_name: "discourse_subscription_client"
+gem "discourse_subscription_client", "0.1.8", require_name: "discourse_subscription_client"
 gem "iso-639", "0.3.5"
 gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
