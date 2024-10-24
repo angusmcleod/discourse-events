@@ -14,7 +14,7 @@ export default class EventsSubscriptionBadge extends Component {
 
   get i18nKey() {
     return `admin.events.subscription.type.${
-      this.subscription.product || "none"
+      this.subscription.subscribed ? this.subscription.product : "none"
     }`;
   }
 
@@ -28,7 +28,7 @@ export default class EventsSubscriptionBadge extends Component {
 
   get classes() {
     let classes = "btn-primary events-subscription-badge";
-    if (this.subscription.product) {
+    if (this.subscription.subscribed) {
       classes += ` subscribed ${this.subscription.product}`;
     }
     return classes;
