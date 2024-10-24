@@ -242,9 +242,11 @@ $pavilion_primary: #3c1c8c;
   }
 }
 
-.events-log-row {
-  td {
-    max-width: 600px;
+.events-log-table {
+  grid-template-columns: repeat(3, 5.7em) minmax(min-content, 3fr);
+
+  .log-message {
+    justify-content: flex-start;
   }
 }
 

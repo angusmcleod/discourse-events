@@ -19,6 +19,8 @@ export default DiscourseRoute.extend({
     controller.setProperties({
       page: model.page,
       logs: A(model.logs.map((p) => Log.create(p))),
+      loadingComplete: false,
+      loading: false,
     });
     controller.setMessage("info");
   },
