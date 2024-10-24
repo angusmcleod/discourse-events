@@ -3,8 +3,8 @@ import Service from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-const SUBSCRIBE_PATH = "/subscribe";
-const SUPPORT_PATH = "/new-message?username=angus&title=Events%20Support";
+const SUBSCRIBE_PATH = "/s";
+const SUPPORT_PATH = "/";
 const BASE_URL = "https://support.angus.blog";
 
 export default class EventsSubscriptionService extends Service {
