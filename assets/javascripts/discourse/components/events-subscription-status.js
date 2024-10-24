@@ -1,12 +1,12 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { not } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import { not } from "@ember/object/computed";
 
-const supplierUrl = "https://support.angus.blog"
+const supplierUrl = "https://support.angus.blog";
 
 export default class EventsSubscriptionStatus extends Component {
   @service siteSettings;
