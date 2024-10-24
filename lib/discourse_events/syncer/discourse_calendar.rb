@@ -9,6 +9,10 @@ module DiscourseEvents
         ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled && super
     end
 
+    def can_connect_topic?(topic, event)
+      topic.first_post.event.blank?
+    end
+
     def create_client_topic(event, topic_opts = {})
       post = create_post(event, topic_opts)
       post.topic

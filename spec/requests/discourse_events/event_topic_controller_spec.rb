@@ -4,7 +4,10 @@ describe DiscourseEvents::EventTopicController do
   fab!(:user) { Fabricate(:user, admin: true) }
   fab!(:event) { Fabricate(:discourse_events_event) }
 
-  before { sign_in(user) }
+  before do
+    enable_subscription(:business)
+    sign_in(user)
+  end
 
   describe "#connect" do
     context "when connecting a topic to an event" do

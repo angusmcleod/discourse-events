@@ -47,7 +47,7 @@ module DiscourseEvents
     end
 
     def connect_topic(topic, event)
-      return false if topic.first_post.event.present?
+      return false unless can_connect_topic?(topic, event)
       update_topic(topic, event, add_raw: true)
     end
 
@@ -79,6 +79,10 @@ module DiscourseEvents
       unless EventTopic.exists?(event_id: event.id, topic_id: topic.id)
         create_event_topic(event, topic)
       end
+    end
+
+    def can_connect_topic?(topic, event)
+      raise NotImplementedError
     end
 
     def create_client_topic(event, topic_opts = {})

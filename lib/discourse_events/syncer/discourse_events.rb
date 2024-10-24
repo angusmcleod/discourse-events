@@ -6,6 +6,10 @@ module DiscourseEvents
       source.category.events_enabled && super
     end
 
+    def can_connect_topic?(topic, event)
+      topic.event.blank?
+    end
+
     def create_client_topic(event, topic_opts = {})
       post =
         create_post(

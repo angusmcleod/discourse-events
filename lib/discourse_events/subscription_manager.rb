@@ -120,13 +120,9 @@ module DiscourseEvents
       end
     end
 
-    def installed?(klass)
-      defined?(klass) == "constant" && klass.class == Module
-    end
-
     def subscribed?
       return true if ENV["DISCOURSE_EVENTS_PRODUCT"].present?
-      subscription.present?
+      subscription.present? && omnievent_installed?
     end
 
     def supports_import?
@@ -195,6 +191,10 @@ module DiscourseEvents
     def client_installed?
       defined?(DiscourseSubscriptionClient) == "constant" &&
         DiscourseSubscriptionClient.class == Module
+    end
+
+    def omnievent_installed?
+      defined?(OmniEvent) == "constant" && OmniEvent.class == Module
     end
 
     def plugin_path
