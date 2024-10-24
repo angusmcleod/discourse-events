@@ -24,11 +24,17 @@ export default class AdminPluginsEventsLog extends Controller.extend(Message) {
     this.page = page;
     this.loading = true;
 
-    Log.list({
+    let params = {
       page,
-      asc: this.asc,
-      order: this.order,
-    })
+    };
+    if (this.asc) {
+      params.asc = this.asc;
+    }
+    if (this.order) {
+      params.order = this.order;
+    }
+
+    Log.list(params)
       .then((result) => {
         if (result?.logs && result.logs.length) {
           this.logs.pushObjects(result.logs.map((p) => Log.create(p)));
