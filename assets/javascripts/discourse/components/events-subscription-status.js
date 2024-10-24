@@ -4,20 +4,26 @@ import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
+import { not } from "@ember/object/computed";
+
+const supplierUrl = "https://support.angus.blog"
 
 export default class EventsSubscriptionStatus extends Component {
   @service siteSettings;
   @tracked supplierId = null;
   @tracked authorized = false;
   @tracked unauthorizing = false;
+  @not("supplierId") authorizeDisabled;
   basePath = "/admin/plugins/subscription-client/suppliers";
 
   constructor() {
     super(...arguments);
     ajax(`${this.basePath}`).then((result) => {
-      const supplier = result.suppliers.find((s) => s.name === "Angus");
-      this.supplierId = supplier.id;
-      this.authorized = supplier.authorized;
+      const supplier = result.suppliers.find((s) => s.url === supplierUrl);
+      if (supplier) {
+        this.supplierId = supplier.id;
+        this.authorized = supplier.authorized;
+      }
     });
   }
 
