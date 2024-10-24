@@ -96,11 +96,15 @@ module DiscourseEvents
     end
 
     def ready?
+      omnievent_installed?
+    end
+
+    def ready_to_setup?
       database_ready? && client_installed?
     end
 
     def setup(update: false, install: false)
-      return unless ready?
+      return unless ready_to_setup?
       perform_update if update
       perform_install if subscribed? && install
     end
@@ -122,7 +126,7 @@ module DiscourseEvents
 
     def subscribed?
       return true if ENV["DISCOURSE_EVENTS_PRODUCT"].present?
-      subscription.present? && omnievent_installed?
+      subscription.present?
     end
 
     def supports_import?
