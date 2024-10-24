@@ -6,7 +6,7 @@ module DiscourseEvents
 
     def index
       page = params[:page].to_i
-      order = params[:order] || "created_at"
+      order = params[:order].present? ? params[:order] : "created_at"
       direction = ActiveRecord::Type::Boolean.new.cast(params[:asc]) ? "ASC" : "DESC"
       offset = page * PAGE_LIMIT
 
