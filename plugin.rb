@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.8.9
+# version: 0.8.10
 # authors: Angus McLeod
 # contact_emails: angus@pavilion.tech
 # url: https://github.com/paviliondev/discourse-events
@@ -15,7 +15,7 @@ register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
-gem "discourse_subscription_client", "0.1.8", require_name: "discourse_subscription_client"
+gem "discourse_subscription_client", "0.1.9", require_name: "discourse_subscription_client"
 gem "iso-639", "0.3.5"
 gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
