@@ -114,30 +114,34 @@ module DiscourseEvents
     end
 
     def perform_install
-      gem_manager =
-        S3GemManager.new(
-          access_key_id: s3_access_key_id,
-          secret_access_key: s3_secret_access_key,
-          region: s3_region,
-          bucket: s3_bucket,
-        )
-      return unless gem_manager.ready?
-      gem_manager.install(GEMS[product.to_sym])
+      return unless s3_gem.ready?
+      s3_gem.install(GEMS[product.to_sym])
     end
 
-    def s3_access_key_id
+    def s3_gem
+      @s3_gem ||=
+        DiscourseSubscriptionClient::S3Gem.new(
+          plugin_name: "discourse-events",
+          access_key_id: s3_gem_access_key_id,
+          secret_access_key: s3_gem_secret_access_key,
+          region: s3_gem_region,
+          bucket: s3_gem_bucket,
+        )
+    end
+
+    def s3_gem_access_key_id
       ENV["DISCOURSE_EVENTS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource.access_key_id
     end
 
-    def s3_secret_access_key
+    def s3_gem_secret_access_key
       ENV["DISCOURSE_EVENTS_GEMS_S3_SECRET_ACCESS_KEY"] || subscriptions.resource.secret_access_key
     end
 
-    def s3_region
+    def s3_gem_region
       ENV["DISCOURSE_EVENTS_GEMS_S3_REGION"] || subscriptions.resource.region
     end
 
-    def s3_bucket
+    def s3_gem_bucket
       ENV["DISCOURSE_EVENTS_GEMS_S3_BUCKET"] || BUCKETS[product]
     end
 
