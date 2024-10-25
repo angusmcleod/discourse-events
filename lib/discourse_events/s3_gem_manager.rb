@@ -3,10 +3,7 @@ require "aws-sdk-s3"
 
 module DiscourseEvents
   class S3GemManager
-    attr_reader :access_key_id,
-                :secret_access_key,
-                :region,
-                :bucket
+    attr_reader :access_key_id, :secret_access_key, :region, :bucket
 
     def initialize(opts = {})
       @access_key_id = opts[:access_key_id]
@@ -65,42 +62,38 @@ module DiscourseEvents
     def can_access_bucket?
       client.head_bucket(bucket: bucket)
       true
-    rescue Aws::S3::Errors::BadRequest,
-           Aws::S3::Errors::Forbidden,
-           Aws::S3::Errors::NotFound => e
+    rescue Aws::S3::Errors::BadRequest, Aws::S3::Errors::Forbidden, Aws::S3::Errors::NotFound => e
       false
     end
 
     def client
-      @client ||= begin
-        return nil unless region && access_key_id && secret_access_key
+      @client ||=
+        begin
+          return nil unless region && access_key_id && secret_access_key
 
-        Aws::S3::Client.new(
-          region: region,
-          access_key_id: access_key_id,
-          secret_access_key: secret_access_key
-        )
-      end
+          Aws::S3::Client.new(
+            region: region,
+            access_key_id: access_key_id,
+            secret_access_key: secret_access_key,
+          )
+        end
     end
 
     def gemrc
       {
-        sources: [
-          "s3://#{bucket}/",
-          "https://rubygems.org/"
-        ],
+        sources: ["s3://#{bucket}/", "https://rubygems.org/"],
         s3_source: {
           "#{bucket}": {
             id: access_key_id,
             secret: secret_access_key,
-            region: region
-          }
-        }
+            region: region,
+          },
+        },
       }
     end
 
     def write_gemrc
-      File.write(gemrc_path, gemrc.to_yaml)      
+      File.write(gemrc_path, gemrc.to_yaml)
     end
 
     def remove_gemrc
@@ -108,7 +101,7 @@ module DiscourseEvents
     end
 
     def gemrc_path
-      File.join(Rails.root, 'tmp', '.gemrc')
+      File.join(Rails.root, "tmp", ".gemrc")
     end
 
     def plugin_path

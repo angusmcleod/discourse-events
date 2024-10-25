@@ -126,7 +126,7 @@ module DiscourseEvents
     end
 
     def s3_access_key_id
-      ENV["DISCOURSE_EVENTS_GEMS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource.access_key_id
+      ENV["DISCOURSE_EVENTS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource.access_key_id
     end
 
     def s3_secret_access_key
