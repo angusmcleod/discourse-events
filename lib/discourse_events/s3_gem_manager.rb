@@ -13,7 +13,7 @@ module DiscourseEvents
     end
 
     def ready?
-      access_key_id && secret_access_key && region && bucket
+      access_key_id && secret_access_key && region && bucket && can_access_bucket?
     end
 
     def install(gems)
