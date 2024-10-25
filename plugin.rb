@@ -15,17 +15,19 @@ register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
-gem "discourse_subscription_client", "0.1.9", require_name: "discourse_subscription_client"
+gem "discourse_subscription_client", "0.1.10", require_name: "discourse_subscription_client"
 gem "iso-639", "0.3.5"
 gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
 gem "icalendar-recurrence", "1.1.3"
 
 DiscourseEvent.on(:subscription_client_ready) do
+  require_relative "lib/discourse_events/s3_gem_manager.rb"
   require_relative "lib/discourse_events/subscription_manager"
   DiscourseEvents::SubscriptionManager.setup(update: true, install: true)
 end
 DiscourseEvent.on(:subscription_client_subscriptions_updated) do
+  require_relative "lib/discourse_events/s3_gem_manager.rb"
   require_relative "lib/discourse_events/subscription_manager"
   DiscourseEvents::SubscriptionManager.setup(install: true)
 end
@@ -54,6 +56,7 @@ after_initialize do
   require_relative "lib/discourse_events/engine.rb"
   require_relative "lib/discourse_events/helper.rb"
   require_relative "lib/discourse_events/list.rb"
+  require_relative "lib/discourse_events/s3_gem_manager.rb"
   require_relative "lib/discourse_events/subscription_manager.rb"
   require_relative "lib/discourse_events/subscription.rb"
   require_relative "lib/discourse_events/event_creator.rb"

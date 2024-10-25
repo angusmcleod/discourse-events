@@ -100,7 +100,7 @@ module DiscourseEvents
     end
 
     def ready_to_setup?
-      database_ready? && client_installed?
+      database_ready? && subscription_client_installed?
     end
 
     def setup(update: false, install: false)
@@ -114,14 +114,31 @@ module DiscourseEvents
     end
 
     def perform_install
-      return unless source_url
+      gem_manager =
+        S3GemManager.new(
+          access_key_id: s3_access_key_id,
+          secret_access_key: s3_secret_access_key,
+          region: s3_region,
+          bucket: s3_bucket,
+        )
+      return unless gem_manager.ready?
+      gem_manager.install(GEMS[product.to_sym])
+    end
 
-      GEMS[product.to_sym].each do |gem_slug, version|
-        klass = gem_slug.to_s.underscore.classify
-        gem_name = gem_slug.to_s.dasherize
-        opts = { require_name: gem_slug.to_s.gsub(/\_/, "/"), source: source_url }
-        PluginGem.load(plugin_path, gem_name, version, opts)
-      end
+    def s3_access_key_id
+      ENV["DISCOURSE_EVENTS_GEMS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource.access_key_id
+    end
+
+    def s3_secret_access_key
+      ENV["DISCOURSE_EVENTS_GEMS_S3_SECRET_ACCESS_KEY"] || subscriptions.resource.secret_access_key
+    end
+
+    def s3_region
+      ENV["DISCOURSE_EVENTS_GEMS_S3_REGION"] || subscriptions.resource.region
+    end
+
+    def s3_bucket
+      ENV["DISCOURSE_EVENTS_GEMS_S3_BUCKET"] || BUCKETS[product]
     end
 
     def subscribed?
@@ -192,25 +209,13 @@ module DiscourseEvents
       false
     end
 
-    def client_installed?
+    def subscription_client_installed?
       defined?(DiscourseSubscriptionClient) == "constant" &&
         DiscourseSubscriptionClient.class == Module
     end
 
     def omnievent_installed?
       defined?(OmniEvent) == "constant" && OmniEvent.class == Module
-    end
-
-    def plugin_path
-      @plugin_path ||= Discourse.plugins_by_name["discourse-events"].path
-    end
-
-    def source_url
-      @source_url ||=
-        begin
-          return ENV["DISCOURSE_EVENTS_SOURCE_URL"] if ENV["DISCOURSE_EVENTS_SOURCE_URL"].present?
-          subscriptions.resource.get_source_url(BUCKETS[product])
-        end
     end
   end
 end
