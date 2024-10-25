@@ -91,4 +91,7 @@ plugins:
   events_deadlines_countdown_icon_passed_due:
     default: "hourglass-end"
     client: true
+  events_verbose_auth_logs:
+    default: false
+    hidden: true
 

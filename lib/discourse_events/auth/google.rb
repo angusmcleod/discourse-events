@@ -65,6 +65,8 @@ module DiscourseEvents
         data = parse_body(response)
         return false unless data
 
+        log(:info, "Google auth succeeded: #{data}") if SiteSetting.events_verbose_auth_logs
+
         provider.token = data["access_token"]
         provider.token_expires_at = Time.now + data["expires_in"].seconds
         provider.refresh_token = data["refresh_token"] if data["refresh_token"].present?
