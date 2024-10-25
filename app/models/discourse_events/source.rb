@@ -172,7 +172,7 @@ end
 #  taxonomy       :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  sync_type      :integer
+#  sync_type      :integer          default("import")
 #
 # Indexes
 #
