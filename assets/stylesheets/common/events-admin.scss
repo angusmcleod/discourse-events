@@ -162,6 +162,15 @@ $pavilion_primary: #3c1c8c;
 }
 
 .events-event-table {
+  grid-template-columns: 12em minmax(min-content, 3fr) 15em 3.4em;
+
+  .directory-table__column-header.name .header-contents,
+  .directory-table__cell.name,
+  .directory-table__cell.start-time {
+    text-align: left;
+    justify-content: flex-start;
+  }
+
   .events-event-row {
     cursor: pointer;
 
@@ -170,24 +179,7 @@ $pavilion_primary: #3c1c8c;
     }
   }
 
-  td.start-time,
-  th.start-time {
-    width: 200px;
-    box-sizing: border-box;
-  }
-
-  td.tags {
-    width: 200px;
-    text-align: right;
-  }
-
-  th {
-    height: 45px;
-    box-sizing: border-box;
-  }
-
-  td.event-actions,
-  th.event-actions {
+  .event-actions {
     text-align: right;
     width: 60px;
 

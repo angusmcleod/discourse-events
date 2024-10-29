@@ -1,8 +1,8 @@
-<td class="start-time">
+<div class="directory-table__cell start-time">
   {{raw-date event.start_time}}
-</td>
+</div>
 
-<td class="name">
+<div class="directory-table__cell name">
   {{#if showTopics}}
     {{#each event.topic_ids as |topic_id|}}
       <a
@@ -15,9 +15,9 @@
   {{else}}
     {{event.name}}
   {{/if}}
-</td>
+</div>
 
-<td class="tags">
+<div class="directory-table__cell tags">
   <div class="event-tags">
     {{#if providerLabel}}
       <EventTag
@@ -33,8 +33,8 @@
       />
     {{/if}}
   </div>
-</td>
+</div>
 
-<td class="select-event">
+<div class="directory-table__cell select-event">
   <Input @type="checkbox" @checked={{event.selected}} />
-</td>
+</div>

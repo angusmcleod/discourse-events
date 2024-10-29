@@ -4,8 +4,12 @@ import discourseComputed, { observes } from "discourse-common/utils/decorators";
 import I18n from "I18n";
 
 export default Component.extend({
-  tagName: "tr",
-  classNameBindings: [":events-event-row", "event.selected:selected"],
+  tagName: "div",
+  classNameBindings: [
+    ":directory-table__row",
+    ":events-event-row",
+    "event.selected:selected",
+  ],
 
   @observes("event.selected")
   selectEvent() {
