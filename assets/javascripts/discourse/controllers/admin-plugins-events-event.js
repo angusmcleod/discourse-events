@@ -23,7 +23,7 @@ export default class AdminPluginsEventsEvent extends Controller.extend(
   order = "";
   asc = null;
   filter = null;
-  queryParams = ["filter"];
+  queryParams = ["filter", "order", "asc"];
   @not("subscription.subscribed") addDisabled;
 
   loadingComplete = false;
@@ -227,6 +227,14 @@ export default class AdminPluginsEventsEvent extends Controller.extend(
           }
         },
       },
+    });
+  }
+
+  @action
+  updateOrder(field, asc) {
+    this.setProperties({
+      order: field,
+      asc,
     });
   }
 }

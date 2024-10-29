@@ -73,6 +73,7 @@
       <ResponsiveTable @className="events-event-table">
         <:header>
           <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
             @field="start_time"
             @labelKey="admin.events.event.start_time"
             @order={{this.order}}
@@ -81,6 +82,7 @@
             @class="start-time"
           />
           <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
             @field="name"
             @labelKey="admin.events.event.name"
             @order={{this.order}}
