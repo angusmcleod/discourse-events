@@ -105,7 +105,7 @@ $pavilion_primary: #3c1c8c;
     }
 
     .control-group,
-    button:not(.toggle-secret-visibility) {
+    button:not(.toggle-secret-visibility):not(.show-filters) {
       margin-bottom: 1em;
     }
   }

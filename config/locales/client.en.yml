@@ -139,7 +139,7 @@ en:
               instructions: Only import events.
             import_publish:
               label: Import and Publish
-              instructions: Import events, and publish events from the Category.
+              instructions: Import events, and publish new events posted in the Category.
             publish:
               label: Publish only
               instructions: Only publish events from the Category.
@@ -174,13 +174,16 @@ en:
             instructions: How topics are created and updated from events.
             manual:
               label: Manual
-              instructions: Manually connect or sync events with topics.
+              instructions: Manually sync events to topics.
             auto:
               label: Automatic
-              instructions: Events are synced automatically after they're imported.
+              instructions: Events are synced with topics after they're imported.
           topic_sync_all:
             label: Sync Events
             title: Sync all events from this source with topics in the Category.
+          filters:
+            label: Import Filters
+            instructions: Filters applied to event imports.
 
         provider:
           title: Providers
