@@ -58,13 +58,7 @@ module DiscourseEvents
     SQL
 
     def featured_url
-      if video_url
-        video_url
-      elsif url
-        url
-      else
-        nil
-      end
+      url
     end
 
     def self.events_sql
@@ -81,6 +75,8 @@ module DiscourseEvents
                e.start_time,
                e.name,
                e.series_id, 
+               e.url,
+               e.video_url,
                array_remove(array_agg(et.topic_id), NULL) AS topic_ids,
                es.source_id,
                s.provider_id
@@ -89,7 +85,7 @@ module DiscourseEvents
         LEFT JOIN discourse_events_event_sources es ON es.event_id = e.id
         LEFT JOIN discourse_events_sources s ON s.id = es.source_id
         #{filter_sql}
-        GROUP BY e.id, e.start_time, e.name, e.series_id, es.source_id, s.provider_id
+        GROUP BY e.id, e.start_time, e.name, e.series_id, e.url, e.video_url, es.source_id, s.provider_id
       SQL
     end
   end
@@ -111,6 +107,7 @@ end
 #  occurrence_id :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  video_url     :string
 #
 # Foreign Keys
 #

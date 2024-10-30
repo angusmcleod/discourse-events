@@ -70,6 +70,10 @@ en:
       events_calendar:
         label: "Calendar"
         first_day_week: "Start week on"
+    topic:
+      event:
+        video:
+          label: "Join"
 
     webcal_preferences:
       webcal_keys: "Webcal Keys"

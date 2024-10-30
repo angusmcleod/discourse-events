@@ -44,6 +44,7 @@ register_svg_icon "fingerprint"
 register_svg_icon "save"
 register_svg_icon "hourglass-half"
 register_svg_icon "hourglass-end"
+register_svg_icon "video"
 
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
 require_relative "lib/discourse_events_timezone_display_site_setting.rb"
@@ -213,6 +214,11 @@ after_initialize do
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
     object.topic.event
   end
+  add_to_serializer(
+    :topic_view,
+    :event_record,
+    include_condition: -> { object.topic.event_record.present? },
+  ) { DiscourseEvents::BasicEventSerializer.new(object.topic.event_record, root: false).as_json }
 
   add_to_serializer(:topic_list_item, :event, include_condition: -> { object.has_event? }) do
     object.event

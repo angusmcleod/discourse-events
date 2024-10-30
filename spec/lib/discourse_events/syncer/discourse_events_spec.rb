@@ -67,15 +67,15 @@ describe DiscourseEvents::Syncer::DiscourseEvents do
     end
   end
 
-  context "with video url" do
+  context "with url" do
     before do
-      event.video_url = "https://zoom.com/12345"
+      event.url = "https://event.com/12345"
       event.save!
     end
 
-    it "creates event with video url as the featured url" do
+    it "creates topic with event url as the featured link" do
       topic = sync_events
-      expect(topic.featured_link).to eq("https://zoom.com/12345")
+      expect(topic.featured_link).to eq("https://event.com/12345")
     end
   end
 end

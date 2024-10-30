@@ -9,5 +9,17 @@
     {{#if showRsvp}}
       <EventRsvp @topic={{model}} />
     {{/if}}
+    {{#if model.event_record.video_url}}
+      <a
+        href={{model.event_record.video_url}}
+        target="_blank"
+        role="button"
+        class="btn btn-primary"
+        rel="noopener noreferrer"
+      >
+        {{d-icon "video"}}
+        <span>{{i18n "topic.event.video.label"}}</span>
+      </a>
+    {{/if}}
   {{/if}}
 {{/unless}}
