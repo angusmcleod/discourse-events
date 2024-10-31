@@ -26,6 +26,8 @@ module DiscourseEvents
                 message: "%{value} is not a valid provider type",
               }
 
+    before_save :normalize_before_save
+
     def options
       { token: self.token } if (TOKEN + OAUTH2).include?(self.provider_type)
     end
@@ -100,6 +102,14 @@ module DiscourseEvents
           return nil unless Module.const_get(klass)
           klass.constantize.new(self.id)
         end
+    end
+
+    def normalize_before_save
+      if oauth2_type? && (self.client_id.blank? || self.client_secret.blank?)
+        self.token = nil
+        self.token_expires_at = nil
+        self.refresh_token = nil
+      end
     end
   end
 end
