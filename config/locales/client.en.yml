@@ -169,7 +169,7 @@ en:
             instructions: Category where events are posted and published.
           user:
             label: User
-            instructions: User who posts events.
+            instructions: User who posts imported events.
           topics:
             label: Topics
           topic_sync:
