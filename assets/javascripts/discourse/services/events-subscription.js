@@ -9,6 +9,8 @@ const BASE_URL = "https://support.angus.blog";
 
 export default class EventsSubscriptionService extends Service {
   @tracked subscribed = false;
+  @tracked authorized = false;
+  @tracked supplierId = null;
   @tracked product = "";
   @tracked features = {};
 
@@ -24,6 +26,8 @@ export default class EventsSubscriptionService extends Service {
     }
     let result = await ajax(url).catch(popupAjaxError);
 
+    this.authorized = result.authorized;
+    this.supplierId = result.supplier_id;
     this.subscribed = result.subscribed;
     this.product = result.product;
     this.features = result.features;

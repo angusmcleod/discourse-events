@@ -3,13 +3,14 @@
 module DiscourseEvents
   class SubscriptionController < AdminController
     def index
-      manager = SubscriptionManager.new
-      manager.setup(update: !!params[:update_from_remote])
+      subscription_manager.setup(update: !!params[:update_from_remote])
 
       render_json_dump(
-        subscribed: manager.subscribed?,
-        product: manager.product.to_s,
-        features: manager.features,
+        subscribed: subscribed?,
+        authorized: authorized?,
+        supplier_id: supplier&.id,
+        product: subscription_manager.product.to_s,
+        features: subscription_manager.features,
       )
     end
   end

@@ -90,7 +90,7 @@ module DiscourseEvents
           :client_secret,
         )
 
-      unless subscription.supports?(:provider, :provider_type, result[:provider_type])
+      unless subscription_manager.supports?(:provider, :provider_type, result[:provider_type])
         raise Discourse::InvalidParameters,
               "provider #{result[:provider_type]} not supported by your subscription"
       end

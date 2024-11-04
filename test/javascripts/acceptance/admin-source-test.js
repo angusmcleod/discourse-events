@@ -29,6 +29,12 @@ function sourceRoutes(needs) {
             provider_type: "google",
             authenticated: true,
           },
+          {
+            id: 2,
+            name: "my_other_provider",
+            provider_type: "outlook",
+            authenticated: true,
+          },
         ],
         sources: [
           {
@@ -37,6 +43,8 @@ function sourceRoutes(needs) {
             provider_id: 1,
             source_options: {
               organization_id: "1234",
+              user_id: "1234",
+              calendar_id: "1234",
             },
           },
         ],
@@ -153,12 +161,12 @@ acceptance("Events | Source", function (needs) {
       "it disables the save button"
     );
 
-    await fillIn("tr[data-source-id=new] .source-name", "my_updated_source");
-
     await selectKit("tr[data-source-id=new] .source-provider").expand();
     await selectKit("tr[data-source-id=new] .source-provider").selectRowByValue(
-      1
+      "google"
     );
+
+    await fillIn("input[name=calendar_id]", "1234");
 
     assert.strictEqual(
       query("tr[data-source-id=new] .save-source").disabled,
@@ -172,7 +180,10 @@ acceptance("Events | Source", function (needs) {
   test("Edit source works", async (assert) => {
     await visit("/admin/plugins/events/source");
 
-    await fillIn("tr[data-source-id='1'] .source-name", "my_updated_source");
+    await selectKit("tr[data-source-id='1'] .source-provider").expand();
+    await selectKit("tr[data-source-id='1'] .source-provider").selectRowByValue(
+      "outlook"
+    );
 
     assert.strictEqual(
       query("tr[data-source-id='1'] .save-source").disabled,
@@ -187,9 +198,7 @@ acceptance("Events | Source", function (needs) {
     await visit("/admin/plugins/events/source");
 
     await selectKit(".source-provider").expand();
-    await selectKit(".source-provider").selectRowByValue(1);
-
-    await click(".open-source-options-modal");
+    await selectKit(".source-provider").selectRowByValue("outlook");
 
     assert.ok(
       exists("[name=calendar_id]"),

@@ -3,8 +3,7 @@
 module DiscourseEvents
   class Publisher::DiscourseCalendar < Publisher
     def ready?
-      defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
-        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled
+      ::DiscourseEvents.discourse_post_event_ready?
     end
 
     def get_client_event(post)

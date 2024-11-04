@@ -2,6 +2,8 @@
 
 module DiscourseEvents
   class AdminController < ::Admin::AdminController
+    include DiscourseEvents::Subscription
+
     before_action :ensure_admin
     before_action :ensure_subscribed, except: [:index]
 
@@ -11,11 +13,7 @@ module DiscourseEvents
     end
 
     def ensure_subscribed
-      raise DiscourseEvents::NotSubscribed.new unless subscription.subscribed?
-    end
-
-    def subscription
-      @subscription ||= SubscriptionManager.new
+      raise Discourse::InvalidAccess.new unless subscribed?
     end
   end
 end

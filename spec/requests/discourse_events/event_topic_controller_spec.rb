@@ -40,7 +40,7 @@ describe DiscourseEvents::EventTopicController do
         let!(:client) { "discourse_calendar" }
 
         before do
-          unless defined?(DiscoursePostEvent) == "constant"
+          unless DiscourseEvents.discourse_post_event_installed?
             skip("Discourse Calendar is not installed")
           end
 
@@ -86,7 +86,7 @@ describe DiscourseEvents::EventTopicController do
         let!(:client) { "discourse_calendar" }
 
         before do
-          unless defined?(DiscoursePostEvent) == "constant"
+          unless DiscourseEvents.discourse_post_event_installed?
             skip("Discourse Calendar is not installed")
           end
 
@@ -141,7 +141,7 @@ describe DiscourseEvents::EventTopicController do
         let!(:client) { "discourse_calendar" }
 
         before do
-          unless defined?(DiscoursePostEvent) == "constant"
+          unless DiscourseEvents.discourse_post_event_installed?
             skip("Discourse Calendar is not installed")
           end
 

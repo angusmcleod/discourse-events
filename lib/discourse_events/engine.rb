@@ -18,6 +18,15 @@ module DiscourseEvents
     end
   end
 
+  def self.discourse_post_event_installed?
+    defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module
+  end
+
+  def self.discourse_post_event_ready?
+    discourse_post_event_installed? && SiteSetting.calendar_enabled &&
+      SiteSetting.discourse_post_event_enabled
+  end
+
   class NotSubscribed < StandardError
   end
 end

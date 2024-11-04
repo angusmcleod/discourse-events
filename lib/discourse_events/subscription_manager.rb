@@ -130,15 +130,15 @@ module DiscourseEvents
     end
 
     def s3_gem_access_key_id
-      ENV["DISCOURSE_EVENTS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource.access_key_id
+      ENV["DISCOURSE_EVENTS_GEMS_S3_ACCESS_KEY_ID"] || subscriptions.resource&.access_key_id
     end
 
     def s3_gem_secret_access_key
-      ENV["DISCOURSE_EVENTS_GEMS_S3_SECRET_ACCESS_KEY"] || subscriptions.resource.secret_access_key
+      ENV["DISCOURSE_EVENTS_GEMS_S3_SECRET_ACCESS_KEY"] || subscriptions.resource&.secret_access_key
     end
 
     def s3_gem_region
-      ENV["DISCOURSE_EVENTS_GEMS_S3_REGION"] || subscriptions.resource.region
+      ENV["DISCOURSE_EVENTS_GEMS_S3_REGION"] || subscriptions.resource&.region
     end
 
     def s3_gem_bucket
@@ -163,6 +163,14 @@ module DiscourseEvents
       return true unless feature && attribute && value
       return false unless product
       features.dig(feature.to_sym, attribute.to_sym, value.to_sym, product.to_sym)
+    end
+
+    def resource
+      @resource ||= ::SubscriptionClientResource.find_by(name: "discourse-events")
+    end
+
+    def supplier
+      resource ? resource.supplier : nil
     end
 
     def subscriptions

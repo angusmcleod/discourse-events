@@ -6,30 +6,16 @@ import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-const supplierUrl = "https://support.angus.blog";
-
 export default class EventsSubscriptionStatus extends Component {
   @service siteSettings;
-  @tracked supplierId = null;
-  @tracked authorized = false;
+  @service("events-subscription") subscription;
   @tracked unauthorizing = false;
-  @not("supplierId") authorizeDisabled;
+  @not("subscription.supplierId") authorizeDisabled;
   basePath = "/admin/plugins/subscription-client/suppliers";
-
-  constructor() {
-    super(...arguments);
-    ajax(`${this.basePath}`).then((result) => {
-      const supplier = result.suppliers.find((s) => s.url === supplierUrl);
-      if (supplier) {
-        this.supplierId = supplier.id;
-        this.authorized = supplier.authorized;
-      }
-    });
-  }
 
   @action
   authorize() {
-    window.location.href = `${this.basePath}/authorize?supplier_id=${this.supplierId}&final_landing_path=/admin/plugins/events`;
+    window.location.href = `${this.basePath}/authorize?supplier_id=${this.subscription.supplierId}&final_landing_path=/admin/plugins/events`;
   }
 
   @action
@@ -39,13 +25,13 @@ export default class EventsSubscriptionStatus extends Component {
     ajax(`${this.basePath}/authorize`, {
       type: "DELETE",
       data: {
-        supplier_id: this.supplierId,
+        supplier_id: this.subscription.supplierId,
       },
     })
       .then((result) => {
         if (result.success) {
-          this.supplierId = result.supplier_id;
-          this.authorized = false;
+          this.subscription.supplierId = result.supplier_id;
+          this.subscription.authorized = false;
         }
       })
       .finally(() => {

@@ -238,6 +238,7 @@ en:
           method: Method
           authentication:
             label: Authentication
+            none: No Authentication
           credentials:
             username: Username
             password: Password

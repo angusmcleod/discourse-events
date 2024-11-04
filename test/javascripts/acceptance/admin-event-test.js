@@ -47,6 +47,14 @@ function sourceRoutes(needs) {
             },
           },
         ],
+        providers: [
+          {
+            id: 1,
+            name: "my_provider",
+            provider_type: "google",
+            authenticated: true,
+          },
+        ],
         page: 1,
       });
     });

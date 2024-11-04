@@ -5,8 +5,7 @@ module DiscourseEvents
     STATUS_MAP = { confirmed: "going", declined: "not_going", tentative: "interested" }.as_json
 
     def ready?
-      defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module &&
-        ::SiteSetting.calendar_enabled && ::SiteSetting.discourse_post_event_enabled && super
+      ::DiscourseEvents.discourse_post_event_ready? && super
     end
 
     def can_connect_topic?(topic, event)

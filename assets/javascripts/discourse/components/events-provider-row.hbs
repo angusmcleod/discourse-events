@@ -43,6 +43,8 @@
       @provider={{provider}}
       @disabled={{provider.notInSubscription}}
     />
+  {{else}}
+    <label>{{i18n "admin.events.provider.authentication.none"}}</label>
   {{/if}}
 </td>
 

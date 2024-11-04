@@ -58,7 +58,7 @@ acceptance("Events | log", function (needs) {
     );
 
     assert.equal(
-      query("td.log-level").innerText.trim(),
+      query(".directory-table__cell.log-level").innerText.trim(),
       "info",
       "Log level displayed"
     );

@@ -107,6 +107,7 @@ after_initialize do
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
+  require_relative "extensions/discourse_post_event_serializer.rb"
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -220,6 +221,10 @@ after_initialize do
     include_condition: -> { object.topic.event_record.present? },
   ) { DiscourseEvents::BasicEventSerializer.new(object.topic.event_record, root: false).as_json }
 
+  if DiscourseEvents.discourse_post_event_installed?
+    DiscoursePostEvent::EventSerializer.prepend DiscoursePostEventSerializerExtension
+  end
+
   add_to_serializer(:topic_list_item, :event, include_condition: -> { object.has_event? }) do
     object.event
   end
@@ -286,7 +291,7 @@ after_initialize do
     DiscourseEvents::PublishManager.update_registrations(topic.first_post)
     DiscourseEvents::PublishManager.publish(topic.first_post, "update")
   end
-  if defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module
+  if DiscourseEvents.discourse_post_event_installed?
     DiscoursePostEvent::Invitee.after_commit do
       if self.event&.post
         DiscourseEvents::PublishManager.update_registrations(self.event.post)
@@ -414,7 +419,7 @@ after_initialize do
 
   register_search_advanced_filter(/^without_event/) do |posts|
     where_sql = "name = 'event_start'"
-    if defined?(DiscoursePostEvent) == "constant" && DiscoursePostEvent.class == Module
+    if DiscourseEvents.discourse_post_event_ready?
       where_sql += "OR name = '#{DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT}'"
     end
     posts.where(

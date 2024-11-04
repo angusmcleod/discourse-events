@@ -222,6 +222,7 @@ export default Component.extend({
       saving ||
       syncing ||
       !client ||
+      !subscribed ||
       !this.subscription.supportsFeatureValue("source", "client", client) ||
       !topicSync ||
       !categoryId ||

@@ -19,7 +19,9 @@ describe DiscourseEvents::Syncer::DiscourseCalendar do
   fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
   before do
-    skip("Discourse Calendar is not installed") unless defined?(DiscoursePostEvent) == "constant"
+    unless DiscourseEvents.discourse_post_event_installed?
+      skip("Discourse Calendar is not installed")
+    end
 
     SiteSetting.calendar_enabled = true
     SiteSetting.discourse_post_event_enabled = true
@@ -113,9 +115,15 @@ describe DiscourseEvents::Syncer::DiscourseCalendar do
       event.save!
     end
 
-    it "creates event with video url as the featured url" do
+    it "serializes the video url in post event custom fields" do
       post = sync_events
-      expect(post.event.url).to eq("https://zoom.com/12345")
+      serialized_post =
+        DiscoursePostEvent::EventSerializer.new(
+          post.event,
+          scope: Guardian.new(user),
+          root: false,
+        ).as_json
+      expect(serialized_post[:custom_fields][:video_url]).to eq("https://zoom.com/12345")
     end
   end
 end

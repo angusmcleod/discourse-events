@@ -274,7 +274,7 @@ describe DiscourseEvents::PublishManager do
 
     context "with discourse_calendar" do
       before do
-        unless defined?(DiscoursePostEvent) == "constant"
+        unless DiscourseEvents.discourse_post_event_installed?
           skip("Discourse Calendar is not installed")
         end
 
