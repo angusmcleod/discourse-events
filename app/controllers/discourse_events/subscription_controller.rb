@@ -8,7 +8,7 @@ module DiscourseEvents
       render_json_dump(
         subscribed: subscribed?,
         authorized: authorized?,
-        supplier_id: supplier&.id,
+        supplier_id: supplier_id,
         product: subscription_manager.product.to_s,
         features: subscription_manager.features,
       )

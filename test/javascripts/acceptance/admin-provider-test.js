@@ -1,11 +1,10 @@
-import { click, visit } from "@ember/test-helpers";
+import { visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import {
   acceptance,
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
-import selectKit from "discourse/tests/helpers/select-kit-helper";
 import { default as Subscriptions } from "../fixtures/subscription-fixtures";
 import { default as Suppliers } from "../fixtures/supplier-fixtures";
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DiscoursePostEventSerializerExtension
   def custom_fields
     _custom_fields = super
