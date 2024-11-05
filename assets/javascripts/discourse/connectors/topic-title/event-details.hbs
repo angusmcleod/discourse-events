@@ -9,8 +9,8 @@
     {{#if showRsvp}}
       <EventRsvp @topic={{model}} />
     {{/if}}
-    {{#if model.event.video_url}}
-      <EventVideoBtn @videoUrl={{model.event.video_url}} />
+    {{#if model.event_record.video_url}}
+      <EventVideoBtn @videoUrl={{model.event_record.video_url}} />
     {{/if}}
   {{/if}}
 {{/unless}}
