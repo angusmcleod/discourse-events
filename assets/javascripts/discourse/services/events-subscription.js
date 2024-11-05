@@ -37,7 +37,8 @@ export default class EventsSubscriptionService extends Service {
     if (!this.subscribed || !value || !attribute) {
       return false;
     } else {
-      return this.features[feature][attribute][value][this.product];
+      const featureValues = this.features[feature][attribute][value];
+      return featureValues && featureValues[this.product];
     }
   }
 
