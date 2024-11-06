@@ -49,7 +49,10 @@ module DiscourseEvents
     belongs_to :user, optional: true
     belongs_to :category, optional: true
 
-    has_many :event_sources, foreign_key: "source_id", class_name: "DiscourseEvents::EventSource"
+    has_many :event_sources,
+             foreign_key: "source_id",
+             class_name: "DiscourseEvents::EventSource",
+             dependent: :destroy
     has_many :events, through: :event_sources, class_name: "DiscourseEvents::Event"
     has_many :filters,
              -> { where(model_type: "DiscourseEvents::Source") },

@@ -113,6 +113,20 @@ describe DiscourseEvents::SourceController do
       expect(DiscourseEvents::Source.exists?(source.id)).to eq(false)
     end
 
+    context "with a source with events" do
+      fab!(:event) { Fabricate(:discourse_events_event) }
+      fab!(:event_source) do
+        Fabricate(:discourse_events_event_source, source: source, event: event)
+      end
+
+      it "destroys sources" do
+        delete "/admin/plugins/events/source/#{source.id}.json"
+
+        expect(response.status).to eq(200)
+        expect(DiscourseEvents::Source.exists?(source.id)).to eq(false)
+      end
+    end
+
     it "enqueues a source import" do
       expect_enqueued_with(job: :discourse_events_import_events, args: { source_id: source.id }) do
         post "/admin/plugins/events/source/#{source.id}/import.json"

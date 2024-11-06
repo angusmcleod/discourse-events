@@ -118,7 +118,7 @@ en:
           remove:
             label: Remove
             title: Remove Source
-            confirm: Are you sure you want to remove this source? Removing a source removes all its events.
+            confirm: Are you sure you want to remove this source? Removing a source does not remove its events.
           name:
             label: Name
             placeholder: underscored
