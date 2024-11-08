@@ -6,20 +6,13 @@
     @icon="users"
     class="btn-event-attendees"
   />
-{{/if}}
-{{#if canGo}}
-  <button
-    class="btn btn-event-rsvp {{goingClasses}}"
-    {{action "going"}}
-    type="button"
-  >
-    {{#if goingSaving}}
-      {{loading-spinner size="small"}}
-    {{else}}
-      {{d-icon "check"}}
-    {{/if}}
-    <span class="d-button-label">
-      {{this.goingLabel}}
-    </span>
-  </button>
+  <DropdownSelectBox
+    @value={{this.topic.event_user.rsvp}}
+    @content={{this.rsvpOptions}}
+    @onChange={{this.updateRsvp}}
+    @options={{hash
+      disabled=this.updatingRsvp
+      translatedNone=(i18n "event_rsvp.rsvp.none")
+    }}
+  />
 {{/if}}

@@ -150,6 +150,8 @@ after_initialize do
   register_topic_custom_field_type("event_deadline", :boolean)
   register_topic_custom_field_type("event_rsvp", :boolean)
   register_topic_custom_field_type("event_going", :json)
+  register_topic_custom_field_type("event_not_going", :json)
+  register_topic_custom_field_type("event_maybe_going", :json)
   register_topic_custom_field_type("event_invited", :json)
   register_topic_custom_field_type("event_going_max", :integer)
   register_topic_custom_field_type("event_version", :integer)
@@ -163,6 +165,8 @@ after_initialize do
       event_timezone
       event_rsvp
       event_going
+      event_not_going
+      event_maybe_going
       event_invited
       event_going_max
       event_version
@@ -176,12 +180,19 @@ after_initialize do
       self.custom_fields["event_start"].is_a?(Numeric) && self.custom_fields["event_start"] != 0
   end
 
-  %w[event_going event_invited].each do |key|
+  %w[event_going event_not_going event_maybe_going event_invited].each do |key|
     add_to_class(:topic, key.to_sym) { self.custom_fields[key] || [] }
   end
   add_to_class(:topic, :event_rsvp) { self.custom_fields["event_rsvp"] || false }
   add_to_class(:topic, :event_going_max) { self.custom_fields["event_going_max"] || nil }
 
+  add_class_method(:topic, :event_map_user_ids) do |users, user_ids|
+    user_ids = user_ids.map(&:to_i)
+    users.select { |user| user_ids.include?(user.id) }.map { |user| user.username }
+  end
+  add_class_method(:topic, :event_map_usernames) do |users, usernames|
+    users.select { |user| usernames.include?(user.username) }.map { |user| user.id }
+  end
   add_to_class(:topic, :event) do
     return nil unless has_event?
     event = { start: Time.at(custom_fields["event_start"]).iso8601 }
@@ -198,8 +209,19 @@ after_initialize do
     if event_rsvp
       event[:rsvp] = event_rsvp
       event[:going_max] = event_going_max if event_going_max
-      event[:going] = User.where(id: event_going).pluck(:username) if event_going
-      event[:invited] = User.where(id: event_invited).pluck(:username) if event_invited
+
+      user_ids = [*event_going, *event_not_going, *event_maybe_going, *event_invited]
+      users = User.where(id: user_ids)
+      event[:going] = Topic.event_map_user_ids(users, event_going) if event_going.present?
+      event[:invited] = Topic.event_map_user_ids(users, event_invited) if event_invited.present?
+      event[:maybe_going] = Topic.event_map_user_ids(
+        users,
+        event_maybe_going,
+      ) if event_maybe_going.present?
+      event[:not_going] = Topic.event_map_user_ids(
+        users,
+        event_not_going,
+      ) if event_not_going.present?
     end
 
     event
@@ -214,6 +236,18 @@ after_initialize do
 
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
     object.topic.event
+  end
+  add_to_serializer(
+    :topic_view,
+    :event_user,
+    include_condition: -> { object.topic.has_event? && object.topic_user.present? },
+  ) do
+    {
+      rsvp:
+        %w[going invited maybe_going not_going].find do |type|
+          object.topic.send("event_#{type}").include?(object.topic_user.user.id)
+        end,
+    }
   end
   add_to_serializer(
     :topic_view,
@@ -470,11 +504,29 @@ on(:custom_wizard_ready) do
           event_params["event_timezone"] = event["timezone"] if event["timezone"].present?
           event_params["event_rsvp"] = event["rsvp"] if event["rsvp"].present?
           event_params["event_going_max"] = event["going_max"] if event["going_max"].present?
-          event_params["event_going"] = User.where(username: event["going"]).pluck(:id) if event[
+
+          usernames = [
+            *event["going"],
+            *event["not_going"],
+            *event["maybe_going"],
+            *event["invited"],
+          ]
+          users = User.where(username: usernames)
+
+          event_params["event_going"] = Topic.event_map_usernames(users, event["going"]) if event[
             "going"
           ].present?
-          event_params["event_invited"] = User.where(username: event["invited"]).pluck(
-            :id,
+          event_params["event_not_going"] = Topic.event_map_usernames(
+            users,
+            event["not_going"],
+          ) if event["not_going"].present?
+          event_params["event_maybe_going"] = Topic.event_map_usernames(
+            users,
+            event["maybe_going"],
+          ) if event["maybe_going"].present?
+          event_params["event_invited"] = Topic.event_map_usernames(
+            users,
+            event["invited"],
           ) if event["invited"].present?
           event_params["event_version"] = 1
 

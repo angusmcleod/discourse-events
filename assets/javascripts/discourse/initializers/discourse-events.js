@@ -322,9 +322,21 @@ export default {
             (data) => {
               switch (data.type) {
                 case "rsvp": {
-                  if (data.going) {
-                    this.set("model.event.going", data.going);
-                    this.notifyPropertyChange("model.event.going");
+                  if (data.rsvp) {
+                    this.set(
+                      `model.event.${data.rsvp.type}`,
+                      data.rsvp.usernames
+                    );
+
+                    if (this.currentUser) {
+                      const userRsvp = data.rsvp.usernames.includes(
+                        this.currentUser.username
+                      );
+
+                      if (userRsvp) {
+                        this.set("model.event_user", { rsvp: data.rsvp.type });
+                      }
+                    }
                   }
                 }
               }

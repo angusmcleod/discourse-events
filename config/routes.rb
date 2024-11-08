@@ -4,8 +4,7 @@ DiscourseEvents::Engine.routes.draw do
   get "/api-keys" => "api_keys#index"
 
   scope "rsvp", defaults: { format: :json } do
-    post "add" => "rsvp#add"
-    post "remove" => "rsvp#remove"
+    put "update" => "rsvp#update"
     get "users" => "rsvp#users"
   end
 end

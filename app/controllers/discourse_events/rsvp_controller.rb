@@ -1,32 +1,27 @@
 # frozen_string_literal: true
 class DiscourseEvents::RsvpController < ApplicationController
-  before_action :find_user, only: %i[add remove]
+  before_action :find_user, only: %i[update]
   before_action :find_topic
   before_action :ensure_enabled
   before_action :set_user_ids
 
-  SUPPORTED_TYPES = %w[going invited].freeze
+  SUPPORTED_TYPES = %w[going not_going maybe_going invited].freeze
   requires_plugin DiscourseEvents::PLUGIN_NAME
 
-  def add
-    if @topic.event_going_max && @user_ids.length >= @topic.event_going_max
+  def update
+    if @type == "going" && @topic.event_going_max && @user_ids.length >= @topic.event_going_max
       raise I18n.t("event_rsvp.errors.going_max")
     end
 
-    @user_ids.push(@user.id)
-    @topic.custom_fields["event_going"] = @user_ids
-
-    if @topic.save_custom_fields(true)
-      push_update
-      render json: success_json
-    else
-      render json: failed_json
+    SUPPORTED_TYPES.each do |type|
+      @topic.custom_fields["event_#{type}"] ||= []
+      @topic.custom_fields["event_#{type}"].reject! { |user_id| user_id == @user.id }
     end
-  end
 
-  def remove
-    @user_ids.delete(@user.id)
-    @topic.custom_fields["event_going"] = @user_ids
+    if @type.present?
+      @user_ids.push(@user.id)
+      @topic.custom_fields["event_#{@type}"] = @user_ids
+    end
 
     if @topic.save_custom_fields(true)
       push_update
@@ -48,8 +43,11 @@ class DiscourseEvents::RsvpController < ApplicationController
 
   def set_user_ids
     @type = params[:type]
-    raise Discourse::InvalidParameters.new(:type) if SUPPORTED_TYPES.exclude?(@type)
-    @user_ids = @topic.send("event_#{@type}")
+
+    if @type.present?
+      raise Discourse::InvalidParameters.new(:type) if SUPPORTED_TYPES.exclude?(@type)
+      @user_ids = @topic.send("event_#{@type}")
+    end
   end
 
   def find_user
@@ -71,8 +69,14 @@ class DiscourseEvents::RsvpController < ApplicationController
   end
 
   def push_update
-    msg = { updated_at: Time.now, type: "rsvp" }
-    msg[@type.to_sym] = User.where(id: @user_ids).pluck(:username)
+    msg = {
+      updated_at: Time.now,
+      type: "rsvp",
+      rsvp: {
+        type: @type,
+        usernames: User.where(id: @user_ids).pluck(:username),
+      },
+    }
     MessageBus.publish("/discourse-events/#{@topic.id}", msg)
     DiscourseEvent.trigger(:discourse_events_rsvps_updated, @topic)
   end

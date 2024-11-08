@@ -90,14 +90,16 @@ en:
         title: "Attendees"
         filter: "Filter"
       rsvp:
-        label: Going
+        label: RSVP
+        none: Your rsvp...
       going:
-        label: "Going"
-        max_reached: "Booked out"
-        one_spot_left: "1 spot left"
-        x_spots_left: "{{spotsLeft}} spots left"
+        label: Going
+      not_going:
+        label: Not Going
+      maybe_going:
+        label: Maybe Going
       invited:
-        label: "Invited"
+        label: Invited
 
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"
