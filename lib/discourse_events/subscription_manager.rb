@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module DiscourseEvents
   class SubscriptionManager
-    PRODUCTS = { community: "Community", business: "Business" }
-    BUCKETS = { community: "discourse-events-gems-us", business: "discourse-events-gems-us" }
+    PRODUCTS = { community: "Community", business: "Business" }.freeze
+    BUCKETS = { community: "discourse-events-gems-us", business: "discourse-events-gems-us" }.freeze
     GEMS = {
       community: {
         omnievent: "0.1.0.pre10",
@@ -15,7 +15,7 @@ module DiscourseEvents
         omnievent_outlook: "0.1.0.pre11",
         omnievent_google: "0.1.0.pre8",
       },
-    }
+    }.freeze
 
     attr_accessor :subscriptions
 

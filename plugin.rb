@@ -150,6 +150,7 @@ after_initialize do
   register_topic_custom_field_type("event_deadline", :boolean)
   register_topic_custom_field_type("event_rsvp", :boolean)
   register_topic_custom_field_type("event_going", :json)
+  register_topic_custom_field_type("event_invited", :json)
   register_topic_custom_field_type("event_going_max", :integer)
   register_topic_custom_field_type("event_version", :integer)
 
@@ -162,6 +163,7 @@ after_initialize do
       event_timezone
       event_rsvp
       event_going
+      event_invited
       event_going_max
       event_version
     ]
@@ -174,9 +176,11 @@ after_initialize do
       self.custom_fields["event_start"].is_a?(Numeric) && self.custom_fields["event_start"] != 0
   end
 
-  %w[event_going event_rsvp event_going_max].each do |key|
-    add_to_class(:topic, key.to_sym) { self.custom_fields[key] || false }
+  %w[event_going event_invited].each do |key|
+    add_to_class(:topic, key.to_sym) { self.custom_fields[key] || [] }
   end
+  add_to_class(:topic, :event_rsvp) { self.custom_fields["event_rsvp"] || false }
+  add_to_class(:topic, :event_going_max) { self.custom_fields["event_going_max"] || nil }
 
   add_to_class(:topic, :event) do
     return nil unless has_event?
@@ -187,19 +191,15 @@ after_initialize do
     end
 
     event[:timezone] = custom_fields["event_timezone"] if custom_fields["event_timezone"].present?
-
     event[:all_day] = custom_fields["event_all_day"] if custom_fields["event_all_day"].present?
-
     event[:deadline] = custom_fields["event_deadline"] if custom_fields["event_deadline"].present?
-
     event[:version] = custom_fields["event_version"] if custom_fields["event_version"].present?
 
     if event_rsvp
       event[:rsvp] = event_rsvp
-
       event[:going_max] = event_going_max if event_going_max
-
-      event[:going] = User.find(event_going).pluck(:username) if event_going
+      event[:going] = User.where(id: event_going).pluck(:username) if event_going
+      event[:invited] = User.where(id: event_invited).pluck(:username) if event_invited
     end
 
     event
@@ -473,6 +473,9 @@ on(:custom_wizard_ready) do
           event_params["event_going"] = User.where(username: event["going"]).pluck(:id) if event[
             "going"
           ].present?
+          event_params["event_invited"] = User.where(username: event["invited"]).pluck(
+            :id,
+          ) if event["invited"].present?
           event_params["event_version"] = 1
 
           params[:topic_opts] ||= {}
@@ -493,9 +496,12 @@ on(:user_destroyed) do |user|
 
   if topics
     topics.each do |topic|
-      rsvp_array = topic.custom_fields["event_going"] || []
-      rsvp_array.delete(user.id)
-      topic.custom_fields["event_going"] = rsvp_array
+      event_going = topic.custom_fields["event_going"] || []
+      event_invited = topic.custom_fields["event_invited"] || []
+      event_going.delete(user.id)
+      event_invited.delete(user.id)
+      topic.custom_fields["event_going"] = event_going
+      topic.custom_fields["event_invited"] = event_invited
       topic.save_custom_fields(true)
     end
   end

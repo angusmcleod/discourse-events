@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ListControllerEventsExtension
-  USER_API_KEY ||= "user_api_key"
-  USER_API_CLIENT_ID ||= "user_api_client_id"
+  USER_API_KEY = "user_api_key"
+  USER_API_CLIENT_ID = "user_api_client_id"
   # Logging in with user API keys normally only works by passing certain headers.
   # As we cannot force third-party software to send those headers, we need to fake
   # them using request parameters.

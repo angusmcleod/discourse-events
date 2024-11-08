@@ -84,7 +84,7 @@ module DiscourseEvents
       def parse_body(response)
         JSON.parse(response.body)
       rescue JSON::ParserError => e
-        message = response.body&.to_s[0..100]
+        message = response.body&.to_s&.[](0..100)
         log(:error, "Failed to parse access token response for #{provider.name}: #{message}")
         nil
       end

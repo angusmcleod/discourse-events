@@ -222,7 +222,7 @@ module DiscourseEvents
       event.registrations.each do |registration|
         next if registration.user.present?
         user = find_or_create_user(registration)
-        next unless user.present?
+        next if user.blank?
         registration.update(user_id: user.id)
       end
     end

@@ -57,7 +57,7 @@ describe DiscourseEvents::EventTopicController do
         let!(:client) { "discourse_events" }
 
         context "with a category id" do
-          fab!(:category) { Fabricate(:category) }
+          fab!(:category)
 
           before do
             category.custom_fields["events_enabled"] = true
@@ -110,7 +110,7 @@ describe DiscourseEvents::EventTopicController do
 
   describe "#update" do
     context "when updating a topic" do
-      fab!(:topic) { Fabricate(:topic) }
+      fab!(:topic)
       fab!(:first_post) { Fabricate(:post, topic: topic) }
       fab!(:event_topic) { Fabricate(:discourse_events_event_topic, event: event, topic: topic) }
 

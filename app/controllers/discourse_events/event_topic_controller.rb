@@ -11,21 +11,19 @@ module DiscourseEvents
       user = current_user
       if params[:username]
         user = User.find_by(username: params[:username])
-        raise Discourse::InvalidParameters.new(:username) unless user.present?
+        raise Discourse::InvalidParameters.new(:username) if user.blank?
       end
 
       category_id = params[:category_id]
       category = nil
       if category_id
         category = Category.find_by(id: category_id)
-        raise Discourse::InvalidParameters.new(:category_id) unless category.present?
+        raise Discourse::InvalidParameters.new(:category_id) if category.blank?
         topic_opts[:category] = category_id
       end
 
       client = params[:client]
-      unless Source.available_clients.include?(client)
-        raise Discourse::InvalidParameters.new(:client)
-      end
+      raise Discourse::InvalidParameters.new(:client) if Source.available_clients.exclude?(client)
 
       if !@topic && client == "discourse_events"
         raise Discourse::InvalidParameters.new(:category_id) unless category&.events_enabled

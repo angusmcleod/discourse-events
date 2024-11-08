@@ -32,6 +32,11 @@ export default Component.extend({
     return userGoing ? "btn-primary" : "";
   },
 
+  @discourseComputed("userGoing")
+  goingLabel(userGoing) {
+    return I18n.t(`event_rsvp.${userGoing ? "going" : "rsvp"}.label`);
+  },
+
   @discourseComputed("currentUser", "eventFull")
   canGo(currentUser, eventFull) {
     return currentUser && !eventFull;
@@ -46,25 +51,6 @@ export default Component.extend({
   },
 
   eventFull: equal("spotsLeft", 0),
-
-  @discourseComputed("hasMax", "eventFull")
-  goingMessage(hasMax, full) {
-    if (hasMax) {
-      if (full) {
-        return I18n.t("event_rsvp.going.max_reached");
-      } else {
-        const spotsLeft = this.get("spotsLeft");
-
-        if (spotsLeft === 1) {
-          return I18n.t("event_rsvp.going.one_spot_left");
-        } else {
-          return I18n.t("event_rsvp.going.x_spots_left", { spotsLeft });
-        }
-      }
-    }
-
-    return false;
-  },
 
   updateTopic(userName, _action, type) {
     let existing = this.get(`topic.event.${type}`);
@@ -93,7 +79,7 @@ export default Component.extend({
       data: {
         topic_id: this.get("topic.id"),
         type,
-        usernames: [user.username],
+        username: user.username,
       },
     })
       .then((result) => {
@@ -121,9 +107,7 @@ export default Component.extend({
     going() {
       const currentUser = this.get("currentUser");
       const userGoing = this.get("userGoing");
-
       let _action = userGoing ? "remove" : "add";
-
       this.save(currentUser, _action, "going");
     },
   },

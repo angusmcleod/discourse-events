@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 DiscourseEvents::Engine.routes.draw do
-  post "/rsvp/add" => "rsvp#add"
-  post "/rsvp/remove" => "rsvp#remove"
   get "/api-keys" => "api_keys#index"
-  get "/rsvp/users" => "rsvp#users"
+
+  scope "rsvp", defaults: { format: :json } do
+    post "add" => "rsvp#add"
+    post "remove" => "rsvp#remove"
+    get "users" => "rsvp#users"
+  end
 end
 
 Discourse::Application.routes.prepend do

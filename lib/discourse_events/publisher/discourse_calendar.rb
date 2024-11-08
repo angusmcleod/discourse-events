@@ -12,7 +12,7 @@ module DiscourseEvents
 
     def get_event(post)
       event = get_client_event(post)
-      return nil unless event.present?
+      return nil if event.blank?
 
       Publisher::Event.new(
         start_time: event.starts_at,
@@ -24,7 +24,7 @@ module DiscourseEvents
 
     def get_registrations(post)
       event = get_client_event(post)
-      return [] unless event.invitees.present?
+      return [] if event.invitees.blank?
 
       event.invitees.map do |invitee|
         Publisher::Registration.new(

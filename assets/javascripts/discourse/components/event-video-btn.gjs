@@ -12,7 +12,7 @@ export default class EventVideoBtn extends Component {
       href={{@video_url}}
       target="_blank"
       role="button"
-      class="btn btn-primary"
+      class="btn btn-primary btn-event-video"
       rel="noopener noreferrer"
     >
       {{dIcon "video"}}

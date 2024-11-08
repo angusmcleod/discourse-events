@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DiscourseEvents
-  PLUGIN_NAME ||= "discourse-events"
+  PLUGIN_NAME = "discourse-events"
 
   class Engine < ::Rails::Engine
     engine_name PLUGIN_NAME

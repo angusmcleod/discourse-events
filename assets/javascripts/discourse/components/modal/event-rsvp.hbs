@@ -16,6 +16,15 @@
             {{i18n "event_rsvp.going.label"}}
           </a>
         </li>
+        <li>
+          <a
+            href
+            {{on "click" (fn this.setType "invited")}}
+            class={{this.invitedNavClass}}
+          >
+            {{i18n "event_rsvp.invited.label"}}
+          </a>
+        </li>
       </ul>
     </div>
     <div class="list">

@@ -3,7 +3,7 @@
 module DiscourseEvents
   class EventDestroyer
     def self.perform(user: nil, event_ids: [], target: nil)
-      return unless user.present? && event_ids.present? && target.present?
+      return if user.blank? || event_ids.blank? || target.blank?
 
       result = { destroyed_event_ids: [], destroyed_topics_event_ids: [] }
 

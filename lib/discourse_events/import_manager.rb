@@ -129,7 +129,7 @@ module DiscourseEvents
 
     def self.import_source(source_id)
       source = Source.find_by(id: source_id)
-      return unless source.present?
+      return if source.blank?
       import(source)
     end
 

@@ -7,7 +7,7 @@ module DiscourseEvents
     belongs_to :user
     belongs_to :event
 
-    enum status: { confirmed: 0, declined: 1, tentative: 2 }
+    enum status: { confirmed: 0, declined: 1, tentative: 2, invited: 3 }
   end
 end
 

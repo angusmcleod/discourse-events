@@ -335,7 +335,7 @@ export default class EventForm extends Component {
                 <span>{{i18n "add_event.going"}}</span>
                 <EmailGroupUserChooser
                   @value={{this.usersGoing}}
-                  @onChange={{fn this.updateUsersGoing this.usersGoing}}
+                  @onChange={{this.updateUsersGoing}}
                   class="user-selector"
                   @options={{hash
                     filterPlaceholder="composer.users_placeholder"

@@ -53,25 +53,26 @@ module DiscourseEvents
 
     def update_client_registrations(topic, event)
       confirmed_user_ids = []
+      invited_user_ids = []
 
       event.registrations.each do |registration|
-        next unless registration.user && registration.confirmed?
-        confirmed_user_ids << registration.user.id
+        next unless registration.user
+        confirmed_user_ids << registration.user.id if registration.confirmed?
+        invited_user_ids << registration.user.id if registration.invited?
       end
 
-      if confirmed_user_ids.any?
-        event_going = topic.event_going || []
+      return if confirmed_user_ids.none? && invited_user_ids.none?
 
-        if !topic.event_going_max || event_going.length <= topic.event_going_max
-          confirmed_user_ids.each do |user_id|
-            event_going << user_id unless event_going.include?(user_id)
-          end
-        end
+      going = topic.event_going
+      confirmed_user_ids.each { |user_id| going << user_id if going.exclude?(user_id) }
 
-        topic.custom_fields["event_rsvp"] = true
-        topic.custom_fields["event_going"] = event_going
-        topic.save_custom_fields(true)
-      end
+      invited = topic.event_invited
+      invited_user_ids.each { |user_id| invited << user_id if invited.exclude?(user_id) }
+
+      topic.custom_fields["event_rsvp"] = true
+      topic.custom_fields["event_going"] = going
+      topic.custom_fields["event_invited"] = invited
+      topic.save_custom_fields(true)
     end
   end
 end

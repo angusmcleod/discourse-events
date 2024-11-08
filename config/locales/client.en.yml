@@ -18,9 +18,9 @@ en:
       no_timezone: "Select a timezone"
       rsvp_enabled: "Rsvp enabled"
       rsvp_enabled_label: "Rsvp"
-      going: "Guests"
-      going_max: "Maximum guests"
-      going_max_label: "{{goingMax}} Guests"
+      going: "Attendees"
+      going_max: "Maximum attendees"
+      going_max_label: "{{goingMax}} attendees"
       error: "Event end should be same as or after event start"
     event_label:
       deadline:
@@ -86,14 +86,18 @@ en:
       calendar_usage: "Documentation on how to use Webcal API keys."
 
     event_rsvp:
-      modal:
-        title: "Guests"
+      attendees:
+        title: "Attendees"
         filter: "Filter"
+      rsvp:
+        label: Going
       going:
         label: "Going"
         max_reached: "Booked out"
         one_spot_left: "1 spot left"
         x_spots_left: "{{spotsLeft}} spots left"
+      invited:
+        label: "Invited"
 
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"

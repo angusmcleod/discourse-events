@@ -26,7 +26,7 @@ module DiscourseEvents
 
     def get_publisher
       @client = detect_client
-      return false unless Source::CLIENT_NAMES.include?(client)
+      return false if Source::CLIENT_NAMES.exclude?(client)
 
       publisher = "DiscourseEvents::Publisher::#{client.camelize}".constantize.new
       return false unless publisher.ready?
@@ -40,7 +40,7 @@ module DiscourseEvents
 
     def self.update_registrations(post)
       publisher = new(post).get_publisher
-      return [] unless publisher.present?
+      return [] if publisher.blank?
 
       current_registrations = publisher.get_registrations(post)
       updated_registrations = []
@@ -90,7 +90,7 @@ module DiscourseEvents
         next unless source.publish?
         sources << source
       end
-      return unless sources.present?
+      return if sources.blank?
 
       published_events = {}
 

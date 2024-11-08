@@ -6,10 +6,13 @@ module DiscourseEvents
 
     self.table_name = "discourse_events_sources"
 
-    CLIENTS ||= { discourse_events: "discourse-events", discourse_calendar: "discourse-calendar" }
+    CLIENTS = {
+      discourse_events: "discourse-events",
+      discourse_calendar: "discourse-calendar",
+    }.freeze
     CLIENT_NAMES = CLIENTS.keys.map(&:to_s)
 
-    SOURCE_OPTIONS ||= {
+    SOURCE_OPTIONS = {
       developer: {
         uri: /./,
       },
@@ -33,11 +36,11 @@ module DiscourseEvents
       google: {
         calendar_id: /[0-9a-zA-Z=-]/,
       },
-    }
+    }.freeze
 
-    FIXED_SOURCE_OPTIONS ||= { icalendar: { expand_recurrences: true } }
+    FIXED_SOURCE_OPTIONS = { icalendar: { expand_recurrences: true } }.freeze
 
-    IMPORT_PERIODS ||= {
+    IMPORT_PERIODS = {
       "5_minutes": 300,
       "30_minutes": 1800,
       "1_hour": 3600,

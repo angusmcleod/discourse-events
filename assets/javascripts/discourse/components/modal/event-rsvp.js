@@ -4,38 +4,30 @@ import { action } from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { extractError } from "discourse/lib/ajax-error";
 import User from "discourse/models/user";
-import {
-  default as discourseComputed,
-  observes,
-} from "discourse-common/utils/decorators";
+import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
 
 export default Component.extend({
   userList: [],
   type: "going",
-  title: I18n.t("event_rsvp.modal.title"),
+  title: I18n.t("event_rsvp.attendees.title"),
 
   didReceiveAttrs() {
     this._super();
     this.setUserList();
   },
 
-  @observes("type", "model.topic")
+  @action
   setUserList() {
     this.set("loadingList", true);
 
     const type = this.get("type");
     const topic = this.get("model.topic");
 
-    let usernames = topic.get(`event.${type}`);
-
-    if (!usernames || !usernames.length) {
-      return;
-    }
-
     ajax("/discourse-events/rsvp/users", {
       data: {
-        usernames,
+        type,
+        topic_id: topic.id,
       },
     })
       .then((response) => {
@@ -61,6 +53,11 @@ export default Component.extend({
     return type === "going" ? "active" : "";
   },
 
+  @discourseComputed("type")
+  invitedNavClass(type) {
+    return type === "invited" ? "active" : "";
+  },
+
   @discourseComputed("userList")
   filteredList(userList) {
     const currentUser = this.get("currentUser");
@@ -80,6 +77,7 @@ export default Component.extend({
   setType(type) {
     event?.preventDefault();
     this.set("type", type);
+    this.setUserList();
   },
 
   @action

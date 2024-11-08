@@ -150,7 +150,7 @@ module DiscourseEvents
           user = nil
           if result[:username]
             user = User.find_by(username: result[:username])
-            raise Discourse::InvalidParameters.new(:username) unless user.present?
+            raise Discourse::InvalidParameters.new(:username) if user.blank?
             result[:user_id] = user.id
           else
             result[:user_id] = nil

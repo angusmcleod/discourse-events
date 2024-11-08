@@ -48,9 +48,7 @@ module DiscourseEvents
 
     def authorize
       provider = Provider.find_by(id: params[:id])
-      unless provider&.oauth2_type? && provider&.can_authenticate?
-        raise Discourse::InvalidParameters
-      end
+      raise Discourse::InvalidParameters unless provider&.oauth2_type? && provider.can_authenticate?
 
       state = "#{SecureRandom.hex}:#{provider.id}"
       secure_session["#{AUTH_SESSION_KEY}-#{current_user.id}"] = state

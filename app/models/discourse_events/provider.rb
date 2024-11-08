@@ -4,9 +4,9 @@ module DiscourseEvents
   class Provider < ActiveRecord::Base
     self.table_name = "discourse_events_providers"
 
-    NO_AUTH ||= %w[developer icalendar]
-    TOKEN ||= %w[eventbrite humanitix eventzilla]
-    OAUTH2 ||= %w[meetup outlook google]
+    NO_AUTH = %w[developer icalendar].freeze
+    TOKEN = %w[eventbrite humanitix eventzilla].freeze
+    OAUTH2 = %w[meetup outlook google].freeze
     TYPES = NO_AUTH + TOKEN + OAUTH2
 
     has_many :sources,

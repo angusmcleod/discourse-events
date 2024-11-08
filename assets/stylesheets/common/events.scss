@@ -526,32 +526,12 @@ ul.events-calendar-events {
 .event-rsvp {
   display: flex;
   align-items: center;
-
-  button {
-    min-height: initial;
-    margin-right: 7px;
-    background-color: var(--primary-100);
-    padding: 0.25em 0.5em;
-    height: 30px;
-
-    &.btn-primary {
-      background-color: var(--tertiary);
-    }
-  }
+  gap: 0.5em;
 
   .spinner {
     width: 3px;
     height: 3px;
     margin-right: 8px;
-  }
-}
-
-.event-rsvp-details {
-  display: flex;
-  align-items: center;
-
-  a {
-    margin-right: 7px;
   }
 }
 

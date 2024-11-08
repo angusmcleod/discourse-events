@@ -4,14 +4,14 @@ module DiscourseEvents
   class Filter < ActiveRecord::Base
     self.table_name = "discourse_events_filters"
 
-    MODEL_TYPES = %w[DiscourseEvents::Source]
+    MODEL_TYPES = %w[DiscourseEvents::Source].freeze
 
     belongs_to :model, polymorphic: true
 
     enum :query_column, %i[name start_time], prefix: true
     enum :query_operator, %i[like greater_than less_than], prefix: true
 
-    OPERATORS = { like: "ILIKE", greater_than: ">", less_than: "<" }
+    OPERATORS = { like: "ILIKE", greater_than: ">", less_than: "<" }.freeze
 
     validate :query_value_format
     validates :model_type, inclusion: { in: MODEL_TYPES }
