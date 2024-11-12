@@ -1,0 +1,64 @@
+he:
+  site_settings:
+    events_enabled: "הפעלת תוסף אירועים."
+    events_agenda_enabled: "הצגת רשימת נושאי לו״ז בכל הקטגוריות."
+    events_calendar_enabled: "הצגת רשימת נושאי לוח שנה בכל הקטגוריות."
+    events_add_to_calendar: "הצגת כפתור הוספה ללוח השנה בנושאי האירועים."
+    events_event_label_icon: "מחלקת FontAwesome של סמל תווית האירוע. יכול להיות שצריך להוסיף את הסמל הזה גם להגדרת האתר `svg icon subset` בנוסף. "
+    events_event_label_no_text: "ללא טקסט על כפתורי הוספת האירוע."
+    events_event_label_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לתווית אירוע."
+    events_event_label_short_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לתוויות אירועי רשימת נושאים."
+    events_event_label_short_only_start: "להציג רק תאריך התחלה בתוויות אירועי רשימת הנושאים."
+    events_event_label_short_after_title: "הוספת תווית האירועי אחרי כותרת הנושא ברשימת הנושאים."
+    events_event_time_calendar_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> של השעה ברשומת לוח שנה."
+    events_remove_past_from_map: "הסרת אירועי עבר מרשימת נושאי המפה ב<a href='https://github.com/angusmcleod/discourse-locations'>תוסף המקומות</a>."
+    events_remove_past_from_agenda: "הסרת אירועי עבר מהלו״ז."
+    events_remove_past_from_calendar: "הסרת אירועי עבר מלוח השנה."
+    events_agenda_filter_closed: "הסרת נושאים שנסגרו מהלו״ז."
+    events_calendar_filter_closed: "הסרת נושאים שנסגרו מלוח השנה."
+    events_timezone_default: "אזור זמן כברירת מחדל. אם לא מוגדר, אזור הזמן של המשתמש הוא ברירת המחדל."
+    events_timezone_display: "אזור הזמן להצגת זמני האירועים."
+    events_timezone_display_default: "אזור זמן כברירת מחדל."
+    events_timezone_display_event: "אזור זמן לאירוע, אם הוגדר."
+    events_timezone_display_different: "אזור זמן לאירוע, אם הוגדר ושונה מאזור הזמן כברירת מחדל."
+    events_timezone_include_in_topic: "הוספת אזור זמן לתוויות אירועים ברשימת הנושאים."
+    events_timezone_include_in_topic_list: "הוספת אזור זמן לתוויות אירועים ברשימת הנושאים."
+    events_timezone_include_in_email: "הוספת אזור זמן לתוויות אירועים בהודעות דוא״ל."
+    events_timezone_format: "תבנית <a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לאזורי זמן להוספה לתוויות אירועים. דורס את הגדרות התבנית של Rails."
+    events_timezone_rails_format: "להשתמש ב־<a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails format</a> לאזורי זמן שנוספו לתוויות אירועים."
+    events_hamburger_menu_calendar_link: "הוספת קישור ללוח השנה של האתר לתפריט ההמבורגר."
+    events_hamburger_menu_agenda_link: "הוספת הקישור ללו״ז של האתר לתפריט ההמבורגר."
+    events_min_trust_to_create: "דרגת אמון מזערית ליצירת אירוע."
+    events_rsvp: "הפעלת אישור השתתפות לאירועים."
+    events_update_automatically: "לייבא את כל המקורות ולסנכרן את כל החיבורים אוטומטית."
+    events_update_automatically_period_mins: "משך הזמן בדקות בין עדכון האירועים אוטומטית. לתשומת ליבך: דורש הפעלה מחדש."
+    events_split_series_into_different_topics: "ייווצר נושא נפרד לכל אירוע בסדרה."
+    events_allow_moderator_management: "לאפשר למפקחים לנהל אירועים."
+    events_add_default_end_time: "הוספת זמן סיום כברירת מחדל לאירועים."
+    events_deadlines: "להציע אפשרות ליצור אירוע כמועד סיום, שיציג ספירה לאחור בנושא וברשימת הנושאים"
+    events_deadlines_countdown_icon_pending: "סמל לספירה לאחור"
+    events_deadlines_countdown_icon_passed_due: "סמל לספירה לאחור אחרי שנגמר הזמן"
+
+  rss_description:
+    events: "אירועים"
+
+  webcal_description:
+    events: "אירועים"
+
+  event_email:
+    topic_type_match: "דיון"
+    topic_type_sub: "אירוע"
+
+  event_rsvp:
+    errors:
+      not_enabled: "אישור השתתפות לא זמין לאירוע"
+      going_max: "נרשמה כמות האורחים המרבית לאירוע הזה."
+
+  user_api_key:
+    scopes:
+      calendar_events: "webcal של תוסף אירועים"
+
+  log:
+    import_finished: "הייבוא מתוך %{source_name} הסתיים. נמשכו %{events_count} אירועים, נוצרו %{created_count} אירועים ועודכנו %{updated_count} אירועים."
+    sync_finished: "סנכרון %{source_name} מול %{category_name} הושלם. נוצרו %{created_count} נושאים ועודכנו %{updated_count} נושאים לתוסף %{client_name}."
+    sync_client_not_ready: "הסנכרון של %{source_name} מול %{category_name} נכשל. תוסף %{client_name} לא מוכן."
