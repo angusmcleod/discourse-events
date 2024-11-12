@@ -1,0 +1,293 @@
+he:
+  js:
+    add_event:
+      btn_label: "הוספת אירוע"
+      modal_title: הוספת אירוע
+      event_start: התחלה
+      event_end: סיום
+      event_date: תאריך
+      event_time: שעה
+      event_add: סוף
+      event_clear: פינוי
+      end_enabled: "סוף אירוע"
+      all_day: "כל היום"
+      deadline:
+        label: "הוא מועד סיום"
+        title: "יציג ספירה לאחור בנושא וברשימת הנושאים"
+      timezone: "אזור זמן"
+      no_timezone: "נא לבחור אזור זמן"
+      rsvp_enabled: "אפשר לאשר/לדחות השתתפות"
+      rsvp_enabled_label: "עדכון השתתפות"
+      going: "אורחים"
+      going_max: "כמות האורחים המרבית"
+      going_max_label: "{{goingMax}} אורחים"
+      error: "סיום האירוע צריך להיות כמו או אחרי התחלת האירוע"
+    event_label:
+      deadline:
+        past_due: "חלף מעבר"
+    category:
+      events_setting_heading: "אירועים"
+      enable_events: "לאפשר הוספת אירועים לנושאים בקטגוריה הזאת."
+      enable_events_agenda: "הצגת רשימת נושאי לו״ז בקטגוריה הזאת."
+      enable_events_calendar: "הצגת רשימת נושאי לוח שנה בקטגוריה הזאת."
+      events_min_trust_to_create: "דרגת אמון מזערית ליצירת אירוע בקטגוריה הזאת (מעקף הגדרת האתר)."
+      events_event_label_no_text: "אין טקסט על כפתורי הוספת אירוע בקטגוריה הזאת (מעקף הגדרת האתר)."
+      require_event: "לכל הנושאים בקטגוריה הזאת חייב להיות אירוע."
+    composer:
+      error:
+        event_missing: "לנושאים בקטגוריה הזאת חייב להיות אירוע."
+    event_list:
+      title: '{{categoryName}} אירועים'
+      about: 'אירועים באזור שלך'
+      no_results: "אין אירועים באופק"
+      create: "יצירת אירוע"
+    filters:
+      agenda:
+        title: "לו״ז"
+        help: "הצגת אירועים בסדר כרונולוגי עולה בהתאם למועד ההתחלה."
+      calendar:
+        title: "לוח שנה"
+        help: "הצגת אירועים בלוח שנה"
+    add_to_calendar:
+      label: "הוספה ללוח השנה"
+      google: "יומן Google"
+      ics: "קובץ ‎.ics"
+      default_details: "פרטי אירוע: {{url}}"
+    topics:
+      none:
+        agenda: "אין נושאים בלו״ז."
+      bottom:
+        agenda: "אין עוד נושאים בלו״ז."
+    events_calendar:
+      today: "היום"
+      hidden: "עוד {{count}}"
+      subscribe: "מינוי"
+      ical: "iCal"
+      rss: "RSS"
+      subscription:
+        warning: "אף פעם לא לשתף את הקישורים האלה עם אף אחד!"
+    user:
+      events_calendar:
+        label: "לוח שנה"
+        first_day_week: "השבוע מתחיל ביום"
+
+    webcal_preferences:
+      webcal_keys: "מפתחות Webcal"
+      heading: "מפתחות API של Webcal"
+      api_key: "מפתח API"
+      client_id: "מזהה לקוח"
+      generate: "יצירה"
+      notice: "המפתח ומזהה הלקוח יופיעו פעם אחת בלבד. נא לאחסן אותם במקום בטוח בטרם יציאה מהעמוד הזה."
+      calendar_notice: "יצירת מפתחות API של Webcal כדי להירשם לערוץ ה־ical המקומי."
+      calendar_usage: "תיעוד איך להשתמש במפתחות API של Webcal."
+
+    event_rsvp:
+      modal:
+        title: "אורחים"
+        filter: "מסנן"
+      going:
+        label: "משתתפים"
+        max_reached: "אין מקומות פנויים"
+        one_spot_left: "נותר מקום אחד"
+        x_spots_left: "נותרו {{spotsLeft}}"
+
+    site_settings:
+      events_timezone_default_placeholder: "נא לבחור אזור זמן"
+
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_events: "אירועים"
+
+      events:
+        title: אירועים
+        actions: פעולות
+        beta_notice: "אלו יכולות ניסיוניות. בקרוב נשיק תוכניות מינוי לתוסף האירועים, מה שיאפשר להפעיל חלק מהיכולות האלה. <a href='https://pavilion.tech/products/discourse-events-plugin'>למידע נוסף</a>."
+        source:
+          title: מקורות
+          none: אין מקורות.
+          add:
+            label: הוספה
+            title: הוספת מקור
+          remove:
+            label: הסרה
+            title: הסרת מקור
+            confirm: להסיר את '%{source_name}'? הסרת מקור מבירה את כל האירועים והחיבורים הקשורים.
+          name:
+            label: שם
+            placeholder: עם_קווים_תחתיים
+          provider:
+            label: ספק
+            select: נא לבחור ספק…
+          save:
+            label: שמירה
+            title: שמירת מקור
+          source_options:
+            label: אפשרויות
+            title: הגדרת אפשרויות מקור.
+            none: אין אפשרויות
+            uri: כתובת מלאה
+            organization_id: מזהה ארגון
+            group_urlname: שם כתובת קבוצה
+            user_id: מזהה משתמש
+            calendar_id: מזהה לוח שנה
+            done:
+              label: הגדרת אפשרויות
+              title: הגדרת אפשרויות מקור.
+          sync_type:
+            label: סוג סנכרון
+            title: סוג הסכנרון מול המקור.
+            import: ייבוא
+            import_publish: ייבוא ופרסום
+            publish: פרסום
+          date_range: טווח תאריכים
+          import:
+            label: ייבוא
+            title: מקור ייבוא
+        provider:
+          title: ספקים
+          none: אין ספקים.
+          add:
+            label: הוספה
+            title: הוספת ספק
+          status:
+            label: מצב
+            ready:
+              label: מוכן
+              title: הספק מוכן.
+            not_ready:
+              label: לא מוכן
+              title: הספק לא מוכן.
+            authenticated: 
+              label: מאומת
+              title: הספק מאומת.
+            not_authenticated:
+              label: לא מאומת
+              title: הספק לא מאומת.
+          name:
+            label: שם
+            placeholder: עם_קווים_תחתיים
+          url:
+            label: כתובת
+            placeholder: כתובת ניהול
+          provider_type:
+            label: סוג
+            select: נא לבחור סוג…
+            icalendar: iCalendar
+            eventbrite: Eventbrite
+            eventzilla: Eventzilla
+            meetup: Meetup
+            outlook: Outlook
+            humanitix: Humanitix
+            google: Google
+          method: שיטה
+          credentials:
+            label: פרטי גישה
+            none: ללא פרטי גישה
+            update: הגדרת פרטי גישה
+            username: שם משתמש
+            password: סיסמה
+            token: אסימון
+            client_id: מזהה לקוח
+            client_secret: סוד לקור
+            done:
+              label: הגדרת פרטי גישה
+              title: סגירה
+          save:
+            label: שמירה
+            title: שמירת ספק
+          remove:
+            label: הסרה
+            title: הסרת ספק
+            confirm: להסיר את '%{provider_name}'? הסרת ספק תסיר את המקורות המשויכים.
+          authenticate:
+            label: אימות
+            title: ספק אימות
+        connection:
+          title: חיבורים
+          none: אין חיבורים.
+          add:
+            label: הוספה
+            title: הוספת חיבור
+          remove:
+            label: הסרה
+            title: הסרת חיבור
+            confirm: להסיר את החיבור הזה?
+          save:
+            label: שמירה
+            title: שמירת חיבור
+          user: משתמש
+          category: קטגוריה
+          source: מקור
+          client:
+            label: לקוח
+            select: בחירה…
+            discourse_events: אירועי Discourse
+            discourse_calendar: לוח שנה של Discourse
+          source:
+            label: מקור
+            select: בחירה…
+          sync:
+            label: סנכרון
+            title: סנכרון חיבור
+        filters:
+          title: מסננים
+          label: מסננים
+          add:
+            label: הוספה
+            title: הוספת מסנן
+          done:
+            label: סיום
+            title: סגירת מסננים
+        filter:
+          query_column:
+            label: מאפיין
+          query_operator:
+            label: סימן
+          query_value:
+            label: ערך
+          remove:
+            title: הסרת מסנן
+
+        event:
+          title: אירועים
+          select_all: בחירה בהכול
+          show_select: הצגת בחירת אירועים
+          start_time: שעת התחלה
+          name: שם
+          source: מקור
+          topics: נושאים
+          none: אין אורעים.
+          delete:
+            title: מחיקת אירועים ונושאים
+            label: מחיקה
+            events_only: מחיקת אירועים בלבד
+            events_and_topics: מחיקת אירועים ונושאים קשורים
+            topics_only: מחיקת נושאים בלבד
+            events_only_btn: מחיקת אירועים
+            events_and_topics_btn: מחיקת אירועים ונושאים
+            topics_only_btn: מחיקת נושאים
+        log:
+          title: יומנים
+          created_at: מועד היצירה
+          level: רמה
+          context: הקשר
+          message: הודעה
+          none: אין יומנים.
+        message:
+          documentation: "נא לעיין בתיעוד"
+          connection:
+            info: "חיבורים הם איפה שהאירועים שלך יופיעו"
+            sync_started: "החל סנכרון. נא לבדוק את התוצאה ב<a href='/admin/plugins/events/log'>יומנים</a>."
+            sync_failed_to_start: "התחלת הסנכרון נכשלה."
+          source:
+            info: "מקורות הן הדרך לייבא אירועים מספק"
+            import_started: "הייבוא התחיל. נא לבדוק את התוצאה ב<a href='/admin/plugins/events/log'>יומנים</a>."
+            import_failed_to_start: "התחלת הייבוא נכשלה."
+          event:
+            info: "האירועים שייבאת"
+          provider:
+            info: "ספקים הם השירותים שמספקים את האירועים שלך"
+          log:
+            info: "יומני האירועים שלך"
