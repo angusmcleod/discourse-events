@@ -37,8 +37,8 @@ module DiscourseEvents
           data[:status] = "published" if data[:status].blank?
           data[:series_id] = imported_event.metadata.series_id
           data[:occurrence_id] = imported_event.metadata.occurrence_id
-          data[:registrations] = imported_event.associated_data.registrations
-          data[:virtual_location] = imported_event.associated_data.virtual_location
+          data[:registrations] = imported_event.associated_data&.registrations
+          data[:virtual_location] = imported_event.associated_data&.virtual_location
 
           imported_events[imported_event.metadata.uid] = data
         end
