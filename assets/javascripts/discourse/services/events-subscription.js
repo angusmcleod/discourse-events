@@ -5,7 +5,7 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 
 const SUBSCRIBE_PATH = "/s";
 const SUPPORT_PATH = "/";
-const BASE_URL = "https://support.angus.blog";
+const BASE_URL = "https://discourse.angus.blog";
 
 export default class EventsSubscriptionService extends Service {
   @tracked subscribed = false;
