@@ -15,8 +15,8 @@ import Provider from "../models/provider";
 export default {
   name: "events-edits",
   initialize(container) {
-    const siteSettings = container.lookup("site-settings:main");
-    const currentUser = container.lookup("current-user:main");
+    const siteSettings = container.lookup("service:site-settings");
+    const currentUser = container.lookup("service:current-user");
     container.registry.register("model:provider", Provider);
 
     withPluginApi("1.4.0", (api) => {
@@ -351,7 +351,7 @@ export default {
         },
       });
 
-      api.modifyClass("controller:composer", {
+      api.modifyClass("service:composer", {
         pluginId: "discourse-events",
 
         @discourseComputed(

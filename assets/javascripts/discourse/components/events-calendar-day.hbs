@@ -1,34 +1,34 @@
-<div class="container" style={{containerStyle}}>
+<div class="container">
   <div class="header">
     <div class="date">
-      <label>{{date}}</label>
+      <label>{{this.date}}</label>
     </div>
   </div>
 
-  {{#if events}}
-    {{#if showEvents}}
+  {{#if this.events}}
+    {{#if @showEvents}}
       <div class="events">
         <ul class="events-calendar-events">
-          {{#each events as |event|}}
+          {{#each this.events as |event|}}
             <li><EventsCalendarCard @event={{event}} /></li>
           {{/each}}
         </ul>
       </div>
-      {{#if hasHidden}}
+      {{#if this.hasHidden}}
         <div class="hidden-events">
           <DTooltip
             @interactive={{true}}
             @triggers={{array "click"}}
             @identifier={{concat-class
               "events-calendar-day-hidden"
-              (concat "day-" date)
+              (concat "day-" this.date)
             }}
             @arrow={{false}}
             @onShow={{this.onShowHiddenEvents}}
           >
             <:trigger>
               <DButton
-                @class="btn-small"
+                class="btn-small"
                 @translatedLabel={{i18n
                   "events_calendar.hidden"
                   count=this.hidden

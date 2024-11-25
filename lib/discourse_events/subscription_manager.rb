@@ -17,7 +17,7 @@ module DiscourseEvents
       },
     }.freeze
 
-    attr_accessor :subscriptions
+    attr_writer :subscriptions
 
     def features
       result = {
@@ -66,7 +66,7 @@ module DiscourseEvents
             },
             auto: {
               none: false,
-              community: false,
+              community: true,
               business: true,
             },
           },

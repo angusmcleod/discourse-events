@@ -5,19 +5,21 @@
     </label>
     <div class="control-input">
       <EventsSubscriptionSelector
-        @value={{source.topic_sync}}
+        @value={{this.source.topic_sync}}
         @feature="source"
         @attribute="topic_sync"
         @i18nSuffix="label"
-        @onChange={{action (mut source.topic_sync)}}
+        @onChange={{action (mut this.source.topic_sync)}}
         class="source-create-topic"
       />
     </div>
     <div class="control-instructions">
-      {{#if source.topic_sync}}
+      {{#if this.source.topic_sync}}
         {{i18n
           (concat
-            "admin.events.source.topic_sync." source.topic_sync ".instructions"
+            "admin.events.source.topic_sync."
+            this.source.topic_sync
+            ".instructions"
           )
         }}
       {{else}}
@@ -31,11 +33,11 @@
     </label>
     <div class="control-input">
       <EventsSubscriptionSelector
-        @value={{source.client}}
+        @value={{this.source.client}}
         @feature="source"
         @attribute="client"
-        @onChange={{action (mut source.client)}}
-        @allowedValues={{allowedClientValues}}
+        @onChange={{action (mut this.source.client)}}
+        @allowedValues={{this.allowedClientValues}}
         class="source-client"
         options={{hash none="admin.events.source.client.select"}}
       />
@@ -50,10 +52,10 @@
     </label>
     <div class="control-input">
       <EventsCategoryChooser
-        @value={{source.category_id}}
+        @value={{this.source.category_id}}
         class="connection-category"
-        @client={{source.client}}
-        onChange={{action (mut source.category_id)}}
+        @client={{this.source.client}}
+        onChange={{action (mut this.source.category_id)}}
       />
     </div>
     <div class="control-instructions">
@@ -66,7 +68,7 @@
     </label>
     <div class="control-input">
       <UserChooser
-        @value={{source.user.username}}
+        @value={{this.source.user.username}}
         @onChange={{action "updateUser"}}
         class="source-user"
         @options={{hash maximum=1 excludeCurrentUser=false}}
@@ -85,11 +87,11 @@
     </label>
     <div class="control-input">
       <EventsSubscriptionSelector
-        @value={{provider.provider_type}}
+        @value={{this.provider.provider_type}}
         @feature="provider"
         @attribute="provider_type"
         @i18nSuffix="label"
-        @allowedValues={{allowedProviderTypeValues}}
+        @allowedValues={{this.allowedProviderTypeValues}}
         @onChange={{action "updateProvider"}}
         class="source-provider"
       />
@@ -121,21 +123,21 @@
     </label>
     <div class="control-input">
       <EventsSubscriptionSelector
-        @value={{source.import_type}}
+        @value={{this.source.import_type}}
         @feature="source"
         @attribute="import_type"
         @i18nSuffix="label"
-        @onChange={{action (mut source.import_type)}}
-        @allowedValues={{allowedImportTypeValues}}
+        @onChange={{action (mut this.source.import_type)}}
+        @allowedValues={{this.allowedImportTypeValues}}
         class="source-import-type"
       />
     </div>
     <div class="control-instructions">
-      {{#if source.import_type}}
+      {{#if this.source.import_type}}
         {{i18n
           (concat
             "admin.events.source.import_type."
-            source.import_type
+            this.source.import_type
             ".instructions"
           )
         }}
@@ -151,10 +153,10 @@
     </label>
     <div class="control-input">
       <ComboBox
-        @value={{source.import_period}}
-        @content={{importPeriods}}
-        @onChange={{action (mut source.import_period)}}
-        @disabled={{importPeriodDisabled}}
+        @value={{this.source.import_period}}
+        @content={{this.importPeriods}}
+        @onChange={{action (mut this.source.import_period)}}
+        @disabled={{this.importPeriodDisabled}}
         class="source-import-period"
       />
     </div>
@@ -188,8 +190,8 @@
     @icon="download"
     @title="admin.events.source.import.title"
     @label="admin.events.source.import.label"
-    class={{importClass}}
-    @disabled={{importDisabled}}
+    class={{this.importClass}}
+    @disabled={{this.importDisabled}}
   />
   <DButton
     @action={{action "syncTopics"}}
@@ -197,20 +199,20 @@
     @label="admin.events.source.topic_sync_all.label"
     @title="admin.events.source.topic_sync_all.title"
     class="sync-topics"
-    @disabled={{syncTopicsDisabled}}
+    @disabled={{this.syncTopicsDisabled}}
   />
   <DButton
     @action={{action "saveSource"}}
     @icon="save"
-    @class={{this.saveClass}}
+    class={{this.saveClass}}
     @title="admin.events.source.save.title"
     @label="admin.events.source.save.label"
     @disabled={{this.saveDisabled}}
   />
   <DButton
-    @action={{removeSource}}
-    @actionParam={{source}}
-    @disabled={{removeDisabled}}
+    @action={{this.removeSource}}
+    @actionParam={{this.source}}
+    @disabled={{this.removeDisabled}}
     @icon="trash-alt"
     @title="admin.events.source.remove.title"
     @label="admin.events.source.remove.label"

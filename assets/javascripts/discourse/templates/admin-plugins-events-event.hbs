@@ -10,7 +10,7 @@
         >
           {{i18n
             "admin.events.event.connected.label_with_count"
-            count=withTopicsCount
+            count=this.withTopicsCount
           }}
         </LinkTo>
       </li>
@@ -23,7 +23,7 @@
         >
           {{i18n
             "admin.events.event.unconnected.label_with_count"
-            count=withoutTopicsCount
+            count=this.withoutTopicsCount
           }}
         </LinkTo>
       </li>
@@ -79,7 +79,7 @@
             @order={{this.order}}
             @asc={{this.asc}}
             @automatic={{true}}
-            @class="start-time"
+            class="start-time"
           />
           <TableHeaderToggle
             @onToggle={{this.updateOrder}}
@@ -111,7 +111,7 @@
           </div>
         </:header>
         <:body>
-          {{#each events as |event|}}
+          {{#each this.events as |event|}}
             <EventsEventRow
               @event={{event}}
               @providers={{this.providers}}

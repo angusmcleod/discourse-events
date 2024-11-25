@@ -1,7 +1,7 @@
-<EventsHeader @viewName={{viewName}} @message={{message}} />
+<EventsHeader @viewName={{this.viewName}} @message={{this.message}} />
 
 <div class="admin-events-container">
-  {{#if hasProviders}}
+  {{#if this.hasProviders}}
     <table>
       <thead>
         <tr>
@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each providers as |provider|}}
+        {{#each this.providers as |provider|}}
           <EventsProviderRow
             @provider={{provider}}
             @removeProvider={{action "removeProvider"}}

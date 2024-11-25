@@ -1,4 +1,4 @@
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
 import SingleSelectComponent from "select-kit/components/single-select";

@@ -7,7 +7,7 @@
   <:body>
     <div class="control-group">
       <label>{{i18n "admin.events.event.connect.event"}}</label>
-      <span class="event-label">{{model.event.name}}</span>
+      <span class="event-label">{{this.model.event.name}}</span>
     </div>
     <div class="control-group">
       <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
@@ -39,7 +39,7 @@
           @feature="source"
           @attribute="client"
           @onChange={{action (mut this.client)}}
-          @allowedValues={{allowedClientValues}}
+          @allowedValues={{this.allowedClientValues}}
           class="connection-client"
           options={{hash none="admin.events.connection.client.select"}}
         />
@@ -71,17 +71,17 @@
   </:body>
   <:footer>
     <DButton
-      @class="btn-primary"
+      class="btn-primary"
       @action={{action "connectTopic"}}
       @label="admin.events.event.connect.label"
-      disabled={{connectDisabled}}
+      disabled={{this.connectDisabled}}
     />
     <DButton
-      @class="btn-danger"
+      class="btn-danger"
       @label="cancel"
       @action={{action "cancel"}}
-      disabled={{connecting}}
+      disabled={{this.connecting}}
     />
-    <ConditionalLoadingSpinner @condition={{connecting}} @size="small" />
+    <ConditionalLoadingSpinner @condition={{this.connecting}} @size="small" />
   </:footer>
 </DModal>

@@ -73,7 +73,7 @@ plugins:
   events_min_trust_to_create:
     default: 0
   events_rsvp:
-    default: false
+    default: true
     client: true
   events_one_event_per_series: true
   events_allow_moderator_management:

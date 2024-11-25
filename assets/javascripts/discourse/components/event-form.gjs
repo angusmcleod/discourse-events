@@ -183,6 +183,7 @@ export default class EventForm extends Component {
   eventValid(event) {
     return !event || !event.end || moment(event.end).isSameOrAfter(event.start);
   }
+
   <template>
     <div class="event-form">
       <div class="event-controls">

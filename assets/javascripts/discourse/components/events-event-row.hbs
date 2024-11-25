@@ -1,32 +1,32 @@
 <div class="directory-table__cell start-time">
-  {{raw-date event.start_time}}
+  {{raw-date this.event.start_time}}
 </div>
 
 <div class="directory-table__cell name">
-  {{#if showTopics}}
-    {{#each event.topic_ids as |topic_id|}}
+  {{#if this.showTopics}}
+    {{#each this.event.topic_ids as |topic_id|}}
       <a
         {{on "click" (fn this.openTopic topic_id)}}
         target="_blank"
         rel="noopener noreferrer"
         role="button"
-      >{{event.name}}</a>
+      >{{this.event.name}}</a>
     {{/each}}
   {{else}}
-    {{event.name}}
+    {{this.event.name}}
   {{/if}}
 </div>
 
 <div class="directory-table__cell tags">
   <div class="event-tags">
-    {{#if providerLabel}}
+    {{#if this.providerLabel}}
       <EventTag
-        @label={{providerLabel}}
+        @label={{this.providerLabel}}
         @href="/admin/plugins/events/provider"
         @class="provider"
       />
     {{/if}}
-    {{#if event.series_id}}
+    {{#if this.event.series_id}}
       <EventTag
         @label={{i18n "admin.events.event.series.label"}}
         @class="series"
@@ -36,5 +36,5 @@
 </div>
 
 <div class="directory-table__cell select-event">
-  <Input @type="checkbox" @checked={{event.selected}} />
+  <Input @type="checkbox" @checked={{this.event.selected}} />
 </div>

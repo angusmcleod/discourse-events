@@ -4,7 +4,7 @@
       <img
         src={{concat
           "/plugins/discourse-events/logos/"
-          provider.provider_type
+          this.provider.provider_type
           ".svg"
         }}
       />
@@ -14,7 +14,7 @@
         {{i18n
           (concat
             "admin.events.provider.provider_type."
-            provider.provider_type
+            this.provider.provider_type
             ".label"
           )
         }}
@@ -23,13 +23,13 @@
         {{i18n
           (concat
             "admin.events.provider.provider_type."
-            provider.provider_type
+            this.provider.provider_type
             ".description"
           )
         }}
       </div>
       <div class="events-subscription-tags">
-        {{#each supportedSubscriptions as |subscription|}}
+        {{#each this.supportedSubscriptions as |subscription|}}
           <EventsSubscriptionTag @subscription={{subscription}} />
         {{/each}}
       </div>
@@ -38,10 +38,10 @@
 </td>
 
 <td class="events-provider-authentication">
-  {{#if provider.hasCredentials}}
+  {{#if this.provider.hasCredentials}}
     <EventsProviderCredentials
-      @provider={{provider}}
-      @disabled={{provider.notInSubscription}}
+      @provider={{this.provider}}
+      @disabled={{this.provider.notInSubscription}}
     />
   {{else}}
     <label>{{i18n "admin.events.provider.authentication.none"}}</label>
@@ -49,29 +49,29 @@
 </td>
 
 <td class="action-column">
-  {{#if showAuthenticate}}
+  {{#if this.showAuthenticate}}
     <DButton
       @action={{action "authenticateProvider"}}
       @icon="fingerprint"
       @title="admin.events.provider.authenticate.title"
       @label="admin.events.provider.authenticate.label"
-      @disabled={{authenticateDisabled}}
-      class={{authenticateClass}}
+      @disabled={{this.authenticateDisabled}}
+      class={{this.authenticateClass}}
     />
-  {{else if showUpgradeSubscription}}
+  {{else if this.showUpgradeSubscription}}
     <DButton
       @action={{action "upgradeSubscription"}}
       @title="admin.events.subscription.upgrade.title"
       @label="admin.events.subscription.upgrade.label"
     />
   {{else}}
-    <EventsProviderStatus @status={{provider.status}} />
+    <EventsProviderStatus @status={{this.provider.status}} />
   {{/if}}
-  {{#if canSave}}
+  {{#if this.canSave}}
     <DButton
       @action={{action "saveProvider"}}
       @icon="save"
-      @class={{this.saveClass}}
+      class={{this.saveClass}}
       @title="admin.events.provider.save.title"
       @label="admin.events.provider.save.label"
       @disabled={{this.saveDisabled}}

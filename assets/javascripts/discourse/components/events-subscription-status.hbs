@@ -1,9 +1,9 @@
 {{#if this.subscription.authorized}}
-  {{conditional-loading-spinner size="small" condition=unauthorizing}}
+  {{conditional-loading-spinner size="small" condition=this.unauthorizing}}
   <DButton
     class="deauthorize"
     @title="admin.events.subscription.deauthorize.title"
-    @disabled={{unauthorizing}}
+    @disabled={{this.unauthorizing}}
     @action={{this.deauthorize}}
   >
     {{i18n "admin.events.subscription.deauthorize.label"}}

@@ -3,8 +3,8 @@
   <div class="controls">
     <label>{{i18n "user.events_calendar.first_day_week"}}</label>
     <ComboBox
-      @content={{weekdaysAvailable}}
-      @value={{controller.model.custom_fields.calendar_first_day_week}}
+      @content={{this.weekdaysAvailable}}
+      @value={{this.controller.model.custom_fields.calendar_first_day_week}}
     />
   </div>
 </div>

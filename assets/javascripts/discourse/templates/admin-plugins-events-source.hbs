@@ -1,16 +1,16 @@
-<EventsHeader @viewName={{viewName}} @message={{message}}>
+<EventsHeader @viewName={{this.viewName}} @message={{this.message}}>
   <DButton
     @id="add-source"
     @action={{action "addSource"}}
     @label="admin.events.source.add.label"
     @title="admin.events.source.add.title"
     @icon="plus"
-    @disabled={{addDisabled}}
+    @disabled={{this.addDisabled}}
   />
 </EventsHeader>
 
 <div class="admin-events-container">
-  {{#if hasSources}}
+  {{#if this.hasSources}}
     <table>
       <thead>
         <tr>
@@ -20,13 +20,13 @@
         </tr>
       </thead>
       <tbody>
-        {{#each sources as |source|}}
+        {{#each this.sources as |source|}}
           <EventsSourceRow
             @source={{source}}
-            @sourceOptionFields={{sourceOptionFields}}
-            @importPeriods={{importPeriods}}
-            @providers={{providers}}
-            @authTypes={{authTypes}}
+            @sourceOptionFields={{this.sourceOptionFields}}
+            @importPeriods={{this.importPeriods}}
+            @providers={{this.providers}}
+            @authTypes={{this.authTypes}}
             @removeSource={{action "removeSource"}}
             @setMessage={{action "setMessage"}}
           />

@@ -5,17 +5,17 @@
         @tagName="th"
         @field="start_time"
         @labelKey="admin.events.event.start_time"
-        @order={{order}}
-        @asc={{asc}}
+        @order={{this.order}}
+        @asc={{this.asc}}
         @automatic={{true}}
-        @class="start-time"
+        class="start-time"
       />
       <TableHeaderToggle
         @tagName="th"
         @field="name"
         @labelKey="admin.events.event.name"
-        @order={{order}}
-        @asc={{asc}}
+        @order={{this.order}}
+        @asc={{this.asc}}
         @automatic={{true}}
       />
       <th></th>
@@ -25,10 +25,10 @@
           @title="admin.events.event.select_all"
         >
           <span class="events-selected">
-            {{#if selectAll}}
+            {{#if this.selectAll}}
               {{i18n
                 "admin.events.event.selected_x"
-                count=selectedEventIds.length
+                count=this.selectedEventIds.length
               }}
             {{else}}
               {{i18n "admin.events.event.select_all"}}
@@ -40,14 +40,14 @@
     </tr>
   </thead>
   <tbody>
-    {{#each events as |event|}}
+    {{#each this.events as |event|}}
       <EventsEventRow
         @event={{event}}
-        @providers={{providers}}
-        @modifySelection={{modifySelection}}
-        @showTopics={{showTopics}}
+        @providers={{this.providers}}
+        @modifySelection={{this.modifySelection}}
+        @showTopics={{this.showTopics}}
       />
     {{/each}}
   </tbody>
 </table>
-<ConditionalLoadingSpinner @condition={{loading}} />
+<ConditionalLoadingSpinner @condition={{this.loading}} />

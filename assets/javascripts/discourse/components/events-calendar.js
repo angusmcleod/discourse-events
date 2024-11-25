@@ -1,7 +1,7 @@
 import Component from "@ember/component";
 import { alias, not, or } from "@ember/object/computed";
 import { scheduleOnce } from "@ember/runloop";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import Category from "discourse/models/category";
 import {
   bind,

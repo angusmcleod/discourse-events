@@ -1,6 +1,6 @@
 <td>
   <ComboBox
-    @content={{queryColumns}}
+    @content={{this.queryColumns}}
     @value={{this.filter.query_column}}
     @onChange={{action (mut this.filter.query_column)}}
     class="filter-column"
@@ -8,7 +8,7 @@
 </td>
 <td>
   <ComboBox
-    @content={{queryOperators}}
+    @content={{this.queryOperators}}
     @value={{this.filter.query_operator}}
     @onChange={{action (mut this.filter.query_operator)}}
     class="filter-operator"

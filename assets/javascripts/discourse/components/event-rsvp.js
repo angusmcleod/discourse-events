@@ -3,6 +3,7 @@ import { action } from "@ember/object";
 import { service } from "@ember/service";
 import { classNames } from "@ember-decorators/component";
 import discourseComputed from "discourse-common/utils/decorators";
+import I18n from "I18n";
 import EventRsvpModel, { rsvpTypes } from "../models/event-rsvp";
 import EventRsvpModal from "./modal/event-rsvp";
 

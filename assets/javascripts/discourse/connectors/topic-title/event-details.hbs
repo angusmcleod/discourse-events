@@ -1,16 +1,16 @@
-{{#unless model.editingTopic}}
-  {{#if model.event}}
+{{#unless @outletArgs.model.editingTopic}}
+  {{#if @outletArgs.model.event}}
     <div class="topic-event-label">
-      {{event-label model.event topic="true"}}
-      {{#if siteSettings.events_add_to_calendar}}
-        <AddToCalendar @topic={{model}} />
+      {{event-label @outletArgs.model.event topic="true"}}
+      {{#if this.siteSettings.events_add_to_calendar}}
+        <AddToCalendar @topic={{@outletArgs.model}} />
       {{/if}}
     </div>
-    {{#if model.event_record.video_url}}
-      <EventVideoBtn @videoUrl={{model.event_record.video_url}} />
+    {{#if @outletArgs.model.event_record.video_url}}
+      <EventVideoBtn @videoUrl={{@outletArgs.model.event_record.video_url}} />
     {{/if}}
-    {{#if showRsvp}}
-      <EventRsvp @topic={{model}} />
+    {{#if this.showRsvp}}
+      <EventRsvp @topic={{@outletArgs.model}} />
     {{/if}}
   {{/if}}
 {{/unless}}

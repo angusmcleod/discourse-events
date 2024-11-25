@@ -91,7 +91,7 @@ en:
         filter: "Filter"
       rsvp:
         label: RSVP
-        none: Your rsvp...
+        none: Rsvp...
       going:
         label: Going
       not_going:

@@ -39,12 +39,14 @@ module DiscourseEvents
     end
 
     def self.update_registrations(post)
+      event = post.topic.event_record
+      return if event.blank?
+
       publisher = new(post).get_publisher
       return [] if publisher.blank?
 
       current_registrations = publisher.get_registrations(post)
       updated_registrations = []
-      event = post.topic.event_record
 
       event.registrations.each do |registration|
         current_registration = current_registrations.find { |r| r.email == registration.email }
