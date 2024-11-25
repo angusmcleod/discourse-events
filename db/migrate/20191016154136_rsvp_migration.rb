@@ -17,4 +17,8 @@ class RsvpMigration < ActiveRecord::Migration[5.2]
       custom_field.save
     end
   end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration
+  end
 end
