@@ -22,7 +22,7 @@ title: Discourse Events
 email: angus@angus.blog
 description: >-
   Sync events to Discourse from Google, Outlook or any other events manager.
-baseurl: "discourse-events" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://angus.blog" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  angusmcleod
 
