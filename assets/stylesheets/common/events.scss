@@ -533,6 +533,12 @@ ul.events-calendar-events {
     height: 3px;
     margin-right: 8px;
   }
+
+  .event-rsvp-dropdown.select-kit.single-select.dropdown-select-box {
+    .select-kit-row .texts .name {
+      font-weight: normal;
+    }
+  }
 }
 
 .event-rsvp-modal {
@@ -542,8 +548,7 @@ ul.events-calendar-events {
     display: flex;
 
     .types {
-      padding-top: 0;
-      padding-bottom: 15px;
+      padding: 0;
       margin: 0;
       flex: 1;
     }
