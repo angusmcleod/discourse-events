@@ -103,7 +103,6 @@ de:
       events:
         title: Veranstaltungen
         actions: Aktionen
-        beta_notice: "Diese Funktionen befinden sich derzeit in der Beta-Phase. In Kürze werden wir Abo-Pläne für das Veranstaltungs-Plugin einführen, die für einige dieser Funktionen gelten werden. <a href='https://pavilion.tech/products/discourse-events-plugin'>Finde mehr heraus</a>."
         source:
           title: Sources
           none: Keine Quellen.

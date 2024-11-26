@@ -31,7 +31,7 @@ export default Component.extend({
   queryParams: alias("router.currentRoute.queryParams"),
   years: YEARS.map((y) => ({ id: y, name: y })),
   layoutName: "components/events-calendar",
-  webcalDocumentationURL: "https://coop.pavilion.tech/t/1447",
+  webcalDocumentationURL: "https://discourse.angus.blog/c/events",
 
   @on("init")
   setup() {

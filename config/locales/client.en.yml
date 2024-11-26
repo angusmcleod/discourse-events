@@ -117,7 +117,6 @@ en:
       events:
         title: Events
         actions: Actions
-        beta_notice: "These features are currently in beta. We'll soon be launching subscription plans for the Events Plugin, which will apply to some of these features. <a href='https://pavilion.tech/products/discourse-events-plugin'>Find out more</a>."
         source:
           title: Sources
           none: No sources.

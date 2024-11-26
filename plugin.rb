@@ -3,8 +3,8 @@
 # about: Allows you to manage events in Discourse
 # version: 0.8.10
 # authors: Angus McLeod
-# contact_emails: angus@pavilion.tech
-# url: https://github.com/paviliondev/discourse-events
+# contact_emails: angus@angus.blog
+# url: https://github.com/angusmcleod/discourse-events
 # subscription_url: https://discourse.angus.blog
 
 enabled_site_setting :events_enabled

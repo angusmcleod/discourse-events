@@ -103,7 +103,6 @@ he:
       events:
         title: אירועים
         actions: פעולות
-        beta_notice: "אלו יכולות ניסיוניות. בקרוב נשיק תוכניות מינוי לתוסף האירועים, מה שיאפשר להפעיל חלק מהיכולות האלה. <a href='https://pavilion.tech/products/discourse-events-plugin'>למידע נוסף</a>."
         source:
           title: מקורות
           none: אין מקורות.
