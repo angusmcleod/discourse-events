@@ -93,17 +93,17 @@ en:
         label: RSVP
         none: Your rsvp
       going:
-        nav_label: Going
-        label: You're going
+        label: Going
+        user_label: You're going
       not_going:
-        nav_label: Not Going
-        label: You're not going
+        label: Not Going
+        user_label: You're not going
       maybe_going:
-        nav_label: Maybe Going
-        label: You're maybe going
+        label: Maybe Going
+        user_label: You're maybe going
       invited:
-        nav_label: Invited
-        label: You're invited
+        label: Invited
+        user_label: You're invited
 
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"

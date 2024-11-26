@@ -20,7 +20,7 @@ class DiscourseEvents::RsvpController < ApplicationController
 
     if @type.present?
       @user_ids.push(@user.id)
-      @topic.custom_fields["event_#{@type}"] = @user_ids
+      @topic.custom_fields["event_#{@type}"] = @user_ids.uniq
     end
 
     if @topic.save_custom_fields(true)

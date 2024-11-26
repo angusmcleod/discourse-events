@@ -37,7 +37,7 @@ export default class EventRsvp extends Component {
     return rsvpTypes.map((rsvpType) => {
       return {
         id: rsvpType,
-        name: I18n.t(`event_rsvp.${rsvpType}.label`),
+        name: I18n.t(`event_rsvp.${rsvpType}.user_label`),
       };
     });
   }
