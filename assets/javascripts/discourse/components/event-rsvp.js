@@ -35,7 +35,6 @@ export default class EventRsvp extends Component {
   @discourseComputed
   rsvpOptions() {
     return rsvpTypes
-      .filter((rsvpType) => rsvpType !== "invited")
       .map((rsvpType) => {
         return {
           id: rsvpType,
