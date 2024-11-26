@@ -230,7 +230,7 @@ en:
             select: Select a type...
             icalendar:
               label: iCalendar
-              description: One-way export supported by most calendar services.
+              description: Import events from any calendar with an iCal feed.
             eventbrite:
               label: Eventbrite
             eventzilla:
@@ -239,12 +239,12 @@ en:
               label: Meetup
             outlook:
               label: Outlook Calendar
-              description: Import and export events from Outlook Calendar.
+              description: Import and publish events from Outlook Calendar.
             humanitix:
               label: Humanitix
             google:
               label: Google Calendar
-              description: Import and export events from Google Calendar.
+              description: Import and publish events from Google Calendar.
           method: Method
           authentication:
             label: Authentication
