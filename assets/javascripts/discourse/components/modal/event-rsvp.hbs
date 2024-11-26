@@ -12,7 +12,7 @@
             <a
               href
               {{on "click" (fn this.setType rsvpType)}}
-              class={{fn this.navClass rsvpType}}
+              class={{if (eq this.type rsvpType) "active"}}
             >
               {{i18n (concat "event_rsvp." rsvpType ".label")}}
             </a>
