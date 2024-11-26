@@ -91,15 +91,19 @@ en:
         filter: "Filter"
       rsvp:
         label: RSVP
-        none: Rsvp...
+        none: Your rsvp
       going:
-        label: Going
+        nav_label: Going
+        label: You're going
       not_going:
-        label: Not Going
+        nav_label: Not Going
+        label: You're not going
       maybe_going:
-        label: Maybe Going
+        nav_label: Maybe Going
+        label: You're maybe going
       invited:
-        label: Invited
+        nav_label: Invited
+        label: You're invited
 
     site_settings:
       events_timezone_default_placeholder: "Select a Timezone"

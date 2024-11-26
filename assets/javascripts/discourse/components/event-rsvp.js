@@ -34,13 +34,12 @@ export default class EventRsvp extends Component {
 
   @discourseComputed
   rsvpOptions() {
-    return rsvpTypes
-      .map((rsvpType) => {
-        return {
-          id: rsvpType,
-          name: I18n.t(`event_rsvp.${rsvpType}.label`),
-        };
-      });
+    return rsvpTypes.map((rsvpType) => {
+      return {
+        id: rsvpType,
+        name: I18n.t(`event_rsvp.${rsvpType}.label`),
+      };
+    });
   }
 
   @action

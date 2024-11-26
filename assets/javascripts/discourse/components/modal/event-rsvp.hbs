@@ -14,7 +14,7 @@
               {{on "click" (fn this.setType rsvpType)}}
               class={{if (eq this.type rsvpType) "active"}}
             >
-              {{i18n (concat "event_rsvp." rsvpType ".label")}}
+              {{i18n (concat "event_rsvp." rsvpType ".nav_label")}}
             </a>
           </li>
         {{/each}}
