@@ -15,9 +15,9 @@ module DiscourseEvents
       return nil if event.blank?
 
       Publisher::Event.new(
-        start_time: event.starts_at,
-        end_time: event.ends_at,
-        name: event.name,
+        start_time: event.starts_at.iso8601,
+        end_time: event.ends_at.iso8601,
+        name: event.name || event.post.topic.title,
         url: event.url,
       )
     end
