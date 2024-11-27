@@ -13,6 +13,7 @@ module DiscourseEvents
           URI.encode_www_form(
             scope: "https://www.googleapis.com/auth/calendar",
             access_type: "offline",
+            prompt: "consent",
             response_type: "code",
             state: state,
             redirect_uri: provider.redirect_uri,
