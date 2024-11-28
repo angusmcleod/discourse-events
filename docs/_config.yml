@@ -25,6 +25,7 @@ description: >-
 baseurl: "/discourse-events" # the subpath of your site, e.g. /blog
 url: "https://angus.blog" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  angusmcleod
+docs_url: https://discourse.angus.blog/c/events
 
 # Build settings
 remote_theme: pages-themes/cayman@v0.2.0
