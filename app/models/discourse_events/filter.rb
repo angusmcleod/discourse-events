@@ -49,7 +49,7 @@ end
 # Table name: discourse_events_filters
 #
 #  id             :bigint           not null, primary key
-#  model_id       :integer
+#  model_id       :bigint
 #  model_type     :string
 #  query_column   :integer
 #  query_operator :integer
