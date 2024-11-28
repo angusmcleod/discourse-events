@@ -27,7 +27,7 @@ end
 #
 # Indexes
 #
-#  idx_events_event_registration_emails                    (email) UNIQUE
+#  idx_events_event_registration_event_emails              (event_id,email) UNIQUE
 #  index_discourse_events_event_registrations_on_event_id  (event_id)
 #  index_discourse_events_event_registrations_on_user_id   (user_id)
 #
