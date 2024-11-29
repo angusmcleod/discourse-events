@@ -379,10 +379,13 @@ en:
               title: There is no Events subscription active on this forum.
             business:
               label: Subscribed
-              title: There is a Events Business subscription active on this forum.
+              title: There is an Events Business subscription active on this forum.
             community:
               label: Subscribed
-              title: There is a Events Community subscription active on this forum.
+              title: There is an Events Community subscription active on this forum.
+            enterprise:
+              label: Subscribed
+              title: There is an Events Enterprise subscription active on this forum.
           subscribed:
             label: Subscribed
             title: You're subscribed and can use these features
@@ -394,7 +397,10 @@ en:
           tags:
             community:
               label: Community
-              title: Requires a community subscription.
+              title: Available on a community subscription.
             business:
               label: Business
-              title: Requires a business subscription.
+              title: Available on a business subscription.
+            enterprise:
+              label: Enterprise
+              title: Available on an enterprise subscription.

@@ -80,8 +80,8 @@ module DiscourseEvents
 
     after_commit :enqueue_import, if: :saved_change_to_import_period?
 
-    enum import_type: { import: 0, import_publish: 1, publish: 2 }
-    enum topic_sync: { manual: 0, auto: 1 }, _prefix: :topic_sync
+    enum :import_type, %i[import import_publish publish]
+    enum :topic_sync, %i[manual auto], prefix: :topic_sync
 
     def self.available_clients
       CLIENTS.select { |client, plugin| plugins.include?(plugin) }.keys.map(&:to_s)

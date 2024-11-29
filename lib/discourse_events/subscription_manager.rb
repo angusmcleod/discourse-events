@@ -1,14 +1,27 @@
 # frozen_string_literal: true
 module DiscourseEvents
   class SubscriptionManager
-    PRODUCTS = { community: "Community", business: "Business" }.freeze
-    BUCKETS = { community: "discourse-events-gems-us", business: "discourse-events-gems-us" }.freeze
+    PRODUCTS = { community: "Community", business: "Business", enterprise: "Enterprise" }.freeze
+
+    BUCKETS = {
+      community: "discourse-events-gems-community",
+      business: "discourse-events-gems-business",
+      enterprise: "discourse-events-gems-business",
+    }.freeze
+
     GEMS = {
       community: {
         omnievent: "0.1.0.pre11",
         omnievent_icalendar: "0.1.0.pre9",
       },
       business: {
+        omnievent: "0.1.0.pre11",
+        omnievent_icalendar: "0.1.0.pre9",
+        omnievent_api: "0.1.0.pre5",
+        omnievent_outlook: "0.1.0.pre11",
+        omnievent_google: "0.1.0.pre8",
+      },
+      enterprise: {
         omnievent: "0.1.0.pre11",
         omnievent_icalendar: "0.1.0.pre9",
         omnievent_api: "0.1.0.pre5",
@@ -27,16 +40,19 @@ module DiscourseEvents
               none: false,
               community: true,
               business: true,
+              enterprise: true,
             },
             google: {
               none: false,
               community: false,
               business: true,
+              enterprise: true,
             },
             outlook: {
               none: false,
               community: false,
               business: true,
+              enterprise: true,
             },
           },
         },
@@ -46,16 +62,19 @@ module DiscourseEvents
               none: false,
               community: true,
               business: true,
+              enterprise: true,
             },
             import_publish: {
               none: false,
               community: false,
               business: true,
+              enterprise: true,
             },
             publish: {
               none: false,
               community: false,
               business: true,
+              enterprise: true,
             },
           },
           topic_sync: {
@@ -63,11 +82,13 @@ module DiscourseEvents
               none: false,
               community: true,
               business: true,
+              enterprise: true,
             },
             auto: {
               none: false,
               community: true,
               business: true,
+              enterprise: true,
             },
           },
           client: {
@@ -75,6 +96,7 @@ module DiscourseEvents
               none: false,
               community: true,
               business: true,
+              enterprise: true,
             },
           },
         },
@@ -85,6 +107,7 @@ module DiscourseEvents
           none: false,
           community: false,
           business: true,
+          enterprise: true,
         }
       end
 
@@ -180,6 +203,7 @@ module DiscourseEvents
     def subscription
       @subscription ||=
         begin
+          return enterprise_subscription if enterprise_subscription.present?
           return business_subscription if business_subscription.present?
           return community_subscription if community_subscription.present?
           nil
@@ -211,6 +235,16 @@ module DiscourseEvents
           return nil unless subscriptions && subscriptions.subscriptions
           subscriptions.subscriptions.find do |subscription|
             subscription.product_name == PRODUCTS[:business]
+          end
+        end
+    end
+
+    def enterprise_subscription
+      @enterprise_subscription ||=
+        begin
+          return nil unless subscriptions && subscriptions.subscriptions
+          subscriptions.subscriptions.find do |subscription|
+            subscription.product_name == PRODUCTS[:enterprise]
           end
         end
     end

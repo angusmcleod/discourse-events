@@ -18,7 +18,7 @@ module DiscourseEvents
     end
 
     def supplier
-      subscription_manager.ready? && subscription_manager.supplier
+      subscription_manager.ready_to_setup? && subscription_manager.supplier
     end
 
     def subscription_manager
