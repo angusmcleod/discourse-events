@@ -6,6 +6,7 @@
 # contact_emails: angus@angus.blog
 # url: https://github.com/angusmcleod/discourse-events
 # subscription_url: https://discourse.angus.blog
+# meta_topic_id: 69776
 
 enabled_site_setting :events_enabled
 
