@@ -2,9 +2,9 @@
 module DiscourseEvents
   class SubscriptionManager
     PRODUCTS = {
-      community: "Community Events",
-      business: "Business Events",
-      enterprise: "Enterprise Events",
+      community: "prod_RHux1cdd4puCl4",
+      business: "prod_RHuzahTrqKrkkY",
+      enterprise: "prod_RHv03ip2qGhfsh",
     }.freeze
 
     BUCKETS = {
@@ -219,7 +219,7 @@ module DiscourseEvents
         begin
           return ENV["DISCOURSE_EVENTS_PRODUCT"] if ENV["DISCOURSE_EVENTS_PRODUCT"].present?
           return nil unless subscription
-          PRODUCTS.key(subscription.product_name)
+          PRODUCTS.key(subscription.product_id)
         end
     end
 
@@ -228,7 +228,7 @@ module DiscourseEvents
         begin
           return nil unless subscriptions && subscriptions.subscriptions
           subscriptions.subscriptions.find do |subscription|
-            subscription.product_name == PRODUCTS[:community]
+            subscription.product_id == PRODUCTS[:community]
           end
         end
     end
@@ -238,7 +238,7 @@ module DiscourseEvents
         begin
           return nil unless subscriptions && subscriptions.subscriptions
           subscriptions.subscriptions.find do |subscription|
-            subscription.product_name == PRODUCTS[:business]
+            subscription.product_id == PRODUCTS[:business]
           end
         end
     end
@@ -248,7 +248,7 @@ module DiscourseEvents
         begin
           return nil unless subscriptions && subscriptions.subscriptions
           subscriptions.subscriptions.find do |subscription|
-            subscription.product_name == PRODUCTS[:enterprise]
+            subscription.product_id == PRODUCTS[:enterprise]
           end
         end
     end
