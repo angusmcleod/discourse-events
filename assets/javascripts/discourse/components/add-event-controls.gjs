@@ -65,25 +65,25 @@ export default class AddToCalendar extends Component {
       {{#if this.event}}
         <DButton
           @action={{this.showAddEvent}}
-          @class={{this.valueClasses}}
+          class={{this.valueClasses}}
           @translatedLabel={{this.valueLabel}}
         />
         {{#unless @noText}}
-          <DButton @icon="times" @action={{this.removeEvent}} @class="remove" />
+          <DButton @icon="times" @action={{this.removeEvent}} class="remove" />
         {{/unless}}
       {{else}}
         {{#if @iconOnly}}
           <DButton
             @icon={{this.siteSettings.events_event_label_icon}}
             @action={{this.showAddEvent}}
-            @class="add-event"
+            class="add-event"
             @title="add_event.btn_label"
           />
         {{else}}
           <DButton
             @icon={{this.siteSettings.events_event_label_icon}}
             @action={{this.showAddEvent}}
-            @class="add-event"
+            class="add-event"
             @title="add_event.btn_label"
             @label="add_event.btn_label"
           />

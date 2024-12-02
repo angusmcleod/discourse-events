@@ -1,76 +1,221 @@
 <td>
-  <Input
-    @value={{source.name}}
-    placeholder={{i18n "admin.events.source.name.placeholder"}}
-    class="small source-name"
-  />
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.topic_sync.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{this.source.topic_sync}}
+        @feature="source"
+        @attribute="topic_sync"
+        @i18nSuffix="label"
+        @onChange={{action (mut this.source.topic_sync)}}
+        class="source-create-topic"
+      />
+    </div>
+    <div class="control-instructions">
+      {{#if this.source.topic_sync}}
+        {{i18n
+          (concat
+            "admin.events.source.topic_sync."
+            this.source.topic_sync
+            ".instructions"
+          )
+        }}
+      {{else}}
+        {{i18n "admin.events.source.topic_sync.instructions"}}
+      {{/if}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.client.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{this.source.client}}
+        @feature="source"
+        @attribute="client"
+        @onChange={{action (mut this.source.client)}}
+        @allowedValues={{this.allowedClientValues}}
+        class="source-client"
+        options={{hash none="admin.events.source.client.select"}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.client.instructions"}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.category.label"}}
+    </label>
+    <div class="control-input">
+      <EventsCategoryChooser
+        @value={{this.source.category_id}}
+        class="connection-category"
+        @client={{this.source.client}}
+        onChange={{action (mut this.source.category_id)}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.category.instructions"}}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.user.label"}}
+    </label>
+    <div class="control-input">
+      <UserChooser
+        @value={{this.source.user.username}}
+        @onChange={{action "updateUser"}}
+        class="source-user"
+        @options={{hash maximum=1 excludeCurrentUser=false}}
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.user.instructions"}}
+    </div>
+  </div>
 </td>
 
 <td>
-  <ComboBox
-    @value={{source.provider_id}}
-    @content={{providers}}
-    @onChange={{action "updateProvider"}}
-    class="source-provider"
-    options={{hash none="admin.events.source.provider.select"}}
-  />
-</td>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.provider.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{this.provider.provider_type}}
+        @feature="provider"
+        @attribute="provider_type"
+        @i18nSuffix="label"
+        @allowedValues={{this.allowedProviderTypeValues}}
+        @onChange={{action "updateProvider"}}
+        class="source-provider"
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.provider.instructions"}}
+    </div>
+  </div>
+  {{#each this.sourceOptions as |option|}}
+    <div class="control-group">
+      <label class="control-label">
+        {{i18n (concat "admin.events.source.source_options." option.name)}}
+      </label>
+      <div class="control-input">
+        <Input
+          class="source-option"
+          @type={{option.type}}
+          name={{option.name}}
+          @value={{option.value}}
+          placeholder={{option.name}}
+          {{on "change" (action "updateSourceOptions" option.name)}}
+        />
+      </div>
+    </div>
+  {{/each}}
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.import_type.label"}}
+    </label>
+    <div class="control-input">
+      <EventsSubscriptionSelector
+        @value={{this.source.import_type}}
+        @feature="source"
+        @attribute="import_type"
+        @i18nSuffix="label"
+        @onChange={{action (mut this.source.import_type)}}
+        @allowedValues={{this.allowedImportTypeValues}}
+        class="source-import-type"
+      />
+    </div>
+    <div class="control-instructions">
+      {{#if this.source.import_type}}
+        {{i18n
+          (concat
+            "admin.events.source.import_type."
+            this.source.import_type
+            ".instructions"
+          )
+        }}
+      {{else}}
+        {{i18n "admin.events.source.import_type.instructions"}}
+      {{/if}}
+    </div>
+  </div>
 
-<td>
-  <ComboBox
-    @value={{source.sync_type}}
-    @content={{syncTypes}}
-    @onChange={{action (mut source.sync_type)}}
-    class="source-sync-type"
-    options={{hash none="admin.events.source.sync_type.select"}}
-  />
-</td>
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.import_period.label"}}
+    </label>
+    <div class="control-input">
+      <ComboBox
+        @value={{this.source.import_period}}
+        @content={{this.importPeriods}}
+        @onChange={{action (mut this.source.import_period)}}
+        @disabled={{this.importPeriodDisabled}}
+        class="source-import-period"
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.import_period.instructions"}}
+    </div>
+  </div>
 
-<td class="source-options">
-  {{#if showSourceOptions}}
-    <DButton
-      @action={{action "openSourceOptions"}}
-      @label="admin.events.source.source_options.label"
-      @title="admin.events.source.source_options.title"
-      @icon="cog"
-      class="open-source-options-modal"
-    />
-  {{else}}
-    {{i18n "admin.events.source.source_options.none"}}
-  {{/if}}
-</td>
-
-<td>
-  <DButton
-    @icon="filter"
-    @label="admin.events.filters.label"
-    @title="admin.events.filters.title"
-    @action={{action "openFilters"}}
-    class="show-filters"
-  />
+  <div class="control-group">
+    <label class="control-label">
+      {{i18n "admin.events.source.filters.label"}}
+    </label>
+    <div class="control-input">
+      <DButton
+        @icon="filter"
+        @label="admin.events.filters.set.label"
+        @title="admin.events.filters.set.title"
+        @action={{action "openFilters"}}
+        class="show-filters"
+      />
+    </div>
+    <div class="control-instructions">
+      {{i18n "admin.events.source.filters.instructions"}}
+    </div>
+  </div>
 </td>
 
 <td class="action-column">
-  <ConditionalLoadingSpinner @condition={{saving}} @size="small" />
-  <DButton
-    @action={{action "saveSource"}}
-    @icon="save"
-    @class={{this.saveClass}}
-    @title="admin.events.source.save.title"
-    @disabled={{this.saveDisabled}}
-  />
-  <DButton
-    @action={{removeSource}}
-    @actionParam={{source}}
-    @icon="trash-alt"
-    @title="admin.events.source.remove.title"
-    class="remove-source btn-danger"
-  />
   <DButton
     @action={{action "importSource"}}
     @icon="download"
     @title="admin.events.source.import.title"
-    class={{importClass}}
-    @disabled={{importDisabled}}
+    @label="admin.events.source.import.label"
+    class={{this.importClass}}
+    @disabled={{this.importDisabled}}
+  />
+  <DButton
+    @action={{action "syncTopics"}}
+    @icon="sync"
+    @label="admin.events.source.topic_sync_all.label"
+    @title="admin.events.source.topic_sync_all.title"
+    class="sync-topics"
+    @disabled={{this.syncTopicsDisabled}}
+  />
+  <DButton
+    @action={{action "saveSource"}}
+    @icon="save"
+    class={{this.saveClass}}
+    @title="admin.events.source.save.title"
+    @label="admin.events.source.save.label"
+    @disabled={{this.saveDisabled}}
+  />
+  <DButton
+    @action={{this.removeSource}}
+    @actionParam={{this.source}}
+    @disabled={{this.removeDisabled}}
+    @icon="trash-alt"
+    @title="admin.events.source.remove.title"
+    @label="admin.events.source.remove.label"
+    class="remove-source btn-danger"
   />
 </td>

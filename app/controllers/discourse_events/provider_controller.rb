@@ -13,7 +13,9 @@ module DiscourseEvents
     AUTH_SESSION_KEY = "events-provider-auth"
 
     def index
-      render_serialized(Provider.all, ProviderSerializer, root: "providers")
+      providers =
+        Provider.all.order("(CASE name WHEN 'icalendar' THEN 0 ELSE 1 END) DESC, name ASC")
+      render_serialized(providers, ProviderSerializer, root: "providers")
     end
 
     def create
@@ -46,9 +48,7 @@ module DiscourseEvents
 
     def authorize
       provider = Provider.find_by(id: params[:id])
-      unless provider&.oauth2_type? && provider&.can_authenticate?
-        raise Discourse::InvalidParameters
-      end
+      raise Discourse::InvalidParameters unless provider&.oauth2_type? && provider.can_authenticate?
 
       state = "#{SecureRandom.hex}:#{provider.id}"
       secure_session["#{AUTH_SESSION_KEY}-#{current_user.id}"] = state
@@ -87,6 +87,13 @@ module DiscourseEvents
           :client_id,
           :client_secret,
         )
+
+      unless subscription_manager.supports?(:provider, :provider_type, result[:provider_type])
+        raise Discourse::InvalidParameters,
+              "provider #{result[:provider_type]} not supported by your subscription"
+      end
+
+      result
     end
   end
 end

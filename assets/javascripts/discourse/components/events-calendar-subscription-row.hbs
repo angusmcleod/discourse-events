@@ -1,5 +1,5 @@
-{{#if copiedUrl}}
+{{#if this.copiedUrl}}
   <span class="copied">{{i18n "copy_codeblock.copied"}}</span>
 {{/if}}
-<span class="name">{{label}}</span>
-{{input value=item.id}}
+<span class="name">{{this.label}}</span>
+{{input value=this.item.id}}

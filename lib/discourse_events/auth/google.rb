@@ -13,6 +13,7 @@ module DiscourseEvents
           URI.encode_www_form(
             scope: "https://www.googleapis.com/auth/calendar",
             access_type: "offline",
+            prompt: "consent",
             response_type: "code",
             state: state,
             redirect_uri: provider.redirect_uri,
@@ -54,13 +55,18 @@ module DiscourseEvents
             body: URI.encode_www_form(body),
           )
 
-        begin
-          raise StandardError unless response.status == 200
-          data = JSON.parse(response.body)
-        rescue JSON::ParserError, StandardError => e
-          log(:error, "Failed to retrieve access token for #{provider.name}")
+        if response.status != 200
+          log(
+            :error,
+            "Failed to retrieve access token for #{provider.name}: #{parse_body(response)}",
+          )
           return false
         end
+
+        data = parse_body(response)
+        return false unless data
+
+        log(:info, "Google auth succeeded: #{data}") if SiteSetting.events_verbose_auth_logs
 
         provider.token = data["access_token"]
         provider.token_expires_at = Time.now + data["expires_in"].seconds
@@ -68,13 +74,20 @@ module DiscourseEvents
 
         if provider.save!
           ::Jobs.cancel_scheduled_job(:discourse_events_refresh_token, provider_id: provider.id)
-
           refresh_at = provider.reload.token_expires_at.to_time - 10.minutes
           ::Jobs.enqueue_at(refresh_at, :discourse_events_refresh_token, provider_id: provider.id)
         else
           log(:error, "Failed to save access token for #{provider.name}")
           false
         end
+      end
+
+      def parse_body(response)
+        JSON.parse(response.body)
+      rescue JSON::ParserError => e
+        message = response.body&.to_s&.[](0..100)
+        log(:error, "Failed to parse access token response for #{provider.name}: #{message}")
+        nil
       end
     end
   end

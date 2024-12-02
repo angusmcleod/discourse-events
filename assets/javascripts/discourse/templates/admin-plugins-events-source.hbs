@@ -1,32 +1,32 @@
-<EventsHeader @viewName={{viewName}} @message={{message}}>
+<EventsHeader @viewName={{this.viewName}} @message={{this.message}}>
   <DButton
     @id="add-source"
     @action={{action "addSource"}}
     @label="admin.events.source.add.label"
     @title="admin.events.source.add.title"
     @icon="plus"
+    @disabled={{this.addDisabled}}
   />
 </EventsHeader>
 
 <div class="admin-events-container">
-  {{#if hasSources}}
+  {{#if this.hasSources}}
     <table>
       <thead>
         <tr>
-          <th>{{I18n "admin.events.source.name.label"}}</th>
-          <th>{{I18n "admin.events.source.provider.label"}}</th>
-          <th>{{I18n "admin.events.source.sync_type.label"}}</th>
-          <th>{{I18n "admin.events.source.source_options.label"}}</th>
-          <th>{{I18n "admin.events.filters.label"}}</th>
+          <th>{{I18n "admin.events.source.topics.label"}}</th>
+          <th>{{I18n "admin.events.source.label"}}</th>
           <th class="action-column">{{I18n "admin.events.actions"}}</th>
         </tr>
       </thead>
       <tbody>
-        {{#each sources as |source|}}
+        {{#each this.sources as |source|}}
           <EventsSourceRow
             @source={{source}}
-            @providers={{providers}}
-            @authTypes={{authTypes}}
+            @sourceOptionFields={{this.sourceOptionFields}}
+            @importPeriods={{this.importPeriods}}
+            @providers={{this.providers}}
+            @authTypes={{this.authTypes}}
             @removeSource={{action "removeSource"}}
             @setMessage={{action "setMessage"}}
           />

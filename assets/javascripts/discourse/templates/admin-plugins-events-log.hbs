@@ -1,13 +1,49 @@
-<EventsHeader @viewName={{viewName}} @message={{message}} />
+<EventsHeader @viewName={{this.viewName}} @message={{this.message}} />
 
 <div class="admin-events-container">
-  {{#if hasLogs}}
-    <EventsLogTable
-      @logs={{logs}}
-      @page={{page}}
-      @order={{order}}
-      @asc={{asc}}
-    />
+  {{#if this.hasLogs}}
+    <LoadMore
+      @selector=".directory-table .directory-table__cell"
+      @action={{action "loadMore"}}
+    >
+      <ResponsiveTable @className="events-log-table">
+        <:header>
+          <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
+            @field="created_at"
+            @labelKey="admin.events.log.created_at"
+            @order={{this.order}}
+            @asc={{this.asc}}
+            @automatic={{true}}
+          />
+          <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
+            @field="level"
+            @labelKey="admin.events.log.level"
+            @order={{this.order}}
+            @asc={{this.asc}}
+            @automatic={{true}}
+          />
+          <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
+            @field="context"
+            @labelKey="admin.events.log.context"
+            @order={{this.order}}
+            @asc={{this.asc}}
+            @automatic={{true}}
+          />
+          <div class="directory-table__column-header log-message">
+            {{I18n "admin.events.log.message"}}
+          </div>
+        </:header>
+        <:body>
+          {{#each this.logs as |log|}}
+            <EventsLogRow @log={{log}} />
+          {{/each}}
+        </:body>
+      </ResponsiveTable>
+    </LoadMore>
+    <ConditionalLoadingSpinner @condition={{this.loading}} />
   {{else}}
     <p>{{i18n "admin.events.log.none"}}</p>
   {{/if}}

@@ -1,10 +1,10 @@
 <DModal
   class="events-filters-modal"
   @closeModal={{@closeModal}}
-  @title={{i18n "admin.events.filters.title"}}
+  @title={{i18n "admin.events.filters.label"}}
 >
   <:body>
-    {{#if hasFilters}}
+    {{#if this.hasFilters}}
       <table class="filters">
         <thead>
           <th>{{i18n "admin.events.filter.query_column.label"}}</th>
@@ -13,7 +13,7 @@
           <th></th>
         </thead>
         <tbody>
-          {{#each model.filters as |filter|}}
+          {{#each this.model.filters as |filter|}}
             <EventFilterRow
               @filter={{filter}}
               @removeFilter={{action "removeFilter"}}
@@ -25,14 +25,14 @@
     <DButton
       @action={{action "addFilter"}}
       @icon="plus"
-      @class="add-filter"
+      class="add-filter"
       @label="admin.events.filters.add.label"
       @title="admin.events.filters.add.title"
     />
   </:body>
   <:footer>
     <DButton
-      @class="btn-primary"
+      class="btn-primary"
       @action={{@closeModal}}
       @label="admin.events.filters.done.label"
       @title="admin.events.filters.done.title"

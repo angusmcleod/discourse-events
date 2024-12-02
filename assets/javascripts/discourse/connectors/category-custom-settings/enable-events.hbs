@@ -1,7 +1,7 @@
 <h3>{{i18n "category.events_setting_heading"}}</h3>
 <section class="field">
   <label class="checkbox-label">
-    {{input type="checkbox" checked=category.custom_fields.events_enabled}}
+    {{input type="checkbox" checked=this.category.custom_fields.events_enabled}}
     {{i18n "category.enable_events"}}
   </label>
 </section>
@@ -10,7 +10,7 @@
   <label class="checkbox-label">
     {{input
       type="checkbox"
-      checked=category.custom_fields.events_agenda_enabled
+      checked=this.category.custom_fields.events_agenda_enabled
     }}
     {{i18n "category.enable_events_agenda"}}
   </label>
@@ -20,7 +20,7 @@
   <label class="checkbox-label">
     {{input
       type="checkbox"
-      checked=category.custom_fields.events_calendar_enabled
+      checked=this.category.custom_fields.events_calendar_enabled
     }}
     {{i18n "category.enable_events_calendar"}}
   </label>
@@ -30,7 +30,7 @@
   <label class="checkbox-label">
     {{input
       type="checkbox"
-      checked=category.custom_fields.events_event_label_no_text
+      checked=this.category.custom_fields.events_event_label_no_text
     }}
     {{i18n "category.events_event_label_no_text"}}
   </label>
@@ -38,7 +38,10 @@
 
 <section class="field">
   <label class="checkbox-label">
-    {{input type="checkbox" checked=category.custom_fields.events_required}}
+    {{input
+      type="checkbox"
+      checked=this.category.custom_fields.events_required
+    }}
     {{i18n "category.require_event"}}
   </label>
 </section>
@@ -47,6 +50,6 @@
   <label>{{i18n "category.events_min_trust_to_create"}}</label>
   {{input
     type="number"
-    value=category.custom_fields.events_min_trust_to_create
+    value=this.category.custom_fields.events_min_trust_to_create
   }}
 </section>

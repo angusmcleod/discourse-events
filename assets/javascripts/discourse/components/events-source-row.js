@@ -1,65 +1,16 @@
 import { A } from "@ember/array";
 import Component from "@ember/component";
-import { notEmpty } from "@ember/object/computed";
+import { empty, not, notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
-import I18n from "I18n";
 import Filter, { filtersMatch } from "../models/filter";
 import Source from "../models/source";
 import SourceOptions from "../models/source-options";
 import EventsFilters from "./modal/events-filters";
-import EventsSourceOptions from "./modal/events-source-options";
 
 const isEqual = function (obj1, obj2) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 };
-
-export const SOURCE_OPTIONS = {
-  icalendar: [
-    {
-      name: "uri",
-      type: "text",
-      default: "",
-    },
-  ],
-  eventbrite: [
-    {
-      name: "organization_id",
-      type: "number",
-      default: null,
-    },
-  ],
-  humanitix: [],
-  eventzilla: [],
-  meetup: [
-    {
-      name: "group_urlname",
-      type: "text",
-      default: "",
-    },
-  ],
-  outlook: [
-    {
-      name: "user_id",
-      type: "text",
-      defualt: "",
-    },
-    {
-      name: "calendar_id",
-      type: "text",
-      default: "",
-    },
-  ],
-  google: [
-    {
-      name: "calendar_id",
-      type: "text",
-      default: "",
-    },
-  ],
-};
-
-const SYNC_TYPES = ["import", "import_publish", "publish"];
 
 export default Component.extend({
   tagName: "tr",
@@ -67,6 +18,9 @@ export default Component.extend({
   attributeBindings: ["source.id:data-source-id"],
   hasFilters: notEmpty("source.filters"),
   modal: service(),
+  subscription: service("events-subscription"),
+  removeDisabled: not("subscription.subscribed"),
+  siteSettings: service(),
 
   didReceiveAttrs() {
     this._super();
@@ -79,34 +33,56 @@ export default Component.extend({
   },
 
   @discourseComputed(
-    "source.name",
+    "source.topic_sync",
     "source.provider_id",
-    "source.sync_type",
+    "source.import_type",
+    "source.import_period",
     "source.source_options.@each",
+    "source.user.username",
+    "source.category_id",
+    "source.client",
     "source.filters.[]",
     "source.filters.@each.query_column",
     "source.filters.@each.query_operator",
     "source.filters.@each.query_value"
   )
-  sourceChanged(sourceName, providerId, syncType, sourceOptions, filters) {
+  sourceChanged(
+    topicSync,
+    providerId,
+    importType,
+    importPeriod,
+    sourceOptions,
+    username,
+    categoryId,
+    client,
+    filters
+  ) {
     const cs = this.currentSource;
     return (
-      cs.name !== sourceName ||
+      cs.topic_sync !== topicSync ||
       cs.provider_id !== providerId ||
+      cs.import_period !== importPeriod ||
       !isEqual(cs.source_options, JSON.parse(JSON.stringify(sourceOptions))) ||
       !filtersMatch(filters, cs.filters) ||
-      cs.sync_type !== syncType
+      cs.import_type !== importType ||
+      cs.user?.username !== username ||
+      cs.category_id !== categoryId ||
+      cs.client !== client
     );
   },
 
   @discourseComputed(
     "sourceChanged",
-    "source.name",
     "source.provider_id",
-    "source.source_options.@each"
+    "sourceOptions.@each.value"
   )
-  saveDisabled(sourceChanged, name, providerId, sourceOptions) {
-    return !sourceChanged || !name || !providerId || !sourceOptions;
+  saveDisabled(sourceChanged, providerId, sourceOptions) {
+    return (
+      !sourceChanged ||
+      !providerId ||
+      !sourceOptions ||
+      sourceOptions.some((opt) => !opt.value)
+    );
   },
 
   @discourseComputed("sourceChanged")
@@ -122,36 +98,136 @@ export default Component.extend({
   @discourseComputed(
     "sourceChanged",
     "source.id",
-    "loading",
+    "importing",
+    "saving",
     "source.ready",
-    "source.canImport"
+    "source.canImport",
+    "source.import_type",
+    "subscription.subscribed"
   )
-  importDisabled(sourceChanged, sourceId, loading, ready, canImport) {
-    return (
-      sourceChanged || sourceId === "new" || loading || !ready || !canImport
-    );
+  importDisabled(
+    sourceChanged,
+    sourceId,
+    importing,
+    saving,
+    ready,
+    canImport,
+    importType
+  ) {
+    if (
+      !this.subscription.supportsFeatureValue(
+        "source",
+        "import_type",
+        importType
+      )
+    ) {
+      return true;
+    } else {
+      return (
+        sourceChanged ||
+        sourceId === "new" ||
+        importing ||
+        saving ||
+        !ready ||
+        !canImport
+      );
+    }
   },
+
+  importPeriodDisabled: not("source.canImport"),
 
   @discourseComputed("source.provider_id")
   provider(providerId) {
     return this.providers?.find((p) => p.id === providerId);
   },
 
-  @discourseComputed("provider.provider_type")
-  sourceOptionFields(providerType) {
-    return SOURCE_OPTIONS[providerType];
+  @discourseComputed("sourceOptionFields", "provider.provider_type")
+  providerSourceOptionFields(sourceOptionFields, providerType) {
+    if (sourceOptionFields) {
+      return sourceOptionFields[providerType];
+    } else {
+      return [];
+    }
   },
 
-  showSourceOptions: notEmpty("sourceOptionFields"),
+  sourceOptionsDisabled: empty("sourceOptionFields"),
 
-  @discourseComputed
-  syncTypes() {
-    return SYNC_TYPES.map((syncType) => {
+  @discourseComputed(
+    "source.source_options.@each",
+    "providerSourceOptionFields.@each"
+  )
+  sourceOptions(source_options, providerSourceOptionFields) {
+    if (!providerSourceOptionFields) {
+      return [];
+    }
+    return providerSourceOptionFields.map((opt) => {
       return {
-        id: syncType,
-        name: I18n.t(`admin.events.source.sync_type.${syncType}`),
+        name: opt.name,
+        value: source_options[opt.name],
+        type: opt.type,
       };
     });
+  },
+
+  @discourseComputed("provider.provider_type")
+  allowedImportTypeValues(providerType) {
+    if (providerType === "icalendar") {
+      return ["import"];
+    } else {
+      return null;
+    }
+  },
+
+  @discourseComputed("providers.@each.status")
+  allowedProviderTypeValues(providers) {
+    return providers
+      .filter((p) => p.status === "ready")
+      .map((p) => p.provider_type);
+  },
+
+  @discourseComputed(
+    "siteSettings.calendar_enabled",
+    "siteSettings.discourse_post_event_enabled"
+  )
+  allowedClientValues(calendarEnabled, postEventEnabled) {
+    let allowedClients = ["discourse_events"];
+    if (calendarEnabled && postEventEnabled) {
+      allowedClients.push("discourse_calendar");
+    }
+    return allowedClients;
+  },
+
+  @discourseComputed(
+    "sourceChanged",
+    "saving",
+    "syncing",
+    "subscription.subscribed",
+    "source.client",
+    "source.topic_sync",
+    "source.category_id",
+    "source.user.username"
+  )
+  syncTopicsDisabled(
+    sourceChanged,
+    saving,
+    syncing,
+    subscribed,
+    client,
+    topicSync,
+    categoryId,
+    username
+  ) {
+    return (
+      sourceChanged ||
+      saving ||
+      syncing ||
+      !client ||
+      !subscribed ||
+      !this.subscription.supportsFeatureValue("source", "client", client) ||
+      !topicSync ||
+      !categoryId ||
+      !username
+    );
   },
 
   actions: {
@@ -161,28 +237,51 @@ export default Component.extend({
       });
     },
 
-    openSourceOptions() {
-      this.modal.show(EventsSourceOptions, {
-        model: {
-          source: this.get("source"),
-          sourceOptionFields: this.get("sourceOptionFields"),
-          providerType: this.get("provider.provider_type"),
-        },
-      });
+    updateUser(usernames) {
+      const source = this.source;
+      if (!source.user) {
+        source.set("user", {});
+      }
+      source.set("user.username", usernames[0]);
     },
 
-    updateProvider(provider_id) {
-      this.set("source.provider_id", provider_id);
+    updateSourceOptions(name, event) {
+      this.source.source_options.set(name, event.target.value);
+    },
+
+    updateProvider(providerType) {
+      const provider = this.providers?.find(
+        (p) => p.provider_type === providerType
+      );
+      this.set("source.provider_id", provider.id);
     },
 
     saveSource() {
-      const source = JSON.parse(JSON.stringify(this.source));
+      let source = JSON.parse(JSON.stringify(this.source));
 
-      if (!source.name) {
-        return;
+      const supportedOptions = this.sourceOptionFields[
+        this.provider.provider_type
+      ].map((o) => o.name);
+
+      source.source_options = Object.keys(source.source_options)
+        .filter((name) => supportedOptions.includes(name))
+        .reduce((obj, key) => {
+          obj[key] = source.source_options[key];
+          return obj;
+        }, {});
+
+      if (source.import_period === 0) {
+        source.import_period = null;
       }
 
-      this.set("loading", true);
+      if (source.user) {
+        source.username = source.user.username;
+        delete source.user;
+      } else {
+        source.username = null;
+      }
+
+      this.set("saving", true);
 
       Source.update(source)
         .then((result) => {
@@ -208,22 +307,45 @@ export default Component.extend({
           }
         })
         .finally(() => {
-          this.set("loading", false);
+          this.set("saving", false);
         });
     },
 
     importSource() {
-      this.set("loading", true);
-      Source.import(this.source)
+      this.set("importing", true);
+      Source.importEvents(this.source)
         .then((result) => {
           if (result.success) {
-            this.setMessage("import_started", "success");
+            this.setMessage("event_import_started", "success");
           } else {
-            this.setMessage("import_failed_to_start", "error");
+            this.setMessage("event_import_failed_to_start", "error");
           }
         })
         .finally(() => {
-          this.set("loading", false);
+          this.set("importing", false);
+
+          setTimeout(() => {
+            if (!this.isDestroying && !this.isDestroyed) {
+              this.setMessage("info", "info");
+            }
+          }, 5000);
+        });
+    },
+
+    syncTopics() {
+      const source = this.source;
+
+      this.set("syncing", true);
+      Source.syncTopics(source)
+        .then((result) => {
+          if (result.success) {
+            this.setMessage("topic_creation_started", "success");
+          } else {
+            this.setMessage("topic_creation_failed_to_start", "error");
+          }
+        })
+        .finally(() => {
+          this.set("syncing", false);
 
           setTimeout(() => {
             if (!this.isDestroying && !this.isDestroyed) {

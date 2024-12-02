@@ -4,9 +4,9 @@ module DiscourseEvents
   class Provider < ActiveRecord::Base
     self.table_name = "discourse_events_providers"
 
-    NO_AUTH ||= %w[developer icalendar]
-    TOKEN ||= %w[eventbrite humanitix eventzilla]
-    OAUTH2 ||= %w[meetup outlook google]
+    NO_AUTH = %w[developer icalendar].freeze
+    TOKEN = %w[eventbrite humanitix eventzilla].freeze
+    OAUTH2 = %w[meetup outlook google].freeze
     TYPES = NO_AUTH + TOKEN + OAUTH2
 
     has_many :sources,
@@ -25,6 +25,8 @@ module DiscourseEvents
                 in: TYPES,
                 message: "%{value} is not a valid provider type",
               }
+
+    before_save :normalize_before_save
 
     def options
       { token: self.token } if (TOKEN + OAUTH2).include?(self.provider_type)
@@ -100,6 +102,14 @@ module DiscourseEvents
           return nil unless Module.const_get(klass)
           klass.constantize.new(self.id)
         end
+    end
+
+    def normalize_before_save
+      if oauth2_type? && (self.client_id.blank? || self.client_secret.blank?)
+        self.token = nil
+        self.token_expires_at = nil
+        self.refresh_token = nil
+      end
     end
   end
 end

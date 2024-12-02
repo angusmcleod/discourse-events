@@ -1,7 +1,7 @@
 import Component from "@ember/component";
 import { alias, not, or } from "@ember/object/computed";
 import { scheduleOnce } from "@ember/runloop";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import Category from "discourse/models/category";
 import {
   bind,
@@ -31,7 +31,7 @@ export default Component.extend({
   queryParams: alias("router.currentRoute.queryParams"),
   years: YEARS.map((y) => ({ id: y, name: y })),
   layoutName: "components/events-calendar",
-  webcalDocumentationURL: "https://coop.pavilion.tech/t/1447",
+  webcalDocumentationURL: "https://discourse.angus.blog/c/events",
 
   @on("init")
   setup() {

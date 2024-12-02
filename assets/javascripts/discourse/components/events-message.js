@@ -11,11 +11,11 @@ const icons = {
 };
 
 const urls = {
-  provider: "https://coop.pavilion.tech/t/1220",
-  source: "https://coop.pavilion.tech/t/1221",
-  connection: "https://coop.pavilion.tech/t/1222",
-  event: "https://coop.pavilion.tech/t/1223",
-  log: "https://coop.pavilion.tech/t/1223",
+  provider: "https://discourse.angus.blog/c/events",
+  source: "https://discourse.angus.blog/c/events",
+  connection: "https://discourse.angus.blog/c/events",
+  event: "https://discourse.angus.blog/c/events",
+  log: "https://discourse.angus.blog/c/events",
 };
 
 export default Component.extend({
@@ -41,6 +41,6 @@ export default Component.extend({
 
   @discourseComputed("viewName")
   documentationUrl(viewName) {
-    return urls[viewName] || "https://coop.pavilion.tech/c/discourse-events";
+    return urls[viewName] || "https://discourse.angus.blog/c/events";
   },
 });

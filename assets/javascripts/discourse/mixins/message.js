@@ -1,4 +1,4 @@
-import EmberObject from "@ember/object";
+import EmberObject, { action } from "@ember/object";
 import Mixin from "@ember/object/mixin";
 
 const defaultMessage = EmberObject.create({
@@ -8,13 +8,8 @@ const defaultMessage = EmberObject.create({
 export default Mixin.create({
   message: defaultMessage,
 
-  setMessage(key, type, opts) {
+  @action
+  setMessage(key, type = "info", opts = {}) {
     this.get("message").setProperties({ key, type, opts });
-  },
-
-  actions: {
-    setMessage(key, type = "info", opts = {}) {
-      this.setMessage(key, type, opts);
-    },
   },
 });

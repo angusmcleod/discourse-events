@@ -2,14 +2,21 @@ import { A } from "@ember/array";
 import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import Topic from "discourse/models/topic";
-import Source from "../models/source";
 
-const Event = EmberObject.extend();
+const Event = EmberObject.extend({
+  selected: false,
+});
 
 Event.reopenClass({
   list(data = {}) {
     return ajax("/admin/plugins/events/event", {
+      type: "GET",
+      data,
+    }).catch(popupAjaxError);
+  },
+
+  listAll(data = {}) {
+    return ajax("/admin/plugins/events/event/all", {
       type: "GET",
       data,
     }).catch(popupAjaxError);
@@ -22,15 +29,27 @@ Event.reopenClass({
     }).catch(popupAjaxError);
   },
 
-  eventsArray(events) {
+  connectTopic(data) {
+    return ajax("/admin/plugins/events/event/topic/connect", {
+      type: "POST",
+      data,
+    }).catch(popupAjaxError);
+  },
+
+  updateTopic(data) {
+    return ajax("/admin/plugins/events/event/topic/update", {
+      type: "POST",
+      data,
+    }).catch(popupAjaxError);
+  },
+
+  toArray(events, selectedEventIds = []) {
     return A(
       events.map((event) => {
-        let attrs = {};
-        if (event.sources) {
-          attrs.source = A(event.sources.map((s) => Source.create(s)));
+        if (selectedEventIds.includes(event.id)) {
+          event.selected = true;
         }
-        attrs.topics = A(event.topics.map((t) => Topic.create(t)));
-        return Object.assign(event, attrs);
+        return Event.create(event);
       })
     );
   },

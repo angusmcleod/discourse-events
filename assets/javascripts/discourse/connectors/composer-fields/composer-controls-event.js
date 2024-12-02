@@ -6,7 +6,7 @@ export default {
   },
 
   setupComponent(_, component) {
-    const controller = getOwner(this).lookup("controller:composer");
+    const controller = getOwner(this).lookup("service:composer");
     component.set("eventValidation", controller.get("eventValidation"));
     controller.addObserver("eventValidation", () => {
       if (this._state === "destroying") {
@@ -18,7 +18,7 @@ export default {
 
   actions: {
     updateEvent(event) {
-      const controller = getOwner(this).lookup("controller:composer");
+      const controller = getOwner(this).lookup("service:composer");
       controller.set("model.event", event);
     },
   },

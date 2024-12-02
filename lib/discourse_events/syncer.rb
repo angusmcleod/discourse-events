@@ -2,30 +2,18 @@
 
 module DiscourseEvents
   class Syncer
-    EVENT_SERIES_ID_FIELD = "event_series_id"
-
-    attr_reader :user, :connection, :logger
-
+    attr_reader :user, :source, :client, :logger
     attr_accessor :opts
 
-    def initialize(user, connection)
-      raise ArgumentError.new("Must pass a valid connection") unless connection
-
+    def initialize(user: nil, source: nil, client: nil)
       @user = user
-      @connection = connection
+      @source = source
+      @client = client
       @logger = Logger.new(:sync)
     end
 
-    def create_event_topic(event)
-      raise NotImplementedError
-    end
-
-    def update_event_topic(topic, event)
-      raise NotImplementedError
-    end
-
-    def post_raw(event)
-      raise NotImplementedError
+    def ready?
+      source.user.present?
     end
 
     def sync(_opts = {})
@@ -43,17 +31,95 @@ module DiscourseEvents
       { created_topics: created_topics, updated_topics: updated_topics }
     end
 
+    def create_topic(event, topic_opts = {})
+      topic = create_client_topic(event, topic_opts)
+      raise ActiveRecord::Rollback if topic.blank?
+      create_event_topic(event, topic)
+      update_registrations(topic, event)
+      topic
+    end
+
+    def update_topic(topic, event, add_raw: nil)
+      topic = update_client_topic(topic, event, add_raw: add_raw)
+      raise ActiveRecord::Rollback if topic.blank?
+      update_registrations(topic, event)
+      topic
+    end
+
+    def connect_topic(topic, event)
+      return false unless can_connect_topic?(topic, event)
+      update_topic(topic, event, add_raw: true)
+    end
+
+    def update_registrations(topic, event)
+      ensure_registration_users(event)
+      update_client_registrations(topic, event)
+    end
+
+    def create_post(event, topic_opts = {})
+      topic_opts = { title: event.name }.merge(topic_opts)
+      topic_opts[:category] = source.category.id if source&.category_id
+
+      PostCreator.create!(
+        user,
+        topic_opts: topic_opts,
+        raw: post_raw(event),
+        skip_validations: true,
+        skip_event_publication: true,
+      )
+    end
+
+    def create_event_topic(event, topic)
+      params = { event_id: event.id, topic_id: topic.id, client: client }
+      params[:series_id] = event.series_id if event.series_id
+      EventTopic.create!(params)
+    end
+
+    def ensure_event_topic(event, topic)
+      unless EventTopic.exists?(event_id: event.id, topic_id: topic.id)
+        create_event_topic(event, topic)
+      end
+    end
+
+    def can_connect_topic?(topic, event)
+      raise NotImplementedError
+    end
+
+    def create_client_topic(event, topic_opts = {})
+      raise NotImplementedError
+    end
+
+    def connect_client_topic(topic, event)
+      raise NotImplementedError
+    end
+
+    def update_client_topic(topic, event, add_raw: false)
+      raise NotImplementedError
+    end
+
+    def update_client_registrations(topic, event)
+      raise NotImplementedError
+    end
+
+    def post_raw(event, post: nil, add_raw: false)
+      raise NotImplementedError
+    end
+
     def update_events
       topics_updated = []
 
       synced_events
-        .includes(event_connections: %i[topic])
+        .includes(event_topics: %i[topic])
         .each do |event|
           ActiveRecord::Base.transaction do
             event
-              .event_connections
-              .where(client: connection.client)
-              .each { |ec| topics_updated << _update_event_topic(ec.topic, event) }
+              .event_topics
+              .where(client: client)
+              .each do |et|
+                topic = update_topic(et.topic, event)
+                next unless topic
+                topics_updated << topic.id
+              end
           end
         end
 
@@ -64,7 +130,11 @@ module DiscourseEvents
       topics_created = []
 
       unsynced_events.each do |event|
-        ActiveRecord::Base.transaction { topics_created << _create_event_topic(event) }
+        ActiveRecord::Base.transaction do
+          topic = create_topic(event)
+          next unless topic
+          topics_created << topic.id
+        end
       end
 
       topics_created
@@ -75,15 +145,16 @@ module DiscourseEvents
       topics_created = []
 
       series_events.each do |event|
-        topics = event.series_events_topics
+        topic = event.series_topics.first
 
         ActiveRecord::Base.transaction do
-          if topics.exists?
-            topic = topics.first
-            ensure_event_connection(event, topic)
-            topics_updated << _update_event_topic(topic, event)
+          if topic.present?
+            ensure_event_topic(event, topic)
+            topic = update_topic(topic, event)
+            topics_updated << topic.id
           else
-            topics_created << _create_event_topic(event)
+            topic = create_topic(event)
+            topics_created << topic.id
           end
         end
       end
@@ -92,15 +163,15 @@ module DiscourseEvents
     end
 
     def synced_events
-      standard_events.where("discourse_events_events.id IN (#{event_connections_sql})")
+      standard_events.where("discourse_events_events.id IN (#{event_topics_sql})")
     end
 
     def unsynced_events
-      standard_events.where("discourse_events_events.id NOT IN (#{event_connections_sql})")
+      standard_events.where("discourse_events_events.id NOT IN (#{event_topics_sql})")
     end
 
-    def event_connections_sql
-      "SELECT event_id FROM discourse_events_event_connections WHERE connection_id = #{connection.id}"
+    def event_topics_sql
+      "SELECT event_id FROM discourse_events_event_topics WHERE topic_id IS NOT NULL"
     end
 
     def source_events
@@ -108,12 +179,10 @@ module DiscourseEvents
         begin
           events =
             Event.joins(:event_sources).where(
-              "discourse_events_event_sources.source_id = #{connection.source.id}",
+              "discourse_events_event_sources.source_id = ?",
+              source.id,
             )
-          connection.filters.each do |filter|
-            events = events.where("#{filter.sql_column} #{filter.sql_operator} ?", filter.sql_value)
-          end
-          connection.source.filters.each do |filter|
+          source.filters.each do |filter|
             events = events.where("#{filter.sql_column} #{filter.sql_operator} ?", filter.sql_value)
           end
           events
@@ -130,72 +199,55 @@ module DiscourseEvents
     end
 
     def series_events
+      # Compare DiscourseEvents::Event::FUTURE_SERIES_EVENTS_SQL
       @series_events ||=
-        begin
-          source_events
-            .select("DISTINCT ON (series_id) discourse_events_events.*")
-            .where(
-              "discourse_events_events.series_id IS NOT NULL AND discourse_events_events.start_time > '#{Time.now}'",
-            )
-            .order("discourse_events_events.series_id, discourse_events_events.start_time ASC")
-        end
+        source_events
+          .select("DISTINCT ON (series_id) discourse_events_events.*")
+          .where(
+            "discourse_events_events.series_id IS NOT NULL AND discourse_events_events.start_time > ?",
+            Time.now,
+          )
+          .order("discourse_events_events.series_id, discourse_events_events.start_time ASC")
     end
 
     def log(type, message)
       logger.send(type.to_s, message)
     end
 
-    def create_event_post(event, topic_opts = {})
-      topic_opts = { title: event.name }.merge(topic_opts)
-
-      topic_opts[:category] = connection.category.id if connection.category_id
-
-      PostCreator.create!(
-        user,
-        topic_opts: topic_opts,
-        raw: post_raw(event),
-        skip_validations: true,
-        skip_event_publication: true,
-      )
+    def one_topic_per_series
+      source.supports_series && SiteSetting.events_one_event_per_series
     end
 
-    def create_event_connection(event, topic)
-      params = {
-        event_id: event.id,
-        connection_id: connection.id,
-        topic_id: topic.id,
-        client: connection.client,
-      }
-
-      params[:series_id] = event.series_id if event.series_id
-      EventConnection.create!(params)
-    end
-
-    def ensure_event_connection(event, topic)
-      unless EventConnection.exists?(
-               event_id: event.id,
-               topic_id: topic.id,
-               connection_id: connection.id,
-             )
-        create_event_connection(event, topic)
+    def ensure_registration_users(event)
+      event.registrations.each do |registration|
+        next if registration.user.present?
+        user = find_or_create_user(registration)
+        next if user.blank?
+        registration.update(user_id: user.id)
       end
     end
 
-    def one_topic_per_series
-      connection.source.supports_series && !SiteSetting.events_split_series_into_different_topics
-    end
+    def find_or_create_user(registration)
+      user = User.find_by_email(registration.email)
 
-    def _create_event_topic(event)
-      topic = create_event_topic(event)
-      raise ActiveRecord::Rollback if topic.blank?
-      create_event_connection(event, topic)
-      topic.id
-    end
+      unless user
+        begin
+          user =
+            User.create!(
+              email: registration.email,
+              username: UserNameSuggester.suggest(registration.name.presence || registration.email),
+              name: registration.name || User.suggest_name(registration.email),
+              staged: true,
+            )
+        rescue PG::UniqueViolation,
+               ActiveRecord::RecordNotUnique,
+               ActiveRecord::RecordInvalid => error
+          message = I18n.t("log.sync_failed_to_create_registration_user", email: registration.email)
+          log(:error, message)
+        end
+      end
 
-    def _update_event_topic(topic, event)
-      topic = update_event_topic(topic, event)
-      raise ActiveRecord::Rollback if topic.blank?
-      topic.id
+      user
     end
   end
 end

@@ -8,7 +8,6 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-
     if (!this.model.filters) {
       this.model.set("filters", A());
     }

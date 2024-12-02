@@ -12,11 +12,13 @@ module DiscourseEvents
       event_timezone = event[:timezone] if event[:timezone].present?
       event_timezone = timezone if timezone.present?
 
-      event_going = event[:going] if event[:rsvp]
+      if event[:rsvp]
+        event_going = event[:going]
+        event_invited = event[:invited]
+      end
 
       if event_timezone.present?
         event_start = event_start.in_time_zone(event_timezone)
-
         event_end = event_end.in_time_zone(event_timezone) if event_end
       end
 
@@ -28,6 +30,7 @@ module DiscourseEvents
       end
 
       result[:going] = event_going if event_going.present?
+      result[:invited] = event_invited if event_invited.present?
 
       result
     end

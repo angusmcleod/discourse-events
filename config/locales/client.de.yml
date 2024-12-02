@@ -103,7 +103,6 @@ de:
       events:
         title: Veranstaltungen
         actions: Aktionen
-        beta_notice: "Diese Funktionen befinden sich derzeit in der Beta-Phase. In Kürze werden wir Abo-Pläne für das Veranstaltungs-Plugin einführen, die für einige dieser Funktionen gelten werden. <a href='https://pavilion.tech/products/discourse-events-plugin'>Finde mehr heraus</a>."
         source:
           title: Sources
           none: Keine Quellen.
@@ -113,7 +112,7 @@ de:
           remove:
             label: Entfernen
             title: Quelle entfernen
-            confirm: Bist du sicher, dass du "%{source_name}" entfernen möchtest? Wenn du eine Quelle entfernst, werden alle zugehörigen Veranstaltungen und Verbindungen gelöscht.
+            confirm: Bist du sicher, dass du entfernen möchtest? Wenn du eine Quelle entfernst, werden alle zugehörigen Veranstaltungen und Verbindungen gelöscht.
           name:
             label: Name
             placeholder: unterstrichen
@@ -234,14 +233,12 @@ de:
           none: Keine Protokolle.
         message:
           documentation: "Schau dir die Dokumentation an"
-          connection:
-            info: "Verbindungen sind der Ort, an dem du deine Veranstaltungen zeigst"
-            sync_started: "Sync started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
-            sync_failed_to_start: "Die Synchronisierung konnte nicht gestartet werden."
           source:
             info: "Mit den Quellen importierst du Veranstaltungen von einem Anbieter"
-            import_started: "Der Import hat begonnen. Überprüfe das Ergebnis in den <a href='/admin/plugins/events/log'>Logs</a>."
-            import_failed_to_start: "Der Import konnte nicht gestartet werden."
+            event_import_started: "Der Import hat begonnen. Überprüfe das Ergebnis in den <a href='/admin/plugins/events/log'>Logs</a>."
+            event_import_failed_to_start: "Der Import konnte nicht gestartet werden."
+            topic_creation_started: "Topic creation started. Check the result in the <a href='/admin/plugins/events/log'>Logs</a>."
+            topic_creation_failed_to_start: "Die Synchronisierung konnte nicht gestartet werden."
           event:
             info: "Die Veranstaltungen, die du importiert hast"
           provider:

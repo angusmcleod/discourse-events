@@ -1,9 +1,5 @@
 <AdminNav>
   <NavItem
-    @route="adminPlugins.events.connection"
-    @label="admin.events.connection.title"
-  />
-  <NavItem
     @route="adminPlugins.events.event"
     @label="admin.events.event.title"
   />
@@ -18,13 +14,16 @@
   <NavItem @route="adminPlugins.events.log" @label="admin.events.log.title" />
   <li class="settings">
     <DButton
-      @class="btn-default"
+      class="btn-default"
       @action={{route-action "showSettings"}}
-      @actionParam={{plugin}}
+      @actionParam={{this.plugin}}
       @icon="cog"
       @label="admin.plugins.change_settings_short"
     />
   </li>
+  <div class="admin-actions">
+    <EventsSubscriptionStatus />
+  </div>
 </AdminNav>
 
 <div class="admin-container">

@@ -1,64 +1,45 @@
 import { getOwner } from "@ember/application";
 import Component from "@ember/component";
 import { action } from "@ember/object";
-import { ajax } from "discourse/lib/ajax";
-import { extractError } from "discourse/lib/ajax-error";
 import User from "discourse/models/user";
-import {
-  default as discourseComputed,
-  observes,
-} from "discourse-common/utils/decorators";
+import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
+import EventRsvp, { rsvpTypes } from "../../models/event-rsvp";
 
 export default Component.extend({
   userList: [],
   type: "going",
-  title: I18n.t("event_rsvp.modal.title"),
+  title: I18n.t("event_rsvp.attendees.title"),
+  rsvpTypes,
 
   didReceiveAttrs() {
     this._super();
     this.setUserList();
   },
 
-  @observes("type", "model.topic")
+  @action
   setUserList() {
     this.set("loadingList", true);
 
     const type = this.get("type");
     const topic = this.get("model.topic");
+    const data = {
+      type,
+      topic_id: topic.id,
+    };
+    EventRsvp.list(data).then((response) => {
+      let userList = response.users || [];
 
-    let usernames = topic.get(`event.${type}`);
-
-    if (!usernames || !usernames.length) {
-      return;
-    }
-
-    ajax("/discourse-events/rsvp/users", {
-      data: {
-        usernames,
-      },
-    })
-      .then((response) => {
-        let userList = response.users || [];
-
-        this.setProperties({
-          userList,
-          loadingList: false,
-        });
-      })
-      .catch((e) => {
-        this.set("flash", extractError(e));
-      })
-      .finally(() => {
-        this.setProperties({
-          loadingList: false,
-        });
+      this.setProperties({
+        userList,
+        loadingList: false,
       });
+    });
   },
 
-  @discourseComputed("type")
-  goingNavClass(type) {
-    return type === "going" ? "active" : "";
+  @action
+  navClass(type) {
+    return type === this.get("type") ? "active" : "";
   },
 
   @discourseComputed("userList")
@@ -80,6 +61,7 @@ export default Component.extend({
   setType(type) {
     event?.preventDefault();
     this.set("type", type);
+    this.setUserList();
   },
 
   @action

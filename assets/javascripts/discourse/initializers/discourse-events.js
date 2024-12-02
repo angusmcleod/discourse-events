@@ -10,12 +10,14 @@ import {
   on,
 } from "discourse-common/utils/decorators";
 import I18n from "I18n";
+import Provider from "../models/provider";
 
 export default {
   name: "events-edits",
   initialize(container) {
-    const siteSettings = container.lookup("site-settings:main");
-    const currentUser = container.lookup("current-user:main");
+    const siteSettings = container.lookup("service:site-settings");
+    const currentUser = container.lookup("service:current-user");
+    container.registry.register("model:provider", Provider);
 
     withPluginApi("1.4.0", (api) => {
       api.serializeToDraft("event");
@@ -318,19 +320,23 @@ export default {
           this.messageBus.subscribe(
             `/discourse-events/${this.get("model.id")}`,
             (data) => {
-              if (data.current_user_id === currentUser.id) {
-                return;
-              }
-
               switch (data.type) {
                 case "rsvp": {
-                  let prop = Object.keys(data).filter(
-                    (p) => p.indexOf("event") > -1
-                  );
-                  if (prop && prop[0]) {
-                    let key = prop[0].split("_").join(".");
-                    this.set(`model.${key}`, data[prop[0]]);
-                    this.notifyPropertyChange(`model.${prop}`);
+                  if (data.rsvp) {
+                    this.set(
+                      `model.event.${data.rsvp.type}`,
+                      data.rsvp.usernames
+                    );
+
+                    if (this.currentUser) {
+                      const userRsvp = data.rsvp.usernames.includes(
+                        this.currentUser.username
+                      );
+
+                      if (userRsvp) {
+                        this.set("model.event_user", { rsvp: data.rsvp.type });
+                      }
+                    }
                   }
                 }
               }
@@ -345,7 +351,7 @@ export default {
         },
       });
 
-      api.modifyClass("controller:composer", {
+      api.modifyClass("service:composer", {
         pluginId: "discourse-events",
 
         @discourseComputed(

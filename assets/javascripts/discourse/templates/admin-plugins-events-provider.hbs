@@ -1,27 +1,17 @@
-<EventsHeader @viewName={{viewName}} @message={{message}}>
-  <DButton
-    @id="add-provider"
-    @action={{action "addProvider"}}
-    @label="admin.events.provider.add.label"
-    @title="admin.events.provider.add.title"
-    @icon="plus"
-  />
-</EventsHeader>
+<EventsHeader @viewName={{this.viewName}} @message={{this.message}} />
 
 <div class="admin-events-container">
-  {{#if hasProviders}}
+  {{#if this.hasProviders}}
     <table>
       <thead>
         <tr>
-          <th>{{I18n "admin.events.provider.name.label"}}</th>
-          <th>{{i18n "admin.events.provider.provider_type.label"}}</th>
-          <th>{{I18n "admin.events.provider.credentials.label"}}</th>
-          <th>{{i18n "admin.events.provider.status.label"}}</th>
+          <th>{{I18n "admin.events.provider.label"}}</th>
+          <th>{{i18n "admin.events.provider.authentication.label"}}</th>
           <th class="action-column">{{I18n "admin.events.actions"}}</th>
         </tr>
       </thead>
       <tbody>
-        {{#each providers as |provider|}}
+        {{#each this.providers as |provider|}}
           <EventsProviderRow
             @provider={{provider}}
             @removeProvider={{action "removeProvider"}}

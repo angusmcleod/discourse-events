@@ -1,23 +1,40 @@
-<td class="start-time">
-  {{raw-date event.start_time}}
-</td>
+<div class="directory-table__cell start-time">
+  {{raw-date this.event.start_time}}
+</div>
 
-<td class="name">
-  {{event.name}}
-</td>
+<div class="directory-table__cell name">
+  {{#if this.showTopics}}
+    {{#each this.event.topic_ids as |topic_id|}}
+      <a
+        {{on "click" (fn this.openTopic topic_id)}}
+        target="_blank"
+        rel="noopener noreferrer"
+        role="button"
+      >{{this.event.name}}</a>
+    {{/each}}
+  {{else}}
+    {{this.event.name}}
+  {{/if}}
+</div>
 
-<td class="source">
-  {{#each event.sources as |source|}}
-    {{source.name}}
-  {{/each}}
-</td>
+<div class="directory-table__cell tags">
+  <div class="event-tags">
+    {{#if this.providerLabel}}
+      <EventTag
+        @label={{this.providerLabel}}
+        @href="/admin/plugins/events/provider"
+        @class="provider"
+      />
+    {{/if}}
+    {{#if this.event.series_id}}
+      <EventTag
+        @label={{i18n "admin.events.event.series.label"}}
+        @class="series"
+      />
+    {{/if}}
+  </div>
+</div>
 
-<td class="topic">
-  {{#each event.topics as |topic|}}
-    <a href={{topic.url}}>{{topic.fancy_title}}</a>
-  {{/each}}
-</td>
-
-<td class="select-event">
-  <Input @type="checkbox" @checked={{this.selected}} />
-</td>
+<div class="directory-table__cell select-event">
+  <Input @type="checkbox" @checked={{this.event.selected}} />
+</div>

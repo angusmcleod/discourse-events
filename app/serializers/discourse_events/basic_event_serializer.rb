@@ -2,14 +2,6 @@
 
 module DiscourseEvents
   class BasicEventSerializer < ApplicationSerializer
-    attributes :id,
-               :start_time,
-               :end_time,
-               :name,
-               :description,
-               :status,
-               :url,
-               :created_at,
-               :updated_at
+    attributes :id, :start_time, :name, :url, :video_url
   end
 end

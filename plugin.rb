@@ -1,34 +1,34 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.8.9
+# version: 0.9.0
 # authors: Angus McLeod
-# contact_emails: angus@pavilion.tech
-# url: https://github.com/paviliondev/discourse-events
+# contact_emails: angus@angus.blog
+# url: https://github.com/angusmcleod/discourse-events
+# subscription_url: https://discourse.angus.blog
 
 enabled_site_setting :events_enabled
 
 add_admin_route "admin.events.title", "events"
 
-register_asset "stylesheets/common/events.scss"
-register_asset "stylesheets/common/admin.scss"
+register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
-gem "uuidtools", "2.2.0"
+gem "discourse_subscription_client", "0.1.11", require_name: "discourse_subscription_client"
 gem "iso-639", "0.3.5"
 gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
 gem "icalendar-recurrence", "1.1.3"
-gem "time", "0.2.2"
-gem "omnievent", "0.1.0.pre7", require_name: "omnievent"
-gem "omnievent-icalendar", "0.1.0.pre5", require_name: "omnievent/icalendar"
-gem "omnievent-api", "0.1.0.pre4", require_name: "omnievent/api"
-gem "omnievent-eventbrite", "0.1.0.pre2", require_name: "omnievent/eventbrite"
-gem "omnievent-eventzilla", "0.1.0.pre2", require_name: "omnievent/eventzilla"
-gem "omnievent-meetup", "0.1.0.pre1", require_name: "omnievent/meetup"
-gem "omnievent-outlook", "0.1.0.pre7", require_name: "omnievent/outlook"
-gem "omnievent-google", "0.1.0.pre4", require_name: "omnievent/google"
+
+on(:subscription_client_ready) do
+  require_relative "lib/discourse_events/subscription_manager"
+  DiscourseEvents::SubscriptionManager.setup(update: true, install: true)
+end
+on(:subscription_client_subscriptions_updated) do
+  require_relative "lib/discourse_events/subscription_manager"
+  DiscourseEvents::SubscriptionManager.setup(install: true)
+end
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)
@@ -44,15 +44,21 @@ register_svg_icon "fingerprint"
 register_svg_icon "save"
 register_svg_icon "hourglass-half"
 register_svg_icon "hourglass-end"
+register_svg_icon "video"
 
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
 require_relative "lib/discourse_events_timezone_display_site_setting.rb"
 
 after_initialize do
+  register_seedfu_fixtures(Rails.root.join("plugins", "discourse-events", "db", "fixtures"))
+
   require_relative "lib/discourse_events/engine.rb"
   require_relative "lib/discourse_events/helper.rb"
   require_relative "lib/discourse_events/list.rb"
+  require_relative "lib/discourse_events/subscription_manager.rb"
+  require_relative "lib/discourse_events/subscription.rb"
   require_relative "lib/discourse_events/event_creator.rb"
+  require_relative "lib/discourse_events/event_destroyer.rb"
   require_relative "lib/discourse_events/event_revisor.rb"
   require_relative "lib/discourse_events/logger.rb"
   require_relative "lib/discourse_events/import_manager.rb"
@@ -62,7 +68,8 @@ after_initialize do
   require_relative "lib/discourse_events/syncer/discourse_calendar.rb"
   require_relative "lib/discourse_events/publish_manager.rb"
   require_relative "lib/discourse_events/publisher.rb"
-  require_relative "lib/discourse_events/publisher/event_data.rb"
+  require_relative "lib/discourse_events/publisher/event.rb"
+  require_relative "lib/discourse_events/publisher/registration.rb"
   require_relative "lib/discourse_events/publisher/discourse_events.rb"
   require_relative "lib/discourse_events/publisher/discourse_calendar.rb"
   require_relative "lib/discourse_events/auth/base.rb"
@@ -70,8 +77,8 @@ after_initialize do
   require_relative "lib/discourse_events/auth/outlook.rb"
   require_relative "lib/discourse_events/auth/google.rb"
   require_relative "app/models/discourse_events/filter.rb"
-  require_relative "app/models/discourse_events/connection.rb"
-  require_relative "app/models/discourse_events/event_connection.rb"
+  require_relative "app/models/discourse_events/event_topic.rb"
+  require_relative "app/models/discourse_events/event_registration.rb"
   require_relative "app/models/discourse_events/event_source.rb"
   require_relative "app/models/discourse_events/event.rb"
   require_relative "app/models/discourse_events/log.rb"
@@ -80,28 +87,27 @@ after_initialize do
   require_relative "app/controllers/concerns/discourse_events/filters.rb"
   require_relative "app/controllers/discourse_events/admin_controller.rb"
   require_relative "app/controllers/discourse_events/api_keys_controller.rb"
-  require_relative "app/controllers/discourse_events/connection_controller.rb"
   require_relative "app/controllers/discourse_events/event_controller.rb"
+  require_relative "app/controllers/discourse_events/event_topic_controller.rb"
   require_relative "app/controllers/discourse_events/rsvp_controller.rb"
   require_relative "app/controllers/discourse_events/log_controller.rb"
   require_relative "app/controllers/discourse_events/provider_controller.rb"
   require_relative "app/controllers/discourse_events/source_controller.rb"
+  require_relative "app/controllers/discourse_events/subscription_controller.rb"
   require_relative "app/serializers/discourse_events/basic_event_serializer.rb"
   require_relative "app/serializers/discourse_events/filter_serializer.rb"
-  require_relative "app/serializers/discourse_events/connection_serializer.rb"
-  require_relative "app/serializers/discourse_events/connection_user_serializer.rb"
   require_relative "app/serializers/discourse_events/source_serializer.rb"
   require_relative "app/serializers/discourse_events/event_serializer.rb"
   require_relative "app/serializers/discourse_events/log_serializer.rb"
   require_relative "app/serializers/discourse_events/provider_serializer.rb"
-  require_relative "app/jobs/discourse_events/scheduled/update_events.rb"
-  require_relative "app/jobs/discourse_events/regular/import_source.rb"
-  require_relative "app/jobs/discourse_events/regular/sync_connection.rb"
+  require_relative "app/jobs/discourse_events/regular/import_events.rb"
+  require_relative "app/jobs/discourse_events/regular/create_topics.rb"
   require_relative "app/jobs/discourse_events/regular/refresh_token.rb"
   require_relative "config/routes.rb"
   require_relative "extensions/list_controller.rb"
   require_relative "extensions/site_settings_type_supervisor.rb"
   require_relative "extensions/listable_topic_serializer.rb"
+  require_relative "extensions/discourse_post_event_serializer.rb"
 
   add_to_serializer(:site, :event_timezones) { DiscourseEventsTimezoneDefaultSiteSetting.values }
 
@@ -130,8 +136,8 @@ after_initialize do
     add_to_serializer(:basic_category, key.to_sym) { object.send(key) }
   end
 
-  Category.has_many :discourse_events_connections,
-                    class_name: "DiscourseEvents::Connection",
+  Category.has_many :discourse_events_sources,
+                    class_name: "DiscourseEvents::Source",
                     dependent: :destroy
 
   SiteSettings::TypeSupervisor.prepend SiteSettingsTypeSupervisorEventsExtension
@@ -144,6 +150,9 @@ after_initialize do
   register_topic_custom_field_type("event_deadline", :boolean)
   register_topic_custom_field_type("event_rsvp", :boolean)
   register_topic_custom_field_type("event_going", :json)
+  register_topic_custom_field_type("event_not_going", :json)
+  register_topic_custom_field_type("event_maybe_going", :json)
+  register_topic_custom_field_type("event_invited", :json)
   register_topic_custom_field_type("event_going_max", :integer)
   register_topic_custom_field_type("event_version", :integer)
 
@@ -156,6 +165,9 @@ after_initialize do
       event_timezone
       event_rsvp
       event_going
+      event_not_going
+      event_maybe_going
+      event_invited
       event_going_max
       event_version
     ]
@@ -168,10 +180,19 @@ after_initialize do
       self.custom_fields["event_start"].is_a?(Numeric) && self.custom_fields["event_start"] != 0
   end
 
-  %w[event_going event_rsvp event_going_max].each do |key|
-    add_to_class(:topic, key.to_sym) { self.custom_fields[key] || false }
+  %w[event_going event_not_going event_maybe_going event_invited].each do |key|
+    add_to_class(:topic, key.to_sym) { self.custom_fields[key] || [] }
   end
+  add_to_class(:topic, :event_rsvp) { self.custom_fields["event_rsvp"] || false }
+  add_to_class(:topic, :event_going_max) { self.custom_fields["event_going_max"] || nil }
 
+  add_class_method(:topic, :event_map_user_ids) do |users, user_ids|
+    user_ids = user_ids.map(&:to_i)
+    users.select { |user| user_ids.include?(user.id) }.map { |user| user.username }
+  end
+  add_class_method(:topic, :event_map_usernames) do |users, usernames|
+    users.select { |user| usernames.include?(user.username) }.map { |user| user.id }
+  end
   add_to_class(:topic, :event) do
     return nil unless has_event?
     event = { start: Time.at(custom_fields["event_start"]).iso8601 }
@@ -181,33 +202,61 @@ after_initialize do
     end
 
     event[:timezone] = custom_fields["event_timezone"] if custom_fields["event_timezone"].present?
-
     event[:all_day] = custom_fields["event_all_day"] if custom_fields["event_all_day"].present?
-
     event[:deadline] = custom_fields["event_deadline"] if custom_fields["event_deadline"].present?
-
     event[:version] = custom_fields["event_version"] if custom_fields["event_version"].present?
 
     if event_rsvp
       event[:rsvp] = event_rsvp
-
       event[:going_max] = event_going_max if event_going_max
 
-      event[:going] = User.find(event_going).pluck(:username) if event_going
+      user_ids = [*event_going, *event_not_going, *event_maybe_going, *event_invited]
+      users = User.where(id: user_ids)
+      event[:going] = Topic.event_map_user_ids(users, event_going) if event_going.present?
+      event[:invited] = Topic.event_map_user_ids(users, event_invited) if event_invited.present?
+      event[:maybe_going] = Topic.event_map_user_ids(
+        users,
+        event_maybe_going,
+      ) if event_maybe_going.present?
+      event[:not_going] = Topic.event_map_user_ids(
+        users,
+        event_not_going,
+      ) if event_not_going.present?
     end
 
     event
   end
 
-  Topic.has_one :event_connection, class_name: "DiscourseEvents::EventConnection"
+  Topic.has_one :event_topic, class_name: "DiscourseEvents::EventTopic"
   Topic.has_one :event_record,
-                through: :event_connection,
+                through: :event_topic,
                 source: :event,
                 class_name: "DiscourseEvents::Event"
   Topic.attr_accessor :include_excerpt
 
   add_to_serializer(:topic_view, :event, include_condition: -> { object.topic.has_event? }) do
     object.topic.event
+  end
+  add_to_serializer(
+    :topic_view,
+    :event_user,
+    include_condition: -> { object.topic.has_event? && object.topic_user.present? },
+  ) do
+    {
+      rsvp:
+        %w[going invited maybe_going not_going].find do |type|
+          object.topic.send("event_#{type}").include?(object.topic_user.user.id)
+        end,
+    }
+  end
+  add_to_serializer(
+    :topic_view,
+    :event_record,
+    include_condition: -> { object.topic.event_record.present? },
+  ) { DiscourseEvents::BasicEventSerializer.new(object.topic.event_record, root: false).as_json }
+
+  if DiscourseEvents.discourse_post_event_installed?
+    DiscoursePostEvent::EventSerializer.prepend DiscoursePostEventSerializerExtension
   end
 
   add_to_serializer(:topic_list_item, :event, include_condition: -> { object.has_event? }) do
@@ -253,10 +302,10 @@ after_initialize do
 
   on(:post_created) do |post, opts, user|
     DiscourseEvents::EventCreator.create(post, opts, user)
-    DiscourseEvents::PublishManager.perform(post, "create") unless opts[:skip_event_publication]
+    DiscourseEvents::PublishManager.publish(post, "create") unless opts[:skip_event_publication]
   end
 
-  on(:post_edited) { |post| DiscourseEvents::PublishManager.perform(post, "update") }
+  on(:post_edited) { |post| DiscourseEvents::PublishManager.publish(post, "update") }
 
   on(:approved_post) do |reviewable, post|
     event = reviewable.payload["event"]
@@ -269,6 +318,19 @@ after_initialize do
       event.each { |k, v| topic.custom_fields[k] = v }
 
       topic.save_custom_fields(true)
+    end
+  end
+
+  on(:discourse_events_rsvps_updated) do |topic|
+    DiscourseEvents::PublishManager.update_registrations(topic.first_post)
+    DiscourseEvents::PublishManager.publish(topic.first_post, "update")
+  end
+  if DiscourseEvents.discourse_post_event_installed?
+    DiscoursePostEvent::Invitee.after_commit do
+      if self.event&.post
+        DiscourseEvents::PublishManager.update_registrations(self.event.post)
+        DiscourseEvents::PublishManager.publish(self.event.post, "update")
+      end
     end
   end
 
@@ -388,6 +450,16 @@ after_initialize do
       topics
     end
   end
+
+  register_search_advanced_filter(/^without_event/) do |posts|
+    where_sql = "name = 'event_start'"
+    if DiscourseEvents.discourse_post_event_ready?
+      where_sql += "OR name = '#{DiscoursePostEvent::TOPIC_POST_EVENT_STARTS_AT}'"
+    end
+    posts.where(
+      "posts.topic_id NOT IN (SELECT topic_id FROM topic_custom_fields WHERE (#{where_sql}))",
+    )
+  end
 end
 
 on(:locations_ready) do
@@ -432,9 +504,30 @@ on(:custom_wizard_ready) do
           event_params["event_timezone"] = event["timezone"] if event["timezone"].present?
           event_params["event_rsvp"] = event["rsvp"] if event["rsvp"].present?
           event_params["event_going_max"] = event["going_max"] if event["going_max"].present?
-          event_params["event_going"] = User.where(username: event["going"]).pluck(:id) if event[
+
+          usernames = [
+            *event["going"],
+            *event["not_going"],
+            *event["maybe_going"],
+            *event["invited"],
+          ]
+          users = User.where(username: usernames)
+
+          event_params["event_going"] = Topic.event_map_usernames(users, event["going"]) if event[
             "going"
           ].present?
+          event_params["event_not_going"] = Topic.event_map_usernames(
+            users,
+            event["not_going"],
+          ) if event["not_going"].present?
+          event_params["event_maybe_going"] = Topic.event_map_usernames(
+            users,
+            event["maybe_going"],
+          ) if event["maybe_going"].present?
+          event_params["event_invited"] = Topic.event_map_usernames(
+            users,
+            event["invited"],
+          ) if event["invited"].present?
           event_params["event_version"] = 1
 
           params[:topic_opts] ||= {}
@@ -455,9 +548,12 @@ on(:user_destroyed) do |user|
 
   if topics
     topics.each do |topic|
-      rsvp_array = topic.custom_fields["event_going"] || []
-      rsvp_array.delete(user.id)
-      topic.custom_fields["event_going"] = rsvp_array
+      event_going = topic.custom_fields["event_going"] || []
+      event_invited = topic.custom_fields["event_invited"] || []
+      event_going.delete(user.id)
+      event_invited.delete(user.id)
+      topic.custom_fields["event_going"] = event_going
+      topic.custom_fields["event_invited"] = event_invited
       topic.save_custom_fields(true)
     end
   end

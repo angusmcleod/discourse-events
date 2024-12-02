@@ -1,25 +1,129 @@
-<EventsHeader @viewName={{viewName}} @message={{message}}>
-  <DButton
-    @action={{action "openDelete"}}
-    @label="admin.events.event.delete.label"
-    @title="admin.events.event.delete.title"
-    @disabled={{deleteDisabled}}
-    class="btn-danger"
-    @icon="trash-alt"
-  />
-</EventsHeader>
+<div class="admin-events-controls">
+  <nav>
+    <ul class="nav nav-pills">
+      <li class="navigation-item connected">
+        <LinkTo
+          @route="adminPlugins.events.event"
+          @query={{hash filter="connected"}}
+          title={{i18n "admin.events.event.connected.title"}}
+          class="navigation-link"
+        >
+          {{i18n
+            "admin.events.event.connected.label_with_count"
+            count=this.withTopicsCount
+          }}
+        </LinkTo>
+      </li>
+      <li class="navigation-item unconnected">
+        <LinkTo
+          @route="adminPlugins.events.event"
+          @query={{hash filter="unconnected"}}
+          title={{i18n "admin.events.event.unconnected.title"}}
+          class="navigation-link"
+        >
+          {{i18n
+            "admin.events.event.unconnected.label_with_count"
+            count=this.withoutTopicsCount
+          }}
+        </LinkTo>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="buttons">
+    {{#if this.connectedRoute}}
+      <DButton
+        @id="update-topic"
+        @action={{action "updateTopic"}}
+        @label="admin.events.event.update.title"
+        @title="admin.events.event.update.title"
+        @icon="sync"
+        @disabled={{this.updateTopicDisabled}}
+      />
+    {{/if}}
+    {{#if this.unconnectedRoute}}
+      <DButton
+        @id="connect-topic"
+        @action={{action "openConnectTopic"}}
+        @label="admin.events.event.connect.title"
+        @title="admin.events.event.connect.title"
+        @icon="plus"
+        @disabled={{this.connectTopicDisabled}}
+      />
+    {{/if}}
+    <DButton
+      @action={{action "openDelete"}}
+      @label="admin.events.event.delete.label"
+      @title="admin.events.event.delete.title"
+      @disabled={{this.deleteDisabled}}
+      class="btn-danger"
+      @icon="trash-alt"
+    />
+  </div>
+</div>
+
+<EventsMessage @viewName={{this.viewName}} @message={{this.message}} />
 
 <div class="admin-events-container">
-  {{#if hasEvents}}
-    <EventsEventTable
-      @events={{events}}
-      @page={{page}}
-      @order={{order}}
-      @asc={{asc}}
-      @modifySelection={{action "modifySelection"}}
-      @selectAll={{selectAll}}
-    />
+  {{#if this.hasEvents}}
+    <LoadMore
+      @selector=".directory-table .directory-table__cell"
+      @action={{action "loadMore"}}
+    >
+      <ResponsiveTable @className="events-event-table">
+        <:header>
+          <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
+            @field="start_time"
+            @labelKey="admin.events.event.start_time"
+            @order={{this.order}}
+            @asc={{this.asc}}
+            @automatic={{true}}
+            class="start-time"
+          />
+          <TableHeaderToggle
+            @onToggle={{this.updateOrder}}
+            @field="name"
+            @labelKey="admin.events.event.name"
+            @order={{this.order}}
+            @asc={{this.asc}}
+            @automatic={{true}}
+            class="name"
+          />
+          <div class="directory-table__column-header"></div>
+          <div class="directory-table__column-header event-actions">
+            <DButton
+              @action={{action "toggleSelectAll"}}
+              @title="admin.events.event.select_all"
+            >
+              <span class="events-selected">
+                {{#if this.selectAll}}
+                  {{i18n
+                    "admin.events.event.selected_x"
+                    count=this.selectedEventIds.length
+                  }}
+                {{else}}
+                  {{i18n "admin.events.event.select_all"}}
+                {{/if}}
+              </span>
+              {{d-icon "check-square"}}
+            </DButton>
+          </div>
+        </:header>
+        <:body>
+          {{#each this.events as |event|}}
+            <EventsEventRow
+              @event={{event}}
+              @providers={{this.providers}}
+              @modifySelection={{this.modifySelection}}
+              @showTopics={{this.showTopics}}
+            />
+          {{/each}}
+        </:body>
+      </ResponsiveTable>
+    </LoadMore>
+    <ConditionalLoadingSpinner @condition={{this.loading}} />
   {{else}}
-    <p>{{i18n "admin.events.event.none"}}</p>
+    <p>{{this.noneLabel}}</p>
   {{/if}}
 </div>

@@ -6,17 +6,40 @@ module DiscourseEvents
       true
     end
 
-    def get_event_data(post)
-      return nil unless post.topic.event.present?
-      event = post.topic.event
+    def get_client_event(post)
+      post.topic.event
+    end
 
-      Publisher::EventData.new(
+    def get_event(post)
+      event = get_client_event(post)
+      return nil if event.blank?
+
+      Publisher::Event.new(
         start_time: event[:start],
         end_time: event[:end],
         name: post.topic.title,
         description: post.topic.excerpt,
         url: event[:url],
       )
+    end
+
+    def get_registrations(post)
+      event = get_client_event(post)
+      return [] if event.blank? || event[:going].blank?
+
+      User
+        .where(username: event[:going])
+        .joins(:user_emails)
+        .where("user_emails.primary")
+        .pluck("users.id, user_emails.email as email, users.name")
+        .map do |user_going|
+          Publisher::Registration.new(
+            user_id: user_going[0],
+            email: user_going[1],
+            name: user_going[2],
+            status: "confirmed",
+          )
+        end
     end
   end
 end

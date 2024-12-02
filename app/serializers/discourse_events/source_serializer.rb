@@ -2,9 +2,18 @@
 
 module DiscourseEvents
   class SourceSerializer < ApplicationSerializer
-    attributes :id, :name, :provider_id, :source_options, :sync_type, :ready
+    attributes :id,
+               :provider_id,
+               :source_options,
+               :import_type,
+               :import_period,
+               :topic_sync,
+               :category_id,
+               :client,
+               :ready
 
     has_many :filters, serializer: FilterSerializer, embed: :objects
+    has_one :user, serializer: BasicUserSerializer, embed: :objects
 
     def source_options
       object.source_options_hash
@@ -12,6 +21,10 @@ module DiscourseEvents
 
     def ready
       object.ready?
+    end
+
+    def import_period
+      object.import_period || 0
     end
   end
 end

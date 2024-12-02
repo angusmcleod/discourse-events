@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { Input } from "@ember/component";
+import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
@@ -143,6 +144,24 @@ export default class EventForm extends Component {
   }
 
   @action
+  updateUsersGoing(usersGoing) {
+    this.usersGoing = usersGoing;
+    this.updateEvent();
+  }
+
+  @action
+  updateGoingMax(goingMax) {
+    this.goingMax = goingMax;
+    this.updateEvent();
+  }
+
+  @action
+  updateRsvpEnabled(rsvpEnabled) {
+    this.rsvpEnabled = rsvpEnabled;
+    this.updateEvent();
+  }
+
+  @action
   updateEvent() {
     const event = compileEvent({
       startDate: this.startDate,
@@ -164,6 +183,7 @@ export default class EventForm extends Component {
   eventValid(event) {
     return !event || !event.end || moment(event.end).isSameOrAfter(event.start);
   }
+
   <template>
     <div class="event-form">
       <div class="event-controls">
@@ -293,7 +313,11 @@ export default class EventForm extends Component {
       {{#if this.siteSettings.events_rsvp}}
         <div class="rsvp-controls">
           <div class="control">
-            <Input @type="checkbox" @checked={{this.rsvpEnabled}} />
+            <Input
+              @type="checkbox"
+              @checked={{this.rsvpEnabled}}
+              {{on "change" (fn this.updateRsvpEnabled this.rsvpEnabled)}}
+            />
             <span>{{i18n "add_event.rsvp_enabled"}}</span>
           </div>
 
@@ -301,14 +325,18 @@ export default class EventForm extends Component {
             <div class="rsvp-container">
               <div class="control">
                 <span>{{i18n "add_event.going_max"}}</span>
-                <Input @type="number" @value={{this.goingMax}} />
+                <Input
+                  @type="number"
+                  @value={{this.goingMax}}
+                  {{on "change" (fn this.updateGoingMax this.goingMax)}}
+                />
               </div>
 
               <div class="control full-width">
                 <span>{{i18n "add_event.going"}}</span>
                 <EmailGroupUserChooser
                   @value={{this.usersGoing}}
-                  @onChange={{action (mut this.usersGoing)}}
+                  @onChange={{this.updateUsersGoing}}
                   class="user-selector"
                   @options={{hash
                     filterPlaceholder="composer.users_placeholder"

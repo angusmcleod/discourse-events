@@ -1,27 +1,17 @@
 import Component from "@ember/component";
+import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
+import DiscourseURL from "discourse/lib/url";
 import discourseComputed from "discourse-common/utils/decorators";
-import I18n from "I18n";
-import Provider from "../models/provider";
-import EventsProviderCredentials from "./modal/events-provider-credentials";
-
-export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
-
-export const NO_AUTH_TYPES = ["icalendar"];
-
-export const OAUTH2_TYPES = ["meetup", "outlook", "google"];
-
-export const PROVIDER_TYPES = [
-  ...NO_AUTH_TYPES,
-  ...TOKEN_TYPES,
-  ...OAUTH2_TYPES,
-];
+import Provider, { OAUTH2_TYPES } from "../models/provider";
 
 export default Component.extend({
   tagName: "tr",
   classNames: ["events-provider-row"],
   attributeBindings: ["provider.id:data-provider-id"],
   modal: service(),
+  subscription: service("events-subscription"),
+  removeDisabled: not("subscription.subscribed"),
 
   didReceiveAttrs() {
     this._super();
@@ -54,22 +44,25 @@ export default Component.extend({
     "providerChanged"
   )
   saveDisabled(providerName, providerType, providerChanged) {
-    return !providerName || !providerType || !providerChanged;
+    if (!providerName || !providerChanged || !providerType) {
+      return true;
+    } else {
+      return !this.subscription.supportsFeatureValue(
+        "provider",
+        "provider_type",
+        providerType
+      );
+    }
+  },
+
+  @discourseComputed("provider.provider_type", "provider.inSubscription")
+  canSave(providerType, inSubscription) {
+    return inSubscription && providerType !== "icalendar";
   },
 
   @discourseComputed("providerChanged")
   saveClass(providerChanged) {
     return providerChanged ? "save-provider btn-primary" : "save-provider";
-  },
-
-  @discourseComputed
-  providerTypes() {
-    return PROVIDER_TYPES.map((type) => {
-      return {
-        id: type,
-        name: I18n.t(`admin.events.provider.provider_type.${type}`),
-      };
-    });
   },
 
   @discourseComputed(
@@ -86,23 +79,38 @@ export default Component.extend({
     return authenticateDisabled ? "" : "btn-primary";
   },
 
-  @discourseComputed("provider.provider_type")
-  canAuthenicate(providerType) {
-    return providerType && OAUTH2_TYPES.includes(providerType);
+  @discourseComputed("provider.provider_type", "provider.inSubscription")
+  canAuthenicate(providerType, inSubscription) {
+    return (
+      inSubscription && providerType && OAUTH2_TYPES.includes(providerType)
+    );
   },
 
   @discourseComputed("provider.provider_type")
-  noCredentials(providerType) {
-    return !providerType || NO_AUTH_TYPES.includes(providerType);
+  providerLogo(providerType) {
+    return `/plugins/discourse-events/logos/${providerType}.svg`;
+  },
+
+  @discourseComputed("subscription.features.provider", "provider.provider_type")
+  supportedSubscriptions(subscriptionProviders, providerType) {
+    if (!subscriptionProviders) {
+      return [];
+    }
+    const subscriptions = subscriptionProviders["provider_type"][providerType];
+    return Object.keys(subscriptions).filter((type) => subscriptions[type]);
+  },
+
+  @discourseComputed("provider.status")
+  showAuthenticate(providerStatus) {
+    return providerStatus && providerStatus === "not_authenticated";
+  },
+
+  @discourseComputed("provider.status")
+  showUpgradeSubscription(providerStatus) {
+    return providerStatus && providerStatus === "not_in_subscription";
   },
 
   actions: {
-    openCredentials() {
-      this.modal.show(EventsProviderCredentials, {
-        model: this.get("provider"),
-      });
-    },
-
     saveProvider() {
       const provider = JSON.parse(JSON.stringify(this.provider));
 
@@ -133,6 +141,10 @@ export default Component.extend({
 
     authenticateProvider() {
       window.location.href = `/admin/plugins/events/provider/${this.provider.id}/authorize`;
+    },
+
+    upgradeSubscription() {
+      DiscourseURL.routeTo(this.subscription.upgradePath);
     },
   },
 });

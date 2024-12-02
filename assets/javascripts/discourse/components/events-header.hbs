@@ -1,9 +1,9 @@
 <div class="admin-events-controls">
-  <h2>{{title}}</h2>
+  <h2>{{this.title}}</h2>
 
   <div class="buttons">
     {{yield}}
   </div>
 </div>
 
-<EventsMessage @viewName={{viewName}} @message={{message}} />
+<EventsMessage @viewName={{this.viewName}} @message={{this.message}} />

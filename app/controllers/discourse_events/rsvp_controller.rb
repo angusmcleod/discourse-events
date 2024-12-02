@@ -1,48 +1,30 @@
 # frozen_string_literal: true
 class DiscourseEvents::RsvpController < ApplicationController
-  attr_accessor :topic
-  before_action :check_user_and_find_topic, only: %i[add remove]
-  before_action :check_if_rsvp_enabled, except: [:users]
+  before_action :find_user, only: %i[update]
+  before_action :find_topic
+  before_action :ensure_enabled
+  before_action :set_user_ids
 
+  SUPPORTED_TYPES = %w[going not_going maybe_going invited].freeze
   requires_plugin DiscourseEvents::PLUGIN_NAME
 
-  def add
-    prop = Hash.new
-    prop[:key] = "event_#{rsvp_params[:type]}".freeze
-
-    list = @topic.send(prop[:key]) || []
-
-    if @topic.event_going_max && list.length >= @topic.event_going_max
+  def update
+    if @type == "going" && @topic.event_going_max && @user_ids.length >= @topic.event_going_max
       raise I18n.t("event_rsvp.errors.going_max")
     end
 
-    list.push(User.find_by(username: rsvp_params[:usernames].first).id)
-
-    @topic.custom_fields[prop[:key]] = list
-    prop[:value] = User.find(list).pluck(:username)
-
-    if topic.save_custom_fields(true)
-      push_update(topic, prop)
-
-      render json: success_json
-    else
-      render json: failed_json
+    SUPPORTED_TYPES.each do |type|
+      @topic.custom_fields["event_#{type}"] ||= []
+      @topic.custom_fields["event_#{type}"].reject! { |user_id| user_id == @user.id }
     end
-  end
 
-  def remove
-    prop = Hash.new
-    prop[:key] = "event_#{rsvp_params[:type]}".freeze
+    if @type.present?
+      @user_ids.push(@user.id)
+      @topic.custom_fields["event_#{@type}"] = @user_ids.uniq
+    end
 
-    list = @topic.send(prop[:key]) || []
-    list.delete(User.find_by(username: rsvp_params[:usernames].first).id)
-
-    @topic.custom_fields[prop[:key]] = list
-    prop[:value] = User.find(list).pluck(:username)
-
-    if topic.save_custom_fields(true)
-      push_update(topic, prop)
-
+    if @topic.save_custom_fields(true)
+      push_update
       render json: success_json
     else
       render json: failed_json
@@ -50,47 +32,52 @@ class DiscourseEvents::RsvpController < ApplicationController
   end
 
   def users
-    if rsvp_params[:usernames].present?
-      begin
-        users = User.where(username: rsvp_params[:usernames])
-        render_json_dump(success_json.merge(users: serialize_data(users, BasicUserSerializer)))
-      rescue StandardError
-        render_json_dump "[]"
-      end
-    else
-      render_json_dump "[]"
-    end
+    render_serialized(User.where(id: @user_ids), BasicUserSerializer, root: "users")
   end
 
   private
 
   def rsvp_params
-    params.permit(:topic_id, :type, usernames: [])
+    params.permit(:topic_id, :type, :username)
   end
 
-  def check_user_and_find_topic
-    raise Discourse::InvalidAccess.new unless User.exists?(username: rsvp_params[:usernames].first)
+  def set_user_ids
+    @type = params[:type]
 
-    if topic = Topic.find_by(id: rsvp_params[:topic_id])
-      @topic = topic
-    else
-      raise Discourse::NotFound.new
+    if @type.present?
+      raise Discourse::InvalidParameters.new(:type) if SUPPORTED_TYPES.exclude?(@type)
+      @user_ids = @topic.send("event_#{@type}")
     end
   end
 
-  def check_if_rsvp_enabled
-    unless SiteSetting.events_rsvp && @topic.event_rsvp
-      raise I18n.t("event_rsvp.errors.not_enabled")
-    end
+  def find_user
+    @user = User.find_by(username: rsvp_params[:username])
+    raise Discourse::NotFound.new(:username) if @user.blank?
   end
 
-  def push_update(topic, prop)
-    channel = "/calendar-events/#{topic.id}"
+  def find_topic
+    @topic = Topic.find_by(id: rsvp_params[:topic_id])
+    raise Discourse::NotFound.new(:topic_id) if @topic.blank?
+  end
 
-    msg = { current_user_id: current_user.id, updated_at: Time.now, type: "rsvp" }
+  def ensure_enabled
+    raise I18n.t("event_rsvp.errors.not_enabled") unless rsvp_enabled?
+  end
 
-    msg[prop[:key]] = prop[:value]
+  def rsvp_enabled?
+    SiteSetting.events_rsvp && @topic && @topic.event_rsvp
+  end
 
-    MessageBus.publish(channel, msg)
+  def push_update
+    msg = {
+      updated_at: Time.now,
+      type: "rsvp",
+      rsvp: {
+        type: @type,
+        usernames: User.where(id: @user_ids).pluck(:username),
+      },
+    }
+    MessageBus.publish("/discourse-events/#{@topic.id}", msg)
+    DiscourseEvent.trigger(:discourse_events_rsvps_updated, @topic)
   end
 end

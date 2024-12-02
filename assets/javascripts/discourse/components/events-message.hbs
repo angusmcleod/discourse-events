@@ -1,11 +1,11 @@
 <div class="message-block primary">
-  {{#if showIcon}}
-    {{d-icon icon}}
+  {{#if this.showIcon}}
+    {{d-icon this.icon}}
   {{/if}}
-  <span class="message-content">{{html-safe text}}</span>
-  {{#if hasItems}}
+  <span class="message-content">{{html-safe this.text}}</span>
+  {{#if this.hasItems}}
     <ul>
-      {{#each items as |item|}}
+      {{#each this.items as |item|}}
         <li>
           <span>{{d-icon item.icon}}</span>
           <span>{{html-safe item.html}}</span>
@@ -15,12 +15,12 @@
   {{/if}}
 </div>
 
-{{#if showDocumentation}}
+{{#if this.showDocumentation}}
   <div class="message-block">
     {{d-icon "question-circle"}}
 
-    <a href={{documentationUrl}} target="_blank" rel="noopener noreferrer">
-      {{documentation}}
+    <a href={{this.documentationUrl}} target="_blank" rel="noopener noreferrer">
+      {{this.documentation}}
     </a>
   </div>
 {{/if}}

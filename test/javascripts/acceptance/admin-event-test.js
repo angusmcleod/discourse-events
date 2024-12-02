@@ -5,9 +5,17 @@ import {
   exists,
   query,
 } from "discourse/tests/helpers/qunit-helpers";
+import { default as Subscriptions } from "../fixtures/subscription-fixtures";
+import { default as Suppliers } from "../fixtures/supplier-fixtures";
 
 function sourceRoutes(needs) {
   needs.pretender((server, helper) => {
+    server.get("/admin/plugins/events/subscription", () => {
+      return helper.response(Subscriptions["business"]);
+    });
+    server.get("/admin/plugins/subscription-client/suppliers", () => {
+      return helper.response(Suppliers["authorized"]);
+    });
     server.get("/admin/plugins/events", () => {
       return helper.response({});
     });
@@ -39,6 +47,14 @@ function sourceRoutes(needs) {
             },
           },
         ],
+        providers: [
+          {
+            id: 1,
+            name: "my_provider",
+            provider_type: "google",
+            authenticated: true,
+          },
+        ],
         page: 1,
       });
     });
@@ -58,12 +74,6 @@ acceptance("Events | Event", function (needs) {
     await visit("/admin/plugins/events/event");
 
     assert.ok(exists(".events.event"), "it shows the event route");
-
-    assert.equal(
-      query(".admin-events-controls h2").innerText.trim(),
-      "Events",
-      "title displayed"
-    );
 
     assert.equal(
       query(".events-event-row .name").innerText.trim(),

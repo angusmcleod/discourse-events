@@ -3,28 +3,28 @@
 <div class="header">
   <div class="events-calendar-navigation">
     <DButton
-      @label={{todayLabel}}
+      @label={{this.todayLabel}}
       @action={{action "today"}}
       @icon="far-calendar"
     />
     <DButton @icon="chevron-left" @action={{action "monthPrevious"}} />
     <DButton @icon="chevron-right" @action={{action "monthNext"}} />
     <ComboBox
-      @content={{months}}
-      @value={{month}}
+      @content={{this.months}}
+      @value={{this.month}}
       class="month-dropdown"
-      @onChange={{action (mut month)}}
+      @onChange={{action (mut this.month)}}
     />
     <ComboBox
-      @content={{years}}
-      @value={{year}}
+      @content={{this.years}}
+      @value={{this.year}}
       class="year-dropdown"
-      @onChange={{action (mut year)}}
+      @onChange={{action (mut this.year)}}
     />
   </div>
-  {{#if showSubscription}}
+  {{#if this.showSubscription}}
     <div class="events-calendar-subscription-links">
-      {{#if showNotice}}
+      {{#if this.showNotice}}
         <DButton
           @href="/my/preferences/webcal-keys"
           @title="webcal_preferences.calendar_notice"
@@ -32,16 +32,16 @@
         />
       {{/if}}
       <DButton
-        @href={{webcalDocumentationURL}}
+        @href={{this.webcalDocumentationURL}}
         @title="webcal_preferences.calendar_usage"
         @icon="question-circle"
       />
       <EventsCalendarSubscription
-        @category={{category}}
-        @userApiKeys={{userApiKeys}}
+        @category={{this.category}}
+        @userApiKeys={{this.userApiKeys}}
         @onChange={{action "changeSubscription"}}
         @options={{hash
-          showFullTitle=showFullTitle
+          showFullTitle=this.showFullTitle
           icon="rss"
           none="events_calendar.subscribe"
         }}
@@ -50,19 +50,19 @@
   {{/if}}
 </div>
 <EventsCalendarBody
-  @days={{days}}
-  @topics={{topics}}
-  @currentMonth={{currentMonth}}
-  @currentDate={{currentDate}}
+  @days={{this.days}}
+  @topics={{this.topics}}
+  @currentMonth={{this.currentMonth}}
+  @currentDate={{this.currentDate}}
   @selectDate={{action "selectDate"}}
-  @canSelectDate={{canSelectDate}}
-  @showEvents={{showEvents}}
-  @responsive={{responsive}}
+  @canSelectDate={{this.anSelectDate}}
+  @showEvents={{this.showEvents}}
+  @responsive={{this.responsive}}
 />
-{{#if eventsBelow}}
+{{#if this.eventsBelow}}
   <div class="events-below">
     <ul class="events-calendar-events">
-      {{#each dateEvents as |event|}}
+      {{#each this.dateEvents as |event|}}
         <li><EventsCalendarCard @event={{event}} /></li>
       {{/each}}
     </ul>

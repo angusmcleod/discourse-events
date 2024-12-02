@@ -7,15 +7,17 @@
   <:body>
     <div class="header">
       <ul class="types nav nav-pills">
-        <li>
-          <a
-            href
-            {{on "click" (fn this.setType "going")}}
-            class={{this.goingNavClass}}
-          >
-            {{i18n "event_rsvp.going.label"}}
-          </a>
-        </li>
+        {{#each this.rsvpTypes as |rsvpType|}}
+          <li>
+            <a
+              href
+              {{on "click" (fn this.setType rsvpType)}}
+              class={{if (eq this.type rsvpType) "active"}}
+            >
+              {{i18n (concat "event_rsvp." rsvpType ".label")}}
+            </a>
+          </li>
+        {{/each}}
       </ul>
     </div>
     <div class="list">

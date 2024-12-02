@@ -4,8 +4,9 @@ import { action } from "@ember/object";
 import I18n from "I18n";
 
 export default class AddEvent extends Component {
-  @tracked bufferedEvent = this.args.model.event;
+  @tracked bufferedEvent = this.model.event;
   title = I18n.t("add_event.modal_title");
+  valid = true;
 
   @action
   clear() {

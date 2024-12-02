@@ -2,18 +2,31 @@
 
 module DiscourseEvents
   class ImportManager
+    include Subscription
+
     attr_reader :source, :logger
     attr_accessor :imported_event_uids, :created_event_uids, :updated_event_uids
 
     def initialize(source)
       @source = source
       @logger = Logger.new(:import)
+    end
 
-      OmniEvent.config.logger = @logger
-      OmniEvent::Builder.new { provider source.provider.provider_type, source.provider.options }
+    def ready?
+      @ready ||= false
+    end
+
+    def setup
+      return false unless subscribed? && source&.import_ready?
+      _provider = source.provider
+      ::OmniEvent.config.logger = @logger
+      ::OmniEvent::Builder.new { provider _provider.provider_type, _provider.options }
+      @ready = true
     end
 
     def import(opts = {})
+      return false unless ready?
+
       opts.merge!(debug: Rails.env.development?)
 
       imported_events = {}
@@ -24,6 +37,8 @@ module DiscourseEvents
           data[:status] = "published" if data[:status].blank?
           data[:series_id] = imported_event.metadata.series_id
           data[:occurrence_id] = imported_event.metadata.occurrence_id
+          data[:registrations] = imported_event.associated_data&.registrations
+          data[:virtual_location] = imported_event.associated_data&.virtual_location
 
           imported_events[imported_event.metadata.uid] = data
         end
@@ -36,17 +51,37 @@ module DiscourseEvents
         imported_events.each do |uid, data|
           event_source = source.event_sources.find_by(uid: uid)
 
-          if event_source
-            event_source.event.update!(data)
+          formatted_data = format_event_data(data)
 
+          if event_source
+            event_source.event.update!(formatted_data)
             updated_event_uids << event_source.uid
           else
             ActiveRecord::Base.transaction do
-              event = Event.create!(data)
+              event = Event.create!(formatted_data)
               event_source = EventSource.create!(uid: uid, event_id: event.id, source_id: source.id)
             end
 
             created_event_uids << event_source.uid
+          end
+
+          if event_source.event.id && data[:registrations].present?
+            registrations =
+              data[:registrations].map do |registration|
+                result = {
+                  event_id: event_source.event.id,
+                  email: registration[:email],
+                  uid: registration[:uid],
+                  name: registration[:name],
+                  status: nil,
+                }
+                if registration[:status] &&
+                     EventRegistration.statuses.keys.include?(registration[:status])
+                  result[:status] = EventRegistration.statuses[registration[:status]]
+                end
+                result
+              end
+            EventRegistration.upsert_all(registrations, unique_by: %i[event_id email])
           end
         end
       end
@@ -55,18 +90,34 @@ module DiscourseEvents
         message =
           I18n.t(
             "log.import_finished",
-            source_name: source.name,
+            provider_type: source.provider.provider_type,
             events_count: imported_event_uids.count,
             created_count: created_event_uids.count,
             updated_count: updated_event_uids.count,
           )
         logger.send(:info, message)
+
+        source.after_import
       end
     end
 
+    def format_event_data(data)
+      formatted_data = data.except(:registrations, :virtual_location)
+
+      if data[:virtual_location].present? && data[:virtual_location][:entry_points].present?
+        video_entry_point =
+          data[:virtual_location][:entry_points].find { |ep| ep[:type] == "video" }
+
+        formatted_data[:video_url] = video_entry_point["uri"] if video_entry_point
+      end
+
+      formatted_data
+    end
+
     def self.import(source)
-      return unless source&.ready? && source.import?
       manager = self.new(source)
+      manager.setup
+      return unless manager.ready?
 
       opts = source.source_options_with_fixed
       opts[:from_time] = source.from_time if source.from_time.present?
@@ -78,7 +129,7 @@ module DiscourseEvents
 
     def self.import_source(source_id)
       source = Source.find_by(id: source_id)
-      return unless source.present?
+      return if source.blank?
       import(source)
     end
 

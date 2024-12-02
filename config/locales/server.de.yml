@@ -30,9 +30,7 @@ de:
     events_hamburger_menu_agenda_link: "Im Hamburger Menü Link zur Agenda (alle Kategorien) hinzufügen."
     events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen zu erstellen."
     events_rsvp: "Gästeliste aktivieren"
-    events_update_automatically: "Importiere automatisch alle Quellen und synchronisiere alle Verbindungen."
-    events_update_automatically_period_mins: "Der Zeitraum in Minuten zwischen den automatisch aktualisierten Veranstaltungen. HINWEIS: erfordert einen Neustart."
-    events_split_series_into_different_topics: "Für jede Veranstaltung in einer Reihe wird ein eigenes Thema erstellt."
+    events_one_event_per_series: "Für jede Veranstaltung in einer Reihe wird ein eigenes Thema erstellt."
     events_allow_moderator_management: "Erlaube Moderatoren, Veranstaltungen zu verwalten."
     events_add_default_end_time: "Füge eine Standardendzeit für Veranstaltungen hinzu."
 
@@ -55,6 +53,6 @@ de:
     scopes:
       calendar_events: "Veranstaltungen Plugin webcal"
   log:
-    import_finished: "Der Import von %{source_name} ist abgeschlossen. Hat %{events_count} Veranstaltungen abgerufen, %{created_count} Veranstaltungen erstellt und %{updated_count} Veranstaltungen aktualisiert."
-    sync_finished: "Die Synchronisierung von %{source_name} mit %{category_name} wurde abgeschlossen. Erstellte %{created_count} Themen und aktualisierte %{updated_count} Themen für das %{client_name} Plugin."
-    sync_client_not_ready: "Synchronisierung von %{source_name} mit %{category_name} fehlgeschlagen. Das Plugin %{client_name} ist nicht bereit."
+    import_finished: "Der Import von %{provider_type} ist abgeschlossen. Hat %{events_count} Veranstaltungen abgerufen, %{created_count} Veranstaltungen erstellt und %{updated_count} Veranstaltungen aktualisiert."
+    sync_finished: "Die Synchronisierung von %{provider_type} mit %{category_name} wurde abgeschlossen. Erstellte %{created_count} Themen und aktualisierte %{updated_count} Themen für das %{client_name} Plugin."
+    sync_client_not_ready: "Synchronisierung von %{provider_type} mit %{category_name} fehlgeschlagen. Das Plugin %{client_name} ist nicht bereit."

@@ -2,23 +2,16 @@
 
 require "rails_helper"
 
-describe DiscourseEvents::DiscourseEventsSyncer do
-  subject { DiscourseEvents::DiscourseEventsSyncer }
+describe DiscourseEvents::Syncer::DiscourseEvents do
+  subject { DiscourseEvents::Syncer::DiscourseEvents }
 
-  fab!(:source) { Fabricate(:discourse_events_source) }
-  fab!(:event) { Fabricate(:discourse_events_event) }
-  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
   fab!(:category)
   fab!(:user)
-  fab!(:connection) do
-    Fabricate(
-      :discourse_events_connection,
-      source: source,
-      category: category,
-      user: user,
-      client: "discourse_events",
-    )
+  fab!(:source) do
+    Fabricate(:discourse_events_source, category: category, user: user, client: "discourse_events")
   end
+  fab!(:event) { Fabricate(:discourse_events_event) }
+  fab!(:event_source) { Fabricate(:discourse_events_event_source, event: event, source: source) }
 
   before do
     category.custom_fields["events_enabled"] = true
@@ -28,11 +21,11 @@ describe DiscourseEvents::DiscourseEventsSyncer do
   end
 
   def sync_events(opts = {})
-    syncer = subject.new(user, connection)
+    syncer = subject.new(user: user, source: source, client: "discourse_events")
     syncer.sync(opts)
 
     event.reload
-    Topic.find(event.event_connections.first.topic_id)
+    Topic.find(event.event_topics.first.topic_id)
   end
 
   it "creates client event data" do
@@ -61,5 +54,28 @@ describe DiscourseEvents::DiscourseEventsSyncer do
     expect(topic.fancy_title).to eq(new_name)
     expect(topic.custom_fields["event_start"]).to eq(new_start_time.to_i)
     expect(topic.custom_fields["event_end"]).to eq(new_end_time.to_i)
+  end
+
+  context "with event registrations" do
+    fab!(:event_registration1) do
+      Fabricate(:discourse_events_event_registration, event: event, user: user, status: "confirmed")
+    end
+
+    it "creates event rsvps" do
+      topic = sync_events
+      expect(topic.event_going).to include(user.id)
+    end
+  end
+
+  context "with url" do
+    before do
+      event.url = "https://event.com/12345"
+      event.save!
+    end
+
+    it "creates topic with event url as the featured link" do
+      topic = sync_events
+      expect(topic.featured_link).to eq("https://event.com/12345")
+    end
   end
 end

@@ -23,7 +23,15 @@ module DiscourseEvents
       OmniEvent.destroy_event(provider.provider_type, omnievent_opts("destroy", data, opts))
     end
 
-    def get_event_data(post)
+    def get_client_event(post)
+      raise NotImplementedError
+    end
+
+    def get_event(post)
+      raise NotImplementedError
+    end
+
+    def get_registrations(post)
       raise NotImplementedError
     end
 
@@ -34,7 +42,7 @@ module DiscourseEvents
     end
 
     def event_hash(type, data)
-      raise ArgumentError.new "No event data" unless data.is_a?(EventData)
+      raise ArgumentError.new "No event data" unless data.is_a?(Event)
       event = data.event_hash(type, provider.provider_type)
       raise ArgumentError.new "Invalid event data" unless event.valid?
       event

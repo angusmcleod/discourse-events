@@ -1,0 +1,87 @@
+<DModal
+  class="events-connect-topic-modal"
+  @title={{i18n "admin.events.event.connect.title"}}
+  @closeModal={{@closeModal}}
+  @flash={{this.flash}}
+>
+  <:body>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.event"}}</label>
+      <span class="event-label">{{this.model.event.name}}</span>
+    </div>
+    <div class="control-group">
+      <label>{{i18n "admin.events.event.connect.connect_topic"}}</label>
+      <TopicChooser
+        @value={{this.topicId}}
+        @onChange={{action (mut this.topicId)}}
+        @options={{hash
+          additionalFilters="without_event"
+          disabled=this.createTopic
+        }}
+      />
+    </div>
+    <div class="control-group">
+      <label class="checkbox-label">
+        <Input
+          @type="checkbox"
+          @checked={{this.createTopic}}
+          disabled={{this.topicId}}
+        />
+        {{i18n "admin.events.event.connect.create_topic"}}
+      </label>
+    </div>
+
+    {{#if this.createTopic}}
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.client"}}</label>
+        <EventsSubscriptionSelector
+          @value={{this.client}}
+          @feature="source"
+          @attribute="client"
+          @onChange={{action (mut this.client)}}
+          @allowedValues={{this.allowedClientValues}}
+          class="connection-client"
+          options={{hash none="admin.events.connection.client.select"}}
+        />
+      </div>
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.category"}}</label>
+        <EventsCategoryChooser
+          @value={{this.category_id}}
+          class="connect-category"
+          @client={{this.client}}
+          onChange={{action (mut this.category_id)}}
+          @options={{hash disabled=this.topicId}}
+        />
+      </div>
+      <div class="control-group">
+        <label>{{i18n "admin.events.event.connect.user"}}</label>
+        <UserChooser
+          @value={{this.username}}
+          @onChange={{action (mut this.username)}}
+          class="connect-user"
+          @options={{hash
+            maximum=1
+            excludeCurrentUser=false
+            disabled=this.topicId
+          }}
+        />
+      </div>
+    {{/if}}
+  </:body>
+  <:footer>
+    <DButton
+      class="btn-primary"
+      @action={{action "connectTopic"}}
+      @label="admin.events.event.connect.label"
+      disabled={{this.connectDisabled}}
+    />
+    <DButton
+      class="btn-danger"
+      @label="cancel"
+      @action={{action "cancel"}}
+      disabled={{this.connecting}}
+    />
+    <ConditionalLoadingSpinner @condition={{this.connecting}} @size="small" />
+  </:footer>
+</DModal>

@@ -8,6 +8,8 @@ module DiscourseEvents
       render_json_dump(
         sources: serialize_data(Source.all, SourceSerializer, root: false),
         providers: serialize_data(Provider.all, ProviderSerializer, root: false),
+        source_options: source_options,
+        import_periods: import_periods,
       )
     end
 
@@ -18,12 +20,14 @@ module DiscourseEvents
         @model =
           Source.create(
             source_params.slice(
-              :name,
               :provider_id,
-              :status,
-              :taxonomy,
               :source_options,
-              :sync_type,
+              :import_period,
+              :import_type,
+              :topic_sync,
+              :category_id,
+              :user_id,
+              :client,
             ),
           )
 
@@ -50,12 +54,14 @@ module DiscourseEvents
           Source.update(
             params[:id],
             source_params.slice(
-              :name,
               :provider_id,
-              :status,
-              :taxonomy,
               :source_options,
-              :sync_type,
+              :import_period,
+              :import_type,
+              :topic_sync,
+              :category_id,
+              :user_id,
+              :client,
             ),
           )
 
@@ -78,7 +84,16 @@ module DiscourseEvents
       source = Source.find_by(id: params[:id])
       raise Discourse::InvalidParameters.new(:id) unless source
 
-      ::Jobs.enqueue(:discourse_events_import_source, source_id: source.id)
+      ::Jobs.enqueue(:discourse_events_import_events, source_id: source.id)
+
+      render json: success_json
+    end
+
+    def topics
+      source = Source.find_by(id: params[:id])
+      raise Discourse::InvalidParameters.new(:id) unless source
+
+      ::Jobs.enqueue(:discourse_events_create_topics, source_id: source.id)
 
       render json: success_json
     end
@@ -96,19 +111,61 @@ module DiscourseEvents
     def source_params
       @source_params ||=
         begin
-          params
-            .require(:source)
-            .permit(
-              :name,
-              :provider_id,
-              :status,
-              :taxonomy,
-              :sync_type,
-              source_options: {
-              },
-              filters: %i[id query_column query_operator query_value],
-            )
-            .to_h
+          result =
+            params
+              .require(:source)
+              .permit(
+                :provider_id,
+                :import_period,
+                :import_type,
+                :topic_sync,
+                :category_id,
+                :username,
+                :client,
+                source_options: {
+                },
+                filters: %i[id query_column query_operator query_value],
+              )
+              .to_h
+
+          if result[:import_type].present? &&
+               Source.import_types.keys.exclude?(result[:import_type])
+            raise Discourse::InvalidParameters.new(:import_type)
+          end
+
+          if result[:topic_sync].present? && Source.topic_syncs.keys.exclude?(result[:topic_sync])
+            raise Discourse::InvalidParameters.new(:topic_sync)
+          end
+
+          unless subscription_manager.supports?(:source, :import_type, result[:import_type])
+            raise Discourse::InvalidParameters,
+                  "import #{result[:import_type]} is not supported by your subscription"
+          end
+
+          unless subscription_manager.supports?(:source, :client, result[:client])
+            raise Discourse::InvalidParameters,
+                  "client #{result[:client]} is not supported by your subscription"
+          end
+
+          user = nil
+          if result[:username]
+            user = User.find_by(username: result[:username])
+            raise Discourse::InvalidParameters.new(:username) if user.blank?
+            result[:user_id] = user.id
+          else
+            result[:user_id] = nil
+          end
+
+          if result[:client] == "discourse_calendar"
+            if !SiteSetting.calendar_enabled || !SiteSetting.discourse_post_event_enabled
+              raise Discourse::InvalidParameters, "Discourse Calendar is not enabled"
+            end
+            if user && !user.can_create_discourse_post_event?
+              raise Discourse::InvalidParameters, "User cannot create events for Discourse Calendar"
+            end
+          end
+
+          result
         end
     end
 
@@ -122,6 +179,29 @@ module DiscourseEvents
             has_keys && has_values
           end
         end
+    end
+
+    def source_options
+      @source_options ||=
+        begin
+          DiscourseEvents::Source::SOURCE_OPTIONS.each_with_object(
+            {},
+          ) do |(provider, attrs), result|
+            result[provider] = []
+            attrs.each do |attr, val|
+              number = val == /\d/
+              result[provider] << {
+                name: attr,
+                type: number ? "number" : "text",
+                default: number ? nil : "",
+              }
+            end
+          end
+        end
+    end
+
+    def import_periods
+      @import_periods ||= { none: 0 }.merge(DiscourseEvents::Source::IMPORT_PERIODS)
     end
   end
 end
