@@ -4,7 +4,7 @@ module DiscourseEvents
     PRODUCTS = {
       community: "Community Events",
       business: "Business Events",
-      enterprise: "Enterprise Events"
+      enterprise: "Enterprise Events",
     }.freeze
 
     BUCKETS = {
