@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 module DiscourseEvents
   class SubscriptionManager
-    PRODUCTS = { community: "Community", business: "Business", enterprise: "Enterprise" }.freeze
+    PRODUCTS = {
+      community: "Community Events",
+      business: "Business Events",
+      enterprise: "Enterprise Events"
+    }.freeze
 
     BUCKETS = {
       community: "discourse-events-gems-community",
