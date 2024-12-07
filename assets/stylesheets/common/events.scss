@@ -690,3 +690,27 @@ ul.events-webcal-notices {
     background-color: var(--success);
   }
 }
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 768px) {
+  .events-calendar-body {
+    .day {
+      height: 80px;
+    }
+  }
+
+  .events-calendar-navigation {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .events-calendar-subscription-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .select-kit.month-dropdown,
+  .select-kit.year-dropdown {
+    width: 100%;
+  }
+}
