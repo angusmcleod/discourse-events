@@ -41,5 +41,16 @@ export default {
           : localeFirst;
       controller.set("model.custom_fields.calendar_first_day_week", first);
     }
+
+    // Update the custom field when the user changes their preference
+    component.addObserver(
+      "controller.model.custom_fields.calendar_first_day_week",
+      function () {
+        const newFirstDay = controller.get(
+          "model.custom_fields.calendar_first_day_week"
+        );
+        controller.set("model.calendar_first_day_week", newFirstDay);
+      }
+    );
   },
 };
