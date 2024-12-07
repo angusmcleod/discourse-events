@@ -204,8 +204,9 @@ function eventCalculations(day, start, end) {
 const allowedFirstDays = [6, 0, 1]; // Saturday, Sunday, Monday
 function firstDayOfWeek() {
   const user = User.current();
-  return user && allowedFirstDays.indexOf(user.calendar_first_day_week) > -1
-    ? user.calendar_first_day_week
+  const customFirstDay = user && user.custom_fields && user.custom_fields.calendar_first_day_week;
+  return customFirstDay && allowedFirstDays.indexOf(customFirstDay) > -1
+    ? customFirstDay
     : moment().weekday(0).day();
 }
 
