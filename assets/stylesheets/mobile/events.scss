@@ -93,3 +93,12 @@
 body.calendar {
   -webkit-tap-highlight-color: transparent;
 }
+
+.events-calendar-navigation {
+  display: flex;
+  flex-direction: row; /* Already set to row */
+  flex-wrap: nowrap; /* Ensure items stay in one row */
+  justify-content: flex-start; /* Align items to the start */
+  align-items: center; /* Align items vertically in the center */
+  gap: 10px; /* Optional: Add spacing between items */
+}
