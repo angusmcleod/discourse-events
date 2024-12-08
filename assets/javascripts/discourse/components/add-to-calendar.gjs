@@ -32,7 +32,7 @@ export default class AddToCalendar extends Component {
   <template>
     <DMenu
       @identifier="add-to-calendar"
-      @icon="far-calendar-plus"
+      @icon="calendar-plus"
       @label={{i18n "add_to_calendar.label"}}
       @autofocus={{true}}
     >
