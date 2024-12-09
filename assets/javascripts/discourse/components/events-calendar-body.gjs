@@ -7,8 +7,16 @@ export default class EventsCalendarBody extends Component {
     let data = moment.localeData();
     let weekdays = this.args.responsive ? data.weekdaysMin() : data.weekdays();
     let firstDay = firstDayOfWeek();
-    let beforeFirst = weekdays.splice(0, firstDay);
-    weekdays.push(...beforeFirst);
+
+    // Create a copy of the array before splicing to avoid modifying the original
+    weekdays = [...weekdays];
+
+    // If firstDay is not 0 (Sunday), rotate the array
+    if (firstDay > 0) {
+      let beforeFirst = weekdays.splice(0, firstDay);
+      weekdays.push(...beforeFirst);
+    }
+
     return weekdays;
   }
 
