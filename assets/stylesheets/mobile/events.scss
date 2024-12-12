@@ -38,6 +38,21 @@
   padding-right: 0;
 }
 
+.add-event-modal .event-form {
+  .date-time-card {
+    width: 100%;
+    padding: 0 0 20px 0;
+  }
+
+  .datetime-controls {
+    flex-direction: column;
+
+    .end-card {
+      border-left: unset;
+    }
+  }
+}
+
 .event-details {
   align-items: center;
 
