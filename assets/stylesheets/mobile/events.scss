@@ -93,3 +93,45 @@
 body.calendar {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Add Event Layout */
+.datetime-controls,
+.date-time-set {
+  display: flex;
+  flex-direction: column; /* Stack sections vertically */
+}
+
+/* Date and Time Areas */
+.date-area,
+.time-area {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box; /* Include padding in width/height */
+}
+
+.date-area label,
+.time-area label {
+  font-weight: bold; /* Emphasize labels */
+  margin-bottom: 4px; /* Add space below labels */
+}
+
+.date-area input,
+.time-area details {
+  padding: 8px; /* Add internal spacing for inputs and dropdowns */
+}
+
+/* Event Controls */
+.event-controls {
+  display: flex;
+  flex-wrap: wrap; /* Enable wrapping for controls */
+}
+
+.event-controls .control {
+  flex: 1 1 auto; /* Flexible controls, side-by-side */
+  min-width: 150px; /* Minimum width for controls */
+}
+
+.event-controls .control.full-width {
+  flex: 1 1 100%; /* Full-width control spans entire row */
+}
