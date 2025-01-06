@@ -44,8 +44,8 @@ class ConsolidateEventsDataModel < ActiveRecord::Migration[7.1]
     end
 
     execute "
-      INSERT INTO discourse_events_event_topics (topic_id, event_id, client, series_id)
-      SELECT ec.topic_id, ec.event_id, ec.client, ec.series_id
+      INSERT INTO discourse_events_event_topics (topic_id, event_id, client, series_id, created_at, updated_at)
+      SELECT ec.topic_id, ec.event_id, ec.client, ec.series_id, ec.created_at, ec.updated_at
       FROM discourse_events_event_connections ec
     "
 
