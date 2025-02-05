@@ -9,7 +9,6 @@ pt_BR:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato para rótulos de eventos."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato de rótulo para listas de eventos."
     events_event_label_short_only_start: "Mostrar apenas data de início no rótulo dos eventos na lista de tópicos. "
-    events_event_label_short_after_title: "Inserir rótulo dos eventos depois do título."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'></a> formato da data no calendário."
     events_remove_past_from_map: "Remover eventos passados do mapa no <a href='https://github.com/angusmcleod/discourse-locations'></a>."
     events_remove_past_from_agenda: "Remover eventos passados da agenda."

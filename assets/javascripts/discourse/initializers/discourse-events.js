@@ -1,13 +1,11 @@
 import EmberObject from "@ember/object";
-import { bind, scheduleOnce } from "@ember/runloop";
+import { scheduleOnce } from "@ember/runloop";
 import $ from "jquery";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import DiscourseURL from "discourse/lib/url";
 import { CREATE_TOPIC } from "discourse/models/composer";
 import {
   default as discourseComputed,
   observes,
-  on,
 } from "discourse-common/utils/decorators";
 import I18n from "I18n";
 import Provider from "../models/provider";
@@ -173,68 +171,6 @@ export default {
           } else {
             return "/agenda";
           }
-        },
-      });
-
-      api.modifyClass("component:topic-list-item", {
-        pluginId: "discourse-events",
-
-        setupEventLinkClick() {
-          $(".event-link", this.element).on(
-            "click",
-            bind(this, this.handleEventLabelClick)
-          );
-        },
-
-        teardownEventLinkClick() {
-          $(".event-link", this.element).off(
-            "click",
-            bind(this, this.handleEventLabelClick)
-          );
-        },
-
-        @on("didInsertElement")
-        setupEventLink() {
-          scheduleOnce("afterRender", this, this.setupEventLinkClick);
-        },
-
-        @on("willDestroyElement")
-        teardownEventLink() {
-          this.teardownEventLinkClick();
-        },
-
-        handleEventLabelClick(e) {
-          e.preventDefault();
-          const topic = this.get("topic");
-          const href = $(e.target).attr("href");
-          this.appEvents.trigger("header:update-topic", topic);
-          DiscourseURL.routeTo(href);
-        },
-
-        handleMoveElements() {
-          const topic = this.get("topic");
-
-          const $linkTopLine = $(".link-top-line", this.element);
-          let rowBelowTitle = false;
-
-          if (topic.event && topic.event.rsvp) {
-            $(".topic-list-event-rsvp", this.element).insertAfter($linkTopLine);
-            rowBelowTitle = true;
-          }
-
-          if (this.siteSettings.events_event_label_short_after_title) {
-            $(".date-time-container", this.element).insertAfter($linkTopLine);
-            rowBelowTitle = true;
-          }
-
-          if (rowBelowTitle) {
-            $(".main-link", this.element).addClass("row-below-title");
-          }
-        },
-
-        @on("didRender")
-        moveElements() {
-          scheduleOnce("afterRender", this, this.handleMoveElements);
         },
       });
 

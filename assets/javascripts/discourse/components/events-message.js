@@ -7,7 +7,7 @@ const icons = {
   error: "times-circle",
   success: "check-circle",
   warn: "exclamation-circle",
-  info: "info-circle",
+  info: "circle-info",
 };
 
 const urls = {
@@ -26,7 +26,7 @@ export default Component.extend({
 
   @discourseComputed("message.type")
   icon(type) {
-    return icons[type] || "info-circle";
+    return icons[type] || "circle-info";
   },
 
   @discourseComputed("message.key", "viewName", "message.opts")

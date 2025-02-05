@@ -9,7 +9,6 @@ he:
     events_event_label_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לתווית אירוע."
     events_event_label_short_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לתוויות אירועי רשימת נושאים."
     events_event_label_short_only_start: "להציג רק תאריך התחלה בתוויות אירועי רשימת הנושאים."
-    events_event_label_short_after_title: "הוספת תווית האירועי אחרי כותרת הנושא ברשימת הנושאים."
     events_event_time_calendar_format: "תבנית <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> של השעה ברשומת לוח שנה."
     events_remove_past_from_map: "הסרת אירועי עבר מרשימת נושאי המפה ב<a href='https://github.com/angusmcleod/discourse-locations'>תוסף המקומות</a>."
     events_remove_past_from_agenda: "הסרת אירועי עבר מהלו״ז."

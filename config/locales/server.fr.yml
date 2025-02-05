@@ -9,7 +9,6 @@ fr:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format pour l'étiquette de l'événement."
     events_event_label_short_format: "Format <a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> pour les étiquettes d'événements de liste de sujets."
     events_event_label_short_only_start: "N'afficher que la date de début dans les étiquettes d'événements de liste de sujets."
-    events_event_label_short_after_title: "Insérez l'étiquette de l'événement après le titre de la rubrique dans la liste des rubriques."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format de l'heure dans l'entrée du calendrier."
     events_remove_past_from_map: "Supprimez les événements passés de la liste des sujets de carte dans le <a href='https://github.com/angusmcleod/discourse-locations'>plug-in locations</a>."
     events_remove_past_from_agenda: "Supprimer les événements passés de l'ordre du jour."

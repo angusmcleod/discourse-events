@@ -9,7 +9,6 @@ de:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format für Datum/Uhrzeit."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Kurzformat für Datum/Uhrzeit in Themenlisten."
     events_event_label_short_only_start: "Zeige nur den Beginn im Kurzformat (in Themenlisten)."
-    events_event_label_short_after_title: "Füge die Bezeichnung der Veranstaltung nach dem Titel des Themas in die Themenliste ein."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Zeit-Format im Kalender."
     events_remove_past_from_map: "Vergangene Veranstaltungen in der Karte im <a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a> ausblenden."
     events_remove_past_from_agenda: "Vergangene Veranstaltungen in Agendas ausblenden."

@@ -1,0 +1,25 @@
+{{#if @outletArgs.topic.event}}
+  <div class="topic-list-item-event">
+    <div class="topic-list-item-event-time">
+      <a
+        href={{@outletArgs.topic.lastUnreadUrl}}
+        class={{@outletArgs.topic.topicListItemClasses}}
+      >
+        {{event-label @outletArgs.topic.event list="true"}}
+      </a>
+    </div>
+    {{#if this.siteSettings.events_rsvp}}
+      {{#if @outletArgs.topic.event.rsvp}}
+        <div class="topic-list-item-event-rsvp">
+          <a
+            href={{@outletArgs.topic.lastUnreadUrl}}
+            class={{@outletArgs.topic.topicListItemClasses}}
+          >
+            <span>{{@outletArgs.topic.event_going_total}}</span>
+            <span>{{i18n "event_rsvp.going.label"}}</span>
+          </a>
+        </div>
+      {{/if}}
+    {{/if}}
+  </div>
+{{/if}}

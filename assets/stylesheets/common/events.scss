@@ -604,6 +604,9 @@ ul.events-calendar-events {
   .topic-list-item-event {
     margin-top: 0.25em;
     font-size: var(--font-down-2);
+    display: flex;
+    flex-flow: wrap;
+    gap: 0.5em;
   }
 
   .topic-list-item-event-time {
@@ -631,6 +634,7 @@ ul.events-calendar-events {
 .composer-controls-event {
   position: relative;
   margin-left: 8px;
+  margin-bottom: 8px;
 
   .popup-tip {
     left: 0;
@@ -668,10 +672,6 @@ ul.events-webcal-notices {
   li {
     font-style: italic;
   }
-}
-
-.topic-controls-event {
-  margin-bottom: 1em;
 }
 
 .topic-event-label {

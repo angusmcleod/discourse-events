@@ -10,7 +10,7 @@ import I18n from "I18n";
 export default class EventsSubscriptionBadge extends Component {
   @service("events-subscription") subscription;
   @tracked updating = false;
-  @tracked updateIcon = "sync";
+  @tracked updateIcon = "arrows-rotate";
 
   get i18nKey() {
     return `admin.events.subscription.type.${
@@ -44,7 +44,7 @@ export default class EventsSubscriptionBadge extends Component {
     this.updating = true;
     this.updateIcon = null;
     this.subscription.getSubscriptionStatus(true).finally(() => {
-      this.updateIcon = "sync";
+      this.updateIcon = "arrows-rotate";
       this.updating = false;
     });
   }

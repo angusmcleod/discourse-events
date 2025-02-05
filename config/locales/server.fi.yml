@@ -9,7 +9,6 @@ fi:
     events_event_label_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman ajankohdalle (ketjun otsikon alla)."
     events_event_label_short_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman ajankohdalle ketjulistauksessa."
     events_event_label_short_only_start: "Näytä vain tapahtuman alkamispäivä ketjulistauksessa."
-    events_event_label_short_after_title: "Näytä tapahtuman ajankohta otsikon alla ketjulistauksessa."
     events_event_time_calendar_format: "<a href='http://momentjs.com/docs/#/displaying/format/'>Moment.js</a>-muotoilu tapahtuman kellonajalle kalenterinäkymässä."
     events_remove_past_from_map: "Piilota menneet tapahtumat karttanäkymästä <a href='https://github.com/angusmcleod/discourse-locations'>Locations</a>-lisäosassa."
     events_remove_past_from_agenda: "Piilota menneet tapahtumat tapahtumalistauksessa."

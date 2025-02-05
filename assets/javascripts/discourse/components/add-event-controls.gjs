@@ -2,6 +2,7 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
+import { htmlSafe } from "@ember/template";
 import DButton from "discourse/components/d-button";
 import { eventLabel } from "../lib/date-utilities";
 import AddEvent from "./modal/add-event";
@@ -66,10 +67,10 @@ export default class AddToCalendar extends Component {
         <DButton
           @action={{this.showAddEvent}}
           class={{this.valueClasses}}
-          @translatedLabel={{this.valueLabel}}
+          @translatedLabel={{htmlSafe this.valueLabel}}
         />
         {{#unless @noText}}
-          <DButton @icon="times" @action={{this.removeEvent}} class="remove" />
+          <DButton @icon="xmark" @action={{this.removeEvent}} class="remove" />
         {{/unless}}
       {{else}}
         {{#if @iconOnly}}
