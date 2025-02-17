@@ -83,10 +83,10 @@ plugins:
     default: false
     client: true
   events_deadlines_countdown_icon_pending:
-    default: "hourglass-half"
+    default: "hourglass"
     client: true
   events_deadlines_countdown_icon_passed_due:
-    default: "hourglass-end"
+    default: "hourglass"
     client: true
   events_verbose_auth_logs:
     default: false
