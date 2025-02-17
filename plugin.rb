@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.9.4
+# version: 0.9.5
 # authors: Angus McLeod
 # contact_emails: angus@angus.blog
 # url: https://github.com/angusmcleod/discourse-events
@@ -43,8 +43,6 @@ Discourse.anonymous_filters.push(:calendar)
 register_svg_icon "rss"
 register_svg_icon "fingerprint"
 register_svg_icon "floppy-disk"
-register_svg_icon "hourglass-half"
-register_svg_icon "hourglass-end"
 register_svg_icon "video"
 
 require_relative "lib/discourse_events_timezone_default_site_setting.rb"
