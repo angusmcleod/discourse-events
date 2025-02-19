@@ -25,8 +25,6 @@ de:
     events_timezone_include_in_email: "Veranstaltungs-Zeitzone in Emails anzeigen."
     events_timezone_format: "<a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> Format für Zeitzonen zu den Etiketten von Veranstaltungen hinzugefügt. Überschreibt die Einstellung des Rails-Formats."
     events_timezone_rails_format: "Verwende das <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails-Format</a> für Zeitzonen, die zu den Etiketten der Veranstaltung hinzugefügt werden."
-    events_hamburger_menu_calendar_link: "Im Hamburger Menü Link zum Kalender (alle Kategorien) hinzufügen."
-    events_hamburger_menu_agenda_link: "Im Hamburger Menü Link zur Agenda (alle Kategorien) hinzufügen."
     events_min_trust_to_create: "Minimale Vertrauensstufe, um Veranstaltungen zu erstellen."
     events_rsvp: "Gästeliste aktivieren"
     events_one_event_per_series: "Für jede Veranstaltung in einer Reihe wird ein eigenes Thema erstellt."

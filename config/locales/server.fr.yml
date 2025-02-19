@@ -25,8 +25,6 @@ fr:
     events_timezone_include_in_email: "Ajouter un fuseau horaire aux étiquettes d'événements dans les courriels."
     events_timezone_format: "Format <a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> pour les fuseaux horaires ajoutés aux étiquettes des événements. Remplace le réglage du format Rails."
     events_timezone_rails_format: "Utilisez le format <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails</a> pour les fuseaux horaires ajoutés aux étiquettes d’événement."
-    events_hamburger_menu_calendar_link: "Ajoutez un lien au calendrier du site dans le menu des hamburgers."
-    events_hamburger_menu_agenda_link: "Ajoutez un lien vers l'agenda du site au menu des hamburgers."
     events_min_trust_to_create: "Min confiance pour créer un événement."
     events_rsvp: "Activer l'événement RSVP."
   rss_description:

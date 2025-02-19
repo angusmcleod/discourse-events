@@ -25,8 +25,6 @@ en:
     events_timezone_include_in_email: "Add timezone to event labels in emails."
     events_timezone_format: "<a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> format for timezones added to event labels. Overrides Rails format setting."
     events_timezone_rails_format: "Use the <a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails format</a> for timezones added to event labels."
-    events_hamburger_menu_calendar_link: "Add a link to the site calendar to the hamburger menu."
-    events_hamburger_menu_agenda_link: "Add a link to the site agenda to the hamburger menu."
     events_min_trust_to_create: "Min trust to create event."
     events_rsvp: "Enable event rsvp."
     events_one_event_per_series: "Only process the current event in a series."

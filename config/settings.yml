@@ -61,12 +61,6 @@ plugins:
   events_timezone_rails_format:
     default: true
     client: true
-  events_hamburger_menu_calendar_link:
-    default: false
-    client: true
-  events_hamburger_menu_agenda_link:
-    default: false
-    client: true
   events_min_trust_to_create:
     default: 0
   events_rsvp:

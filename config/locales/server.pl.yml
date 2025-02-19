@@ -11,8 +11,6 @@ pl:
     events_remove_past_from_map: "Ukrywaj minione wydarzenia z listy wydarzeń na mapie (<a href='https://github.com/angusmcleod/discourse-locations'>locations plugin</a>)"
     events_remove_past_from_agenda: "Ukrywaj minione wydarzenia w agendzie."
     events_agenda_filter_closed: "Ukrywaj zamknięte tematy w agendzie."
-    events_hamburger_menu_calendar_link: "Wyświetlaj link do globalnego kalendarza w menu głównym."
-    events_hamburger_menu_agenda_link: "Wyświetlaj link do globalnej agendy w menu głównym."
     events_min_trust_to_create: "Minimalny poziom zaufania wymagany przy tworzeniu wydarzenia."
     events_rsvp: "Zezwalaj na ustawianie Rsvp dla wydarzeń."
   rss_description:

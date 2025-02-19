@@ -25,8 +25,6 @@ he:
     events_timezone_include_in_email: "הוספת אזור זמן לתוויות אירועים בהודעות דוא״ל."
     events_timezone_format: "תבנית <a href='https://momentjs.com/docs/#/displaying/format/'>Moment.js</a> לאזורי זמן להוספה לתוויות אירועים. דורס את הגדרות התבנית של Rails."
     events_timezone_rails_format: "להשתמש ב־<a href='http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html'>Rails format</a> לאזורי זמן שנוספו לתוויות אירועים."
-    events_hamburger_menu_calendar_link: "הוספת קישור ללוח השנה של האתר לתפריט ההמבורגר."
-    events_hamburger_menu_agenda_link: "הוספת הקישור ללו״ז של האתר לתפריט ההמבורגר."
     events_min_trust_to_create: "דרגת אמון מזערית ליצירת אירוע."
     events_rsvp: "הפעלת אישור השתתפות לאירועים."
     events_update_automatically: "לייבא את כל המקורות ולסנכרן את כל החיבורים אוטומטית."

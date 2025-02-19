@@ -210,26 +210,6 @@ export default {
         },
       });
 
-      if (siteSettings.events_hamburger_menu_calendar_link) {
-        api.decorateWidget("hamburger-menu:generalLinks", () => {
-          return {
-            route: "discovery.calendar",
-            className: "calendar-link",
-            label: "filters.calendar.title",
-          };
-        });
-      }
-
-      if (siteSettings.events_hamburger_menu_agenda_link) {
-        api.decorateWidget("hamburger-menu:generalLinks", () => {
-          return {
-            route: "discovery.agenda",
-            className: "agenda-link",
-            label: "filters.agenda.title",
-          };
-        });
-      }
-
       const user = api.getCurrentUser();
       if (user && user.admin) {
         api.modifyClass("model:site-setting", {
