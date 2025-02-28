@@ -83,7 +83,6 @@ en:
       generate: "Generate"
       notice: "The key and client id will be visible only once. Please store them in a safe place before you leave this page."
       calendar_notice: "Generate Webcal API keys in order to subscribe to the ical feed."
-      calendar_usage: "Documentation on how to use Webcal API keys."
 
     event_rsvp:
       attendees:
