@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.9.6
+# version: 0.9.7
 # authors: Angus McLeod
 # contact_emails: angus@angus.blog
 # url: https://github.com/angusmcleod/discourse-events

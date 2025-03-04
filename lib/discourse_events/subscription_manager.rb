@@ -254,7 +254,9 @@ module DiscourseEvents
     end
 
     def database_ready?
-      ActiveRecord::Base.connection&.table_exists? "subscription_client_subscriptions"
+      Discourse.running_in_rack? && ActiveRecord::Base.connection&.table_exists?(
+        "subscription_client_subscriptions"
+      )
     rescue ActiveRecord::NoDatabaseError
       false
     end
