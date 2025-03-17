@@ -3,7 +3,7 @@ import { not } from "@ember/object/computed";
 import { service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import Singleton from "discourse/mixins/singleton";
+import singleton from "discourse/lib/singleton";
 import RestModel from "discourse/models/rest";
 import discourseComputed from "discourse-common/utils/decorators";
 
@@ -11,6 +11,7 @@ export const TOKEN_TYPES = ["eventbrite", "humanitix", "eventzilla"];
 export const NO_AUTH_TYPES = ["icalendar"];
 export const OAUTH2_TYPES = ["meetup", "outlook", "google"];
 
+@singleton
 export default class Provider extends RestModel {
   @service("events-subscription") subscription;
   @not("inSubscription") notInSubscription;
@@ -57,7 +58,7 @@ export default class Provider extends RestModel {
   }
 }
 
-Provider.reopenClass(Singleton, {
+Provider.reopenClass({
   all() {
     return ajax("/admin/plugins/events/provider").catch(popupAjaxError);
   },
