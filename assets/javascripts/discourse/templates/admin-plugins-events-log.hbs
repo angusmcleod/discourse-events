@@ -2,10 +2,7 @@
 
 <div class="admin-events-container">
   {{#if this.hasLogs}}
-    <LoadMore
-      @selector=".directory-table .directory-table__cell"
-      @action={{action "loadMore"}}
-    >
+    <LoadMore @action={{action "loadMore"}}>
       <ResponsiveTable @className="events-log-table">
         <:header>
           <TableHeaderToggle

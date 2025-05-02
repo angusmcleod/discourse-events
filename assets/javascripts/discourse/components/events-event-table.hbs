@@ -48,6 +48,7 @@
         @showTopics={{this.showTopics}}
       />
     {{/each}}
+    <LoadMore @action={{action "loadMore"}} />
   </tbody>
 </table>
 <ConditionalLoadingSpinner @condition={{this.loading}} />
