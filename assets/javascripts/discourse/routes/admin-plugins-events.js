@@ -1,6 +1,9 @@
 import DiscourseRoute from "discourse/routes/discourse";
+import { service } from "@ember/service";
 
 export default DiscourseRoute.extend({
+  router: service(),
+
   afterModel(model, transition) {
     if (transition.to.name === "adminPlugins.events.index") {
       this.router.transitionTo("adminPlugins.events.event");
