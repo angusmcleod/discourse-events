@@ -2,8 +2,6 @@
 
 module DiscourseEvents
   class PublishManager
-    include Subscription
-
     attr_reader :post, :logger
     attr_accessor :publisher, :publication_type, :client
 
@@ -14,7 +12,7 @@ module DiscourseEvents
     end
 
     def ready?
-      publisher.present? && subscription_manager.supports_publish?
+      publisher.present?
     end
 
     def publish

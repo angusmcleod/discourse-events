@@ -6,15 +6,11 @@ import {
   query,
 } from "discourse/tests/helpers/qunit-helpers";
 import { default as Subscriptions } from "../fixtures/subscription-fixtures";
-import { default as Suppliers } from "../fixtures/supplier-fixtures";
 
 function providerRoutes(needs) {
   needs.pretender((server, helper) => {
     server.get("/admin/plugins/events/subscription", () => {
-      return helper.response(Subscriptions["business"]);
-    });
-    server.get("/admin/plugins/subscription-client/suppliers", () => {
-      return helper.response(Suppliers["authorized"]);
+      return helper.response(Subscriptions);
     });
     server.get("/admin/plugins/events", () => {
       return helper.response({});

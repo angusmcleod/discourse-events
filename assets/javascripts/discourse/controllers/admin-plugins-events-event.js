@@ -1,7 +1,7 @@
 import { A } from "@ember/array";
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
-import { not, notEmpty } from "@ember/object/computed";
+import { notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import discourseComputed from "discourse-common/utils/decorators";
 import I18n from "I18n";
@@ -14,7 +14,6 @@ export default class AdminPluginsEventsEvent extends Controller.extend(
   Message
 ) {
   @service modal;
-  @service("events-subscription") subscription;
   @service router;
   @notEmpty("events") hasEvents;
   selectedEventIds = A();
@@ -24,7 +23,6 @@ export default class AdminPluginsEventsEvent extends Controller.extend(
   asc = null;
   filter = null;
   queryParams = ["filter", "order", "asc"];
-  @not("subscription.subscribed") addDisabled;
 
   loadingComplete = false;
   loading = false;

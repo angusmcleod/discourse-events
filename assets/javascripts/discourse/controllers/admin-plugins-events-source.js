@@ -1,5 +1,5 @@
 import Controller from "@ember/controller";
-import { not, notEmpty } from "@ember/object/computed";
+import { notEmpty } from "@ember/object/computed";
 import { service } from "@ember/service";
 import I18n from "I18n";
 import Message from "../mixins/message";
@@ -10,8 +10,6 @@ export default Controller.extend(Message, {
   hasSources: notEmpty("sources"),
   viewName: "source",
   dialog: service(),
-  subscription: service("events-subscription"),
-  addDisabled: not("subscription.subscribed"),
   router: service(),
 
   actions: {

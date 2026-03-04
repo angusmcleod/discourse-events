@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 # name: discourse-events
 # about: Allows you to manage events in Discourse
-# version: 0.9.8
+# version: 1.0.0
 # authors: Angus McLeod
 # contact_emails: angus@angus.blog
 # url: https://github.com/angusmcleod/discourse-events
-# subscription_url: https://discourse.angus.blog
 # meta_topic_id: 69776
 
 enabled_site_setting :events_enabled
@@ -16,20 +15,15 @@ register_asset "stylesheets/common/index.scss"
 register_asset "stylesheets/desktop/events.scss", :desktop
 register_asset "stylesheets/mobile/events.scss", :mobile
 
-gem "discourse_subscription_client", "0.1.11", require_name: "discourse_subscription_client"
 gem "iso-639", "0.3.5"
 gem "ice_cube", "0.16.4"
 gem "icalendar", "2.8.0"
 gem "icalendar-recurrence", "1.1.3"
-
-on(:subscription_client_ready) do
-  require_relative "lib/discourse_events/subscription_manager"
-  DiscourseEvents::SubscriptionManager.setup(update: true, install: true)
-end
-on(:subscription_client_subscriptions_updated) do
-  require_relative "lib/discourse_events/subscription_manager"
-  DiscourseEvents::SubscriptionManager.setup(install: true)
-end
+gem "omnievent", "0.1.0.pre11"
+gem "omnievent-api", "0.1.0.pre5", require_name: "omnievent/api"
+gem "omnievent-icalendar", "0.1.0.pre9", require_name: "omnievent/icalendar"
+gem "omnievent-google", "0.1.0.pre8", require_name: "omnievent/google"
+gem "omnievent-outlook", "0.1.0.pre11", require_name: "omnievent/outlook"
 
 Discourse.top_menu_items.push(:agenda)
 Discourse.anonymous_top_menu_items.push(:agenda)

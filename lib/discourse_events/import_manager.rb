@@ -2,8 +2,6 @@
 
 module DiscourseEvents
   class ImportManager
-    include Subscription
-
     attr_reader :source, :logger
     attr_accessor :imported_event_uids, :created_event_uids, :updated_event_uids
 
@@ -17,7 +15,7 @@ module DiscourseEvents
     end
 
     def setup
-      return false unless subscribed? && source&.import_ready?
+      return false unless source&.import_ready?
       _provider = source.provider
       ::OmniEvent.config.logger = @logger
       ::OmniEvent::Builder.new { provider _provider.provider_type, _provider.options }

@@ -10,13 +10,8 @@ const icons = {
   info: "circle-info",
 };
 
-const urls = {
-  provider: "https://discourse.angus.blog/c/events",
-  source: "https://discourse.angus.blog/c/events",
-  connection: "https://discourse.angus.blog/c/events",
-  event: "https://discourse.angus.blog/c/events",
-  log: "https://discourse.angus.blog/c/events",
-};
+const DOCUMENTATION_URL =
+  "https://github.com/angusmcleod/discourse-events";
 
 export default Component.extend({
   classNameBindings: [":events-message", "message.type", "loading"],
@@ -39,8 +34,8 @@ export default Component.extend({
     return I18n.t(`admin.events.message.documentation`);
   },
 
-  @discourseComputed("viewName")
-  documentationUrl(viewName) {
-    return urls[viewName] || "https://discourse.angus.blog/c/events";
+  @discourseComputed
+  documentationUrl() {
+    return DOCUMENTATION_URL;
   },
 });

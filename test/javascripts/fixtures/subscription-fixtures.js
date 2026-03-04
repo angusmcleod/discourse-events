@@ -1,81 +1,73 @@
-const eventsClients = {
-  discourse_events: {
-    none: false,
-    community: true,
-    business: true,
-  },
-};
-
 const features = {
   provider: {
     provider_type: {
       icalendar: {
-        none: false,
+        none: true,
         community: true,
         business: true,
+        enterprise: true,
       },
       google: {
-        none: false,
-        community: false,
+        none: true,
+        community: true,
         business: true,
+        enterprise: true,
       },
       outlook: {
-        none: false,
-        community: false,
+        none: true,
+        community: true,
         business: true,
+        enterprise: true,
       },
     },
   },
   source: {
     import_type: {
       import: {
-        none: false,
+        none: true,
         community: true,
         business: true,
+        enterprise: true,
       },
       import_publish: {
-        none: false,
-        community: false,
+        none: true,
+        community: true,
         business: true,
+        enterprise: true,
       },
       publish: {
-        none: false,
-        community: false,
+        none: true,
+        community: true,
         business: true,
+        enterprise: true,
       },
     },
     topic_sync: {
       manual: {
-        none: false,
+        none: true,
         community: true,
         business: true,
+        enterprise: true,
       },
       auto: {
-        none: false,
-        community: false,
+        none: true,
+        community: true,
         business: true,
+        enterprise: true,
       },
     },
     client: {
       discourse_events: {
-        none: false,
+        none: true,
         community: true,
         business: true,
+        enterprise: true,
       },
     },
   },
-  connection: eventsClients,
 };
 
 export default {
-  business: {
-    subscribed: true,
-    product: "business",
-    features,
-  },
-  community: {
-    subscribed: true,
-    product: "community",
-    features,
-  },
+  product: "enterprise",
+  features,
 };

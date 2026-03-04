@@ -38,34 +38,14 @@ export default SingleSelectComponent.extend({
           allowedValues ? allowedValues.includes(value) : true
         )
         .map((value) => {
-          let minimumProduct = Object.keys(values[value]).find(
-            (product) => values[value][product]
-          );
-          let subscriptionRequired = minimumProduct !== "none";
           let i18nkey = `admin.events.${feature}.${attribute}.${value}`;
           if (this.i18nSuffix) {
             i18nkey += `.${this.i18nSuffix}`;
           }
-          let attrs = {
+          return {
             id: value,
             name: I18n.t(i18nkey),
-            subscriptionRequired,
-            minimumProduct,
           };
-
-          if (subscriptionRequired) {
-            attrs.subscribed = this.subscription.supportsFeatureValue(
-              feature,
-              attribute,
-              value
-            );
-            attrs.disabled = !attrs.subscribed;
-            attrs.selectorLabel = `admin.events.subscription.${
-              attrs.subscribed ? "subscribed" : "not_subscribed"
-            }.selector`;
-          }
-
-          return attrs;
         });
     }
   },

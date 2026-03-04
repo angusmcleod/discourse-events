@@ -137,16 +137,6 @@ module DiscourseEvents
             raise Discourse::InvalidParameters.new(:topic_sync)
           end
 
-          unless subscription_manager.supports?(:source, :import_type, result[:import_type])
-            raise Discourse::InvalidParameters,
-                  "import #{result[:import_type]} is not supported by your subscription"
-          end
-
-          unless subscription_manager.supports?(:source, :client, result[:client])
-            raise Discourse::InvalidParameters,
-                  "client #{result[:client]} is not supported by your subscription"
-          end
-
           user = nil
           if result[:username]
             user = User.find_by(username: result[:username])

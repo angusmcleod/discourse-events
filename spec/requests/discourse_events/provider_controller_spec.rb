@@ -4,10 +4,7 @@ describe DiscourseEvents::ProviderController do
   fab!(:provider) { Fabricate(:discourse_events_provider) }
   fab!(:user) { Fabricate(:user, admin: true) }
 
-  before do
-    enable_subscription(:business)
-    sign_in(user)
-  end
+  before { sign_in(user) }
 
   it "lists providers" do
     get "/admin/plugins/events/provider.json"
@@ -42,22 +39,6 @@ describe DiscourseEvents::ProviderController do
     expect(response.status).to eq(400)
     expect(response.parsed_body["errors"].first).to eq(
       "Name inval$d provider n4m3 is not a valid name",
-    )
-  end
-
-  it "handles invalid subscription params" do
-    enable_subscription(:community)
-
-    put "/admin/plugins/events/provider/new.json",
-        params: {
-          provider: {
-            name: "my_provider",
-            provider_type: "google",
-          },
-        }
-    expect(response.status).to eq(400)
-    expect(response.parsed_body["errors"].first).to eq(
-      "You supplied invalid parameters to the request: provider google not supported by your subscription",
     )
   end
 

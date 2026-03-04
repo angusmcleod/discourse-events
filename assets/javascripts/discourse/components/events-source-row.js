@@ -18,8 +18,6 @@ export default Component.extend({
   attributeBindings: ["source.id:data-source-id"],
   hasFilters: notEmpty("source.filters"),
   modal: service(),
-  subscription: service("events-subscription"),
-  removeDisabled: not("subscription.subscribed"),
   siteSettings: service(),
 
   didReceiveAttrs() {
@@ -101,37 +99,17 @@ export default Component.extend({
     "importing",
     "saving",
     "source.ready",
-    "source.canImport",
-    "source.import_type",
-    "subscription.subscribed"
+    "source.canImport"
   )
-  importDisabled(
-    sourceChanged,
-    sourceId,
-    importing,
-    saving,
-    ready,
-    canImport,
-    importType
-  ) {
-    if (
-      !this.subscription.supportsFeatureValue(
-        "source",
-        "import_type",
-        importType
-      )
-    ) {
-      return true;
-    } else {
-      return (
-        sourceChanged ||
-        sourceId === "new" ||
-        importing ||
-        saving ||
-        !ready ||
-        !canImport
-      );
-    }
+  importDisabled(sourceChanged, sourceId, importing, saving, ready, canImport) {
+    return (
+      sourceChanged ||
+      sourceId === "new" ||
+      importing ||
+      saving ||
+      !ready ||
+      !canImport
+    );
   },
 
   importPeriodDisabled: not("source.canImport"),
@@ -201,7 +179,6 @@ export default Component.extend({
     "sourceChanged",
     "saving",
     "syncing",
-    "subscription.subscribed",
     "source.client",
     "source.topic_sync",
     "source.category_id",
@@ -211,7 +188,6 @@ export default Component.extend({
     sourceChanged,
     saving,
     syncing,
-    subscribed,
     client,
     topicSync,
     categoryId,
@@ -222,8 +198,6 @@ export default Component.extend({
       saving ||
       syncing ||
       !client ||
-      !subscribed ||
-      !this.subscription.supportsFeatureValue("source", "client", client) ||
       !topicSync ||
       !categoryId ||
       !username

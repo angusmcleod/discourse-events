@@ -28,11 +28,6 @@
           )
         }}
       </div>
-      <div class="events-subscription-tags">
-        {{#each this.supportedSubscriptions as |subscription|}}
-          <EventsSubscriptionTag @subscription={{subscription}} />
-        {{/each}}
-      </div>
     </div>
   </div>
 </td>
@@ -41,7 +36,6 @@
   {{#if this.provider.hasCredentials}}
     <EventsProviderCredentials
       @provider={{this.provider}}
-      @disabled={{this.provider.notInSubscription}}
     />
   {{else}}
     <label>{{i18n "admin.events.provider.authentication.none"}}</label>
@@ -57,12 +51,6 @@
       @label="admin.events.provider.authenticate.label"
       @disabled={{this.authenticateDisabled}}
       class={{this.authenticateClass}}
-    />
-  {{else if this.showUpgradeSubscription}}
-    <DButton
-      @action={{action "upgradeSubscription"}}
-      @title="admin.events.subscription.upgrade.title"
-      @label="admin.events.subscription.upgrade.label"
     />
   {{else}}
     <EventsProviderStatus @status={{this.provider.status}} />

@@ -113,72 +113,66 @@ describe DiscourseEvents::EventController do
   end
 
   describe "#destroy" do
-    context "with a subscription" do
-      before { enable_subscription(:business) }
+    it "destroys events" do
+      topic_id = topic1.id
+      post_id = post1.id
+      event_id = event1.id
 
-      context("when destroying") do
-        it "destroys events" do
-          topic_id = topic1.id
-          post_id = post1.id
-          event_id = event1.id
+      delete "/admin/plugins/events/event.json",
+             params: {
+               event_ids: [event_id],
+               target: "events_only",
+             }
 
-          delete "/admin/plugins/events/event.json",
-                 params: {
-                   event_ids: [event_id],
-                   target: "events_only",
-                 }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["destroyed_topics_event_ids"].blank?).to eq(true)
+      expect(response.parsed_body["destroyed_event_ids"]).to eq([event_id])
 
-          expect(response.status).to eq(200)
-          expect(response.parsed_body["destroyed_topics_event_ids"].blank?).to eq(true)
-          expect(response.parsed_body["destroyed_event_ids"]).to eq([event_id])
+      expect(DiscourseEvents::Event.exists?(event_id)).to eq(false)
+      expect(Topic.exists?(topic_id)).to eq(true)
+      expect(Post.exists?(post_id)).to eq(true)
+    end
 
-          expect(DiscourseEvents::Event.exists?(event_id)).to eq(false)
-          expect(Topic.exists?(topic_id)).to eq(true)
-          expect(Post.exists?(post_id)).to eq(true)
-        end
+    it "destroys topics and posts associated with events if requested" do
+      topic_id = topic1.id
+      post_id = post1.id
+      event_id = event1.id
 
-        it "destroys topics and posts associated with events if requested" do
-          topic_id = topic1.id
-          post_id = post1.id
-          event_id = event1.id
+      delete "/admin/plugins/events/event.json",
+             params: {
+               event_ids: [event_id],
+               target: "events_and_topics",
+             }
 
-          delete "/admin/plugins/events/event.json",
-                 params: {
-                   event_ids: [event_id],
-                   target: "events_and_topics",
-                 }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["destroyed_topics_event_ids"]).to eq([event_id])
+      expect(response.parsed_body["destroyed_event_ids"]).to eq([event_id])
 
-          expect(response.status).to eq(200)
-          expect(response.parsed_body["destroyed_topics_event_ids"]).to eq([event_id])
-          expect(response.parsed_body["destroyed_event_ids"]).to eq([event_id])
+      expect(DiscourseEvents::Event.exists?(event_id)).to eq(false)
+      expect(Topic.exists?(topic_id)).to eq(false)
+      expect(Post.exists?(post_id)).to eq(false)
+    end
 
-          expect(DiscourseEvents::Event.exists?(event_id)).to eq(false)
-          expect(Topic.exists?(topic_id)).to eq(false)
-          expect(Post.exists?(post_id)).to eq(false)
-        end
+    it "destroys topics associated with events if requested" do
+      topic_id = topic1.id
+      post_id = post1.id
+      event_id = event1.id
+      event_topic_id = event_topic1.id
 
-        it "destroys topics associated with events if requested" do
-          topic_id = topic1.id
-          post_id = post1.id
-          event_id = event1.id
-          event_topic_id = event_topic1.id
+      delete "/admin/plugins/events/event.json",
+             params: {
+               event_ids: [event_id],
+               target: "topics_only",
+             }
 
-          delete "/admin/plugins/events/event.json",
-                 params: {
-                   event_ids: [event_id],
-                   target: "topics_only",
-                 }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["destroyed_topics_event_ids"]).to eq([event_id])
+      expect(response.parsed_body["destroyed_event_ids"].blank?).to be(true)
 
-          expect(response.status).to eq(200)
-          expect(response.parsed_body["destroyed_topics_event_ids"]).to eq([event_id])
-          expect(response.parsed_body["destroyed_event_ids"].blank?).to be(true)
-
-          expect(DiscourseEvents::Event.exists?(event_id)).to eq(true)
-          expect(DiscourseEvents::EventTopic.exists?(event_topic_id)).to eq(false)
-          expect(Topic.exists?(topic_id)).to eq(false)
-          expect(Post.exists?(post_id)).to eq(false)
-        end
-      end
+      expect(DiscourseEvents::Event.exists?(event_id)).to eq(true)
+      expect(DiscourseEvents::EventTopic.exists?(event_topic_id)).to eq(false)
+      expect(Topic.exists?(topic_id)).to eq(false)
+      expect(Post.exists?(post_id)).to eq(false)
     end
   end
 end

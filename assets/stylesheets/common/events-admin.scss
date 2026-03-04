@@ -356,52 +356,18 @@
 }
 
 .admin-plugins.events {
-  .admin-actions {
-    display: flex;
-    align-items: center;
-  }
-
   .admin-controls nav:after {
     background: unset;
   }
 }
 
 .events-subscription-selector.select-kit.single-select {
-  .select-kit-header.disabled {
-    background: var(--primary-low);
-  }
-
   .select-kit-row {
     .texts {
       display: flex;
       align-items: center;
     }
-    &.disabled {
-      background: var(--primary-low);
-      cursor: unset;
-    }
   }
-
-  .subscription-label {
-    margin-left: 0.75em;
-    padding-top: 0.25em;
-    font-size: 0.75em;
-  }
-}
-
-.update-subscription-status {
-  width: 40px;
-}
-
-.events-subscription-tags {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-}
-
-.events-subscription-tag {
-  padding: 0.25em 0.5em;
-  background-color: var(--primary-low);
 }
 
 .events-connect-topic-modal {
