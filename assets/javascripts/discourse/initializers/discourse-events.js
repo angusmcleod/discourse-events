@@ -129,14 +129,21 @@ export default {
         pluginId: "discourse-events",
 
         afterModel(model) {
+          const calendarEnabled =
+            siteSettings.events_calendar_enabled ||
+            (model.category && model.category.events_calendar_enabled);
+
           if (
             model.filterType === "calendar" &&
+            calendarEnabled &&
             this.templateName === "discovery/list"
           ) {
             this.templateName = "discovery/calendar";
+          } else if (this.templateName === "discovery/calendar") {
+            this.templateName = "discovery/list";
           }
         },
-      });
+      });     
 
       api.addNavigationBarItem({
         name: "calendar",
